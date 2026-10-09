@@ -23,7 +23,7 @@ def test_startseite_liefert_oberflaeche(client):
 def test_status_zeigt_quellen_und_bestand(client):
     daten = client.get("/api/status").json()
     assert any(q["demo"] for q in daten["quellen"])
-    assert daten["zaehler"]["vorgang"] == 1
+    assert daten["zaehler"]["vorgang"] == 4
     assert daten["staedte"][0]["schluessel"] == "koeln"
 
 
@@ -33,7 +33,7 @@ def test_frage_liefert_verstaendnis_und_treffer(client):
     daten = antwort.json()
     assert daten["verstanden"]["themen"] == ["bauen"]
     assert {o["name"] for o in daten["verstanden"]["orte"]} == {"Ehrenfeld"}
-    assert daten["gesamt"] == 0  # Demo-Auszug enthält keine Ehrenfeld-Vorlagen
+    assert daten["gesamt"] == 3  # drei echte, als Offline-Demo markierte Bauleitverfahren
     assert daten["hinweise"]
 
 

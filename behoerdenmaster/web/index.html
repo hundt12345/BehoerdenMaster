@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>BehoerdenMaster – Vorgänge der Stadtverwaltung</title>
+  <title>BehoerdenMaster – Ratsvorgänge &amp; Bauleitplanung</title>
   <style>
     :root { --fg:#1d2433; --muted:#5c6679; --line:#dfe4ee; --accent:#1f5fbf; --bg:#f6f8fb;
             --ok:#1b7a3d; --warn:#9a6700; --bad:#a32a2a; --card:#ffffff; }
@@ -37,6 +37,11 @@
     .chip.status-nein { background:#fbeaea; border-color:#f0c2c2; color:var(--bad); }
     .chip.demo { background:#f3e8ff; border-color:#d9c2f5; color:#5b2a86; }
     .zusammenfassung { margin:8px 0; }
+    .beteiligung { border-left:3px solid var(--accent); padding:6px 10px; margin:8px 0; background:#f1f6ff; }
+    .ereignisse { padding-left:20px; }
+    .ereignisse li { margin:10px 0; }
+    .ereignisse small { display:block; color:var(--muted); }
+    .verlauf-container { overflow-x:auto; }
     details { margin-top:8px; }
     summary { cursor:pointer; color:var(--accent); font-weight:600; }
     table.verlauf { width:100%; border-collapse:collapse; margin-top:8px; font-size:14px; }
@@ -56,7 +61,7 @@
 <body>
 <header>
   <h1>BehoerdenMaster</h1>
-  <p>Vorgänge aus dem Ratsinformationssystem verständlich zusammengefasst – mit Verlauf und Links zu den Originalen.</p>
+  <p>Ratsvorgänge und Bauleitplanung in Köln – mit Zusammenfassungen, Beteiligungsfristen und Quellenverlauf.</p>
 </header>
 <main>
   <div id="banner" class="banner versteckt"></div>
@@ -98,8 +103,10 @@
 
   <footer>
     <div id="stand"></div>
-    <p>Quelle: Ratsinformationssystem der Stadt Köln (OParl-Schnittstelle), Datenlizenz Deutschland – Zero – 2.0.
-       Automatisch zusammengefasst und ohne Gewähr. Maßgeblich sind die amtlichen Dokumente.</p>
+    <p>Quellen: Ratsinformationssystem Köln (OParl, Datenlizenz Deutschland – Zero – 2.0) und
+       Bauleitplanung Online NRW (öffentliche Verfahrensinformationen; gesonderte Nutzungsbedingungen).
+       Auszüge und automatisch abgeleiteter Status ohne Gewähr. Maßgeblich sind die amtlichen Originale.
+       Eine beendete Beteiligungsfrist bedeutet keinen Bauabschluss.</p>
   </footer>
 </main>
 
@@ -146,13 +153,17 @@
     const meta = el("div", { class: "meta" },
       t.art ? el("span", { class: "chip" }, t.art) : null,
       t.referenz ? el("span", { class: "chip" }, "Nr. " + t.referenz) : null,
-      t.datum_de ? el("span", { class: "chip" }, "vom " + t.datum_de) : null,
+      t.datum_de ? el("span", { class: "chip" }, (t.beteiligung ? "Beteiligung ab " : "vom ") + t.datum_de) : null,
       el("span", { class: statusKlasse(t.status) }, t.status.kurz),
       t.quelle && t.quelle.demo ? el("span", { class: "chip demo" }, "Beispieldaten") : null,
     );
     const orte = el("div", { class: "meta" },
       ...t.orte.map((o) => el("span", { class: "chip", title: "Ortsbezug" }, o.name)));
     const zusammen = el("p", { class: "zusammenfassung" }, t.zusammenfassung);
+    const beteiligung = t.beteiligung ? el("div", { class: "beteiligung" },
+      el("strong", null, t.beteiligung.phase),
+      el("div", null, `Beteiligung: ${t.beteiligung.beginn_zeit_de || t.beteiligung.beginn_de || "Beginn unbekannt"} – ${t.beteiligung.ende_zeit_de || t.beteiligung.ende_de || "Frist unbekannt"}`),
+      el("small", null, t.beteiligung.organisation)) : null;
 
     const verlaufZeilen = t.verlauf.map((e) => el("tr", null,
       el("td", null, e.datum_de || "ohne Termin"),
@@ -161,7 +172,13 @@
       el("td", null, (e.top && e.top.ergebnis) || (e.anstehend ? "anstehend" : "–")),
       el("td", null, e.sitzung && e.sitzung.url ? el("a", { href: e.sitzung.url, target: "_blank", rel: "noopener" }, "Sitzung") : ""),
     ));
-    const verlauf = t.verlauf.length
+    const verlauf = t.beteiligung
+      ? el("details", null,
+          el("summary", null, `Beteiligung & beobachteter Verlauf (${t.verlauf.length} Einträge)`),
+          el("ol", { class: "ereignisse" }, ...t.verlauf.map((e) => el("li", null,
+            el("strong", null, `${e.datum_de || "ohne Datum"} · ${e.ereignis}`),
+            el("small", null, e.beschreibung)))))
+      : t.verlauf.length
       ? el("details", null,
           el("summary", null, `Verlaufsprotokoll (${t.verlauf.length} Schritte)`),
           el("table", { class: "verlauf" },
@@ -180,10 +197,12 @@
       : null;
 
     const links = el("div", { class: "links" },
-      t.links.ratsinfo_vorlage ? el("a", { href: t.links.ratsinfo_vorlage, target: "_blank", rel: "noopener" }, "Vorlage im Ratsinformationssystem öffnen") : null,
+      t.links.original ? el("a", { href: t.links.original, target: "_blank", rel: "noopener" }, t.links.original_text) : null,
       el("span", { class: "hinweis" }, t.quelle ? t.quelle.name : ""));
 
-    return el("article", { class: "karte" }, kopf, meta, orte, zusammen, verlauf, dokumente, links);
+    const hinweise = (t.hinweise || []).map((h) => el("p", { class: "hinweis" }, h));
+    return el("article", { class: "karte" }, kopf, meta, orte, beteiligung, zusammen,
+      el("div", { class: "verlauf-container" }, verlauf), dokumente, ...hinweise, links);
   }
 
   function ausgabeLeeren() { $("ausgabe").replaceChildren(); }
@@ -247,8 +266,6 @@
     const daten = await api(`/api/plz/${encodeURIComponent(plz)}?${parameter}`);
     if (knopf) knopf.remove();
     zeigeErgebnis(daten, offset > 0);
-    const hinweise = daten.hinweise || [];
-    for (const h of hinweise) $("ausgabe").prepend(el("p", { class: "hinweis" }, h));
   }
 
   function umschalten(aktiv) {
@@ -301,14 +318,14 @@
       const s = await api("/api/status");
       const demo = (s.quellen || []).filter((q) => q.demo);
       const echte = (s.quellen || []).filter((q) => !q.demo);
-      if (demo.length && !echte.length) {
+      if (demo.length) {
         const b = $("banner");
-        b.textContent = "Es werden Beispieldaten angezeigt (Auszug aus der offenen OParl-Schnittstelle). " +
-          "Für den aktuellen Bestand bitte den Abruf starten: python -m behoerdenmaster crawl.";
+        b.textContent = "Die als Beispieldaten markierten Treffer sind Offline-Auszüge vom 09.10.2026, keine Live-Daten. " +
+          "Für aktuelle Planverfahren: python -m behoerdenmaster crawl --quelle bauleitplanung.";
         b.classList.remove("versteckt");
       }
       const abrufe = echte.map((q) => `${q.name}: ${q.letzter_erfolg ? "Stand " + q.letzter_erfolg.slice(0, 16).replace("T", " ") : "noch nicht abgerufen"} (${q.status})`);
-      $("stand").textContent = abrufe.length ? "Datenstand · " + abrufe.join(" · ") : "Datenstand: noch kein Abruf der Stadtdaten.";
+      $("stand").textContent = abrufe.length ? "Datenstand · " + abrufe.join(" · ") : "Datenstand: Offline-Beispiele vom 09.10.2026; noch kein Live-Abruf.";
     } catch (e) { $("stand").textContent = "Status nicht verfügbar."; }
   }
   status();

@@ -56,6 +56,7 @@ class Quelle:
     web_sitzung: str | None
     web_gremium: str | None
     lizenz: str
+    organisation: str = ""  # zusätzliche Prüfung des Köln-Filters bei Bauleitplanung
 
 
 @dataclass(frozen=True)
@@ -132,6 +133,7 @@ def _lade_datei(pfad: Path) -> Stadt:
             web_sitzung=q.get("web_sitzung"),
             web_gremium=q.get("web_gremium"),
             lizenz=q.get("lizenz", ""),
+            organisation=q.get("organisation", ""),
         )
         for q in daten.get("quellen", [])
     )

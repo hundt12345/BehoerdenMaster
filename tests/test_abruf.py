@@ -129,3 +129,103 @@ def test_ungueltiges_json_ist_fehler(uhr):
         return httpx.Response(200, text="<html>kein JSON</html>")
     with pytest.raises(QuelleNichtErreichbar):
         _abrufer(uhr, handler).get_json(URL)
+
+
+def test_auch_robots_und_html_tragen_die_kontaktkennung(uhr):
+    seen = []
+    def handler(req):
+        seen.append(req)
+        return httpx.Response(200, text="<h1>Detail</h1>" if req.url.path != "/robots.txt" else "User-agent: *\n")
+    assert _abrufer(uhr, handler).get_text(URL) == "<h1>Detail</h1>"
+    assert all("test@example.test" in req.headers["User-Agent"] for req in seen)
+
+
+@pytest.mark.parametrize("location,exc", [("/dplan/login", QuelleGesperrt), ("/dplan/%6Cogin", QuelleGesperrt),
+                                         ("https://anderer-host.test/detail", QuelleNichtErreichbar)])
+def test_login_und_hostwechsel_werden_nicht_verfolgt(uhr, location, exc):
+    seen = []
+    def handler(req):
+        seen.append(req.url.path)
+        if req.url.path == "/robots.txt":
+            return httpx.Response(404)
+        return httpx.Response(302, headers={"Location": location})
+    with pytest.raises(exc):
+        _abrufer(uhr, handler).get_text(URL)
+    assert seen == ["/robots.txt", "/oparl/papers"]
+
+
+def test_erlaubte_weiterleitung_zaehlt_zum_budget(uhr):
+    seen = []
+    def handler(req):
+        seen.append(req.url.path)
+        if req.url.path == "/robots.txt":
+            return httpx.Response(404)
+        if req.url.path == "/oparl/papers":
+            return httpx.Response(302, headers={"Location": "/detail"})
+        return httpx.Response(200, text="public detail")
+    a = _abrufer(uhr, handler)
+    assert a.get_text(URL) == "public detail" and a.anfragen == 3
+    assert seen == ["/robots.txt", "/oparl/papers", "/detail"]
+    assert uhr.schlaefe == [3.0, 3.0]
+    with pytest.raises(BudgetErschoepft):
+        _abrufer(uhr, handler, max_anfragen=2).get_text(URL)
+
+
+def test_weitergeleitetes_ziel_wird_erneut_gegen_robots_geprueft(uhr):
+    seen = []
+    def handler(req):
+        seen.append(req.url.path)
+        if req.url.path == "/robots.txt":
+            return httpx.Response(200, text="User-agent: *\nDisallow: /verboten\n")
+        return httpx.Response(302, headers={"Location": "/verboten"})
+    with pytest.raises(NichtErlaubt):
+        _abrufer(uhr, handler).get_text(URL)
+    assert "/verboten" not in seen
+
+
+@pytest.mark.parametrize("code", [401, 403, 429])
+def test_robots_sperre_stoppt_auch_inhaltsabruf(uhr, code):
+    seen = []
+    def handler(req):
+        seen.append(req.url.path)
+        return httpx.Response(code)
+    with pytest.raises(QuelleGesperrt):
+        _abrufer(uhr, handler).get_text(URL)
+    assert seen == ["/robots.txt"]
+
+
+def test_robots_redirect_wird_nicht_ungeprueft_verfolgt(uhr):
+    seen = []
+    def handler(req):
+        seen.append(str(req.url))
+        return httpx.Response(302, headers={"Location": "https://fremd.test/robots.txt"})
+    with pytest.raises(QuelleNichtErreichbar):
+        _abrufer(uhr, handler).get_text(URL)
+    assert seen == ["https://example.test/robots.txt"]
+
+
+def test_retry_after_http_datum_wird_beachtet(uhr, monkeypatch):
+    from datetime import datetime, timezone
+    import behoerdenmaster.abruf as modul
+
+    class FestesDatum(datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return datetime(2026, 10, 9, 12, 0, tzinfo=timezone.utc)
+
+    monkeypatch.setattr(modul, "datetime", FestesDatum)
+    antworten = [httpx.Response(503, headers={"Retry-After": "Fri, 09 Oct 2026 12:05:00 GMT"}),
+                 httpx.Response(200, json={"data": []})]
+    def handler(req):
+        return httpx.Response(404) if req.url.path == "/robots.txt" else antworten.pop(0)
+    assert _abrufer(uhr, handler).get_json(URL) == {"data": []}
+    assert 300.0 in uhr.schlaefe
+
+
+def test_sehr_langes_retry_after_wird_nicht_auf_sechs_stunden_verkuerzt(uhr):
+    def handler(req):
+        return (httpx.Response(404) if req.url.path == "/robots.txt" else
+                httpx.Response(503, headers={"Retry-After": "86400"}))
+    with pytest.raises(QuelleNichtErreichbar, match="Pause"):
+        _abrufer(uhr, handler).get_text(URL)
+    assert max(uhr.schlaefe) <= 3

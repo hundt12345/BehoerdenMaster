@@ -35,6 +35,8 @@ python -m behoerdenmaster plz 50827
 python -m behoerdenmaster serve   # Weboberfläche auf http://127.0.0.1:8000
 ```
 
+Wird das Paket nicht aus diesem Repository heraus genutzt, zeigt `BEHOERDEN_CONFIG_DIR` auf das Verzeichnis mit den Stadtkonfigurationen. Die Datenbank liegt dann über `BEHOERDEN_DB`.
+
 ## Echte Daten abrufen (Köln)
 
 ```bash

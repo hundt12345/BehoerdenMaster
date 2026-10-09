@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BehoerdenMaster – Vorgänge der Stadtverwaltung</title>
+  <style>
+    :root { --fg:#1d2433; --muted:#5c6679; --line:#dfe4ee; --accent:#1f5fbf; --bg:#f6f8fb;
+            --ok:#1b7a3d; --warn:#9a6700; --bad:#a32a2a; --card:#ffffff; }
+    * { box-sizing: border-box; }
+    body { margin:0; font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color:var(--fg); background:var(--bg); }
+    header { background:#fff; border-bottom:1px solid var(--line); padding:18px 24px; }
+    header h1 { margin:0; font-size:22px; }
+    header p { margin:4px 0 0; color:var(--muted); }
+    main { max-width: 980px; margin: 0 auto; padding: 20px 16px 60px; }
+    .banner { background:#fff7e0; border:1px solid #f1d58a; border-radius:8px; padding:10px 14px; margin-bottom:16px; color:#6b4b00; }
+    .tabs { display:flex; gap:8px; margin-bottom:14px; }
+    .tabs button { border:1px solid var(--line); background:#fff; padding:8px 14px; border-radius:8px; cursor:pointer; font-weight:600; color:var(--muted); }
+    .tabs button.aktiv { background:var(--accent); border-color:var(--accent); color:#fff; }
+    form.suche { display:flex; gap:8px; flex-wrap:wrap; }
+    form.suche input[type=text] { flex:1 1 420px; padding:10px 12px; border:1px solid #c5ccd9; border-radius:8px; font-size:15px; }
+    form.suche select { padding:10px; border:1px solid #c5ccd9; border-radius:8px; background:#fff; }
+    button.primaer { background:var(--accent); color:#fff; border:0; padding:10px 18px; border-radius:8px; font-weight:600; cursor:pointer; }
+    button.primaer:disabled { opacity:.6; cursor:wait; }
+    .beispiele { margin:10px 0 0; display:flex; gap:8px; flex-wrap:wrap; }
+    .beispiele button { background:#fff; border:1px solid var(--line); color:var(--accent); border-radius:999px; padding:5px 12px; cursor:pointer; font-size:13px; }
+    .hinweis { color:var(--muted); font-size:13px; margin:8px 0; }
+    .verstanden { background:#fff; border:1px solid var(--line); border-radius:8px; padding:10px 14px; margin:16px 0 8px; }
+    .verstanden strong { color:var(--fg); }
+    .anzahl { color:var(--muted); margin:12px 0; }
+    .karte { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px 18px; margin:12px 0; }
+    .karte h3 { margin:0 0 6px; font-size:17px; line-height:1.35; }
+    .meta { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px; }
+    .chip { display:inline-block; font-size:12px; padding:2px 8px; border-radius:999px; background:#eef2f9; color:#33405a; border:1px solid #dbe3f0; }
+    .chip.status-offen { background:#fff4d6; border-color:#f2d98a; color:#7a5300; }
+    .chip.status-ok { background:#e6f5ec; border-color:#b8e0c6; color:var(--ok); }
+    .chip.status-nein { background:#fbeaea; border-color:#f0c2c2; color:var(--bad); }
+    .chip.demo { background:#f3e8ff; border-color:#d9c2f5; color:#5b2a86; }
+    .zusammenfassung { margin:8px 0; }
+    details { margin-top:8px; }
+    summary { cursor:pointer; color:var(--accent); font-weight:600; }
+    table.verlauf { width:100%; border-collapse:collapse; margin-top:8px; font-size:14px; }
+    table.verlauf th, table.verlauf td { text-align:left; padding:6px 8px; border-top:1px solid var(--line); vertical-align:top; }
+    table.verlauf th { color:var(--muted); font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:.02em; }
+    ul.dokumente { margin:8px 0 0 18px; padding:0; }
+    ul.dokumente li { margin:3px 0; }
+    .links { margin-top:10px; display:flex; gap:12px; flex-wrap:wrap; font-size:14px; }
+    .links a { color:var(--accent); }
+    .leer { background:#fff; border:1px dashed #c5ccd9; border-radius:10px; padding:20px; color:var(--muted); text-align:center; }
+    .fehler { background:#fbeaea; border:1px solid #f0c2c2; color:var(--bad); border-radius:8px; padding:10px 14px; margin:12px 0; }
+    footer { color:var(--muted); font-size:13px; margin-top:30px; border-top:1px solid var(--line); padding-top:14px; }
+    .versteckt { display:none; }
+    .mehr { margin:14px 0; }
+  </style>
+</head>
+<body>
+<header>
+  <h1>BehoerdenMaster</h1>
+  <p>Vorgänge aus dem Ratsinformationssystem verständlich zusammengefasst – mit Verlauf und Links zu den Originalen.</p>
+</header>
+<main>
+  <div id="banner" class="banner versteckt"></div>
+
+  <div class="tabs" role="tablist">
+    <button id="tab-frage" class="aktiv" role="tab" aria-selected="true">Frage stellen</button>
+    <button id="tab-plz" role="tab" aria-selected="false">PLZ-Suche</button>
+  </div>
+
+  <section id="panel-frage">
+    <form id="form-frage" class="suche">
+      <input id="frage" type="text" maxlength="500" placeholder="z. B. Welche Bauvorhaben sind in Köln Ehrenfeld geplant?" aria-label="Frage">
+      <button class="primaer" type="submit">Suchen</button>
+    </form>
+    <div class="beispiele">
+      <button type="button" data-frage="Welche Bauvorhaben sind in Köln Ehrenfeld geplant?">Bauvorhaben in Ehrenfeld</button>
+      <button type="button" data-frage="Was gibt es zu Verkehr in Lindenthal seit 2024?">Verkehr in Lindenthal seit 2024</button>
+      <button type="button" data-frage="Welche Vorlagen betreffen Wohnungsbau in Köln?">Wohnungsbau in Köln</button>
+    </div>
+    <p class="hinweis">Tipp: Stadtteile, Stadtbezirke, Themen (Bauvorhaben, Verkehr, Schulen, Grün) und Jahreszahlen werden erkannt.</p>
+  </section>
+
+  <section id="panel-plz" class="versteckt">
+    <form id="form-plz" class="suche">
+      <input id="plz" type="text" inputmode="numeric" pattern="[0-9]{5}" maxlength="5" placeholder="PLZ, z. B. 50827" aria-label="PLZ">
+      <select id="plz-thema" aria-label="Thema">
+        <option value="">Alle Themen</option>
+        <option value="bauen">Bauvorhaben &amp; Bauleitplanung</option>
+        <option value="verkehr">Verkehr &amp; Mobilität</option>
+        <option value="schulen">Schulen &amp; Kitas</option>
+        <option value="gruen">Grün &amp; Klima</option>
+      </select>
+      <button class="primaer" type="submit">Suchen</button>
+    </form>
+    <p class="hinweis">Die Zuordnung PLZ → Stadtteil ist eine Näherung. Vorgänge mit ausdrücklicher PLZ-Nennung werden immer gefunden.</p>
+  </section>
+
+  <div id="ausgabe" aria-live="polite"></div>
+
+  <footer>
+    <div id="stand"></div>
+    <p>Quelle: Ratsinformationssystem der Stadt Köln (OParl-Schnittstelle), Datenlizenz Deutschland – Zero – 2.0.
+       Automatisch zusammengefasst und ohne Gewähr. Maßgeblich sind die amtlichen Dokumente.</p>
+  </footer>
+</main>
+
+<script>
+(function () {
+  "use strict";
+  const $ = (id) => document.getElementById(id);
+  let aktuelleSuche = null;
+
+  function el(tag, attrs, ...kinder) {
+    const e = document.createElement(tag);
+    if (attrs) for (const [k, v] of Object.entries(attrs)) {
+      if (v === null || v === undefined || v === false) continue;
+      if (k === "class") e.className = v;
+      else if (k === "href") { if (/^https?:\/\//.test(String(v))) e.href = v; }
+      else e.setAttribute(k, v === true ? "" : v);
+    }
+    for (const kind of kinder) {
+      if (kind === null || kind === undefined || kind === false) continue;
+      e.append(kind instanceof Node ? kind : document.createTextNode(String(kind)));
+    }
+    return e;
+  }
+
+  async function api(pfad, optionen) {
+    const antwort = await fetch(pfad, optionen);
+    const daten = await antwort.json().catch(() => ({}));
+    if (!antwort.ok) {
+      const meldung = daten.detail ? (typeof daten.detail === "string" ? daten.detail : "Eingabe prüfen") : "Serverfehler";
+      throw new Error(meldung);
+    }
+    return daten;
+  }
+
+  function statusKlasse(status) {
+    if (status.offen) return "chip status-offen";
+    if (/beschlossen|erledigt|Kenntnis|zurückgezogen/i.test(status.kurz)) return "chip status-ok";
+    if (/abgelehnt/i.test(status.kurz)) return "chip status-nein";
+    return "chip";
+  }
+
+  function karte(t) {
+    const kopf = el("h3", null, t.titel || "Ohne Betreff");
+    const meta = el("div", { class: "meta" },
+      t.art ? el("span", { class: "chip" }, t.art) : null,
+      t.referenz ? el("span", { class: "chip" }, "Nr. " + t.referenz) : null,
+      t.datum_de ? el("span", { class: "chip" }, "vom " + t.datum_de) : null,
+      el("span", { class: statusKlasse(t.status) }, t.status.kurz),
+      t.quelle && t.quelle.demo ? el("span", { class: "chip demo" }, "Beispieldaten") : null,
+    );
+    const orte = el("div", { class: "meta" },
+      ...t.orte.map((o) => el("span", { class: "chip", title: "Ortsbezug" }, o.name)));
+    const zusammen = el("p", { class: "zusammenfassung" }, t.zusammenfassung);
+
+    const verlaufZeilen = t.verlauf.map((e) => el("tr", null,
+      el("td", null, e.datum_de || "ohne Termin"),
+      el("td", null, e.gremium),
+      el("td", null, e.top && e.top.nummer ? "TOP " + e.top.nummer + (e.top.name ? ": " + e.top.name : "") : (e.top && e.top.name) || ""),
+      el("td", null, (e.top && e.top.ergebnis) || (e.anstehend ? "anstehend" : "–")),
+      el("td", null, e.sitzung && e.sitzung.url ? el("a", { href: e.sitzung.url, target: "_blank", rel: "noopener" }, "Sitzung") : ""),
+    ));
+    const verlauf = t.verlauf.length
+      ? el("details", null,
+          el("summary", null, `Verlaufsprotokoll (${t.verlauf.length} Schritte)`),
+          el("table", { class: "verlauf" },
+            el("thead", null, el("tr", null,
+              el("th", null, "Datum"), el("th", null, "Gremium"), el("th", null, "Tagesordnungspunkt"),
+              el("th", null, "Ergebnis"), el("th", null, "Link"))),
+            el("tbody", null, ...verlaufZeilen)))
+      : el("p", { class: "hinweis" }, "Keine Beratungsfolge erfasst.");
+
+    const dokumente = t.dokumente.length
+      ? el("details", null,
+          el("summary", null, `Dokumente (${t.dokumente.length})`),
+          el("ul", { class: "dokumente" }, ...t.dokumente.map((d) => el("li", null,
+            d.url ? el("a", { href: d.url, target: "_blank", rel: "noopener" }, d.name) : d.name,
+            " · ", d.rolle_text, d.datum_de ? " · " + d.datum_de : ""))))
+      : null;
+
+    const links = el("div", { class: "links" },
+      t.links.ratsinfo_vorlage ? el("a", { href: t.links.ratsinfo_vorlage, target: "_blank", rel: "noopener" }, "Vorlage im Ratsinformationssystem öffnen") : null,
+      el("span", { class: "hinweis" }, t.quelle ? t.quelle.name : ""));
+
+    return el("article", { class: "karte" }, kopf, meta, orte, zusammen, verlauf, dokumente, links);
+  }
+
+  function ausgabeLeeren() { $("ausgabe").replaceChildren(); }
+
+  function zeigeFehler(text) {
+    ausgabeLeeren();
+    $("ausgabe").append(el("div", { class: "fehler" }, text));
+  }
+
+  function zeigeErgebnis(daten, anhaengen) {
+    const ausgabe = $("ausgabe");
+    if (!anhaengen) {
+      ausgabe.replaceChildren();
+      if (daten.verstanden) {
+        const v = daten.verstanden;
+        const orte = (v.orte || []).map((o) => o.typ === "bezirk" ? `Stadtbezirk ${o.name}` : `${o.name} (Stadtteil)`).join(", ") || "alle Orte";
+        const themen = (v.themen || []).join(", ") || "alle Themen";
+        const teile = [el("strong", null, "Verstanden:"), ` Ort: ${orte} · Thema: ${themen}`];
+        if (v.plz) teile.push(` · PLZ ${v.plz}`);
+        if ((v.freitext || []).length) teile.push(` · Stichworte: ${v.freitext.join(", ")}`);
+        if (v.offen) teile.push(" · geplant bzw. offen");
+        if (v.von) teile.push(` · ab ${v.von.slice(0, 4)}`);
+        ausgabe.append(el("div", { class: "verstanden" }, ...teile));
+      }
+      for (const h of daten.hinweise || []) ausgabe.append(el("p", { class: "hinweis" }, h));
+      ausgabe.append(el("div", { class: "anzahl", id: "anzahl" }));
+      ausgabe.append(el("div", { id: "trefferliste" }));
+    }
+    const liste = $("trefferliste");
+    if (!daten.treffer.length && !anhaengen) {
+      liste.append(el("div", { class: "leer" },
+        "Keine passenden Vorgänge im Datenbestand gefunden. Der Bestand umfasst nur bereits abgerufene Daten; " +
+        "bitte Suchbegriffe anpassen oder den Datenstand prüfen."));
+    }
+    for (const t of daten.treffer) liste.append(karte(t));
+    $("anzahl").textContent = `${daten.gesamt} ${daten.gesamt === 1 ? "Vorgang" : "Vorgänge"} gefunden` +
+      (daten.kandidaten_gekappt ? " (es werden nur die ersten Treffer sortiert angezeigt)" : "") +
+      `, angezeigt: ${liste.querySelectorAll(".karte").length}`;
+    const mehrNoetig = liste.querySelectorAll(".karte").length < daten.gesamt;
+    const alt = document.querySelector(".mehr");
+    if (alt) alt.remove();
+    if (mehrNoetig) {
+      const knopf = el("button", { class: "primaer mehr", type: "button" }, "Weitere Treffer laden");
+      knopf.addEventListener("click", () => aktuelleSuche && aktuelleSuche(liste.querySelectorAll(".karte").length, knopf));
+      ausgabe.append(knopf);
+    }
+  }
+
+  async function sucheFrage(text, offset, knopf) {
+    const daten = await api("/api/frage", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ frage: text, limit: 10, offset }),
+    });
+    if (knopf) knopf.remove();
+    zeigeErgebnis(daten, offset > 0);
+  }
+
+  async function suchePlz(plz, thema, offset, knopf) {
+    const parameter = new URLSearchParams({ limit: "10", offset: String(offset) });
+    if (thema) parameter.set("thema", thema);
+    const daten = await api(`/api/plz/${encodeURIComponent(plz)}?${parameter}`);
+    if (knopf) knopf.remove();
+    zeigeErgebnis(daten, offset > 0);
+    const hinweise = daten.hinweise || [];
+    for (const h of hinweise) $("ausgabe").prepend(el("p", { class: "hinweis" }, h));
+  }
+
+  function umschalten(aktiv) {
+    const frage = aktiv === "frage";
+    $("tab-frage").classList.toggle("aktiv", frage);
+    $("tab-plz").classList.toggle("aktiv", !frage);
+    $("tab-frage").setAttribute("aria-selected", String(frage));
+    $("tab-plz").setAttribute("aria-selected", String(!frage));
+    $("panel-frage").classList.toggle("versteckt", !frage);
+    $("panel-plz").classList.toggle("versteckt", frage);
+    ausgabeLeeren();
+  }
+
+  $("tab-frage").addEventListener("click", () => umschalten("frage"));
+  $("tab-plz").addEventListener("click", () => umschalten("plz"));
+
+  $("form-frage").addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    const text = $("frage").value.trim();
+    if (text.length < 3) return zeigeFehler("Bitte eine Frage mit mindestens drei Zeichen eingeben.");
+    const knopf = ev.submitter || ev.target.querySelector("button");
+    knopf.disabled = true;
+    try {
+      aktuelleSuche = (offset, mehrKnopf) => sucheFrage(text, offset, mehrKnopf).catch((e) => zeigeFehler(e.message));
+      await sucheFrage(text, 0, null);
+    } catch (e) { zeigeFehler(e.message); }
+    finally { knopf.disabled = false; }
+  });
+
+  $("form-plz").addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    const plz = $("plz").value.trim();
+    if (!/^\d{5}$/.test(plz)) return zeigeFehler("Bitte eine PLZ mit genau fünf Ziffern eingeben.");
+    const thema = $("plz-thema").value;
+    const knopf = ev.submitter || ev.target.querySelector("button");
+    knopf.disabled = true;
+    try {
+      aktuelleSuche = (offset, mehrKnopf) => suchePlz(plz, thema, offset, mehrKnopf).catch((e) => zeigeFehler(e.message));
+      await suchePlz(plz, thema, 0, null);
+    } catch (e) { zeigeFehler(e.message); }
+    finally { knopf.disabled = false; }
+  });
+
+  for (const b of document.querySelectorAll(".beispiele button")) {
+    b.addEventListener("click", () => { $("frage").value = b.dataset.frage; $("form-frage").requestSubmit(); });
+  }
+
+  async function status() {
+    try {
+      const s = await api("/api/status");
+      const demo = (s.quellen || []).filter((q) => q.demo);
+      const echte = (s.quellen || []).filter((q) => !q.demo);
+      if (demo.length && !echte.length) {
+        const b = $("banner");
+        b.textContent = "Es werden Beispieldaten angezeigt (Auszug aus der offenen OParl-Schnittstelle). " +
+          "Für den aktuellen Bestand bitte den Abruf starten: python -m behoerdenmaster crawl.";
+        b.classList.remove("versteckt");
+      }
+      const abrufe = echte.map((q) => `${q.name}: ${q.letzter_erfolg ? "Stand " + q.letzter_erfolg.slice(0, 16).replace("T", " ") : "noch nicht abgerufen"} (${q.status})`);
+      $("stand").textContent = abrufe.length ? "Datenstand · " + abrufe.join(" · ") : "Datenstand: noch kein Abruf der Stadtdaten.";
+    } catch (e) { $("stand").textContent = "Status nicht verfügbar."; }
+  }
+  status();
+})();
+</script>
+</body>
+</html>

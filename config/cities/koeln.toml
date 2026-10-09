@@ -1,0 +1,271 @@
+# Stadt Köln – Konfiguration für BehoerdenMaster
+#
+# Quellen:
+#   * Stadtbezirke und Stadtteile: Wikipedia „Liste der Stadtbezirke und Stadtteile Kölns“
+#     (9 Stadtbezirke, 86 Stadtteile; Nummerierung der Stadt Köln).
+#   * PLZ-Zuordnung: onlinestreet.de („Ortsteile im PLZ-Gebiet“, Datenbasis Destatis/BZSt
+#     CC0 und OpenStreetMap ODbL). Das ist eine NÄHERUNG: PLZ-Gebiete und Stadtteile
+#     schneiden sich nicht immer sauber. Einträge mit `stadtteile = []` sind noch offen.
+#   * Quelle: Ratsinformationssystem Köln, OParl 1.1 (Lizenz: Datenlizenz Deutschland – Zero – 2.0).
+#
+# Hinweis: Der Ortsbezug einzelner Vorlagen wird aus Betreff und Gremienname abgeleitet.
+# Die OParl-Schnittstelle der Stadt liefert dafür derzeit keine verlässlichen Ortsangaben.
+
+[stadt]
+schluessel = "koeln"
+name = "Köln"
+aliase = ["stadt koeln", "koeln", "cologne"]
+ags = "05315000"
+hinweis = "Ortsbezug aus Vorlagen-Betreffs abgeleitet; PLZ-Zuordnung ist eine Näherung."
+
+[[quellen]]
+schluessel = "ris"
+typ = "oparl"
+name = "Ratsinformationssystem Köln (OParl 1.1)"
+system_url = "https://buergerinfo.stadt-koeln.de/oparl/system"
+body_id = "stadtverwaltung_koeln"
+# Erster Abruf: Objekte, die seit diesem Datum angelegt oder geändert wurden.
+seit = "2025-11-01"
+# Höflichkeit: Mindestabstand zwischen zwei Anfragen. Köln sperrt Clients mit zu vielen
+# Anfragen (vgl. Diskussion im Projekt mandari, Issues #89 und #348). Vor einem
+# vollständigen Abruf die Stadt kontaktieren und diesen Wert ggf. anpassen.
+min_intervall_sekunden = 3.0
+# Web-Links zur Originalansicht (SessionNet). Die OParl-IDs entsprechen den Nummern der HTML-Seiten.
+web_vorlage = "https://ratsinformation.stadt-koeln.de/vo0050.asp?__kvonr={id}"
+web_sitzung = "https://ratsinformation.stadt-koeln.de/si0057.asp?__ksinr={id}"
+web_gremium = "https://ratsinformation.stadt-koeln.de/kp0040.asp?__kgrnr={id}"
+lizenz = "Datenlizenz Deutschland – Zero – Version 2.0"
+
+[bezirke]
+"1" = "Innenstadt"
+"2" = "Rodenkirchen"
+"3" = "Lindenthal"
+"4" = "Ehrenfeld"
+"5" = "Nippes"
+"6" = "Chorweiler"
+"7" = "Porz"
+"8" = "Kalk"
+"9" = "Mülheim"
+
+[stadtteile]
+# Innenstadt
+"101" = { name = "Altstadt-Süd", bezirk = "1" }
+"102" = { name = "Neustadt-Süd", bezirk = "1" }
+"103" = { name = "Altstadt-Nord", bezirk = "1" }
+"104" = { name = "Neustadt-Nord", bezirk = "1" }
+"105" = { name = "Deutz", bezirk = "1" }
+# Rodenkirchen
+"201" = { name = "Bayenthal", bezirk = "2" }
+"202" = { name = "Marienburg", bezirk = "2" }
+"203" = { name = "Raderberg", bezirk = "2" }
+"204" = { name = "Raderthal", bezirk = "2" }
+"205" = { name = "Zollstock", bezirk = "2" }
+"206" = { name = "Rondorf", bezirk = "2" }
+"207" = { name = "Hahnwald", bezirk = "2" }
+"208" = { name = "Rodenkirchen", bezirk = "2" }
+"209" = { name = "Weiß", bezirk = "2" }
+"210" = { name = "Sürth", bezirk = "2" }
+"211" = { name = "Godorf", bezirk = "2" }
+"212" = { name = "Immendorf", bezirk = "2" }
+"213" = { name = "Meschenich", bezirk = "2" }
+# Lindenthal
+"301" = { name = "Klettenberg", bezirk = "3" }
+"302" = { name = "Sülz", bezirk = "3" }
+"303" = { name = "Lindenthal", bezirk = "3" }
+"304" = { name = "Braunsfeld", bezirk = "3" }
+"305" = { name = "Müngersdorf", bezirk = "3" }
+"306" = { name = "Junkersdorf", bezirk = "3" }
+"307" = { name = "Weiden", bezirk = "3" }
+"308" = { name = "Lövenich", bezirk = "3" }
+"309" = { name = "Widdersdorf", bezirk = "3" }
+# Ehrenfeld
+"401" = { name = "Ehrenfeld", bezirk = "4" }
+"402" = { name = "Neuehrenfeld", bezirk = "4" }
+"403" = { name = "Bickendorf", bezirk = "4" }
+"404" = { name = "Vogelsang", bezirk = "4" }
+"405" = { name = "Bocklemünd/Mengenich", bezirk = "4", aliase = ["Bocklemünd", "Mengenich"] }
+"406" = { name = "Ossendorf", bezirk = "4" }
+# Nippes
+"501" = { name = "Nippes", bezirk = "5" }
+"502" = { name = "Mauenheim", bezirk = "5" }
+"503" = { name = "Riehl", bezirk = "5" }
+"504" = { name = "Niehl", bezirk = "5" }
+"505" = { name = "Weidenpesch", bezirk = "5" }
+"506" = { name = "Longerich", bezirk = "5" }
+"507" = { name = "Bilderstöckchen", bezirk = "5" }
+# Chorweiler
+"601" = { name = "Merkenich", bezirk = "6" }
+"602" = { name = "Fühlingen", bezirk = "6" }
+"603" = { name = "Seeberg", bezirk = "6" }
+"604" = { name = "Heimersdorf", bezirk = "6" }
+"605" = { name = "Lindweiler", bezirk = "6" }
+"606" = { name = "Pesch", bezirk = "6" }
+"607" = { name = "Esch/Auweiler", bezirk = "6", aliase = ["Esch", "Auweiler"] }
+"608" = { name = "Volkhoven/Weiler", bezirk = "6", aliase = ["Volkhoven"] }
+"609" = { name = "Chorweiler", bezirk = "6" }
+"610" = { name = "Blumenberg", bezirk = "6" }
+"611" = { name = "Roggendorf/Thenhoven", bezirk = "6", aliase = ["Roggendorf", "Thenhoven"] }
+"612" = { name = "Worringen", bezirk = "6" }
+# Porz
+"701" = { name = "Poll", bezirk = "7" }
+"702" = { name = "Westhoven", bezirk = "7" }
+"703" = { name = "Ensen", bezirk = "7" }
+"704" = { name = "Gremberghoven", bezirk = "7" }
+"705" = { name = "Eil", bezirk = "7" }
+"706" = { name = "Porz", bezirk = "7" }
+"707" = { name = "Urbach", bezirk = "7" }
+"708" = { name = "Elsdorf", bezirk = "7" }
+"709" = { name = "Grengel", bezirk = "7" }
+"710" = { name = "Wahnheide", bezirk = "7" }
+"711" = { name = "Wahn", bezirk = "7" }
+"712" = { name = "Lind", bezirk = "7" }
+"713" = { name = "Libur", bezirk = "7" }
+"714" = { name = "Zündorf", bezirk = "7" }
+"715" = { name = "Langel", bezirk = "7" }
+"716" = { name = "Finkenberg", bezirk = "7" }
+# Kalk
+"801" = { name = "Humboldt/Gremberg", bezirk = "8", aliase = ["Humboldt", "Gremberg"] }
+"802" = { name = "Kalk", bezirk = "8" }
+"803" = { name = "Vingst", bezirk = "8" }
+"804" = { name = "Höhenberg", bezirk = "8" }
+"805" = { name = "Ostheim", bezirk = "8" }
+"806" = { name = "Merheim", bezirk = "8" }
+"807" = { name = "Brück", bezirk = "8" }
+"808" = { name = "Rath/Heumar", bezirk = "8", aliase = ["Rath", "Heumar"] }
+"809" = { name = "Neubrück", bezirk = "8" }
+# Mülheim
+"901" = { name = "Mülheim", bezirk = "9" }
+"902" = { name = "Buchforst", bezirk = "9" }
+"903" = { name = "Buchheim", bezirk = "9" }
+"904" = { name = "Holweide", bezirk = "9" }
+"905" = { name = "Dellbrück", bezirk = "9" }
+"906" = { name = "Höhenhaus", bezirk = "9" }
+"907" = { name = "Dünnwald", bezirk = "9" }
+"908" = { name = "Stammheim", bezirk = "9" }
+"909" = { name = "Flittard", bezirk = "9" }
+
+# PLZ → Stadtteile (NÄHERUNG, siehe Kopfkommentar). Leere Liste = noch nicht zugeordnet.
+[plz."50823"]
+stadtteile = ["401", "402"]
+quelle = "onlinestreet.de: Ortsteile Ehrenfeld, Neuehrenfeld"
+
+[plz."50825"]
+stadtteile = ["401", "402", "403", "406"]
+quelle = "onlinestreet.de: Ortsteile Bickendorf, Ehrenfeld, Neuehrenfeld, Ossendorf"
+
+[plz."50827"]
+stadtteile = ["401", "402", "403", "406"]
+quelle = "onlinestreet.de: Ortsteile Bickendorf, Ehrenfeld, Neuehrenfeld, Ossendorf"
+
+[plz."50829"]
+stadtteile = ["404", "405", "406", "309"]
+quelle = "onlinestreet.de: Ortsteile Bocklemünd, Bocklemünd/Mengenich, Ossendorf, Vogelsang, Widdersdorf"
+
+[plz."50858"]
+stadtteile = ["306", "307"]
+quelle = "onlinestreet.de: Ortsteile Junkersdorf, Marsdorf, Weiden (Marsdorf ist kein eigener Stadtteil in der Liste)"
+
+[plz."50667"]
+stadtteile = []
+[plz."50668"]
+stadtteile = []
+[plz."50670"]
+stadtteile = []
+[plz."50672"]
+stadtteile = []
+[plz."50674"]
+stadtteile = []
+[plz."50676"]
+stadtteile = []
+[plz."50677"]
+stadtteile = []
+[plz."50678"]
+stadtteile = []
+[plz."50679"]
+stadtteile = []
+[plz."50733"]
+stadtteile = []
+[plz."50735"]
+stadtteile = []
+[plz."50737"]
+stadtteile = []
+[plz."50739"]
+stadtteile = []
+[plz."50765"]
+stadtteile = []
+[plz."50767"]
+stadtteile = []
+[plz."50769"]
+stadtteile = []
+[plz."50859"]
+stadtteile = []
+[plz."50923"]
+stadtteile = []
+[plz."50931"]
+stadtteile = []
+[plz."50933"]
+stadtteile = []
+[plz."50935"]
+stadtteile = []
+[plz."50937"]
+stadtteile = []
+[plz."50939"]
+stadtteile = []
+[plz."50968"]
+stadtteile = []
+[plz."50969"]
+stadtteile = []
+[plz."50996"]
+stadtteile = []
+[plz."50997"]
+stadtteile = []
+[plz."50999"]
+stadtteile = []
+[plz."51061"]
+stadtteile = []
+[plz."51063"]
+stadtteile = []
+[plz."51065"]
+stadtteile = []
+[plz."51067"]
+stadtteile = []
+[plz."51069"]
+stadtteile = []
+[plz."51103"]
+stadtteile = []
+[plz."51105"]
+stadtteile = []
+[plz."51107"]
+stadtteile = []
+[plz."51109"]
+stadtteile = []
+[plz."51143"]
+stadtteile = []
+[plz."51145"]
+stadtteile = []
+[plz."51147"]
+stadtteile = []
+[plz."51149"]
+stadtteile = []
+
+# Themen für Fragen. Begriffe werden normalisiert (Umlaute ausgeschrieben) und per
+# Teilwortvergleich gesucht. Die Liste ist bewusst erweiterbar.
+[[themen]]
+schluessel = "bauen"
+bezeichnung = "Bauvorhaben & Bauleitplanung"
+begriffe = ["Bauvorhaben", "Bauprojekt", "Bauleitplan", "Bebauungsplan", "Bebauung", "Flächennutzungsplan", "Aufstellungsbeschluss", "Satzungsbeschluss", "Offenlage", "Arbeitstitel", "Städtebau", "Baugebiet", "Bauantrag", "Baugenehmigung", "Neubau", "Wohnungsbau", "Wohnbebauung", "Nachverdichtung", "vorhabenbezogen", "Hochhaus", "Quartier", "Abriss", "Umbau"]
+
+[[themen]]
+schluessel = "verkehr"
+bezeichnung = "Verkehr & Mobilität"
+begriffe = ["Verkehr", "Radweg", "Radverkehr", "Fahrradstraße", "Fahrrad", "Parkraum", "Parken", "Ampel", "Stadtbahn", "Buslinie", "Haltestelle", "Mobilität", "Fußverkehr", "Kreuzung", "Straßenbahn", "Tempo"]
+
+[[themen]]
+schluessel = "schulen"
+bezeichnung = "Schulen & Kitas"
+begriffe = ["Schule", "Kita", "Kindergarten", "Kindertagesstätte", "Jugendamt"]
+
+[[themen]]
+schluessel = "gruen"
+bezeichnung = "Grün & Klima"
+begriffe = ["Grün", "Grünzug", "Park", "Spielplatz", "Baum", "Bäume", "Klima", "Stadtgrün"]

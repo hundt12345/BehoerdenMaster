@@ -128,3 +128,14 @@ def test_demo_daten_sind_gekennzeichnet_und_verlinkt(stadt, db):
 
 def test_unbekannter_vorgang(stadt, db):
     assert vorgang_detail(db, stadt, _id(999999), HEUTE) is None
+
+
+def test_freitext_rueckfall_auf_ein_stichwort(stadt, db, uhr):
+    _aufbau(stadt, db, uhr)
+    # „Venloer“ und „Digitalisierung“ kommen nicht zusammen vor: UND liefert nichts, ODER findet 603.
+    erg = suche(db, Suchauftrag(stadt=stadt, freitext=["venloer", "digitalisierung"]), HEUTE)
+    assert [t["id"] for t in erg["treffer"]] == [_id(603)]
+    assert erg["freitext_oder"] is True
+    # Ein einzelnes Stichwort gilt ohne Rückfall.
+    erg = suche(db, Suchauftrag(stadt=stadt, freitext=["digitalisierung"]), HEUTE)
+    assert erg["gesamt"] == 0 and erg["freitext_oder"] is False

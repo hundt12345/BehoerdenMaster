@@ -88,9 +88,12 @@ def create_app(db_pfad: str | Path | None = None, config_dir: Path | None = None
         v = verstehe(anfrage.frage, stadt, gazetteers[stadt.schluessel])
         with Speicher(db) as sp:
             ergebnis = suche(sp, _auftrag(v, stadt, anfrage.limit, anfrage.offset), heute())
+        hinweise = list(v.hinweise)
+        if ergebnis.get("freitext_oder"):
+            hinweise.append("Keine Vorgänge mit allen Stichworten gefunden. Angezeigt werden Vorgänge mit mindestens einem Stichwort.")
         return {
             "verstanden": v.als_dict(),
-            "hinweise": list(v.hinweise),
+            "hinweise": hinweise,
             "gesamt": ergebnis["gesamt"],
             "treffer": ergebnis["treffer"],
             "kandidaten_gekappt": ergebnis["kandidaten_gekappt"],

@@ -37,8 +37,15 @@ def _kontakt(args) -> str:
     return kontakt
 
 
+def _stadt(schluessel: str) -> Stadt:
+    staedte = lade_staedte(config_verzeichnis())
+    if schluessel not in staedte:
+        raise SystemExit(f"Unbekannte Stadt '{schluessel}'. Verfügbar: {', '.join(staedte)}")
+    return staedte[schluessel]
+
+
 def _stadt_und_quelle(args) -> tuple[Stadt, Quelle]:
-    stadt = lade_staedte(config_verzeichnis())[args.stadt]
+    stadt = _stadt(args.stadt)
     if not stadt.quellen:
         raise SystemExit(f"Für {stadt.name} ist keine Quelle konfiguriert.")
     quelle = stadt.quellen[0]
@@ -152,12 +159,14 @@ def _drucke_treffer(ergebnis: dict, v=None) -> None:
 
 
 def cmd_frage(args) -> int:
-    stadt = lade_staedte(config_verzeichnis())[args.stadt]
+    stadt = _stadt(args.stadt)
     v = verstehe(" ".join(args.text), stadt, Gazetteer(stadt))
     with Speicher(_db_pfad(args)) as sp:
         ergebnis = suche(sp, Suchauftrag(stadt=stadt, orte=v.orte, plz=v.plz, themen=v.themen,
                                          freitext=v.freitext, von=v.von, bis=v.bis, offen=v.offen,
                                          limit=args.limit), heute())
+    if ergebnis.get("freitext_oder"):
+        print("Hinweis: Keine Vorgänge mit allen Stichworten gefunden. Angezeigt werden Vorgänge mit mindestens einem Stichwort.")
     _drucke_treffer(ergebnis, v)
     return 0
 
@@ -166,7 +175,7 @@ def cmd_plz(args) -> int:
     if len(args.plz) != 5 or not args.plz.isdigit():
         print("Eine PLZ besteht aus genau 5 Ziffern.")
         return 2
-    stadt = lade_staedte(config_verzeichnis())[args.stadt]
+    stadt = _stadt(args.stadt)
     eintrag = stadt.plz.get(args.plz)
     if eintrag is None:
         print(f"Die PLZ {args.plz} gehört nicht zu {stadt.name}.")
@@ -183,7 +192,7 @@ def cmd_plz(args) -> int:
 
 
 def cmd_demo(args) -> int:
-    stadt = lade_staedte(config_verzeichnis())[args.stadt]
+    stadt = _stadt(args.stadt)
     with Speicher(_db_pfad(args)) as sp:
         if args.loeschen:
             loesche_demo(sp, stadt)

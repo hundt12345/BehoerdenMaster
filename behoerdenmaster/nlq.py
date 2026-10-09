@@ -28,6 +28,8 @@ STOPWORTE = {
     "alle", "alles", "allen", "mir", "bitte", "zeige", "zeig", "zeigen", "gibt's", "stadt",
     "vorgaenge", "vorgang", "vorlagen", "vorlage", "sich", "noch", "auch", "dazu", "dort",
     "hier", "koennen", "kann", "soll", "sollen", "geben", "liste", "uebersicht",
+    "neue", "neuen", "neues", "neu", "letzte", "letzten", "wichtige", "wichtig", "geht", "bitte",
+    "damit", "gibt's",
 }
 OFFEN_WOERTER = {
     "geplant", "plant", "planen", "vorhaben", "vorhabens", "anstehend", "kommende", "kommenden",

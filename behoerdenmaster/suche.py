@@ -233,6 +233,17 @@ def _quelle_meta(speicher: Speicher) -> dict[str, dict]:
 
 
 def suche(speicher: Speicher, auftrag: Suchauftrag, heute: date) -> dict:
+    """Sucht Vorgänge. Ohne Ort- und Themenfilter müssen zunächst alle Stichworte vorkommen.
+    Findet das nichts, gelten mindestens ein Stichwort (Rückfall, ist im Ergebnis gekennzeichnet)."""
+    ergebnis = _suche(speicher, auftrag, heute, freitext_oder=False)
+    if (ergebnis["gesamt"] == 0 and len(auftrag.freitext) >= 2
+            and not (auftrag.orte or auftrag.plz or auftrag.themen)):
+        ergebnis = _suche(speicher, auftrag, heute, freitext_oder=True)
+        ergebnis["freitext_oder"] = ergebnis["gesamt"] > 0
+    return ergebnis
+
+
+def _suche(speicher: Speicher, auftrag: Suchauftrag, heute: date, freitext_oder: bool) -> dict:
     stadt = auftrag.stadt
     db = speicher.db
     bedingungen = ["v.geloescht = 0", "v.quelle_id IN (SELECT id FROM quelle WHERE stadt = ?)"]
@@ -270,9 +281,14 @@ def suche(speicher: Speicher, auftrag: Suchauftrag, heute: date) -> dict:
         params += begriffe
 
     if auftrag.freitext and not (ortsklauseln or begriffe):
-        for w in auftrag.freitext:
-            bedingungen.append("instr(v.suchtext, ?) > 0")
-            params.append(norm(w))
+        if freitext_oder:
+            woerter = [norm(w) for w in auftrag.freitext if len(norm(w)) >= 4] or [norm(w) for w in auftrag.freitext]
+            bedingungen.append("(" + " OR ".join("instr(v.suchtext, ?) > 0" for _ in woerter) + ")")
+            params += woerter
+        else:
+            for w in auftrag.freitext:
+                bedingungen.append("instr(v.suchtext, ?) > 0")
+                params.append(norm(w))
     if auftrag.von:
         bedingungen.append("v.datum >= ?")
         params.append(auftrag.von)
@@ -287,7 +303,7 @@ def suche(speicher: Speicher, auftrag: Suchauftrag, heute: date) -> dict:
     kandidaten = db.execute(sql, params).fetchall()
     gesamt_kandidaten = len(kandidaten)
     if not kandidaten:
-        return {"gesamt": 0, "treffer": [], "kandidaten_gekappt": False}
+        return {"gesamt": 0, "treffer": [], "kandidaten_gekappt": False, "freitext_oder": False}
 
     ids = [k["id"] for k in kandidaten]
     orte_map: dict[str, list] = defaultdict(list)
@@ -316,7 +332,8 @@ def suche(speicher: Speicher, auftrag: Suchauftrag, heute: date) -> dict:
                    status_map[vid], heute, quellen, meta)
         dto["punkte"] = punkte
         treffer.append(dto)
-    return {"gesamt": gesamt_kandidaten, "treffer": treffer, "kandidaten_gekappt": gesamt_kandidaten >= KANDIDATEN_MAX}
+    return {"gesamt": gesamt_kandidaten, "treffer": treffer,
+            "kandidaten_gekappt": gesamt_kandidaten >= KANDIDATEN_MAX, "freitext_oder": False}
 
 
 def vorgang_detail(speicher: Speicher, stadt: Stadt, vorgang_id: str, heute: date) -> dict | None:

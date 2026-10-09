@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "behoerdenmaster"
 version = "0.1.0"
-description = "Kommunale Vorgänge (Ratsinformation, OParl) durchsuchen und verständlich zusammenfassen"
+description = "Kommunale Ratsvorgänge und Bauleitplanung durchsuchen und nachvollziehbar zusammenfassen"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
@@ -16,7 +16,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8"]
+dev = ["pytest>=8", "pyflakes>=3.2"]
 
 [project.scripts]
 behoerdenmaster = "behoerdenmaster.cli:main"

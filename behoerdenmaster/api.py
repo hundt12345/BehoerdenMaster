@@ -13,7 +13,7 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
 from . import __version__
-from .auswertung import heute
+from .auswertung import heute, jetzt
 from .config import PROJEKTWURZEL, Stadt, config_verzeichnis, lade_staedte
 from .geo import Gazetteer
 from .nlq import Verstaendnis, verstehe
@@ -42,7 +42,7 @@ def _stand(sp: Speicher) -> dict:
     return {
         "quellen": [
             {"id": r["id"], "name": r["name"], "demo": bool(r["demo"]), "status": r["status"],
-             "letzter_erfolg": r["letzter_erfolg"]}
+             "letzter_erfolg": r["letzter_erfolg"], "abkuehlung_bis": r["abkuehlung_bis"]}
             for r in sp.quellen()
         ],
     }
@@ -87,7 +87,7 @@ def create_app(db_pfad: str | Path | None = None, config_dir: Path | None = None
         stadt = stadt_waehlen(anfrage.stadt)
         v = verstehe(anfrage.frage, stadt, gazetteers[stadt.schluessel])
         with Speicher(db) as sp:
-            ergebnis = suche(sp, _auftrag(v, stadt, anfrage.limit, anfrage.offset), heute())
+            ergebnis = suche(sp, _auftrag(v, stadt, anfrage.limit, anfrage.offset), heute(), zeitpunkt=jetzt())
         hinweise = list(v.hinweise)
         if ergebnis.get("freitext_oder"):
             hinweise.append("Keine Vorgänge mit allen Stichworten gefunden. Angezeigt werden Vorgänge mit mindestens einem Stichwort.")
@@ -134,7 +134,7 @@ def create_app(db_pfad: str | Path | None = None, config_dir: Path | None = None
 
         auftrag = Suchauftrag(stadt=st, plz=plz, themen=themen, limit=limit, offset=offset)
         with Speicher(db) as sp:
-            ergebnis = suche(sp, auftrag, heute())
+            ergebnis = suche(sp, auftrag, heute(), zeitpunkt=jetzt())
         return {
             "plz": plz,
             "hinweise": hinweise,
@@ -145,10 +145,10 @@ def create_app(db_pfad: str | Path | None = None, config_dir: Path | None = None
         }
 
     @app.get("/api/vorgang")
-    def vorgang(id: str = Query(..., min_length=5, description="OParl-ID des Vorgangs")):
-        st = stadt_waehlen(None)
+    def vorgang(id: str = Query(..., min_length=5, description="Quell-URL/ID des Vorgangs"), stadt: str | None = None):
+        st = stadt_waehlen(stadt)
         with Speicher(db) as sp:
-            detail = vorgang_detail(sp, st, id, heute())
+            detail = vorgang_detail(sp, st, id, heute(), zeitpunkt=jetzt())
         if detail is None:
             raise HTTPException(status_code=404, detail="Vorgang nicht gefunden")
         return detail

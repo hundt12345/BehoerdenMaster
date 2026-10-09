@@ -14,9 +14,14 @@ from .normalize import norm
 BERLIN = ZoneInfo("Europe/Berlin")
 
 
+def jetzt() -> datetime:
+    """Aktueller Zeitpunkt in Berlin (Beteiligungsfristen können Uhrzeiten enthalten)."""
+    return datetime.now(BERLIN)
+
+
 def heute() -> date:
     """Heutiges Datum in Berlin (für Termine: „anstehend“ vs. „vergangen“)."""
-    return datetime.now(BERLIN).date()
+    return jetzt().date()
 
 
 ENTSCHEIDEND = {"beschlossen", "abgelehnt", "kenntnis", "erledigt", "zurueckgezogen"}

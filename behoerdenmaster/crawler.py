@@ -50,6 +50,7 @@ class LaufBericht:
     anfragen: int = 0
     zaehler: dict[str, int] = field(default_factory=dict)
     fehlertext: str = ""
+    abkuehlung_bis: str = ""
 
     def zaehle(self, schluessel: str) -> None:
         self.zaehler[schluessel] = self.zaehler.get(schluessel, 0) + 1
@@ -113,6 +114,36 @@ def _verarbeite(speicher: Speicher, gaz: Gazetteer, quelle_id: str, entitaet: st
     bericht.zaehle(f"{entitaet}:{'geloescht' if geloescht else 'gespeichert'}")
 
 
+def pruefe_abkuehlung(speicher: Speicher, quelle_id: str, optionen: LaufOptionen) -> None:
+    """Gemeinsamer Schutz für alle Quelltypen nach Sperre oder Netzfehler."""
+    letzter = speicher.letzter_fehlschlag(quelle_id)
+    if letzter and not optionen.trotz_sperre:
+        # Nach jedem Fehlschlag in Folge wird die Pause verdoppelt (10 min, 20, 40 … höchstens 6 h).
+        fehlschlaege = max(1, speicher.fehlschlaege_in_folge(quelle_id))
+        abkuehlung = min(SPERR_ABKUEHLZEIT_MAX, SPERR_ABKUEHLZEIT_BASIS * 2 ** (fehlschlaege - 1))
+        frueheste = datetime.fromisoformat(letzter) + abkuehlung
+        server_pause = speicher.db.execute("SELECT abkuehlung_bis FROM quelle WHERE id=?", (quelle_id,)).fetchone()
+        if server_pause and server_pause["abkuehlung_bis"]:
+            frueheste = max(frueheste, datetime.fromisoformat(server_pause["abkuehlung_bis"]))
+        if datetime.now(timezone.utc) < frueheste:
+            raise CrawlVerweigert(
+                f"Die Quelle war nach {fehlschlaege} Fehlschlag/Fehlschlägen in Folge gesperrt oder nicht erreichbar. "
+                f"Frühestens erneut ab {frueheste.isoformat(timespec='minutes')}. "
+                "Bitte warten oder --trotz-sperre angeben (nicht empfohlen)."
+            )
+
+
+def merke_server_pause(bericht: LaufBericht, exc: Exception) -> None:
+    """Retry-After gilt auch für Folgeläufe, nicht nur Wiederholungen im aktuellen Lauf."""
+    sekunden = getattr(exc, "retry_after", None)
+    if sekunden and sekunden > 0:
+        try:
+            bis = datetime.now(timezone.utc) + timedelta(seconds=sekunden)
+        except OverflowError:
+            bis = datetime.max.replace(tzinfo=timezone.utc)
+        bericht.abkuehlung_bis = bis.isoformat()
+
+
 def crawle_oparl(speicher: Speicher, stadt: Stadt, quelle: Quelle, abrufer: Abrufer,
                  optionen: LaufOptionen) -> LaufBericht:
     quelle_id = stadt.quell_id(quelle)
@@ -120,18 +151,7 @@ def crawle_oparl(speicher: Speicher, stadt: Stadt, quelle: Quelle, abrufer: Abru
     speicher.quelle_anlegen(quelle_id, stadt.schluessel, quelle.schluessel, quelle.typ,
                             quelle.name, quelle.system_url, demo=False)
 
-    letzter = speicher.letzter_fehlschlag(quelle_id)
-    if letzter and not optionen.trotz_sperre:
-        # Nach jedem Fehlschlag in Folge wird die Pause verdoppelt (10 min, 20, 40 … höchstens 6 h).
-        fehlschlaege = max(1, speicher.fehlschlaege_in_folge(quelle_id))
-        abkuehlung = min(SPERR_ABKUEHLZEIT_MAX, SPERR_ABKUEHLZEIT_BASIS * 2 ** (fehlschlaege - 1))
-        frueheste = datetime.fromisoformat(letzter) + abkuehlung
-        if datetime.now(timezone.utc) < frueheste:
-            raise CrawlVerweigert(
-                f"Die Quelle war nach {fehlschlaege} Fehlschlag/Fehlschlägen in Folge gesperrt oder nicht erreichbar. "
-                f"Frühestens erneut ab {frueheste.isoformat(timespec='minutes')}. "
-                "Bitte warten oder --trotz-sperre angeben (nicht empfohlen)."
-            )
+    pruefe_abkuehlung(speicher, quelle_id, optionen)
 
     bericht = LaufBericht(quelle_id=quelle_id)
     lauf_id = speicher.lauf_beginnen(quelle_id)
@@ -179,12 +199,14 @@ def crawle_oparl(speicher: Speicher, stadt: Stadt, quelle: Quelle, abrufer: Abru
         bericht.status = "teilweise"
         bericht.fehlertext = str(exc)
     except QuelleGesperrt as exc:
+        merke_server_pause(bericht, exc)
         bericht.status = "gesperrt"
         bericht.fehlertext = str(exc)
     except NichtErlaubt as exc:
         bericht.status = "gesperrt"
         bericht.fehlertext = str(exc)
     except QuelleNichtErreichbar as exc:
+        merke_server_pause(bericht, exc)
         bericht.status = "nicht erreichbar"
         bericht.fehlertext = str(exc)
     except ValueError as exc:
@@ -193,11 +215,20 @@ def crawle_oparl(speicher: Speicher, stadt: Stadt, quelle: Quelle, abrufer: Abru
     finally:
         bericht.anfragen = abrufer.anfragen
         speicher.lauf_beenden(lauf_id, bericht.status, bericht.anfragen, bericht.zaehler, bericht.fehlertext)
-        speicher.quelle_status(quelle_id, bericht.status, bericht.fehlertext, erfolg=(bericht.status == "ok"))
+        speicher.quelle_status(quelle_id, bericht.status, bericht.fehlertext, erfolg=(bericht.status == "ok"),
+                               abkuehlung_bis=bericht.abkuehlung_bis)
     return bericht
 
 
-# Registry: Quelltyp aus config/cities -> Crawl-Funktion. Neue Quelltypen werden hier eingetragen.
+def crawle_bauleitplanung(speicher, stadt, quelle, abrufer, optionen):
+    # Verzögerter Import: der Adapter verwendet LaufBericht und die gemeinsame Abkühlprüfung.
+    from .bauleitplanung import crawle_bauleitplanung as crawle
+
+    return crawle(speicher, stadt, quelle, abrufer, optionen)
+
+
+# Registry: Quelltyp aus config/cities -> Crawl-Funktion.
 CRAWLER = {
     "oparl": crawle_oparl,
+    "bauleitplanung": crawle_bauleitplanung,
 }

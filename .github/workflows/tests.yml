@@ -1,0 +1,39 @@
+name: Offline-Tests
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  python:
+    name: Python ${{ matrix.python }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.11", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+      - run: python -m pip install -e ".[dev]"
+      - run: python -m pyflakes behoerdenmaster tests
+      - run: python -m pytest -q
+
+  javascript:
+    name: JavaScript-Syntax
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Inline-Script prüfen
+        shell: bash
+        run: |
+          python3 -c 'import re; from pathlib import Path; print(re.search(r"<script>(.*?)</script>", Path("behoerdenmaster/web/index.html").read_text(), re.S).group(1))' | node --check -

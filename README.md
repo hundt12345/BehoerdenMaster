@@ -1,144 +1,194 @@
 # BehoerdenMaster
 
-Kommunale Vorgänge aus Behördeninformationssystemen durchsuchen und verständlich zusammenfassen – zuerst für **Köln**, mit Erweiterbarkeit für weitere Städte und Quellen.
+Kommunale Vorgänge durchsuchen und nachvollziehbar zusammenfassen – zuerst für **Köln**, erweiterbar um weitere Städte und Quellen.
 
-## Was die Anwendung kann
+## Funktionen
 
-- **Fragen in natürlicher Sprache**, z. B. „Welche Bauvorhaben sind in Köln Ehrenfeld geplant?“. Erkannt werden Stadt, Stadtteil bzw. Stadtbezirk, Themen (Bauvorhaben, Verkehr, Schulen, Grün), Zeiträume („seit 2024“, „2023“) und die Absicht „geplant/offen“.
-- **PLZ-Suche**: alle Vorgänge zu einer Postleitzahl, optional mit Themenfilter.
-- **Je Vorgang**: Betreff, Art, Nummer, Datum, Status, Kurzzusammenfassung, **Verlaufsprotokoll** (Beratungsfolge mit Gremium, Sitzung, Tagesordnungspunkt und Ergebnis), **Dokumente** und **Links** zur Originalansicht im Ratsinformationssystem.
-- **Erweiterbar**: Neue Städte entstehen durch eine Konfigurationsdatei unter `config/cities/`. Neue Quelltypen werden über eine Registry im Crawler ergänzt.
+- **Fragen in natürlicher Sprache**, etwa „Welche Bauvorhaben sind in Köln Ehrenfeld geplant?“: regelbasiertes Erkennen von Stadtteilen, Bezirken, Themen, Zeiträumen und „geplant/offen“.
+- **PLZ-Suche**, optional mit Themenfilter.
+- **Zwei Kölner Quellen in einer Suche:** Ratsinformation **OParl** und **Bauleitplanung Online NRW**.
+- **Pro Vorgang:** Zusammenfassung, Status, Original-Link, Dokumentlinks und ein quellenabhängiges **Verlaufsprotokoll**:
+  - OParl: Beratungsfolge mit Gremium, Sitzung, TOP und überliefertem Ergebnis.
+  - Bauleitplanung: Beteiligungszeitraum, Phase und **lokal beobachtete Inhaltsänderungen**. Keine erfundene Ratsberatung und keine Behauptung einer vollständigen amtlichen Historie.
+- Weboberfläche, FastAPI und CLI lesen ausschließlich die lokale SQLite-Datenbank. **Suchanfragen lösen keine Behördenabrufe aus.**
 
-## Ehrliche Einordnung (Stand dieser Version)
+## Schnellstart – auch ohne Netz
 
-- **Datenquelle Köln:** die OParl-Schnittstelle des Ratsinformationssystems (JSON, Datenlizenz Deutschland – Zero – 2.0). Der Crawler speichert die Daten lokal. **Nutzeranfragen gehen nie an die Stadt.**
-- **Die Stadt begrenzt Abrufe.** Das Projekt mandari berichtet, dass Köln seine Server seit September 2026 nicht mehr erreichte, vermutlich wegen zu vieler Anfragen (Issues #89 und #348 im GitHub-Repo mandariOSS/mandari; die Stadt hat dazu nicht öffentlich Stellung genommen). Der Crawler ist daher bewusst zurückhaltend: Standard eine Anfrage alle 3 Sekunden, ein Anfragebudget pro Lauf und Abbruch bei Sperre. **Vor dem ersten vollständigen Abruf sollte die Stadt kontaktiert werden** (Kontakt laut OParl-System: `12-session@stadt-koeln.de`).
-- **Ein Live-Abruf ist in der Entwicklungsumgebung nicht erfolgreich getestet worden.** Während der Entwicklung meldeten die Server der Stadt „Server ist nicht verfügbar“. Getestet wurde mit Auszügen echter Antworten und einer simulierten Schnittstelle. Der erste Abruf auf Ihrem Rechner ist deshalb der eigentliche Praxistest (siehe `probe`).
-- **Ortsbezug:** Die OParl-Daten enthalten für Köln in den geprüften Antworten keine verlässlichen Ortsangaben an den Vorlagen (die Ortsobjekte der ersten Seite sind leer). Stadtteil und Bezirk werden deshalb aus Betreff und Gremiennamen abgeleitet. Das ist eine Heuristik; jede Zuordnung zeigt ihre Herkunft (Betreff oder Gremium).
-- **PLZ-Zuordnung:** Für 5 der 46 Kölner PLZ ist eine Näherung hinterlegt (Quelle onlinestreet.de, Datenbasis Destatis/BZSt und OpenStreetMap). Die übrigen sind in `config/cities/koeln.toml` als offen markiert. Vorgänge mit ausdrücklicher PLZ-Nennung werden immer gefunden.
-- **Zusammenfassungen sind regelbasiert** und bestehen nur aus erfassten Daten. Ein Sprachmodell ist nicht eingebunden. Ein Hook dafür ist vorgesehen (siehe „Nächste Schritte“).
-- **Noch nicht umgesetzt:** Bauleitplanung Online (Beteiligungsverfahren in NRW), die Bürgerbeteiligung der Stadt Köln (meinungfuer.koeln) und der Volltext der PDF-Dokumente. Die Recherche dazu steht in [`docs/recherche.md`](docs/recherche.md).
-
-## Schnellstart
-
-Voraussetzungen: Python 3.11 oder neuer.
+Voraussetzungen: Python 3.11 oder neuer; Befehle im ausgecheckten Repository ausführen.
 
 ```bash
 python3 -m venv .venv
 . .venv/bin/activate              # Windows: .venv\Scripts\activate
 pip install -e ".[dev]"
 
-pytest                            # Tests – ohne Netzzugang lauffähig
-python -m behoerdenmaster demo    # Beispieldaten laden (Auszüge echter Vorlagen)
+pytest -q                        # Tests mit simulierten Quellen, keine Live-Abfragen
+python -m behoerdenmaster demo
 python -m behoerdenmaster frage "Welche Bauvorhaben sind in Köln Ehrenfeld geplant?"
-python -m behoerdenmaster plz 50827
-python -m behoerdenmaster serve   # Weboberfläche auf http://127.0.0.1:8000
+python -m behoerdenmaster plz 50827 --thema bauen
+python -m behoerdenmaster serve   # http://127.0.0.1:8000
 ```
 
-Wird das Paket nicht aus diesem Repository heraus genutzt, zeigt `BEHOERDEN_CONFIG_DIR` auf das Verzeichnis mit den Stadtkonfigurationen. Die Datenbank liegt dann über `BEHOERDEN_DB`.
+Die **klar gekennzeichnete Offline-Demo (Stand 09.10.2026)** enthält eine OParl-Vorlage sowie drei ausgewählte öffentliche Bauleitverfahren:
 
-## Echte Daten abrufen (Köln)
+- „Sicherung der Clubkultur …“ in Ehrenfeld (254. FNP-Änderung), mit ausgewählten Dokumentlinks.
+- „Neues Quartier Bickendorf“, einschließlich der in der Quelle genannten ca. 1.600 Wohneinheiten und des voraussichtlichen Zeitplans.
+- Die zugehörige 255. FNP-Änderung in Bickendorf.
+
+Ehrenfeld bezeichnet Stadtteil **und** Stadtbezirk; Bickendorf gehört zum Stadtbezirk Ehrenfeld. Die Frage sucht beide Bedeutungen und erklärt dies. Die Demo ist **kein vollständiger oder laufend aktualisierter Bestand**. Bauleitbeschreibungen sind normalisierte, gekürzte Originalauszüge; das Detail-HTML ist eine rekonstruierte Testseite, kein unveränderter Mitschnitt. Herkunft: [`fixtures/oparl/koeln/README.md`](fixtures/oparl/koeln/README.md) und [`fixtures/bauleitplanung/koeln/README.md`](fixtures/bauleitplanung/koeln/README.md).
+
+Erneutes Laden der Demo überschreibt keine bereits gespeicherten echten Objekte. Ein echter Bauleitabruf ersetzt passende Demo-Objekte, ohne deren Demo-Historie oder ungeprüfte Demo-Dokumentlinks als live erfasste Daten zu übernehmen.
 
 ```bash
-export BEHOERDEN_KONTAKT="it@ihre-organisation.example"   # Pflicht: wird im User-Agent genannt
-
-python -m behoerdenmaster probe                 # prüft die Erreichbarkeit, höchstens 5 Anfragen, speichert nichts
-python -m behoerdenmaster crawl --seit 2025-11-01 --max-anfragen 300   # erster Lauf, in Etappen
-python -m behoerdenmaster crawl --max-anfragen 300                    # setzt an derselben Stelle fort
-python -m behoerdenmaster crawl                                       # Folgeläufe holen nur Änderungen
-python -m behoerdenmaster status                                      # Stand, Bestand, letzte Läufe
+python -m behoerdenmaster demo --loeschen  # entfernt beide Demo-Quellen, nicht die echten Daten
 ```
 
-`--seit` gilt nur für den ersten Lauf einer Quelle. Danach merkt sich der Crawler den Stand. `--max-anfragen` begrenzt einen Lauf, damit große Abrufe in kleinen Schritten erfolgen, wie es die Stadt voraussichtlich erwartet. Die Datenbank liegt standardmäßig unter `data/behoerdenmaster.sqlite` (per `--db` oder `BEHOERDEN_DB` änderbar).
+Die Datenbank liegt standardmäßig unter `data/behoerdenmaster.sqlite`; `--db` oder `BEHOERDEN_DB` ändern den Pfad. **Globale Optionen stehen vor dem Unterbefehl**, z. B. `python -m behoerdenmaster --db data/test.sqlite demo`. Außerhalb dieses Repositorys muss `BEHOERDEN_CONFIG_DIR` auf die Stadtkonfigurationen zeigen; die Demo-Fixtures sind Bestandteil des Repositorys, nicht des installierten Wheels.
 
-### Verhalten gegenüber der Quelle
+## Echte Daten abrufen
+
+Jeder Abruf benötigt eine eigene, erreichbare Kontaktadresse im User-Agent:
+
+```bash
+export BEHOERDEN_KONTAKT="it@ihre-organisation.example"   # durch die eigene Adresse ersetzen
+```
+
+### Bauleitplanung Online Köln
+
+```bash
+python -m behoerdenmaster probe --quelle bauleitplanung
+python -m behoerdenmaster crawl --quelle bauleitplanung --max-anfragen 15
+python -m behoerdenmaster crawl --quelle bauleitplanung --max-anfragen 15  # ggf. fortsetzen
+python -m behoerdenmaster status
+```
+
+Der Adapter verwendet die **öffentliche JSON-Suche**, begrenzt auf Köln:
+
+`https://nw.bauleitplanung-online.de/verfahren/suche/ajax?orgaSlug=koeln`
+
+Er verarbeitet nur die öffentliche Sicht (`external*`-Felder), prüft zusätzlich die Organisation und ruft danach öffentliche HTML-Detailseiten für Dokumentlinks ab. **Keine Anmeldung, internen Verfahrensdaten, Stellungnahmen oder PDF-Downloads.** Folgelinks müssen auf derselben Suchroute und mit demselben Organisationsfilter bleiben.
+
+Diese Quelle bietet keinen geprüften Änderungsfilter. Ein **abgeschlossener Folgelauf liest die ganze aktuell öffentliche Liste erneut**; unveränderte Inhalte erzeugen keine zusätzlichen Verlaufsschritte. `--seit` und `--nur` werden für Bauleitplanung ausdrücklich abgewiesen. Nach Budgetabbruch werden Listen-Cursor und Detail-Warteschlange fortgesetzt; eine bereits vollständig gelesene Liste wird dabei nicht unnötig erneut geladen.
+
+Nicht mehr gelistete Verfahren bleiben gespeichert und werden entsprechend markiert – **erst nach einer vollständig gelesenen Liste**. Das Verschwinden aus der Liste bedeutet weder Genehmigung noch Bauabschluss. Ein 404/410 der Detailseite entfernt keine zuletzt bekannten Dokumentlinks; Login- und unbekannte Detailseiten ersetzen den Dokumentbestand ebenfalls nicht.
+
+### Ratsinformationssystem / OParl
+
+**OParl bleibt die Standardquelle**, wenn `--quelle` fehlt. Vor einem größeren Erstabruf die zulässigen Grenzen mit der Stadt abstimmen (Kontakt aus dem OParl-System: `12-session@stadt-koeln.de`).
+
+```bash
+python -m behoerdenmaster probe --quelle ris
+python -m behoerdenmaster crawl --quelle ris --seit 2025-11-01 --max-anfragen 300
+python -m behoerdenmaster crawl --quelle ris --max-anfragen 300  # ggf. fortsetzen
+python -m behoerdenmaster crawl --quelle ris                    # danach nur Änderungen
+```
+
+Bei OParl gilt `--seit` für den ersten Lauf; spätere Läufe nutzen den gespeicherten Änderungsstand mit einer Stunde Überlappung.
+
+### Verhalten gegenüber beiden Quellen
 
 | Regel | Umsetzung |
 |---|---|
-| Erkennbarer Abrufer | User-Agent `BehoerdenMaster/0.1 (+Projekt-URL; Kontakt: …)`, Kontakt Pflicht |
-| robots.txt | Vor jedem Host-Abruf nach RFC 9309 geprüft, inkl. Crawl-delay |
-| Abstand | Mindestens 3 Sekunden zwischen Anfragen (`min_intervall_sekunden` in `koeln.toml`) |
-| Fehler | 429/5xx: Wartezeiten 60 s und 180 s, `Retry-After` wird beachtet |
-| Sperre | Bei 401/403 oder 429 nach den Wartezeiten bricht der Lauf sofort ab. Es gibt **keinen** Umgehungsversuch. |
-| Abkühlzeit | Nach einer Sperre startet der nächste Lauf frühestens nach 10 Minuten, bei jedem weiteren Fehlschlag verdoppelt bis höchstens 6 Stunden |
-| Budget | `--max-anfragen` begrenzt jeden Lauf. Der Fortschritt bleibt gespeichert. |
-| Keine Live-Abrufe | Die Weboberfläche und die API lesen ausschließlich die lokale Datenbank |
+| Erkennbarer Abrufer | User-Agent `BehoerdenMaster/0.1 (+Projekt-URL; Kontakt: …)`, auch für robots.txt |
+| robots.txt | Regeln einschließlich Crawl-delay werden vor Inhaltsabrufen geprüft; unerwartete robots-Antworten führen zum Abbruch |
+| Abstand | Mindestens 3 Sekunden zwischen Anfragen, in der Stadtkonfiguration anpassbar |
+| Fehler | 429/5xx: wachsende Wartezeiten 60 s und 180 s, `Retry-After` als Sekundenwert oder HTTP-Datum |
+| Lange Server-Pause | Über sechs Stunden: Lauf abbrechen statt die geforderte Pause zu verkürzen; `Retry-After` wird auch für Folgeläufe gespeichert |
+| Sperre / Anmeldung | 401/403, ausgeschöpfte 429-Wiederholungen oder Login-Weiterleitung: sofort stoppen, keine Umgehung |
+| Weiterleitungen | Inhalts-Weiterleitungen werden einzeln auf Host, Login, robots und Budget geprüft; Hostwechsel und robots-Weiterleitungen werden nicht ungeprüft verfolgt |
+| Abkühlzeit | Nach Sperre/Nichterreichbarkeit 10 Minuten, bei weiteren Fehlschlägen verdoppelt bis 6 Stunden; längere Server-Vorgaben haben Vorrang |
+| Budget / Fortschritt | `--max-anfragen` zählt auch robots und Weiterleitungen; gespeicherter Fortschritt bleibt erhalten |
+| Konsistenz | Bauleit-Listenseite, Detail-Aufgaben und Cursor werden atomar mit verschachtelbaren SQLite-Savepoints gespeichert |
+| Keine Such-Liveabrufe | Weboberfläche und API lesen nur lokale Daten |
 
-Hinweis zu robots.txt: Die Datei von `buergerinfo.stadt-koeln.de` enthält keine Regel für unbekannte Clients und nennt für bekannte Bots einen Crawl-delay von 20 Sekunden. Für diese Anwendung gilt deshalb der eigene Mindestabstand von 3 Sekunden. Wenn die Stadt andere Werte nennt, sind sie in `koeln.toml` anzupassen.
+Die Kölner OParl-robots.txt enthält keine Gruppe für unbekannte Clients; für einige namentlich genannte Bots gelten 20 Sekunden Crawl-delay. Unsere eigene Kennung nutzt mindestens drei Sekunden, sofern keine strengere passende Regel gilt. Die geprüfte NRW-robots.txt enthielt keine Einschränkungen. Beides ersetzt **keine** Abstimmung mit dem Betreiber.
+
+## Grenzen und Datenqualität
+
+- **Kein erfolgreicher End-to-End-Live-Crawl in dieser Entwicklungsumgebung:** Öffentliche Bauleit-JSON-Daten und eine UUID-Detailseite wurden zur Recherche erfolgreich gelesen; Adapter, Crawls und Fehlerfälle sind gegen Fixtures/Mock-HTTP getestet. Direkte Netzwerkabrufe aus der Sandbox waren nicht zuverlässig möglich. Auch Kölns Ratsinformation meldete zeitweise „Server ist nicht verfügbar“. `probe` und ein kleiner Lauf auf dem eigenen Rechner bleiben der Praxistest.
+- Das Projekt [mandari](https://github.com/mandariOSS/mandari/issues/348) berichtet seit September 2026 über nicht erreichbare Kölner Hosts und vermutet eine IP-Sperre; **keine öffentlich bestätigte Aussage der Stadt**. Keine Ausweich-Hosts oder andere Umgehung.
+- **Ortsbezug ist eine Heuristik:** OParl aus Betreff/Gremiennamen, Bauleitplanung aus Titel/öffentlicher Beschreibung. Die Herkunft wird im API-Ergebnis angezeigt. Kein Polygonabgleich und keine garantierte Zuordnung zur tatsächlichen Planfläche; auch andere im Text genannte Orte können Treffer auslösen. Kontaktangaben aus Detailseiten werden nicht als Lage übernommen.
+- **PLZ-Zuordnung:** 9 Bezirke / 86 Stadtteile sind hinterlegt. Nur 5 der 46 Kölner PLZ haben eine ungefähre Stadtteil-Zuordnung; die übrigen suchen nur ausdrückliche PLZ-Nennungen. PLZ- und Stadtteilgrenzen sind nicht identisch.
+- **„Geplant/offen“ priorisiert**, filtert aber nicht ausschließlich offene Vorgänge. Eine beendete Beteiligung bedeutet nicht, dass das Bauvorhaben abgeschlossen ist. Fristen werden einschließlich gelieferter Uhrzeiten/Zeitzonen geprüft und in Europe/Berlin dargestellt; maßgeblich bleibt die Originalseite.
+- **Zusammenfassungen sind regelbasiert.** Bei Bauleitplanung werden Original-Sätze zu Ziel, Umfang und Zeitplan ausgewählt. Keine unabhängige Bestätigung von Investorenankündigungen, kein LLM und kein PDF-Volltext.
+- RIS und Bauleitplanung können dasselbe Vorhaben als unterschiedliche Vorgänge führen. **Keine automatische Zusammenführung** und keine vollständige Historie vor dem ersten lokalen Abruf.
+- **Noch nicht umgesetzt:** Bürgerbeteiligung `meinungfuer.koeln`, PDF-Volltext und optionale Sprachmodell-Zusammenfassungen. Recherche: [`docs/recherche.md`](docs/recherche.md).
 
 ## Architektur
 
-```
-config/cities/koeln.toml ──┐
-                           ▼
- OParl-Quelle (oparl.py) ──► Crawler (crawler.py) ──► SQLite (speicher.py)
-   über abruf.py:                                         │
-   robots, Drosselung,                                    ▼
-   Backoff, Budget          Suche (suche.py) + Auswertung (auswertung.py)
-                                                          │
-                                  CLI (cli.py) ───────────┴──► API (api.py) ──► Weboberfläche (web/index.html)
+```text
+config/cities/*.toml
+       │
+       ├── OParl-Adapter + Crawler ───────────┐
+       └── Bauleitplanung-Adapter + Crawler ─┤
+                   über abruf.py            ▼
+            robots / Budget / Backoff     SQLite
+                                            │
+                               Suche + quelleneigene Auswertung
+                                            │
+                                   CLI / FastAPI / Web
 ```
 
 | Modul | Aufgabe |
 |---|---|
-| `config.py` | Lädt Städte aus `config/cities/*.toml` (Bezirke, Stadtteile, PLZ, Themen, Quellen) |
-| `normalize.py` | Textnormalisierung (Umlaute, Satzzeichen) für Abgleich und Suche |
-| `geo.py` | Ortsbezug aus Texten: Stadtteile, Bezirke, PLZ, mit Schutz vor Fehltreffern |
-| `nlq.py` | Regelbasiertes Verstehen von Fragen (Ort, Thema, Zeitraum, „geplant“, Freitext) |
-| `abruf.py` | Höflicher HTTP-Abruf: robots.txt, Drosselung, Backoff, Budget, keine Umgehung |
-| `oparl.py` | OParl-Adapter: Paginierung über `links.next`, Abbildung der Objekte |
-| `crawler.py` | Crawl-Läufe, Fortsetzung, Löschungen, Registry der Quelltypen |
-| `speicher.py` | SQLite-Schema, idempotente Upserts, Crawl-Stand, Läufe |
-| `suche.py` | Filter, Ranking, Verlauf und Dokumente je Treffer |
-| `auswertung.py` | Ergebnisklassen, Status („anstehend“, „Beschluss gefasst“ …), Zusammenfassung |
-| `demo.py` | Lädt die Beispieldaten aus `fixtures/` über denselben Verarbeitungspfad |
-| `api.py`, `cli.py`, `web/` | HTTP-API, Kommandozeile und Weboberfläche |
+| `config.py`, `geo.py`, `normalize.py` | Stadtkonfiguration, Orts-Heuristiken, Normalisierung |
+| `nlq.py` | Regelbasiertes Fragenverständnis |
+| `abruf.py` | Höflicher JSON-/HTML-Abruf und manuell geprüfte Weiterleitungen |
+| `oparl.py`, `crawler.py` | OParl-Abbildung, Crawler-Registry, gemeinsamer Cooldown |
+| `bauleitplanung.py` | Öffentliche Suche, Scope-Prüfung, Dokumentlinks, zweistufiger Crawl |
+| `speicher.py` | Upserts, additive Schema-Migration, atomare Seiten, persistente Warteschlange |
+| `suche.py` | Gemeinsame Filter/Ranking, quellengerechte Links und Ergebnisobjekte |
+| `auswertung.py`, `plan_auswertung.py` | Rats-Ergebnisse bzw. Beteiligungsstatus, Zusammenfassungen, Verlauf |
+| `demo.py`, `fixtures/` | Offline-Demo mit getrennt gekennzeichneten Quellen |
+| `api.py`, `cli.py`, `web/` | API, CLI und responsive Weboberfläche |
 
-### Datenmodell (Auszug)
+### Datenmodell
 
-- **Vorgang** (OParl „Paper“): Betreff, Nummer, Art, Datum, Ortsbezug, Suchtext.
-- **Beratung** (Beratungsfolge): verbindet Vorgang, Sitzung, Tagesordnungspunkt und Gremium. Das ist das Verlaufsprotokoll.
-- **Sitzung** (OParl „Meeting“) mit **Tagesordnungspunkten** (Ergebnis, Nummer) und Dokumenten (Einladung, Tagesordnung, Protokolle).
-- **Gremium**, **Dokument** (Verweis auf die PDF der Stadt), **Ortsbezug** (Typ, Schlüssel, Herkunft).
+- `vorgang`: gemeinsames Suchobjekt für Ratsvorlagen und Bauleitverfahren.
+- `beratung`, `sitzung`, `tagesordnungspunkt`, `gremium`: überlieferte OParl-Beratungskette.
+- `dokument`, `ortsbezug`, `vorgang_beziehung`: Dokumentverweise, Herkunft der Ortsangaben und OParl-Beziehungen.
+- `planverfahren`: aktueller öffentlicher Stand mit Phase, Zeitraum, Beschreibung, letzter Sichtung und Listungs-/Detailstatus.
+- `planstand`: Inhalts-Snapshots nur bei Änderungen; auch A → B → A bleibt im Verlauf sichtbar. Abrufdatum ist **nicht** amtliches Änderungsdatum.
+- `crawl_stand`, `crawl_aufgabe`, `crawl_lauf`, `quelle`: Cursor/Zyklusmarker, wartende Detailabrufe, Laufprotokoll und Quellenstatus/Server-Pause.
 
-Gelöschte Objekte (`deleted: true`) werden weich markiert. Kinder wie Beratungen, Dokumente und Ortsbezug werden beim Speichern des Elternobjekts ersetzt, sodass die Daten konsistent bleiben.
+Bestehende SQLite-Dateien werden beim Öffnen additiv erweitert; vorhandene Ratsdaten bleiben erhalten. OParl-`deleted=true` wird weich markiert. Bauleitverfahren werden bei fehlender Listung **nicht gelöscht**. Dokumentlinks werden erst nach einer gültigen öffentlichen Detailseite ersetzt.
 
-## Neue Stadt oder neue Quelle
+## Weitere Städte und Quellen
 
-1. **Stadt mit OParl-Schnittstelle:** `config/cities/<stadt>.toml` nach dem Vorbild von `koeln.toml` anlegen. Bezirke, Stadtteile, PLZ und Themen eintragen und einen Block `[[quellen]]` mit `typ = "oparl"` und `system_url` ergänzen. Danach `python -m behoerdenmaster --stadt <stadt> probe` ausführen.
-2. **Anderer Quelltyp** (z. B. Bauleitplanung Online oder SessionNet-HTML): Adapter-Funktion im Stil von `crawle_oparl` schreiben, die Objekte in die Speicherzeilen abbildet, und sie in `CRAWLER` in `crawler.py` eintragen. Suche, API und Oberfläche bleiben unverändert.
+1. **Stadt mit OParl:** `config/cities/<stadt>.toml` nach dem Vorbild Kölns anlegen; Bezirke, Stadtteile, PLZ, Themen und `[[quellen]]` ergänzen. `python -m behoerdenmaster --stadt <stadt> probe --quelle <quelle>`.
+2. **Weitere Kommune auf derselben demosPlan-Plattform:** Quelle mit `typ="bauleitplanung"`, öffentlicher Such-URL samt `orgaSlug`, erwarteter `organisation` und `web_vorlage` konfigurieren. Öffentliches Schema und Detail-HTML müssen vorher geprüft werden – kein pauschales Versprechen für alle Installationen.
+3. **Anderer Quelltyp:** Adapter/Crawl-Funktion in `CRAWLER` registrieren, Daten in das gemeinsame Modell abbilden und gegebenenfalls eigene Auswertung/DTO ergänzen. Keine fremde Quelle erhält automatisch OParl-Links oder dessen Lizenz.
 
 ## API
 
 | Methode | Pfad | Zweck |
 |---|---|---|
-| GET | `/api/status` | Quellen, Bestand, letzte Läufe |
-| POST | `/api/frage` | Body `{"frage": "…", "limit": 10, "offset": 0}` → Verständnis, Treffer, Hinweise |
-| GET | `/api/plz/{plz}?thema=bauen,verkehr` | Vorgänge zu einer PLZ |
-| GET | `/api/vorgang?id=<OParl-ID>` | Detail eines Vorgangs mit Verlauf und Dokumenten |
+| GET | `/api/status` | Quellen, Bestand, letzte Läufe und Server-Pausen |
+| POST | `/api/frage` | `{"frage":"…","stadt":"koeln","limit":10,"offset":0}` |
+| GET | `/api/plz/{plz}?thema=bauen,verkehr&stadt=koeln` | PLZ-Suche |
+| GET | `/api/vorgang?id=<URL-kodierte-Quell-ID>&stadt=koeln` | Detail mit Verlauf/Dokumenten; auf die gewählte Stadt beschränkt |
 
-Die interaktive Dokumentation liegt unter `/docs`.
+`links.original` / `original_text` zeigen die richtige Quellansicht. OParl-spezifische Linkfelder bleiben erhalten, sind bei Bauleitplanung aber `null`. Bauleittreffer haben zusätzlich `beteiligung` und quellspezifische `hinweise`; `verlauf[].typ` trennt Beteiligungsdaten von Abrufbeobachtungen. Interaktive API-Dokumentation: `/docs`.
+
+Für Netzwerk-/Preview-Zugriff: `python -m behoerdenmaster serve --host 0.0.0.0 --port 8000`. Der Browser spricht dieselbe Anwendung über relative `/api`-URLs an; kein browserseitiger Zugriff auf ein Sandbox-`localhost`.
 
 ## Tests
 
 ```bash
 pytest -q
+python -m pyflakes behoerdenmaster tests
 ```
 
-Die Tests laufen ohne Netzzugang. Sie decken ab: Ortsbezug und Fragenverständnis, Abrufverhalten (Drosselung, Backoff, `Retry-After`, robots.txt, Budget), Abbildung der OParl-Objekte, Crawl-Läufe (Paginierung, Fortsetzung, Sperre und Abkühlzeit, Löschungen), Suche und Ranking, Status- und Zusammenfassungslogik, API und Konfiguration.
+Offline getestet werden Fragen/Orte, beide Quelladapter, JSON-/HTML-Schema, Organisationsfilter, sichere Links/Weiterleitungen, robots, Backoff/HTTP-Datum, Budget, Pagination/Fortsetzung, atomare Checkpoints, KeyboardInterrupt, Cooldown über Prozessgrenzen, Schema-Migration, fehlende Verfahren, Änderungs-Snapshots, Demo-/Echtdaten-Trennung, Suche, API und CLI. GitHub Actions führt die Python-Tests und eine JavaScript-Syntaxprüfung aus; **keine Live-Behördenabfragen** in der CI.
 
 ## Lizenz und Datenschutz
 
-- Der Code steht unter der Lizenz dieses Repositorys. Das Projekt mandari (AGPL-3.0) diente nur als Recherchequelle. Es wurde kein Code übernommen.
-- Die gespeicherten Ratsdaten (Vorlagen, Sitzungen, Dokumente) sind öffentlich. Bürgereingaben in Vorlagen können personenbezogene Angaben enthalten. Vor einer öffentlichen Bereitstellung sollte der Datenschutz geprüft und ggf. ein Löschverfahren vorgesehen werden.
-- Die Beispieldaten in `fixtures/` sind Auszüge echter Antworten der Stadt Köln (Datenlizenz Deutschland – Zero – 2.0). Details: [`fixtures/oparl/koeln/README.md`](fixtures/oparl/koeln/README.md).
+- Im Repository ist derzeit **keine separate Code-Lizenz festgelegt**. Vor einer Weiterverteilung eine passende Lizenzentscheidung treffen. mandari (AGPL-3.0) und demosPlan (EUPL-1.2) wurden nur recherchiert; kein Code übernommen.
+- OParl-Köln-Daten: Datenlizenz Deutschland – Zero – Version 2.0. **Diese Lizenz gilt nicht automatisch für Bauleitplanung Online.** Deren öffentliche Informationen und Dokumente können eigenen Nutzungsbedingungen unterliegen; keine pauschale offene Datenlizenz verifiziert.
+- Keine privaten Stellungnahmen oder Anmeldebereiche. Öffentliche Beschreibungen und Ratsdokumente können trotzdem personenbezogene Angaben enthalten. Vor öffentlicher Bereitstellung Datenschutz, Aufbewahrung und Löschverfahren prüfen.
 
 ## Nächste Schritte
 
-1. **Stadt Köln kontaktieren** und Abrufgrenzen vereinbaren, bevor ein vollständiger Abruf läuft.
-2. **Ersten Abruf in Etappen** mit `--max-anfragen` durchführen und die Ergebnisse prüfen.
-3. **Bauleitplanung Online** (`nw.bauleitplanung-online.de/plaene/koeln`) als zweite Quelle anbinden. Die robots.txt erlaubt den Abruf. Die Seite listet laufende Beteiligungsverfahren mit Zeitraum und Ort (z. B. „254. Änderung des FNP … in Köln-Ehrenfeld“).
-4. **Bürgerbeteiligung der Stadt Köln** (`meinungfuer.koeln`) anbinden.
-5. **PDF-Volltext** (Begründungen, Beschlussvorlagen) für bessere Zusammenfassungen und Ortserkennung.
-6. **PLZ-Zuordnung** für die übrigen 41 Kölner PLZ ergänzen (Quelle und Stand in der Konfiguration vermerken).
-7. **Optional:** Sprachmodell-Zusammenfassung mit Quellenangaben, nur für bereits gespeicherte Texte.
+1. Abrufgrenzen und Nutzungsbedingungen mit den Betreibern abstimmen; beide Quellen auf einem geeigneten Rechner in kleinen Etappen live prüfen.
+2. Bürgerbeteiligung Köln (`meinungfuer.koeln`) ergänzen.
+3. PDF-Volltext mit Quellenbezug und optionalen Sprachmodell-Zusammenfassungen.
+4. PLZ-Zuordnung für die übrigen 41 Kölner PLZ ergänzen und mögliche Verknüpfungen zwischen RIS und Bauleitplanung prüfen.

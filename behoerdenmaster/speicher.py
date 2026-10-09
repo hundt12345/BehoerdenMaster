@@ -10,6 +10,7 @@ ins Leere laufen.
 from __future__ import annotations
 
 import json
+from contextlib import contextmanager
 import sqlite3
 from datetime import datetime, timezone
 from pathlib import Path
@@ -27,7 +28,8 @@ CREATE TABLE IF NOT EXISTS quelle (
     status TEXT NOT NULL DEFAULT 'nie',
     letzter_erfolg TEXT NOT NULL DEFAULT '',
     letzter_versuch TEXT NOT NULL DEFAULT '',
-    fehlertext TEXT NOT NULL DEFAULT ''
+    fehlertext TEXT NOT NULL DEFAULT '',
+    abkuehlung_bis TEXT NOT NULL DEFAULT ''
 );
 CREATE TABLE IF NOT EXISTS crawl_stand (
     quelle_id TEXT NOT NULL,
@@ -137,6 +139,34 @@ CREATE TABLE IF NOT EXISTS ortsbezug (
     quelle TEXT NOT NULL,
     PRIMARY KEY (vorgang_id, typ, schluessel, quelle)
 );
+-- Ergänzungen für öffentliche Bauleitverfahren; bestehende SQLite-Dateien bleiben nutzbar.
+CREATE TABLE IF NOT EXISTS planverfahren (
+    vorgang_id TEXT PRIMARY KEY,
+    phase TEXT NOT NULL DEFAULT '',
+    beginn TEXT NOT NULL DEFAULT '',
+    ende TEXT NOT NULL DEFAULT '',
+    beschreibung TEXT NOT NULL DEFAULT '',
+    organisation TEXT NOT NULL DEFAULT '',
+    berechtigung TEXT NOT NULL DEFAULT '',
+    gesehen TEXT NOT NULL,
+    liste_reihe TEXT NOT NULL,
+    gelistet INTEGER NOT NULL DEFAULT 1,
+    detail_status TEXT NOT NULL DEFAULT 'offen'
+);
+CREATE TABLE IF NOT EXISTS planstand (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    vorgang_id TEXT NOT NULL,
+    festgestellt TEXT NOT NULL,
+    inhalt_hash TEXT NOT NULL,
+    inhalt TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS crawl_aufgabe (
+    quelle_id TEXT NOT NULL,
+    vorgang_id TEXT NOT NULL,
+    url TEXT NOT NULL,
+    PRIMARY KEY (quelle_id, vorgang_id)
+);
+CREATE INDEX IF NOT EXISTS ix_planstand_vorgang ON planstand (vorgang_id, id);
 CREATE INDEX IF NOT EXISTS ix_ortsbezug ON ortsbezug (typ, schluessel);
 CREATE INDEX IF NOT EXISTS ix_vorgang_datum ON vorgang (datum);
 CREATE INDEX IF NOT EXISTS ix_beratung_vorgang ON beratung (vorgang_id);
@@ -160,10 +190,22 @@ class Speicher:
             Path(self.pfad).parent.mkdir(parents=True, exist_ok=True)
         self.db = sqlite3.connect(self.pfad, timeout=30, check_same_thread=False)
         self.db.row_factory = sqlite3.Row
+        self._transaktions_nr = 0
         self.db.execute("PRAGMA foreign_keys = ON")
         if self.pfad != ":memory:":
             self.db.execute("PRAGMA journal_mode = WAL")
         self.db.executescript(SCHEMA)
+        # CREATE TABLE IF NOT EXISTS ergänzt keine Spalten alter SQLite-Dateien.
+        if "abkuehlung_bis" not in {z["name"] for z in self.db.execute("PRAGMA table_info(quelle)")}:
+            # Mehrere API-Requests können dieselbe alte Datei gleichzeitig öffnen.
+            self.db.execute("BEGIN IMMEDIATE")
+            try:
+                if "abkuehlung_bis" not in {z["name"] for z in self.db.execute("PRAGMA table_info(quelle)")}:
+                    self.db.execute("ALTER TABLE quelle ADD COLUMN abkuehlung_bis TEXT NOT NULL DEFAULT ''")
+                self.db.commit()
+            except BaseException:
+                self.db.rollback()
+                raise
 
     def schliessen(self) -> None:
         self.db.close()
@@ -175,6 +217,26 @@ class Speicher:
         self.schliessen()
 
     # --- generische Helfer -------------------------------------------------
+
+    @contextmanager
+    def transaktion(self):
+        """Verschachtelbare SQLite-Savepoints statt vorzeitig commitender Connection-Kontexte.
+
+        Ein äußerer Aufruf bündelt eine Listen-Seite mit Aufgaben und Cursor atomar.
+        Einzelne Speicher-Aufrufe funktionieren weiter als eigene Transaktion.
+        Auch KeyboardInterrupt rollt nur die unvollständige Einheit zurück.
+        """
+        self._transaktions_nr += 1
+        name = f"bm_{self._transaktions_nr}"
+        self.db.execute(f"SAVEPOINT {name}")
+        try:
+            yield
+        except BaseException:
+            self.db.execute(f"ROLLBACK TO SAVEPOINT {name}")
+            self.db.execute(f"RELEASE SAVEPOINT {name}")
+            raise
+        else:
+            self.db.execute(f"RELEASE SAVEPOINT {name}")
 
     def _upsert(self, tabelle: str, zeile: dict, pk: tuple[str, ...] = ("id",)) -> None:
         spalten = list(zeile)
@@ -190,31 +252,32 @@ class Speicher:
 
     def quelle_anlegen(self, quelle_id: str, stadt: str, schluessel: str, typ: str,
                        name: str, basis_url: str, demo: bool = False) -> None:
-        with self.db:
+        with self.transaktion():
             self._upsert("quelle", {
                 "id": quelle_id, "stadt": stadt, "schluessel": schluessel, "typ": typ,
                 "name": name, "basis_url": basis_url, "demo": int(demo),
             })
 
-    def quelle_status(self, quelle_id: str, status: str, fehlertext: str = "", erfolg: bool = False) -> None:
+    def quelle_status(self, quelle_id: str, status: str, fehlertext: str = "", erfolg: bool = False,
+                      abkuehlung_bis: str = "") -> None:
         jetzt = jetzt_iso()
-        with self.db:
+        with self.transaktion():
             if erfolg:
                 self.db.execute(
-                    "UPDATE quelle SET status=?, fehlertext=?, letzter_versuch=?, letzter_erfolg=? WHERE id=?",
-                    (status, fehlertext, jetzt, jetzt, quelle_id),
+                    "UPDATE quelle SET status=?, fehlertext=?, letzter_versuch=?, letzter_erfolg=?, abkuehlung_bis=? WHERE id=?",
+                    (status, fehlertext, jetzt, jetzt, abkuehlung_bis, quelle_id),
                 )
             else:
                 self.db.execute(
-                    "UPDATE quelle SET status=?, fehlertext=?, letzter_versuch=? WHERE id=?",
-                    (status, fehlertext, jetzt, quelle_id),
+                    "UPDATE quelle SET status=?, fehlertext=?, letzter_versuch=?, abkuehlung_bis=? WHERE id=?",
+                    (status, fehlertext, jetzt, abkuehlung_bis, quelle_id),
                 )
 
     def quellen(self) -> list[sqlite3.Row]:
         return self.db.execute("SELECT * FROM quelle ORDER BY demo, id").fetchall()
 
     def lauf_beginnen(self, quelle_id: str) -> int:
-        with self.db:
+        with self.transaktion():
             cur = self.db.execute(
                 "INSERT INTO crawl_lauf (quelle_id, gestartet) VALUES (?, ?)", (quelle_id, jetzt_iso())
             )
@@ -222,7 +285,7 @@ class Speicher:
 
     def lauf_beenden(self, lauf_id: int, status: str, anfragen: int,
                      statistik: dict | None = None, fehlertext: str = "") -> None:
-        with self.db:
+        with self.transaktion():
             self.db.execute(
                 "UPDATE crawl_lauf SET beendet=?, status=?, anfragen=?, statistik=?, fehlertext=? WHERE id=?",
                 (jetzt_iso(), status, anfragen, json.dumps(statistik or {}, ensure_ascii=False), fehlertext, lauf_id),
@@ -269,7 +332,7 @@ class Speicher:
         naechste_url:  Fortsetzungspunkt innerhalb einer unvollständigen Abrufreihe.
         reihe_beginn:  Startzeitpunkt der offenen Abrufreihe (leer, wenn keine offen ist).
         """
-        with self.db:
+        with self.transaktion():
             self._upsert("crawl_stand", {
                 "quelle_id": quelle_id, "entitaet": entitaet, "modified_seit": modified_seit,
                 "naechste_url": naechste_url, "reihe_beginn": reihe_beginn, "aktualisiert": jetzt_iso(),
@@ -278,7 +341,7 @@ class Speicher:
     # --- Objekte schreiben ---------------------------------------------------
 
     def gremium_speichern(self, zeile: dict) -> None:
-        with self.db:
+        with self.transaktion():
             self._upsert("gremium", zeile)
 
     def gremium_namen(self, ids: Iterable[str]) -> dict[str, str]:
@@ -290,7 +353,7 @@ class Speicher:
         return {z["id"]: z["name"] for z in zeilen}
 
     def sitzung_speichern(self, zeile: dict, tops: list[dict], dokumente: list[dict]) -> None:
-        with self.db:
+        with self.transaktion():
             self._upsert("sitzung", zeile)
             self.db.execute("DELETE FROM tagesordnungspunkt WHERE sitzung_id=?", (zeile["id"],))
             for top in tops:
@@ -303,7 +366,7 @@ class Speicher:
     def vorgang_speichern(self, zeile: dict, beratungen: list[dict], dokumente: list[dict],
                           beziehungen: list[tuple[str, str]], orte: set[tuple[str, str, str]]) -> None:
         vid = zeile["id"]
-        with self.db:
+        with self.transaktion():
             self._upsert("vorgang", zeile)
             self.db.execute("DELETE FROM beratung WHERE vorgang_id=?", (vid,))
             for b in beratungen:
@@ -319,9 +382,87 @@ class Speicher:
             for typ, schluessel, quelle in orte:
                 self.db.execute("INSERT OR IGNORE INTO ortsbezug VALUES (?,?,?,?)", (vid, typ, schluessel, quelle))
 
+    # --- Bauleitverfahren und beobachtete Änderungen -----------------------------
+
+    def planverfahren_speichern(self, zeile: dict, stand: dict,
+                               orte: set[tuple[str, str, str]], reihe: str,
+                               festgestellt: str | None = None) -> bool:
+        """Speichert den öffentlichen Stand, ohne Dokumente vor dem Detailabruf zu löschen.
+
+        Rückgabe: Inhalt geändert? Ein unveränderter Abruf erzeugt KEINEN Verlaufsschritt.
+        Nicht mehr gelistete Verfahren bleiben im Bestand (kein erfundener Abschluss).
+        """
+        import hashlib
+
+        vid = zeile["id"]
+        festgestellt = festgestellt or jetzt_iso()
+        inhalt = json.dumps({"titel": zeile["titel"], **stand}, ensure_ascii=False, sort_keys=True)
+        fingerprint = hashlib.sha256(inhalt.encode("utf-8")).hexdigest()
+        with self.transaktion():
+            # Ein echter Abruf ersetzt ggf. eine Demo, aber übernimmt keine Demo-Historie.
+            bisher = self.db.execute(
+                "SELECT v.quelle_id, q.demo FROM vorgang v JOIN quelle q ON q.id=v.quelle_id WHERE v.id=?",
+                (vid,),
+            ).fetchone()
+            if bisher and bisher["demo"] and bisher["quelle_id"] != zeile["quelle_id"]:
+                self.db.execute("DELETE FROM planstand WHERE vorgang_id=?", (vid,))
+                self.db.execute("DELETE FROM crawl_aufgabe WHERE vorgang_id=?", (vid,))
+                self.db.execute("DELETE FROM dokument WHERE vorgang_id=?", (vid,))
+                self.db.execute("UPDATE planverfahren SET detail_status='offen' WHERE vorgang_id=?", (vid,))
+            letzter = self.db.execute(
+                "SELECT inhalt_hash FROM planstand WHERE vorgang_id=? ORDER BY id DESC LIMIT 1", (vid,)
+            ).fetchone()
+            geaendert = not letzter or letzter["inhalt_hash"] != fingerprint
+            self._upsert("vorgang", zeile)
+            self._upsert("planverfahren", {
+                "vorgang_id": vid, **stand, "gesehen": festgestellt,
+                "liste_reihe": reihe, "gelistet": 1, "detail_status": "offen",
+            }, pk=("vorgang_id",))
+            if geaendert:
+                self.db.execute(
+                    "INSERT INTO planstand (vorgang_id, festgestellt, inhalt_hash, inhalt) VALUES (?,?,?,?)",
+                    (vid, festgestellt, fingerprint, inhalt),
+                )
+            self.db.execute("DELETE FROM ortsbezug WHERE vorgang_id=?", (vid,))
+            self.db.executemany("INSERT INTO ortsbezug VALUES (?,?,?,?)",
+                                [(vid, typ, nr, herkunft) for typ, nr, herkunft in orte])
+        return geaendert
+
+    def plan_liste_abgeschlossen(self, quelle_id: str, reihe: str) -> None:
+        """Erst nach vollständiger Liste die Sichtbarkeit aktualisieren, niemals löschen."""
+        with self.transaktion():
+            self.db.execute(
+                "UPDATE planverfahren SET gelistet=0 WHERE liste_reihe<>? AND vorgang_id IN "
+                "(SELECT id FROM vorgang WHERE quelle_id=?)", (reihe, quelle_id),
+            )
+
+    def plan_dokumente_speichern(self, vorgang_id: str, dokumente: list[dict], status: str) -> None:
+        with self.transaktion():
+            if status == "ok":
+                self.db.execute("DELETE FROM dokument WHERE vorgang_id=?", (vorgang_id,))
+                for dok in dokumente:
+                    self._upsert("dokument", {**dok, "vorgang_id": vorgang_id, "sitzung_id": ""},
+                                 pk=("id", "vorgang_id", "sitzung_id"))
+            # Login/404/fehlende Detailansicht dürfen vorhandene Dokumentlinks nicht entfernen.
+            self.db.execute("UPDATE planverfahren SET detail_status=? WHERE vorgang_id=?", (status, vorgang_id))
+
+    def aufgabe_anlegen(self, quelle_id: str, vorgang_id: str, url: str) -> None:
+        with self.transaktion():
+            self._upsert("crawl_aufgabe", {"quelle_id": quelle_id, "vorgang_id": vorgang_id, "url": url},
+                         pk=("quelle_id", "vorgang_id"))
+
+    def aufgaben(self, quelle_id: str) -> list[sqlite3.Row]:
+        return self.db.execute(
+            "SELECT * FROM crawl_aufgabe WHERE quelle_id=? ORDER BY vorgang_id", (quelle_id,)
+        ).fetchall()
+
+    def aufgabe_erledigt(self, quelle_id: str, vorgang_id: str) -> None:
+        with self.transaktion():
+            self.db.execute("DELETE FROM crawl_aufgabe WHERE quelle_id=? AND vorgang_id=?", (quelle_id, vorgang_id))
+
     def markiere_geloescht(self, typ: str, objekt_id: str) -> None:
         """Weiches Löschen (OParl: deleted=true). Kinder werden mit markiert."""
-        with self.db:
+        with self.transaktion():
             if typ == "gremium":
                 self.db.execute("UPDATE gremium SET geloescht=1 WHERE id=?", (objekt_id,))
             elif typ == "sitzung":
@@ -346,10 +487,13 @@ class Speicher:
 
     def loesche_quelle_daten(self, quelle_id: str) -> None:
         """Entfernt alle Daten einer Quelle (z. B. Demo-Daten vor einem echten Abruf)."""
-        with self.db:
+        with self.transaktion():
             vorgaenge = [r[0] for r in self.db.execute("SELECT id FROM vorgang WHERE quelle_id=?", (quelle_id,))]
             sitzungen = [r[0] for r in self.db.execute("SELECT id FROM sitzung WHERE quelle_id=?", (quelle_id,))]
+            self.db.execute("DELETE FROM crawl_aufgabe WHERE quelle_id=?", (quelle_id,))
             for vid in vorgaenge:
+                for tab in ("planverfahren", "planstand"):
+                    self.db.execute(f"DELETE FROM {tab} WHERE vorgang_id=?", (vid,))
                 for tab in ("beratung", "dokument", "vorgang_beziehung", "ortsbezug"):
                     col = "vorgang_id"
                     self.db.execute(f"DELETE FROM {tab} WHERE {col}=?", (vid,))

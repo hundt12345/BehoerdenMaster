@@ -9,8 +9,9 @@ import sys
 from pathlib import Path
 
 from . import __version__
-from .abruf import Abrufer, NichtErlaubt, QuelleGesperrt, QuelleNichtErreichbar
-from .auswertung import heute
+from .abruf import Abrufer, BudgetErschoepft, NichtErlaubt, ObjektNichtVorhanden, QuelleGesperrt, QuelleNichtErreichbar
+from .auswertung import heute, jetzt
+from .bauleitplanung import BauleitplanungQuelle
 from .config import Quelle, Stadt, config_verzeichnis, lade_staedte
 from .crawler import CRAWLER, ENTITAETEN, CrawlVerweigert, LaufOptionen
 from .demo import demo_quell_id, lade_demo, loesche_demo
@@ -67,6 +68,8 @@ def cmd_status(args) -> int:
             print(f"- {q['id']}{tag}: Status {q['status']}, letzter Erfolg {q['letzter_erfolg'] or '–'}")
             if q["fehlertext"]:
                 print(f"    Hinweis: {q['fehlertext']}")
+            if q["abkuehlung_bis"]:
+                print(f"    Server-Pause bis: {q['abkuehlung_bis']}")
         print("Bestand:", ", ".join(f"{k} {v}" for k, v in sp.zaehle().items()))
         for lauf in sp.letzte_laeufe(3):
             print(f"Lauf {lauf['id']} · {lauf['quelle_id']} · {lauf['gestartet']} · {lauf['status']} · {lauf['anfragen']} Anfragen")
@@ -79,34 +82,49 @@ def cmd_probe(args) -> int:
     # Ein Probelauf wiederholt nicht: Er soll nur zeigen, ob die Quelle jetzt antwortet.
     abrufer = Abrufer(kontakt=_kontakt(args), min_intervall=quelle.min_intervall_sekunden,
                       max_anfragen=5, wiederholungen=0)
-    oparl = OParlQuelle(abrufer, quelle.system_url, quelle.body_id)
     try:
-        system = oparl.system()
-        print(f"System: {system.get('name', '?')} · OParl {system.get('oparlVersion', '?')} · "
-              f"Hersteller {system.get('vendor', '?')}")
-        body = oparl.body()
-        print(f"Körperschaft: {body.get('name', '?')} ({body.get('id', '?')})")
-        seite = next(oparl.seiten(body["paper"], params={"modified_since": "2025-11-01T00:00:00+01:00"}))
-        print(f"Vorlagen (erste Seite, seit 01.11.2025): {len(seite.objekte)} Objekte, "
-              f"weitere Seiten: {'ja' if seite.naechste else 'nein'}")
-        for obj in seite.objekte[:3]:
-            print(f"  - {obj.get('reference', '')}: {obj.get('name', '')[:90]}")
+        if quelle.typ == "bauleitplanung":
+            verfahren, naechste = BauleitplanungQuelle(abrufer, quelle).seite()
+            print(f"{quelle.name}: {len(verfahren)} öffentliche Verfahren auf der ersten Seite, "
+                  f"weitere Seiten: {'ja' if naechste else 'nein'}")
+            for plan in verfahren[:3]:
+                print(f"  - {plan.titel}: {plan.phase} ({plan.beginn[:10]} – {plan.ende[:10]})")
+        elif quelle.typ == "oparl":
+            oparl = OParlQuelle(abrufer, quelle.system_url, quelle.body_id)
+            body = oparl.body()
+            print(f"Körperschaft: {body.get('name', '?')} ({body.get('id', '?')})")
+            seite = next(oparl.seiten(body["paper"], params={"modified_since": "2025-11-01T00:00:00+01:00"}))
+            print(f"Vorlagen (erste Seite, seit 01.11.2025): {len(seite.objekte)} Objekte, "
+                  f"weitere Seiten: {'ja' if seite.naechste else 'nein'}")
+            for obj in seite.objekte[:3]:
+                print(f"  - {obj.get('reference', '')}: {obj.get('name', '')[:90]}")
+        else:
+            raise ValueError(f"Quelltyp '{quelle.typ}' nicht unterstützt")
         print(f"Anfragen: {abrufer.anfragen}. Der Probelauf speichert nichts.")
         return 0
-    except (QuelleGesperrt, NichtErlaubt, QuelleNichtErreichbar, ValueError) as exc:
+    except (QuelleGesperrt, NichtErlaubt, QuelleNichtErreichbar, ObjektNichtVorhanden,
+            BudgetErschoepft, ValueError) as exc:
         print(f"Probelauf fehlgeschlagen: {exc}")
         return 1
+    finally:
+        abrufer.schliessen()
 
 
 def cmd_crawl(args) -> int:
     stadt, quelle = _stadt_und_quelle(args)
+    if quelle.typ not in CRAWLER:
+        raise SystemExit(f"Quelltyp '{quelle.typ}' ist noch nicht implementiert. Verfügbar: {', '.join(CRAWLER)}")
+    if quelle.typ == "bauleitplanung" and (args.seit or args.nur):
+        raise SystemExit("Bauleitplanung prüft stets die ganze öffentliche Liste; --seit und --nur gelten nur für OParl.")
+    if args.max_anfragen is not None and args.max_anfragen < 1:
+        raise SystemExit("--max-anfragen muss mindestens 1 sein.")
     entitaeten = tuple(e.strip() for e in args.nur.split(",")) if args.nur else ENTITAETEN
+    if any(e not in ENTITAETEN for e in entitaeten):
+        raise SystemExit(f"Unbekannte Entität bei --nur. Erlaubt: {', '.join(ENTITAETEN)}")
     abrufer = Abrufer(kontakt=_kontakt(args), min_intervall=quelle.min_intervall_sekunden,
                       max_anfragen=args.max_anfragen)
     optionen = LaufOptionen(seit=args.seit, max_anfragen=args.max_anfragen,
                             entitaeten=entitaeten, trotz_sperre=args.trotz_sperre)
-    if quelle.typ not in CRAWLER:
-        raise SystemExit(f"Quelltyp '{quelle.typ}' ist noch nicht implementiert. Verfügbar: {', '.join(CRAWLER)}")
     try:
         with Speicher(_db_pfad(args)) as sp:
             bericht = CRAWLER[quelle.typ](sp, stadt, quelle, abrufer, optionen)
@@ -145,15 +163,21 @@ def _drucke_treffer(ergebnis: dict, v=None) -> None:
     print(f"Gefunden: {anzahl} {wort}" + (" (Auswahl begrenzt)" if ergebnis.get("kandidaten_gekappt") else ""))
     for i, t in enumerate(ergebnis["treffer"], 1):
         print()
-        print(f"{i}. „{t['titel']}“ · {t['art']} · {t['referenz']} · {t['datum_de']}")
+        meta = " · ".join(str(w) for w in (t["art"], t["referenz"], t["datum_de"]) if w)
+        print(f"{i}. {t['titel']}" + (f" · {meta}" if meta else ""))
         print(f"   Status: {t['status']['text']}")
         print(f"   {t['zusammenfassung']}")
         for e in t["verlauf"]:
+            if e.get("typ") in ("beteiligung", "beobachtung"):
+                print(f"     · {e['datum_de']} {e['ereignis']}: {e['beschreibung']}")
+                continue
             top = f" · TOP {e['top']['nummer']}" if e["top"]["nummer"] else ""
             ergebnis_txt = f" → {e['top']['ergebnis']}" if e["top"]["ergebnis"] else ""
             print(f"     · {e['datum_de'] or 'ohne Termin'} {e['gremium']}{top}{ergebnis_txt}")
-        if t["links"]["ratsinfo_vorlage"]:
-            print(f"   Link: {t['links']['ratsinfo_vorlage']}")
+        if t["links"]["original"]:
+            print(f"   Link: {t['links']['original']}")
+        for hinweis in t.get("hinweise", []):
+            print(f"   Hinweis: {hinweis}")
         if t["quelle"]["demo"]:
             print("   (Beispieldaten)")
 
@@ -164,7 +188,7 @@ def cmd_frage(args) -> int:
     with Speicher(_db_pfad(args)) as sp:
         ergebnis = suche(sp, Suchauftrag(stadt=stadt, orte=v.orte, plz=v.plz, themen=v.themen,
                                          freitext=v.freitext, von=v.von, bis=v.bis, offen=v.offen,
-                                         limit=args.limit), heute())
+                                         limit=args.limit), heute(), zeitpunkt=jetzt())
     if ergebnis.get("freitext_oder"):
         print("Hinweis: Keine Vorgänge mit allen Stichworten gefunden. Angezeigt werden Vorgänge mit mindestens einem Stichwort.")
     _drucke_treffer(ergebnis, v)
@@ -186,7 +210,7 @@ def cmd_plz(args) -> int:
         print(f"PLZ {args.plz} → Stadtteile: {namen} (Näherung, Quelle: {eintrag.quelle})")
     themen = [t.strip() for t in (args.thema or "").split(",") if t.strip()]
     with Speicher(_db_pfad(args)) as sp:
-        ergebnis = suche(sp, Suchauftrag(stadt=stadt, plz=args.plz, themen=themen, limit=args.limit), heute())
+        ergebnis = suche(sp, Suchauftrag(stadt=stadt, plz=args.plz, themen=themen, limit=args.limit), heute(), zeitpunkt=jetzt())
     _drucke_treffer(ergebnis)
     return 0
 
@@ -198,7 +222,10 @@ def cmd_demo(args) -> int:
             loesche_demo(sp, stadt)
             print("Beispieldaten entfernt.")
             return 0
-        zaehler = lade_demo(sp, stadt)
+        try:
+            zaehler = lade_demo(sp, stadt)
+        except ValueError as exc:
+            raise SystemExit(str(exc)) from exc
     print(f"Beispieldaten geladen ({demo_quell_id(stadt)}): " + ", ".join(f"{k} {v}" for k, v in zaehler.items()))
     return 0
 

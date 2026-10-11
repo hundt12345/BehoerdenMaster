@@ -14,9 +14,9 @@ Kommunale Vorgänge durchsuchen und nachvollziehbar zusammenfassen – zuerst f�
 
 ## Auf Render veröffentlichen
 
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/hundt12345/BehoerdenMaster/tree/arena/73b4ecab-behoerdenmaster)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/hundt12345/BehoerdenMaster/tree/arena/027b2661-behoerdenmaster)
 
-Die [`render.yaml`](render.yaml) konfiguriert einen Python-3.13-Web-Service in Frankfurt mit **persistenter SQLite-Disk**. **Kostenpflichtiger Tarif erforderlich** – beim Free-Service wäre die SQLite-Datei nicht dauerhaft gesichert. Der Button verwendet den aktuellen PR-Branch; nach dessen Merge kann auch `main` ausgewählt werden.
+Die [`render.yaml`](render.yaml) konfiguriert einen Python-3.13-Web-Service in Frankfurt im **kostenlosen Tarif (Render Free)**. Free hat keine persistente Disk: die SQLite-Datei liegt in `/tmp` und wird bei Neustart/Redeploy neu mit der Demo aufgebaut. Der Dienst schläft nach Inaktivität ein; der erste Aufruf danach dauert etwas länger. Für dauerhafte Daten siehe [docs/render.md](docs/render.md). Der Button verwendet den aktuellen PR-Branch; nach dessen Merge kann auch `main` ausgewählt werden.
 
 Beim ersten Start: klar markierte Offline-Demo, **automatische Behördenabrufe aus**. Optionaler Hintergrundabruf erst nach Probelauf und mit eigener Kontaktadresse; keine Live-Abfragen durch Suchanfragen. [Schritt-für-Schritt-Anleitung, Einstellungen, Live-Probe und Sicherung](docs/render.md).
 

@@ -1,31 +1,32 @@
-# Render Blueprint: ein Web-Service mit eigener SQLite-Disk (kostenpflichtig).
-# Die Disk ist nur zur Laufzeit erreichbar: keine DB-Initialisierung im Build!
+# Render Blueprint: ein kostenloser Python-Web-Service (Render Free, ohne Disk).
+# Achtung: Free-Services haben kein persistentes Dateisystem. Die SQLite-Datenbank liegt
+# in /tmp und wird bei Neustart/Redeploy/Schlafmodus neu angelegt; die klar markierte
+# Offline-Demo wird dann beim Start automatisch wieder geladen. Live-Abrufe sind aus.
+# Für dauerhafte Daten: plan auf einen bezahlten Tarif und eine Disk (siehe docs/render.md).
 # Branch absichtlich nicht festgelegt: Render verwendet den ausgewählten Blueprint-Branch.
 services:
   - type: web
     name: behoerdenmaster
     runtime: python
     region: frankfurt
-    plan: 0.5c-512mb
+    plan: free
     numInstances: 1
     autoDeployTrigger: "off"
     buildCommand: python -m pip install -e .
     startCommand: python -m behoerdenmaster -v serve --host 0.0.0.0 --port $PORT
     healthCheckPath: /healthz
     maxShutdownDelaySeconds: 60
-    disk:
-      name: behoerdenmaster-data
-      mountPath: /var/data
-      sizeGB: 1
     envVars:
+      - key: PYTHON_VERSION
+        value: "3.13"
       - key: BEHOERDEN_DB
-        value: /var/data/behoerdenmaster.sqlite
+        value: /tmp/behoerdenmaster/behoerdenmaster.sqlite
       - key: BEHOERDEN_CONFIG_DIR
         value: /opt/render/project/src/config/cities
       # Einmalige, in jedem Treffer markierte Demo, damit der erste Deploy etwas zeigt.
       - key: BEHOERDEN_DEMO
         value: "true"
-      # Erst nach einem erfolgreichen kleinen Probelauf und geklärten Abrufgrenzen aktivieren.
+      # Live-Abrufe bleiben aus. Vor Aktivierung Probelauf und Abrufgrenzen klären.
       - key: BEHOERDEN_SYNC_ENABLED
         value: "false"
       - key: BEHOERDEN_SYNC_QUELLEN

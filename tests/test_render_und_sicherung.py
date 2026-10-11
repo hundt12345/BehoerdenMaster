@@ -36,7 +36,7 @@ def test_render_blueprint_passt_zum_sqlite_betrieb():
     assert len(daten["services"]) == 1
     service = daten["services"][0]
     assert service["type"] == "web" and service["runtime"] == "python"
-    assert service["region"] == "frankfurt" and service["plan"] == "0.5c-512mb"
+    assert service["region"] == "frankfurt" and service["plan"] == "free"
     assert service["numInstances"] == 1
     assert service["autoDeployTrigger"] == "off"  # String, nicht YAML-1.1-Boolean
     assert "branch" not in service  # folgt dem vom Nutzer ausgewählten Blueprint-Branch
@@ -44,10 +44,10 @@ def test_render_blueprint_passt_zum_sqlite_betrieb():
     assert service["startCommand"] == "python -m behoerdenmaster -v serve --host 0.0.0.0 --port $PORT"
     assert "preDeployCommand" not in service
     assert service["healthCheckPath"] == "/healthz" and service["maxShutdownDelaySeconds"] >= 60
-    disk = service["disk"]
-    assert disk["mountPath"] == "/var/data" and disk["sizeGB"] >= 1
+    # Render Free: keine Disk; die SQLite-Datei liegt flüchtig in /tmp und wird bei Start per Demo neu aufgebaut.
+    assert "disk" not in service
     env = {e["key"]: e for e in service["envVars"]}
-    assert Path(env["BEHOERDEN_DB"]["value"]).is_relative_to(disk["mountPath"])
+    assert Path(env["BEHOERDEN_DB"]["value"]).is_relative_to("/tmp")
     assert env["BEHOERDEN_SYNC_ENABLED"]["value"] == "false"
     assert env["BEHOERDEN_DEMO"]["value"] == "true"
     assert env["WEB_CONCURRENCY"]["value"] == "1"

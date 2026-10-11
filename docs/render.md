@@ -1,8 +1,8 @@
 # BehoerdenMaster auf Render veröffentlichen
 
-Das Repository enthält eine fertige [`render.yaml`](../render.yaml) für **einen nativen Python-Web-Service in Frankfurt**, mit persistenter SQLite-Disk. Es ist kein Docker, separater Worker, externer Sprachmodellschlüssel oder PostgreSQL erforderlich.
+Das Repository enthält eine fertige [`render.yaml`](../render.yaml) für **einen nativen Python-Web-Service in Frankfurt im kostenlosen Tarif (Render Free)**. Es ist kein Docker, separater Worker, externer Sprachmodellschlüssel oder PostgreSQL erforderlich.
 
-**Wichtig: Dieser Aufbau ist kostenpflichtig.** Die Blueprint wählt den Web-Tarif `0.5c-512mb` und eine 1-GB-Disk. Kosten und verfügbaren Tarif vor dem Bestätigen im Render-Dialog prüfen. **Render Free ist für diesen SQLite-Aufbau nicht geeignet:** ohne persistente Disk geht der lokal aufgebaute Bestand bei Neustart/Redeploy verloren. Das Einchecken der Datenbank ersetzt keine Disk.
+**Wichtig: Render Free hat kein persistentes Dateisystem.** Die SQLite-Datenbank liegt in `/tmp/behoerdenmaster/` und geht bei Neustart, Redeploy oder nach dem Schlafmodus verloren. Der Dienst wird dann mit der Offline-Demo neu aufgebaut, das ist für eine Homepage-Demo ausreichend. Eigene Daten, die bleiben sollen, brauchen einen bezahlten Tarif mit Disk: dann `plan` auf z. B. `0.5c-512mb` setzen, einen `disk`-Block mit `mountPath: /var/data` ergänzen und `BEHOERDEN_DB` auf `/var/data/behoerdenmaster.sqlite` setzen. Das Einchecken der Datenbank ersetzt keine Disk.
 
 Der erste Deploy zeigt ausschließlich die **klar markierte Offline-Demo vom 09.10.2026**. Automatische Behördenabrufe sind standardmäßig **ausgeschaltet**. Es wurde kein Service in deinem Konto angelegt; die Veröffentlichung führst du mit den folgenden Schritten selbst aus.
 
@@ -11,11 +11,13 @@ Der erste Deploy zeigt ausschließlich die **klar markierte Offline-Demo vom 09.
 1. Bei Render anmelden und dem Render-GitHub-Zugriff dieses Repository freigeben (besonders bei einem privaten Repository).
 2. Für den aktuellen, noch nicht gemergten Pull Request diesen Link öffnen:
 
-   **[Auf Render bereitstellen](https://render.com/deploy?repo=https://github.com/hundt12345/BehoerdenMaster/tree/arena/73b4ecab-behoerdenmaster)**
+   **[Auf Render bereitstellen](https://render.com/deploy?repo=https://github.com/hundt12345/BehoerdenMaster/tree/arena/027b2661-behoerdenmaster)**
 
-   Alternativ im Render-Dashboard **New → Blueprint**, Repository `hundt12345/BehoerdenMaster`, Branch **`arena/73b4ecab-behoerdenmaster`**, Blueprint-Pfad **`render.yaml`** auswählen. Nach dem Merge kannst du stattdessen `main` verwenden. Die YAML legt keinen Branch fest und folgt dem beim Blueprint ausgewählten Branch.
-3. Namen, **Region Frankfurt**, kostenpflichtigen Tarif und die Disk `/var/data` kontrollieren. Bei `BEHOERDEN_KONTAKT` eine **eigene erreichbare Kontaktadresse** eingeben; sie wird für den identifizierbaren Crawler-User-Agent benötigt. Keine GitHub-/Render-Zugangsdaten eingeben! Der Kontakt steht nicht im Repository und wird nicht über `/api/status` ausgegeben.
-4. Ressourcen erst nach Prüfung der Kosten anlegen. Render baut mit `python -m pip install -e .` und startet den Web-Service mit:
+   **Wichtig:** Ein manuell angelegter Web-Service muss **Runtime = Python 3** haben. Steht dort `Node` und Start `npm start`, meldet Render den Fehler `Could not read package.json`, weil dieses Repository kein Node-Projekt ist. Den Service dann mit dem Blueprint neu anlegen oder Runtime/Build-/Start-Befehl wie in Schritt 4 setzen.
+
+   Alternativ im Render-Dashboard **New → Blueprint**, Repository `hundt12345/BehoerdenMaster`, Branch **`arena/027b2661-behoerdenmaster`**, Blueprint-Pfad **`render.yaml`** auswählen. Nach dem Merge kannst du stattdessen `main` verwenden. Die YAML legt keinen Branch fest und folgt dem beim Blueprint ausgewählten Branch.
+3. Namen, **Region Frankfurt** und den Tarif **Free** kontrollieren. Bei `BEHOERDEN_KONTAKT` eine **eigene erreichbare Kontaktadresse** eingeben; sie wird für den identifizierbaren Crawler-User-Agent benötigt. Keine GitHub-/Render-Zugangsdaten eingeben! Der Kontakt steht nicht im Repository und wird nicht über `/api/status` ausgegeben.
+4. Render baut mit `python -m pip install -e .` und startet den Web-Service mit:
 
    ```bash
    python -m behoerdenmaster -v serve --host 0.0.0.0 --port $PORT
@@ -33,7 +35,7 @@ Unter **Service → Environment** verwalten; Änderungen anschließend deployen.
 
 | Variable | Blueprint-Wert / Zweck |
 |---|---|
-| `BEHOERDEN_DB` | **`/var/data/behoerdenmaster.sqlite`**, unbedingt innerhalb der Disk belassen |
+| `BEHOERDEN_DB` | `/tmp/behoerdenmaster/behoerdenmaster.sqlite` (Free, flüchtig). Mit bezahlter Disk: `/var/data/behoerdenmaster.sqlite` |
 | `BEHOERDEN_CONFIG_DIR` | `/opt/render/project/src/config/cities` |
 | `BEHOERDEN_DEMO` | `true`: einmalige Demo nur bei leerem Bestand; `false` für einen leeren produktiven Erststart |
 | `BEHOERDEN_KONTAKT` | eigene erreichbare Adresse; für Live-Abrufe Pflicht |

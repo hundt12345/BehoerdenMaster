@@ -55,9 +55,38 @@ def test_render_blueprint_passt_zum_sqlite_betrieb():
     assert env["BEHOERDEN_SYNC_SEIT"]["value"].endswith("d") or env["BEHOERDEN_SYNC_SEIT"]["value"].isdigit()
     assert env["BEHOERDEN_DEMO"]["value"] == "false"
     assert env["WEB_CONCURRENCY"]["value"] == "1"
-    assert env["BEHOERDEN_KONTAKT"]["sync"] is False and "value" not in env["BEHOERDEN_KONTAKT"]
+    # Die Kontaktadresse steht als Wert im Blueprint, damit der Deploy ohne Rückfrage
+    # abruft. Geprüft wird hier nur die Form: Sie landet in einem HTTP-Header.
+    kontakt = env["BEHOERDEN_KONTAKT"]["value"]
+    assert "@" in kontakt and not any(c in kontakt for c in "\r\n\"'")
     assert all(isinstance(e["value"], str) for e in env.values() if "value" in e)
     assert (PROJEKTWURZEL / ".python-version").read_text().strip() == "3.13"
+
+
+def test_blueprint_umgebung_ergibt_einen_arbeitsfaehigen_abruf():
+    """Die Env-Werte des Blueprints müssen zusammen einen lauffähigen Abruf ergeben.
+
+    Der veröffentlichte Dienst lief einmal ohne Daten, weil die Werte des Blueprints am
+    Service nicht wirksam waren. Dieser Test prüft die Werte selbst gegen denselben Code,
+    der sie zur Laufzeit auswertet – einschließlich der Quell-IDs, die der Sync-Dienst
+    sonst erst beim Start ablehnen würde.
+    """
+    from behoerdenmaster.betrieb import Betrieb, SyncDienst
+    from behoerdenmaster.config import lade_staedte
+
+    service = yaml.safe_load((PROJEKTWURZEL / "render.yaml").read_text())["services"][0]
+    env = {e["key"]: e["value"] for e in service["envVars"] if "value" in e}
+
+    betrieb = Betrieb.aus_umgebung(env, streng=True)  # darf nicht abbrechen
+    assert betrieb.sync_aktiv is True, betrieb.warnungen
+    assert betrieb.warnungen == ()
+    assert betrieb.kontakt and betrieb.demo is False
+    assert betrieb.sync_quellen == ("koeln:ris",)
+    assert betrieb.seit_datum() is not None  # begrenztes Erstabruf-Fenster statt Wahlperiode
+
+    staedte = lade_staedte(PROJEKTWURZEL / "config" / "cities")
+    dienst = SyncDienst("/tmp/vertrag.sqlite", staedte, betrieb, abrufer_factory=lambda **kw: None)
+    assert tuple(dienst.quellen) == ("koeln:ris",)
 
 
 def test_port_env_und_explizite_port_option(monkeypatch):

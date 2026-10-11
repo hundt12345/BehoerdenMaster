@@ -31,9 +31,8 @@ services:
       - key: BEHOERDEN_DEMO
         value: "false"
       # Automatischer Abruf der einen Quelle, die derzeit verlässlich antwortet.
-      # Wirksam erst, wenn BEHOERDEN_KONTAKT gesetzt ist (siehe unten). Ohne Kontaktadresse
-      # bleibt der Abruf ausgeschaltet und die Seite meldet das sichtbar, statt zu starten
-      # und still nichts zu tun.
+      # Ohne BEHOERDEN_KONTAKT bliebe er ausgeschaltet und die Seite würde das sichtbar
+      # melden, statt zu starten und still nichts zu tun.
       - key: BEHOERDEN_SYNC_ENABLED
         value: "true"
       - key: BEHOERDEN_SYNC_QUELLEN
@@ -48,10 +47,13 @@ services:
         value: "120"
       - key: BEHOERDEN_SYNC_STARTVERZOEGERUNG
         value: "15"
-      # Render fragt nach der eigenen erreichbaren Kontaktadresse; kein Wert im Git-Repo.
-      # Diese Angabe ist die Voraussetzung dafür, dass überhaupt abgerufen wird.
+      # Kontaktadresse im User-Agent: Voraussetzung dafür, dass überhaupt abgerufen wird.
+      # Bewusst als Wert im Blueprint, damit der Deploy ohne Rückfrage lauffähig ist.
+      # Die Adresse ist damit im Repository öffentlich und wird an die Behörde übermittelt;
+      # das ist ihr Zweck. Wer sie nicht veröffentlichen will, setzt stattdessen `sync: false`
+      # und trägt sie im Dashboard ein. Keine Zugangsdaten, nur eine Kontaktadresse.
       - key: BEHOERDEN_KONTAKT
-        sync: false
+        value: "behordenkontakt123@posteo.de"
       - key: WEB_CONCURRENCY
         value: "1"
       - key: PYTHONUNBUFFERED

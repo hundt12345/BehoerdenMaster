@@ -4,19 +4,19 @@ Das Repository enthält eine fertige [`render.yaml`](../render.yaml) für **eine
 
 **Wichtig: Render Free hat kein persistentes Dateisystem.** Die SQLite-Datenbank liegt in `/tmp/behoerdenmaster/` und geht bei Neustart, Redeploy oder nach dem Schlafmodus verloren. Sie wird dann vom Hintergrundabruf neu gefüllt. Damit dieser Erstabruf nach jedem Neustart klein und höflich bleibt, begrenzt `BEHOERDEN_SYNC_SEIT` ihn auf ein **rollierendes Fenster** (Blueprint: 90 Tage) statt auf den Wahlperiodenbeginn aus `koeln.toml`. Eigene Daten, die ohne erneuten Abruf bleiben sollen, brauchen einen bezahlten Tarif mit Disk: dann `plan` auf z. B. `0.5c-512mb` setzen, einen `disk`-Block mit `mountPath: /var/data` ergänzen und `BEHOERDEN_DB` auf `/var/data/behoerdenmaster.sqlite` setzen. Das Einchecken der Datenbank ersetzt keine Disk.
 
-Der Blueprint ruft **eine Quelle automatisch ab**: das Ratsinformationssystem Köln (OParl). Beispieldaten sind ausgeschaltet (`BEHOERDEN_DEMO=false`), damit die Seite keine Offline-Auszüge als Treffer ausgibt. Der Abruf wird erst wirksam, sobald `BEHOERDEN_KONTAKT` gesetzt ist; ohne Kontaktadresse bleibt er ausgeschaltet und die Startseite sagt das ausdrücklich, statt still nichts anzuzeigen. Es wurde kein Service in deinem Konto angelegt; die Veröffentlichung führst du mit den folgenden Schritten selbst aus.
+Der Blueprint ruft **eine Quelle automatisch ab**: das Ratsinformationssystem Köln (OParl). Beispieldaten sind ausgeschaltet (`BEHOERDEN_DEMO=false`), damit die Seite keine Offline-Auszüge als Treffer ausgibt. Die Kontaktadresse für den Crawler-User-Agent ist im Blueprint hinterlegt, der Deploy ist damit ohne weitere Rückfrage abrufbereit. Wird `BEHOERDEN_KONTAKT` entfernt oder leer gesetzt, bleibt der Abruf ausgeschaltet und die Startseite sagt das ausdrücklich, statt still nichts anzuzeigen. Es wurde kein Service in deinem Konto angelegt; die Veröffentlichung führst du mit den folgenden Schritten selbst aus.
 
 ## 1. Blueprint anlegen
 
 1. Bei Render anmelden und dem Render-GitHub-Zugriff dieses Repository freigeben (besonders bei einem privaten Repository).
 2. Für den aktuellen, noch nicht gemergten Pull Request diesen Link öffnen:
 
-   **[Auf Render bereitstellen](https://render.com/deploy?repo=https://github.com/hundt12345/BehoerdenMaster/tree/arena/027b2661-behoerdenmaster)**
+   **[Auf Render bereitstellen](https://render.com/deploy?repo=https://github.com/hundt12345/BehoerdenMaster/tree/arena/7f3e44a8-behoerdenmaster)**
 
    **Wichtig:** Ein manuell angelegter Web-Service muss **Runtime = Python 3** haben. Steht dort `Node` und Start `npm start`, meldet Render den Fehler `Could not read package.json`, weil dieses Repository kein Node-Projekt ist. Den Service dann mit dem Blueprint neu anlegen oder Runtime/Build-/Start-Befehl wie in Schritt 4 setzen.
 
-   Alternativ im Render-Dashboard **New → Blueprint**, Repository `hundt12345/BehoerdenMaster`, Branch **`arena/027b2661-behoerdenmaster`**, Blueprint-Pfad **`render.yaml`** auswählen. Nach dem Merge kannst du stattdessen `main` verwenden. Die YAML legt keinen Branch fest und folgt dem beim Blueprint ausgewählten Branch.
-3. Namen, **Region Frankfurt** und den Tarif **Free** kontrollieren. Bei `BEHOERDEN_KONTAKT` eine **eigene erreichbare Kontaktadresse** eingeben; sie wird für den identifizierbaren Crawler-User-Agent benötigt. Keine GitHub-/Render-Zugangsdaten eingeben! Der Kontakt steht nicht im Repository und wird nicht über `/api/status` ausgegeben.
+   Alternativ im Render-Dashboard **New → Blueprint**, Repository `hundt12345/BehoerdenMaster`, Branch **`arena/7f3e44a8-behoerdenmaster`**, Blueprint-Pfad **`render.yaml`** auswählen. Nach dem Merge kannst du stattdessen `main` verwenden. Die YAML legt keinen Branch fest und folgt dem beim Blueprint ausgewählten Branch.
+3. Namen, **Region Frankfurt** und den Tarif **Free** kontrollieren. `BEHOERDEN_KONTAKT` ist im Blueprint auf `behordenkontakt123@posteo.de` gesetzt; sie landet im User-Agent jeder Anfrage an die Behörde und ist über das Repository öffentlich. Zum Wechseln unter **Service → Environment** ändern. Keine GitHub-/Render-Zugangsdaten eingeben! Über `/api/status` wird die Adresse nie ausgegeben.
 4. Render baut mit `python -m pip install -e .` und startet den Web-Service mit:
 
    ```bash
@@ -38,7 +38,7 @@ Unter **Service → Environment** verwalten; Änderungen anschließend deployen.
 | `BEHOERDEN_DB` | `/tmp/behoerdenmaster/behoerdenmaster.sqlite` (Free, flüchtig). Mit bezahlter Disk: `/var/data/behoerdenmaster.sqlite` |
 | `BEHOERDEN_CONFIG_DIR` | `/opt/render/project/src/config/cities` |
 | `BEHOERDEN_DEMO` | **`false`**: kein Seeding mit Offline-Beispielen. `true` lädt die einmalige, klar markierte Demo nur bei leerem Bestand |
-| `BEHOERDEN_KONTAKT` | eigene erreichbare Adresse; **Voraussetzung dafür, dass überhaupt abgerufen wird** |
+| `BEHOERDEN_KONTAKT` | `behordenkontakt123@posteo.de`; **Voraussetzung dafür, dass überhaupt abgerufen wird.** Steht im Repository und im User-Agent; zum Wechseln hier ändern |
 | `BEHOERDEN_SYNC_ENABLED` | **`true`**; `false` schaltet Hintergrundabrufe aus |
 | `BEHOERDEN_SYNC_QUELLEN` | **`koeln:ris`**; kommagetrennte vollständige Quell-IDs. Leer = alle konfigurierten Quellen. |
 | `BEHOERDEN_SYNC_SEIT` | **`90`** = rollierend die letzten 90 Tage; alternativ festes Datum `YYYY-MM-DD`. Leer = `seit` aus `config/cities/koeln.toml`. Gilt nur für den Erstabruf, Folgeläufe nutzen den gespeicherten Änderungsstand. |
@@ -82,7 +82,7 @@ Der Blueprint schaltet sie für `koeln:ris` bereits ein. Wirksam wird sie erst m
 
 ```text
 BEHOERDEN_SYNC_ENABLED=true
-BEHOERDEN_KONTAKT=<deine eigene erreichbare Kontaktadresse>
+BEHOERDEN_KONTAKT=behordenkontakt123@posteo.de
 BEHOERDEN_SYNC_QUELLEN=koeln:ris,koeln:bauleitplanung
 BEHOERDEN_SYNC_SEIT=90
 BEHOERDEN_SYNC_INTERVALL=21600

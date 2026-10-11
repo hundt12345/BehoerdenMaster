@@ -83,6 +83,7 @@ class Abrufer:
     client: httpx.Client | None = None
     sleep: Callable[[float], None] = time.sleep
     clock: Callable[[], float] = time.monotonic
+    soll_abbrechen: Callable[[], bool] | None = None
     anfragen: int = 0
     _letzte: float = field(default=-1e9, init=False)
     _robots: dict[str, Protego] = field(default_factory=dict, init=False)
@@ -108,6 +109,8 @@ class Abrufer:
         self._letzte = self.clock()
 
     def _zaehle(self) -> None:
+        if self.soll_abbrechen and self.soll_abbrechen():
+            raise BudgetErschoepft("Service wird beendet; der nächste Abruf setzt fort")
         if self.max_anfragen is not None and self.anfragen >= self.max_anfragen:
             raise BudgetErschoepft(f"Anfragebudget von {self.max_anfragen} erreicht")
         self.anfragen += 1

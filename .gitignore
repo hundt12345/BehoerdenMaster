@@ -12,6 +12,7 @@ data/
 *.sqlite-journal
 *.sqlite-wal
 *.sqlite-shm
+*.crawl.lock
 
 # Lokale Umgebung
 .env

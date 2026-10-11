@@ -16,7 +16,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8", "pyflakes>=3.2"]
+dev = ["pytest>=8", "pyflakes>=3.2", "PyYAML>=6"]
 
 [project.scripts]
 behoerdenmaster = "behoerdenmaster.cli:main"

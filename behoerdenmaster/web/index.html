@@ -326,6 +326,11 @@
       }
       const abrufe = echte.map((q) => `${q.name}: ${q.letzter_erfolg ? "Stand " + q.letzter_erfolg.slice(0, 16).replace("T", " ") : "noch nicht abgerufen"} (${q.status})`);
       $("stand").textContent = abrufe.length ? "Datenstand · " + abrufe.join(" · ") : "Datenstand: Offline-Beispiele vom 09.10.2026; noch kein Live-Abruf.";
+      if (s.betrieb) {
+        $("stand").textContent += s.betrieb.automatische_abrufe
+          ? (s.betrieb.sync_dienst_laeuft ? " · Automatische Aktualisierung im Hintergrund aktiv." : " · Automatische Aktualisierung konfiguriert, Dienst derzeit nicht aktiv.")
+          : " · Automatische Aktualisierung ausgeschaltet.";
+      }
     } catch (e) { $("stand").textContent = "Status nicht verfügbar."; }
   }
   status();

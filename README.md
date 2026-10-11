@@ -12,6 +12,14 @@ Kommunale Vorgänge durchsuchen und nachvollziehbar zusammenfassen – zuerst f�
   - Bauleitplanung: Beteiligungszeitraum, Phase und **lokal beobachtete Inhaltsänderungen**. Keine erfundene Ratsberatung und keine Behauptung einer vollständigen amtlichen Historie.
 - Weboberfläche, FastAPI und CLI lesen ausschließlich die lokale SQLite-Datenbank. **Suchanfragen lösen keine Behördenabrufe aus.**
 
+## Auf Render veröffentlichen
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/hundt12345/BehoerdenMaster/tree/arena/73b4ecab-behoerdenmaster)
+
+Die [`render.yaml`](render.yaml) konfiguriert einen Python-3.13-Web-Service in Frankfurt mit **persistenter SQLite-Disk**. **Kostenpflichtiger Tarif erforderlich** – beim Free-Service wäre die SQLite-Datei nicht dauerhaft gesichert. Der Button verwendet den aktuellen PR-Branch; nach dessen Merge kann auch `main` ausgewählt werden.
+
+Beim ersten Start: klar markierte Offline-Demo, **automatische Behördenabrufe aus**. Optionaler Hintergrundabruf erst nach Probelauf und mit eigener Kontaktadresse; keine Live-Abfragen durch Suchanfragen. [Schritt-für-Schritt-Anleitung, Einstellungen, Live-Probe und Sicherung](docs/render.md).
+
 ## Schnellstart – auch ohne Netz
 
 Voraussetzungen: Python 3.11 oder neuer; Befehle im ausgecheckten Repository ausführen.
@@ -162,14 +170,23 @@ Bestehende SQLite-Dateien werden beim Öffnen additiv erweitert; vorhandene Rats
 
 | Methode | Pfad | Zweck |
 |---|---|---|
-| GET | `/api/status` | Quellen, Bestand, letzte Läufe und Server-Pausen |
+| GET / HEAD | `/healthz` | Lokaler Datenbank-Healthcheck (200/503), keine Behördenabfrage |
+| GET | `/api/status` | Quellen, Bestand, letzte Läufe, Server-Pausen und Hintergrundabruf-Status |
 | POST | `/api/frage` | `{"frage":"…","stadt":"koeln","limit":10,"offset":0}` |
 | GET | `/api/plz/{plz}?thema=bauen,verkehr&stadt=koeln` | PLZ-Suche |
 | GET | `/api/vorgang?id=<URL-kodierte-Quell-ID>&stadt=koeln` | Detail mit Verlauf/Dokumenten; auf die gewählte Stadt beschränkt |
 
 `links.original` / `original_text` zeigen die richtige Quellansicht. OParl-spezifische Linkfelder bleiben erhalten, sind bei Bauleitplanung aber `null`. Bauleittreffer haben zusätzlich `beteiligung` und quellspezifische `hinweise`; `verlauf[].typ` trennt Beteiligungsdaten von Abrufbeobachtungen. Interaktive API-Dokumentation: `/docs`.
 
-Für Netzwerk-/Preview-Zugriff: `python -m behoerdenmaster serve --host 0.0.0.0 --port 8000`. Der Browser spricht dieselbe Anwendung über relative `/api`-URLs an; kein browserseitiger Zugriff auf ein Sandbox-`localhost`.
+Für Netzwerk-/Preview-Zugriff: `python -m behoerdenmaster serve --host 0.0.0.0 --port 8000`. Ohne `--port` gilt `$PORT` (Render) oder lokal 8000. Der Browser spricht dieselbe Anwendung über relative `/api`-URLs an; kein browserseitiger Zugriff auf ein Sandbox-`localhost`. Ein Web-Lifespan initialisiert das Schema und startet nur bei `BEHOERDEN_SYNC_ENABLED=true` die Hintergrund-Aktualisierung. Es gibt keinen öffentlichen Crawl-/Admin-Endpunkt; manuelle Abrufe laufen über die CLI und teilen sich mit dem Hintergrunddienst eine Dateisperre.
+
+## Datenbank sichern
+
+```bash
+python -m behoerdenmaster backup data/backups/behoerdenmaster-sicherung.sqlite
+```
+
+Die SQLite-Backup-API erzeugt eine geprüfte, eigenständige Sicherung einschließlich WAL. Vorhandene Zieldateien werden nicht überschrieben. Eine Kopie auf derselben Disk allein ist noch kein Backup gegen Disk-Verlust; unabhängig aufbewahren. Keine aktive SQLite-Datei allein mit `cp` sichern und keine Wiederherstellung bei laufendem Web-/Sync-Prozess durchführen. Weitere Hinweise: [Render-Anleitung](docs/render.md#5-demo-entfernen-daten-sichern-redeploys).
 
 ## Tests
 
@@ -178,7 +195,7 @@ pytest -q
 python -m pyflakes behoerdenmaster tests
 ```
 
-Offline getestet werden Fragen/Orte, beide Quelladapter, JSON-/HTML-Schema, Organisationsfilter, sichere Links/Weiterleitungen, robots, Backoff/HTTP-Datum, Budget, Pagination/Fortsetzung, atomare Checkpoints, KeyboardInterrupt, Cooldown über Prozessgrenzen, Schema-Migration, fehlende Verfahren, Änderungs-Snapshots, Demo-/Echtdaten-Trennung, Suche, API und CLI. GitHub Actions führt die Python-Tests und eine JavaScript-Syntaxprüfung aus; **keine Live-Behördenabfragen** in der CI.
+Offline getestet werden Fragen/Orte, beide Quelladapter, JSON-/HTML-Schema, Organisationsfilter, sichere Links/Weiterleitungen, robots, Backoff/HTTP-Datum, Budget, Pagination/Fortsetzung, atomare Checkpoints, KeyboardInterrupt, Cooldown über Prozessgrenzen, Schema-Migration, fehlende Verfahren, Änderungs-Snapshots, Demo-/Echtdaten-Trennung, Suche, API und CLI sowie Render-Blueprint, Startup/Healthcheck, Einmal-Seeding, Neustart-Fälligkeit, Hintergrundabruf/Shutdown, Prozesssperre und WAL-Sicherung. GitHub Actions führt die Python-Tests und eine JavaScript-Syntaxprüfung aus; **keine Live-Behördenabfragen** in der CI.
 
 ## Lizenz und Datenschutz
 

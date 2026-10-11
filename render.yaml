@@ -1,0 +1,48 @@
+# Render Blueprint: ein Web-Service mit eigener SQLite-Disk (kostenpflichtig).
+# Die Disk ist nur zur Laufzeit erreichbar: keine DB-Initialisierung im Build!
+# Branch absichtlich nicht festgelegt: Render verwendet den ausgewählten Blueprint-Branch.
+services:
+  - type: web
+    name: behoerdenmaster
+    runtime: python
+    region: frankfurt
+    plan: 0.5c-512mb
+    numInstances: 1
+    autoDeployTrigger: "off"
+    buildCommand: python -m pip install -e .
+    startCommand: python -m behoerdenmaster -v serve --host 0.0.0.0 --port $PORT
+    healthCheckPath: /healthz
+    maxShutdownDelaySeconds: 60
+    disk:
+      name: behoerdenmaster-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: BEHOERDEN_DB
+        value: /var/data/behoerdenmaster.sqlite
+      - key: BEHOERDEN_CONFIG_DIR
+        value: /opt/render/project/src/config/cities
+      # Einmalige, in jedem Treffer markierte Demo, damit der erste Deploy etwas zeigt.
+      - key: BEHOERDEN_DEMO
+        value: "true"
+      # Erst nach einem erfolgreichen kleinen Probelauf und geklärten Abrufgrenzen aktivieren.
+      - key: BEHOERDEN_SYNC_ENABLED
+        value: "false"
+      - key: BEHOERDEN_SYNC_QUELLEN
+        value: koeln:bauleitplanung,koeln:ris
+      - key: BEHOERDEN_SYNC_INTERVALL
+        value: "21600"
+      - key: BEHOERDEN_SYNC_MAX_ANFRAGEN
+        value: "100"
+      - key: BEHOERDEN_SYNC_STARTVERZOEGERUNG
+        value: "30"
+      # Render fragt nach der eigenen erreichbaren Kontaktadresse; kein Wert im Git-Repo.
+      - key: BEHOERDEN_KONTAKT
+        sync: false
+      - key: WEB_CONCURRENCY
+        value: "1"
+      - key: PYTHONUNBUFFERED
+        value: "1"
+      # Render terminiert HTTPS vor Uvicorn.
+      - key: FORWARDED_ALLOW_IPS
+        value: "*"

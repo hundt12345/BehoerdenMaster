@@ -328,6 +328,9 @@ def crawle_bauleitplanung(speicher: Speicher, stadt: Stadt, quelle: Quelle,
     except KeyboardInterrupt:
         bericht.status, bericht.fehlertext = "teilweise", "Manuell abgebrochen; der nächste Lauf setzt fort"
         raise
+    except Exception as exc:
+        bericht.status, bericht.fehlertext = "fehler", f"Unerwarteter Abruffehler ({type(exc).__name__})"
+        raise
     finally:
         bericht.anfragen = abrufer.anfragen
         speicher.lauf_beenden(lauf, bericht.status, bericht.anfragen, bericht.zaehler, bericht.fehlertext)

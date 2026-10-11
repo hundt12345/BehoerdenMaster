@@ -17,6 +17,10 @@ from pathlib import Path
 from typing import Iterable
 
 SCHEMA = """
+CREATE TABLE IF NOT EXISTS betrieb_meta (
+    schluessel TEXT PRIMARY KEY,
+    wert TEXT NOT NULL
+);
 CREATE TABLE IF NOT EXISTS quelle (
     id TEXT PRIMARY KEY,
     stadt TEXT NOT NULL,
@@ -247,6 +251,16 @@ class Speicher:
             f"ON CONFLICT({','.join(pk)}) DO UPDATE SET {setz}"
         )
         self.db.execute(sql, [zeile[c] for c in spalten])
+
+    # --- Startmarker (nur lokal, keine öffentlichen Umgebungswerte) ---------------
+
+    def betrieb_wert(self, schluessel: str) -> str:
+        zeile = self.db.execute("SELECT wert FROM betrieb_meta WHERE schluessel=?", (schluessel,)).fetchone()
+        return zeile["wert"] if zeile else ""
+
+    def betrieb_setzen(self, schluessel: str, wert: str) -> None:
+        with self.transaktion():
+            self._upsert("betrieb_meta", {"schluessel": schluessel, "wert": wert}, pk=("schluessel",))
 
     # --- Quellen und Läufe -------------------------------------------------
 

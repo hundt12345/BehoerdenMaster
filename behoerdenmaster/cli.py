@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import logging
 import os
+import sqlite3
 import sys
 from pathlib import Path
 
@@ -13,11 +14,13 @@ from .abruf import Abrufer, BudgetErschoepft, NichtErlaubt, ObjektNichtVorhanden
 from .auswertung import heute, jetzt
 from .bauleitplanung import BauleitplanungQuelle
 from .config import Quelle, Stadt, config_verzeichnis, lade_staedte
+from .crawl_sperre import CrawlLaeuft, crawl_sperre
 from .crawler import CRAWLER, ENTITAETEN, CrawlVerweigert, LaufOptionen
 from .demo import demo_quell_id, lade_demo, loesche_demo
 from .geo import Gazetteer
 from .nlq import verstehe
 from .oparl import OParlQuelle
+from .sicherung import sichere_datenbank
 from .speicher import Speicher
 from .suche import Suchauftrag, suche
 
@@ -77,6 +80,12 @@ def cmd_status(args) -> int:
 
 
 def cmd_probe(args) -> int:
+    """Auch Probeläufe nicht parallel zu einem anderen Abruf starten; keine DB-Schreibvorgänge."""
+    with crawl_sperre(_db_pfad(args)):
+        return _probe(args)
+
+
+def _probe(args) -> int:
     """Prüft Erreichbarkeit mit höchstens 5 Anfragen, ohne Daten zu speichern."""
     stadt, quelle = _stadt_und_quelle(args)
     # Ein Probelauf wiederholt nicht: Er soll nur zeigen, ob die Quelle jetzt antwortet.
@@ -126,9 +135,9 @@ def cmd_crawl(args) -> int:
     optionen = LaufOptionen(seit=args.seit, max_anfragen=args.max_anfragen,
                             entitaeten=entitaeten, trotz_sperre=args.trotz_sperre)
     try:
-        with Speicher(_db_pfad(args)) as sp:
+        with crawl_sperre(_db_pfad(args)), Speicher(_db_pfad(args)) as sp:
             bericht = CRAWLER[quelle.typ](sp, stadt, quelle, abrufer, optionen)
-    except CrawlVerweigert as exc:
+    except (CrawlVerweigert, CrawlLaeuft) as exc:
         print(exc)
         return 3
     finally:
@@ -217,7 +226,7 @@ def cmd_plz(args) -> int:
 
 def cmd_demo(args) -> int:
     stadt = _stadt(args.stadt)
-    with Speicher(_db_pfad(args)) as sp:
+    with crawl_sperre(_db_pfad(args)), Speicher(_db_pfad(args)) as sp:
         if args.loeschen:
             loesche_demo(sp, stadt)
             print("Beispieldaten entfernt.")
@@ -227,6 +236,16 @@ def cmd_demo(args) -> int:
         except ValueError as exc:
             raise SystemExit(str(exc)) from exc
     print(f"Beispieldaten geladen ({demo_quell_id(stadt)}): " + ", ".join(f"{k} {v}" for k, v in zaehler.items()))
+    return 0
+
+
+def cmd_backup(args) -> int:
+    try:
+        pfad = sichere_datenbank(_db_pfad(args), args.ziel)
+    except (OSError, sqlite3.Error, ValueError) as exc:
+        print(f"Sicherung fehlgeschlagen: {exc}", file=sys.stderr)
+        return 2
+    print(f"Konsistente SQLite-Sicherung erstellt: {pfad}")
     return 0
 
 
@@ -251,6 +270,8 @@ def baue_parser() -> argparse.ArgumentParser:
     sub = p.add_subparsers(dest="befehl", required=True)
 
     sub.add_parser("status", help="Quellen, Bestand und letzte Läufe anzeigen")
+    pb = sub.add_parser("backup", help="Konsistente SQLite-Sicherung (einschließlich WAL) erstellen")
+    pb.add_argument("ziel", help="Neue Sicherungsdatei; eine vorhandene Datei wird nicht überschrieben")
 
     pr = sub.add_parser("probe", help="Erreichbarkeit der Quelle prüfen (höchstens 5 Anfragen)")
     pr.add_argument("--kontakt", help="Kontaktadresse (sonst $BEHOERDEN_KONTAKT)")
@@ -278,7 +299,8 @@ def baue_parser() -> argparse.ArgumentParser:
 
     ps = sub.add_parser("serve", help="Weboberfläche und API starten")
     ps.add_argument("--host", default="127.0.0.1", help="Standard 127.0.0.1; 0.0.0.0 für Netzwerkzugriff")
-    ps.add_argument("--port", type=int, default=8000)
+    ps.add_argument("--port", type=int, default=os.environ.get("PORT", "8000"),
+                    help="Standard: $PORT (Render) oder 8000")
     return p
 
 
@@ -288,10 +310,13 @@ def main(argv: list[str] | None = None) -> int:
                         format="%(asctime)s %(levelname)s %(name)s: %(message)s")
     befehle = {
         "status": cmd_status, "probe": cmd_probe, "crawl": cmd_crawl, "frage": cmd_frage,
-        "plz": cmd_plz, "demo": cmd_demo, "serve": cmd_serve,
+        "plz": cmd_plz, "demo": cmd_demo, "backup": cmd_backup, "serve": cmd_serve,
     }
     try:
         return befehle[args.befehl](args)
+    except CrawlLaeuft as exc:
+        print(exc, file=sys.stderr)
+        return 3
     except KeyboardInterrupt:
         print("Abgebrochen. Der Fortschritt bleibt gespeichert; ein erneuter Lauf setzt fort.", file=sys.stderr)
         return 130

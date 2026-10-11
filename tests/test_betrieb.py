@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import threading
 from dataclasses import replace
 from datetime import datetime, timedelta, timezone
@@ -13,6 +14,7 @@ from fastapi.testclient import TestClient
 from behoerdenmaster.abruf import Abrufer, BudgetErschoepft
 from behoerdenmaster.api import create_app
 from behoerdenmaster.betrieb import Betrieb, SyncDienst, initialisiere, naechster_abruf
+from behoerdenmaster.config import PROJEKT_KONTAKT
 from behoerdenmaster.crawl_sperre import crawl_sperre
 from behoerdenmaster.demo import loesche_demo
 from behoerdenmaster.speicher import Speicher
@@ -24,13 +26,53 @@ from test_bauleitplanung import FakeBauleitplanung
 UTC = timezone.utc
 
 
-def test_betrieb_standard_ist_offline_und_veroeffentlicht_keinen_kontakt():
+def test_betrieb_standard_ruft_ab_ohne_die_kontaktadresse_zu_veroeffentlichen():
+    """Die Umgebungsvoreinstellung füllt den Bestand von selbst – ohne die Adresse preiszugeben.
+
+    Genau daran scheiterte die veröffentlichte Instanz: Sie war ohne eigene Env-Werte
+    gestartet, `BEHOERDEN_SYNC_ENABLED` war nicht gesetzt und `BEHOERDEN_KONTAKT` fehlte,
+    also blieb der Abruf aus und der Bestand leer.
+    """
     betrieb = Betrieb.aus_umgebung({})
-    assert not betrieb.demo and not betrieb.sync_aktiv
+    assert not betrieb.demo and betrieb.sync_aktiv
+    assert betrieb.kontakt == PROJEKT_KONTAKT
     assert betrieb.sync_intervall == 21600 and betrieb.sync_budget == 100
-    assert "kontakt" not in betrieb.oeffentlicher_status()
+    status = betrieb.oeffentlicher_status()
+    assert status["kontakt_hinterlegt"] is True
+    assert PROJEKT_KONTAKT not in json.dumps(status, ensure_ascii=False)
+    assert "kontakt" not in status
+    # Nur der Hinweis auf die Voreinstellung ist öffentlich, nie die Adresse selbst.
+    assert len(betrieb.warnungen) == 1 and "BEHOERDEN_KONTAKT" in betrieb.warnungen[0]
     kontakt = "nicht-oeffentlich@example.test"
     assert kontakt not in repr(replace(betrieb, kontakt=kontakt))
+
+
+def test_eigene_kontaktadresse_ersetzt_die_projektvoreinstellung():
+    betrieb = Betrieb.aus_umgebung({"BEHOERDEN_KONTAKT": "eigene-adresse@example.test"})
+    assert betrieb.kontakt == "eigene-adresse@example.test" and betrieb.sync_aktiv
+    assert betrieb.warnungen == ()
+
+
+def test_leer_gesetzte_kontaktadresse_verzichtet_auf_die_voreinstellung():
+    """Explizites Opt-out: Ein leerer Wert fällt nicht auf die Repository-Adresse zurück."""
+    betrieb = Betrieb.aus_umgebung({"BEHOERDEN_KONTAKT": ""}, streng=False)
+    assert betrieb.kontakt == "" and betrieb.sync_aktiv is False
+    assert len(betrieb.warnungen) == 1 and "BEHOERDEN_KONTAKT" in betrieb.warnungen[0]
+    with pytest.raises(ValueError, match="BEHOERDEN_KONTAKT"):
+        Betrieb.aus_umgebung({"BEHOERDEN_KONTAKT": "  "})
+
+
+def test_sync_laesst_sich_weiterhin_bewusst_abschalten():
+    betrieb = Betrieb.aus_umgebung({"BEHOERDEN_SYNC_ENABLED": "false"})
+    assert betrieb.sync_aktiv is False
+    assert betrieb.warnungen == ()
+    # Auch mit eigener Kontaktadresse bleibt ein ausdrückliches "false" wirksam.
+    mit_adresse = Betrieb.aus_umgebung({"BEHOERDEN_SYNC_ENABLED": "false",
+                                        "BEHOERDEN_KONTAKT": "eigene@example.test"})
+    assert mit_adresse.sync_aktiv is False and mit_adresse.kontakt == "eigene@example.test"
+    # Ein ungültiger Wert fällt im Webdienst auf die Voreinstellung "true" zurück.
+    locker = Betrieb.aus_umgebung({"BEHOERDEN_SYNC_ENABLED": "vielleicht"}, streng=False)
+    assert locker.sync_aktiv is True and "BEHOERDEN_SYNC_ENABLED" in locker.warnungen[0]
 
 
 @pytest.mark.parametrize("wert,erwartet", [("true", True), ("  TRUE ", True), ("1", True),
@@ -44,7 +86,6 @@ def test_boolesche_umgebungswerte(wert, erwartet):
 
 @pytest.mark.parametrize("env", [
     {"BEHOERDEN_SYNC_ENABLED": "vielleicht"}, {"BEHOERDEN_DEMO": "falschgeschrieben"},
-    {"BEHOERDEN_SYNC_ENABLED": "true"},
     {"BEHOERDEN_SYNC_ENABLED": "true", "BEHOERDEN_KONTAKT": "  "},
     {"BEHOERDEN_KONTAKT": "test@example.test\nHeader: injected"},
     {"BEHOERDEN_SYNC_INTERVALL": "299"}, {"BEHOERDEN_SYNC_INTERVALL": "abc"},

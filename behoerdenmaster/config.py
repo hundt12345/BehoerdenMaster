@@ -16,6 +16,17 @@ from .normalize import norm
 
 PROJEKTWURZEL = Path(__file__).resolve().parent.parent
 
+# Erreichbare Projekt-Kontaktadresse für automatische Abrufe.
+#
+# Sie wird genau dann verwendet, wenn `BEHOERDEN_KONTAKT` nicht gesetzt ist, und landet
+# im User-Agent jedes Abrufers („Kontakt: …“). Die Adresse steht deshalb bewusst
+# öffentlich im Repository: Ein Deployment soll auch ohne eigene Umgebungswerte
+# identifizierbar abrufen können, statt wegen einer fehlenden Einstellung dauerhaft
+# leer zu bleiben. Eigene Instanzen sollten sie per `BEHOERDEN_KONTAKT` durch eine
+# eigene, erreichbare Adresse ersetzen; ein leer gesetzter Wert verzichtet bewusst
+# darauf und schaltet den automatischen Abruf ab.
+PROJEKT_KONTAKT = "behordenkontakt123@posteo.de"
+
 
 def config_verzeichnis() -> Path:
     return Path(os.environ.get("BEHOERDEN_CONFIG_DIR", PROJEKTWURZEL / "config" / "cities"))

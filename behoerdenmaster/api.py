@@ -79,10 +79,12 @@ def _hinweise(zaehler: dict[str, int], quellen: list[dict], laeufe: list[dict],
         if any(w.startswith("BEHOERDEN_SYNC_ENABLED") for w in einstellungen.warnungen):
             hinweise.extend(einstellungen.warnungen)
         else:
-            hinweise.append("Automatische Abrufe sind ausgeschaltet (BEHOERDEN_SYNC_ENABLED=false oder nicht gesetzt). "
-                            "Ohne Abruf füllt sich die Datenbank nicht von selbst.")
-            hinweise.append("Zum Aktivieren BEHOERDEN_SYNC_ENABLED=true und eine erreichbare "
-                            "BEHOERDEN_KONTAKT setzen; der Abruf startet danach automatisch im Hintergrund.")
+            hinweise.append("Automatische Abrufe sind ausgeschaltet (BEHOERDEN_SYNC_ENABLED=false oder "
+                            "BEHOERDEN_KONTAKT bewusst leer gesetzt). Ohne Abruf füllt sich die Datenbank "
+                            "nicht von selbst.")
+            hinweise.append("Zum Aktivieren BEHOERDEN_SYNC_ENABLED=true setzen; als Kontaktadresse dient "
+                            "BEHOERDEN_KONTAKT, sonst die im Repository hinterlegte Projekt-Kontaktadresse. "
+                            "Der Abruf startet danach automatisch im Hintergrund.")
     elif not laeufe:
         hinweise.append(f"Automatische Abrufe sind aktiv. Der Hintergrunddienst startet "
                         f"{einstellungen.sync_startverzoegerung} s nach dem Hochfahren und ruft dann "

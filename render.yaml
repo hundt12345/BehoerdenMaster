@@ -31,9 +31,7 @@ services:
       - key: BEHOERDEN_DEMO
         value: "false"
       # Automatischer Abruf der einen Quelle, die derzeit verlässlich antwortet.
-      # Wirksam erst, wenn BEHOERDEN_KONTAKT gesetzt ist (siehe unten). Ohne Kontaktadresse
-      # bleibt der Abruf ausgeschaltet und die Seite meldet das sichtbar, statt zu starten
-      # und still nichts zu tun.
+      # Ist standardmäßig aktiv; "false" schaltet den Hintergrundabruf bewusst ab.
       - key: BEHOERDEN_SYNC_ENABLED
         value: "true"
       - key: BEHOERDEN_SYNC_QUELLEN
@@ -48,10 +46,12 @@ services:
         value: "120"
       - key: BEHOERDEN_SYNC_STARTVERZOEGERUNG
         value: "15"
-      # Render fragt nach der eigenen erreichbaren Kontaktadresse; kein Wert im Git-Repo.
-      # Diese Angabe ist die Voraussetzung dafür, dass überhaupt abgerufen wird.
+      # Erreichbare Kontaktadresse für den identifizierbaren User-Agent. Sie steht bewusst
+      # im Repository (siehe config.py: PROJEKT_KONTAKT), damit ein Deployment auch ohne
+      # eigene Env-Werte abruft statt dauerhaft leer zu bleiben. Eigene Instanzen sollten
+      # sie durch eine eigene, erreichbare Adresse ersetzen.
       - key: BEHOERDEN_KONTAKT
-        sync: false
+        value: "behordenkontakt123@posteo.de"
       - key: WEB_CONCURRENCY
         value: "1"
       - key: PYTHONUNBUFFERED

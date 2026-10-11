@@ -18,7 +18,7 @@ from pathlib import Path
 from typing import Callable
 
 from .abruf import Abrufer, BudgetErschoepft
-from .config import Quelle, Stadt
+from .config import PROJEKT_KONTAKT, Quelle, Stadt
 from .crawl_sperre import CrawlLaeuft, crawl_sperre
 from .crawler import CRAWLER, CrawlVerweigert, LaufBericht, LaufOptionen
 from .speicher import Speicher, jetzt_iso
@@ -90,6 +90,12 @@ class Betrieb:
         hält die Seite erreichbar: Ein einzelner falsch gesetzter Umgebungswert darf nicht
         dazu führen, dass gar nichts mehr ausgeliefert wird. Das Problem wird stattdessen
         in `warnungen` und über `/api/status` sichtbar.
+
+        Voreinstellung der Umgebung: **Abrufe sind aktiviert** und als Kontaktadresse dient
+        `PROJEKT_KONTAKT`, solange `BEHOERDEN_KONTAKT` fehlt. Ein Deployment soll sich
+        also von selbst füllen, statt wegen einer fehlenden Einstellung dauerhaft leer zu
+        bleiben. `BEHOERDEN_SYNC_ENABLED=false` schaltet bewusst ab; ein leer gesetztes
+        `BEHOERDEN_KONTAKT` verzichtet bewusst auf die Voreinstellung.
         """
         env = os.environ if env is None else env
         warnungen: list[str] = []
@@ -121,8 +127,11 @@ class Betrieb:
                 warnungen.append(f"{exc} Das Datum aus der Stadtkonfiguration wird verwendet.")
                 return ""
 
-        aktiv = flag("BEHOERDEN_SYNC_ENABLED")
-        kontakt = env.get("BEHOERDEN_KONTAKT", "").strip()
+        aktiv = flag("BEHOERDEN_SYNC_ENABLED", default=True)
+        # Nicht gesetzt > im Repository hinterlegte Projektadresse; leer gesetzt > bewusst keine.
+        roh_kontakt = env.get("BEHOERDEN_KONTAKT")
+        voreinstellung = roh_kontakt is None
+        kontakt = (PROJEKT_KONTAKT if voreinstellung else roh_kontakt).strip()
         if "\n" in kontakt or "\r" in kontakt:
             raise ValueError("BEHOERDEN_KONTAKT darf keine Zeilenumbrüche enthalten.")
         if aktiv and not kontakt:
@@ -134,6 +143,11 @@ class Betrieb:
                 "abgerufen wird. Bitte eine erreichbare Kontaktadresse als Umgebungswert setzen."
             )
             aktiv = False
+        elif voreinstellung and aktiv:
+            warnungen.append(
+                "BEHOERDEN_KONTAKT ist nicht gesetzt; die im Repository hinterlegte Projekt-Kontaktadresse "
+                "wird verwendet. Eigene Deployments sollten eine eigene erreichbare Adresse setzen."
+            )
         quellen = tuple(dict.fromkeys(q.strip() for q in env.get("BEHOERDEN_SYNC_QUELLEN", "").split(",") if q.strip()))
         return cls(
             demo=flag("BEHOERDEN_DEMO"), sync_aktiv=aktiv, kontakt=kontakt,
@@ -159,6 +173,7 @@ class Betrieb:
         # Insbesondere keine Kontaktadresse, Dateipfade oder sonstigen Env-Werte veröffentlichen.
         return {
             "automatische_abrufe": self.sync_aktiv,
+            "kontakt_hinterlegt": bool(self.kontakt),
             "intervall_sekunden": self.sync_intervall,
             "max_anfragen_pro_quelle": self.sync_budget,
             "startverzoegerung_sekunden": self.sync_startverzoegerung,
@@ -260,6 +275,7 @@ class SyncDienst:
             raise RuntimeError("Dieser Sync-Dienst wurde bereits gestartet.")
         self._thread = threading.Thread(target=self._schleife, name="behoerdenmaster-sync", daemon=True)
         self._thread.start()
+        log.info("Hintergrundabruf aktiv für %s", ", ".join(self.quellen))
 
     def stoppen(self) -> None:
         self._stop.set()

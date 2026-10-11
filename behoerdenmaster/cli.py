@@ -13,7 +13,7 @@ from . import __version__
 from .abruf import Abrufer, BudgetErschoepft, NichtErlaubt, ObjektNichtVorhanden, QuelleGesperrt, QuelleNichtErreichbar
 from .auswertung import heute, jetzt
 from .bauleitplanung import BauleitplanungQuelle
-from .config import Quelle, Stadt, config_verzeichnis, lade_staedte
+from .config import PROJEKT_KONTAKT, Quelle, Stadt, config_verzeichnis, lade_staedte
 from .crawl_sperre import CrawlLaeuft, crawl_sperre
 from .crawler import CRAWLER, ENTITAETEN, CrawlVerweigert, LaufOptionen
 from .demo import demo_quell_id, lade_demo, loesche_demo
@@ -32,13 +32,24 @@ def _db_pfad(args) -> str:
 
 
 def _kontakt(args) -> str:
-    kontakt = getattr(args, "kontakt", None) or os.environ.get("BEHOERDEN_KONTAKT")
-    if not kontakt:
+    """Kontaktadresse für manuelle Abrufe: --kontakt > $BEHOERDEN_KONTAKT > Projektvoreinstellung.
+
+    Dieselbe Auflösung wie im Web-Dienst, damit `probe` und `crawl` (etwa in der
+    Render-Shell) auch ohne eigene Env-Werte identifizierbar abrufen. Ein **leer**
+    gesetzter Wert verzichtet bewusst auf die Voreinstellung.
+    """
+    angegeben = getattr(args, "kontakt", None) or os.environ.get("BEHOERDEN_KONTAKT")
+    if angegeben and angegeben.strip():
+        return angegeben.strip()
+    if angegeben is not None:
         raise SystemExit(
-            "Bitte eine Kontaktadresse angeben (Umgebungsvariable BEHOERDEN_KONTAKT oder --kontakt).\n"
+            "BEHOERDEN_KONTAKT ist leer gesetzt. Das verzichtet bewusst auf die im Repository "
+            "hinterlegte Projekt-Kontaktadresse; ohne Kontaktadresse wird nicht abgerufen.\n"
             "Die Stadt muss erkennen können, wer abruft und wen sie bei Problemen anschreiben kann."
         )
-    return kontakt
+    print(f"Hinweis: Keine Kontaktadresse angegeben; verwendet wird die Projekt-Kontaktadresse "
+          f"aus behoerdenmaster/config.py ({PROJEKT_KONTAKT}).")
+    return PROJEKT_KONTAKT
 
 
 def _stadt(schluessel: str) -> Stadt:

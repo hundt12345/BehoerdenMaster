@@ -13,7 +13,7 @@ import pytest
 import yaml
 
 from behoerdenmaster.cli import baue_parser, main
-from behoerdenmaster.config import PROJEKTWURZEL
+from behoerdenmaster.config import PROJEKT_KONTAKT, PROJEKTWURZEL
 from behoerdenmaster.crawl_sperre import CrawlLaeuft, crawl_sperre
 from behoerdenmaster.sicherung import sichere_datenbank
 from behoerdenmaster.speicher import Speicher
@@ -55,9 +55,30 @@ def test_render_blueprint_passt_zum_sqlite_betrieb():
     assert env["BEHOERDEN_SYNC_SEIT"]["value"].endswith("d") or env["BEHOERDEN_SYNC_SEIT"]["value"].isdigit()
     assert env["BEHOERDEN_DEMO"]["value"] == "false"
     assert env["WEB_CONCURRENCY"]["value"] == "1"
-    assert env["BEHOERDEN_KONTAKT"]["sync"] is False and "value" not in env["BEHOERDEN_KONTAKT"]
+    # Der Kontakt steht bewusst im Blueprint (und im Code): Ein Deployment soll auch ohne
+    # eigene Env-Werte abrufen statt wegen einer fehlenden Einstellung leer zu bleiben.
+    assert env["BEHOERDEN_KONTAKT"]["value"] == PROJEKT_KONTAKT
+    assert "sync" not in env["BEHOERDEN_KONTAKT"]
+    assert env["BEHOERDEN_KONTAKT"]["value"].count("@") == 1
     assert all(isinstance(e["value"], str) for e in env.values() if "value" in e)
     assert (PROJEKTWURZEL / ".python-version").read_text().strip() == "3.13"
+
+
+def test_cli_kontakt_faellt_auf_die_projektadresse_zurueck(capsys):
+    from behoerdenmaster.cli import _kontakt
+
+    args = baue_parser().parse_args(["probe", "--quelle", "ris"])
+    assert _kontakt(args) == PROJEKT_KONTAKT
+    assert "Projekt-Kontaktadresse" in capsys.readouterr().out
+
+
+def test_cli_leer_gesetzter_kontakt_verzichtet_bewusst(monkeypatch):
+    from behoerdenmaster.cli import _kontakt
+
+    monkeypatch.setenv("BEHOERDEN_KONTAKT", "")
+    args = baue_parser().parse_args(["crawl", "--quelle", "ris"])
+    with pytest.raises(SystemExit, match="leer gesetzt"):
+        _kontakt(args)
 
 
 def test_port_env_und_explizite_port_option(monkeypatch):

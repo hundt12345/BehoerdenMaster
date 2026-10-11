@@ -1,0 +1,53 @@
+{
+  "data": [
+    {
+      "type": "Procedure",
+      "id": "e42383c2-be4d-4406-8c09-c2d2e9eb5b54",
+      "attributes": {
+        "externalName": "255. Änderung des Flächennutzungsplans (FNP) \"Neues Quartier Bickendorf sowie Aufhebung einer Fläche für Hauptverkehrszüge\"",
+        "externalDescription": "Ziel der Planung ist es, die planungsrechtlichen Voraussetzungen für ein zeitgemäßes, lebendig-urbanes Quartier mit einer gemischten Nutzung aus Gewerbe zur Ansiedlung von innerstädtischen Handwerksbetrieben und emissionsarmer Produktion, Wohnen, Einrichtungen der sozialen Infrastruktur sowie Grün- und Spielflächen vorzubereiten. Daneben soll mit der Änderung des Flächennutzungsplans die bisherige Darstellung einer „Fläche für Hauptverkehrszüge“ aufgehoben werden, die bislang als Vorhaltefläche für die Umleitung des örtlichen und überörtlichen Gewerbehauptverkehrs zwischen Venloer Straße und Äußerer Kanalstraße/ Maarweg diente. Diese Trassenplanung ist nicht mehr zusammenhängend realisierbar.",
+        "externalStartDate": "2026-09-25T00:00:00+02:00",
+        "externalEndDate": "2026-10-09T02:00:00+02:00",
+        "externalPhaseTranslationKey": "procedure.phases.external.earlyparticipation",
+        "externalPhasePermissionset": "write",
+        "owningOrganisationName": "Stadt Köln - 61 Stadtplanungsamt "
+      }
+    },
+    {
+      "type": "Procedure",
+      "id": "eb6166b6-af56-4e7f-87e7-0e468dbf7a5b",
+      "attributes": {
+        "externalName": "\"Neues Quartier Bickendorf\" in Köln-Bickendorf",
+        "externalDescription": "Die Nutzung des Plangebiets als Produktionsstandort für Parfum wurde im Jahr 2022 durch die Fa. Coty Inc. aufgegeben. Das Areal wurde von der Instone Real Estate Development GmbH (Instone) erworben, welche die Liegenschaft zum Jahreswechsel 2022/2023 übernommen hat. Der Investor Instone plant die städtebauliche Neuordnung und Umnutzung des Areals mit dem Ziel, ein zukunftsweisendes Stadtquartier mit einer gemischten Nutzung aus Gewerbe und Wohnnutzung zu entwickeln. Durch neue Nutzungen soll der Stadtteil im Kontext der produktiven Stadt ergänzt und bereichert werden. Das ca. 17 Hektar große Areal, das bisher für die Öffentlichkeit unzugänglich war, soll für die Umgebung geöffnet und in den Stadtteil Bickendorf integriert werden. Insgesamt sollen ca. 1.600 Wohneinheiten entstehen. Die Realisierung der Wohneinheiten wird voraussichtlich ab 2030 in 4-5 Bauabschnitten mit jeweils ca. 300-400 Wohneinheiten entstehen. Bei der Realisierung eines Bauabschnitts ist von jeweils ca. 2 Jahren auszugehen. Die Bauzeit beläuft sich demnach voraussichtlich auf ca. 8-10 Jahre.",
+        "externalStartDate": "2026-09-28T02:00:00+02:00",
+        "externalEndDate": "2026-10-12T23:59:59+02:00",
+        "externalPhaseTranslationKey": "procedure.phases.external.earlyparticipation",
+        "externalPhasePermissionset": "write",
+        "owningOrganisationName": "Stadt Köln - 61 Stadtplanungsamt "
+      }
+    },
+    {
+      "type": "Procedure",
+      "id": "bf1b9a19-a120-446b-99a0-42f1b6e9269c",
+      "attributes": {
+        "externalName": "254. Änderung des Flächennutzungsplanes „Sicherung der Clubkultur im Bereich Lichtstraße / Ehrenfeldgürtel“ in Köln- Ehrenfeld",
+        "externalDescription": "Der Änderungsbereich der 254. Änderung des Flächennutzungsplanes umfasst eine Größe von circa 16 Hektar und liegt im Stadtteil Ehrenfeld. Der Änderungsbereich befindet sich zentral im Stadtteil Ehrenfeld und wird in zwei Flächen eingeteilt, die durch die Bahnstrecke verbunden werden. Ziel der Planung ist, die bestehenden Clubs planungsrechtlich vor weiteren Verdrängungsmechanismen zu schützen. Dafür sollen die Bereiche mit den bestehenden Clubs im Flächennutzungsplan als Gemischte Baufläche (M) dargestellt werden. Wegen der fortgeschrittene Planung des Thyssen Geländes (Oskar-Jäger-Straße) wird dieses als Gewerbegebiet (GE) dargestellt. Zur Realisierung des Vorhabens bedarf es der Schaffung planungsrechtlicher Voraussetzungen auf den Ebenen der vorbereitenden und verbindlichen Bauleitplanung. Daher soll ein neuer Bebauungsplan aufgestellt werden, wodurch diese Änderung des Flächennutzungsplanes erforderlich wird.",
+        "externalStartDate": "2026-10-07T23:00:00+02:00",
+        "externalEndDate": "2026-11-13T02:00:00+01:00",
+        "externalPhaseTranslationKey": "procedure.phases.external.participation",
+        "externalPhasePermissionset": "write",
+        "owningOrganisationName": "Stadt Köln - 61 Stadtplanungsamt "
+      }
+    }
+  ],
+  "included": [],
+  "links": {"self": "https://nw.bauleitplanung-online.de/verfahren/suche/ajax?orgaSlug=koeln"},
+  "jsonapi": {"version": "1.0"},
+  "meta": {
+    "messages": {"error": []},
+    "fixture": {
+      "stand": "2026-10-09",
+      "hinweis": "Redaktioneller Auszug aus sieben öffentlichen Verfahren. Beschreibungen zu Klartext normalisiert und auf ausgewählte Originalpassagen gekürzt; keine unveränderte Rohantwort. IDs, Titel, Phase und Zeitstempel aus der API übernommen."
+    }
+  }
+}

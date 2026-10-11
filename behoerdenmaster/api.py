@@ -5,7 +5,10 @@ Alle Endpunkte lesen nur die lokale Datenbank. Die Stadt wird dabei nie abgerufe
 
 from __future__ import annotations
 
+import asyncio
 import os
+import sqlite3
+from contextlib import asynccontextmanager, closing
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Query
@@ -13,7 +16,8 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
 from . import __version__
-from .auswertung import heute
+from .auswertung import heute, jetzt
+from .betrieb import Betrieb, SyncDienst, initialisiere
 from .config import PROJEKTWURZEL, Stadt, config_verzeichnis, lade_staedte
 from .geo import Gazetteer
 from .nlq import Verstaendnis, verstehe
@@ -42,19 +46,38 @@ def _stand(sp: Speicher) -> dict:
     return {
         "quellen": [
             {"id": r["id"], "name": r["name"], "demo": bool(r["demo"]), "status": r["status"],
-             "letzter_erfolg": r["letzter_erfolg"]}
+             "letzter_erfolg": r["letzter_erfolg"], "abkuehlung_bis": r["abkuehlung_bis"]}
             for r in sp.quellen()
         ],
     }
 
 
-def create_app(db_pfad: str | Path | None = None, config_dir: Path | None = None) -> FastAPI:
+def create_app(db_pfad: str | Path | None = None, config_dir: Path | None = None,
+               *, betrieb: Betrieb | None = None) -> FastAPI:
     db = str(db_pfad or os.environ.get("BEHOERDEN_DB") or STANDARD_DB)
     staedte = lade_staedte(config_dir or config_verzeichnis())
     gazetteers = {k: Gazetteer(s) for k, s in staedte.items()}
+    einstellungen = betrieb or Betrieb.aus_umgebung()
 
-    app = FastAPI(title="BehoerdenMaster", version=__version__,
+    @asynccontextmanager
+    async def lifespan(app: FastAPI):
+        # Render mountet die Disk nur zur Laufzeit, nicht während Build/Pre-Deploy.
+        await asyncio.to_thread(initialisiere, db, staedte, einstellungen)
+        dienst = SyncDienst(db, staedte, einstellungen) if einstellungen.sync_aktiv else None
+        app.state.sync_dienst = dienst
+        if dienst:
+            dienst.starten()
+        try:
+            yield
+        finally:
+            if dienst:
+                dienst.stoppen()
+                await asyncio.to_thread(dienst.warten)
+
+    app = FastAPI(title="BehoerdenMaster", version=__version__, lifespan=lifespan,
                   description="Kommunale Vorgänge durchsuchen: Fragen stellen oder nach PLZ suchen.")
+    app.state.sync_dienst = None
+    app.state.betrieb = einstellungen
 
     def stadt_waehlen(schluessel: str | None) -> Stadt:
         if schluessel is None:
@@ -67,6 +90,17 @@ def create_app(db_pfad: str | Path | None = None, config_dir: Path | None = None
     def startseite():
         return FileResponse(WEB_DATEI)
 
+    @app.api_route("/healthz", methods=["GET", "HEAD"], include_in_schema=False)
+    def healthcheck():
+        # Read-only, kurzer Timeout, keine DB-Initialisierung und keine Live-Abfragen.
+        uri = Path(db).expanduser().resolve().as_uri() + "?mode=ro"
+        try:
+            with closing(sqlite3.connect(uri, uri=True, timeout=2)) as verbindung:
+                verbindung.execute("SELECT id FROM quelle LIMIT 1").fetchone()
+        except (sqlite3.Error, OSError) as exc:
+            raise HTTPException(status_code=503, detail="Lokale Datenbank nicht erreichbar") from exc
+        return {"status": "ok", "version": __version__}
+
     @app.get("/api/status")
     def status():
         with Speicher(db) as sp:
@@ -78,6 +112,9 @@ def create_app(db_pfad: str | Path | None = None, config_dir: Path | None = None
                 for r in sp.letzte_laeufe(5)
             ]
         daten["version"] = __version__
+        daten["betrieb"] = einstellungen.oeffentlicher_status() | {
+            "sync_dienst_laeuft": bool(app.state.sync_dienst and app.state.sync_dienst.laeuft),
+        }
         daten["staedte"] = [{"schluessel": s.schluessel, "name": s.name, "hinweis": s.hinweis}
                             for s in staedte.values()]
         return daten
@@ -87,7 +124,7 @@ def create_app(db_pfad: str | Path | None = None, config_dir: Path | None = None
         stadt = stadt_waehlen(anfrage.stadt)
         v = verstehe(anfrage.frage, stadt, gazetteers[stadt.schluessel])
         with Speicher(db) as sp:
-            ergebnis = suche(sp, _auftrag(v, stadt, anfrage.limit, anfrage.offset), heute())
+            ergebnis = suche(sp, _auftrag(v, stadt, anfrage.limit, anfrage.offset), heute(), zeitpunkt=jetzt())
         hinweise = list(v.hinweise)
         if ergebnis.get("freitext_oder"):
             hinweise.append("Keine Vorgänge mit allen Stichworten gefunden. Angezeigt werden Vorgänge mit mindestens einem Stichwort.")
@@ -134,7 +171,7 @@ def create_app(db_pfad: str | Path | None = None, config_dir: Path | None = None
 
         auftrag = Suchauftrag(stadt=st, plz=plz, themen=themen, limit=limit, offset=offset)
         with Speicher(db) as sp:
-            ergebnis = suche(sp, auftrag, heute())
+            ergebnis = suche(sp, auftrag, heute(), zeitpunkt=jetzt())
         return {
             "plz": plz,
             "hinweise": hinweise,
@@ -145,10 +182,10 @@ def create_app(db_pfad: str | Path | None = None, config_dir: Path | None = None
         }
 
     @app.get("/api/vorgang")
-    def vorgang(id: str = Query(..., min_length=5, description="OParl-ID des Vorgangs")):
-        st = stadt_waehlen(None)
+    def vorgang(id: str = Query(..., min_length=5, description="Quell-URL/ID des Vorgangs"), stadt: str | None = None):
+        st = stadt_waehlen(stadt)
         with Speicher(db) as sp:
-            detail = vorgang_detail(sp, st, id, heute())
+            detail = vorgang_detail(sp, st, id, heute(), zeitpunkt=jetzt())
         if detail is None:
             raise HTTPException(status_code=404, detail="Vorgang nicht gefunden")
         return detail

@@ -119,8 +119,9 @@ def test_demo_daten_sind_gekennzeichnet_und_verlinkt(stadt, db):
     from behoerdenmaster.demo import lade_demo
     lade_demo(db, stadt)
     erg = suche(db, Suchauftrag(stadt=stadt), HEUTE)
-    assert erg["gesamt"] == 1
-    treffer = erg["treffer"][0]
+    assert erg["gesamt"] == 4
+    treffer = next(t for t in erg["treffer"] if t["referenz"] == "1724/2021")
+    assert all(t["quelle"]["demo"] for t in erg["treffer"])
     assert treffer["quelle"]["demo"] is True
     assert treffer["links"]["ratsinfo_vorlage"].endswith("__kvonr=101373")
     assert treffer["verlauf"][0]["datum"] == "" and treffer["verlauf"][0]["gremium"] == "Gremium 177"

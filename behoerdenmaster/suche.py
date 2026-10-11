@@ -9,15 +9,17 @@ from __future__ import annotations
 import json
 from collections import defaultdict
 from dataclasses import dataclass, field
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 
 from .auswertung import bestimme_status, datum_de, ergebnis_kategorie, zusammenfassung
 from .config import Quelle, Stadt
 from .normalize import norm
+from .plan_auswertung import plan_status, plan_verlauf, plan_zusammenfassung, zeit_de
 from .speicher import Speicher
 
 ROLLEN_TEXT = {
     "vorlage": "Vorlage",
+    "plandokument": "Planungsdokument",
     "tagesordnung": "Tagesordnung",
     "einladung": "Einladung",
     "ergebnisprotokoll": "Ergebnisprotokoll",
@@ -67,11 +69,13 @@ def _quellen_cfg(stadt: Stadt) -> dict[str, Quelle]:
 
 
 def _cfg_fuer(quellen: dict[str, Quelle], quelle_id: str) -> Quelle | None:
-    """Konfiguration einer Quelle für Web-Links. Beispieldaten nutzen die Vorlagen der Stadt,
-    weil sie aus deren Ratsinformationssystem stammen."""
     if quelle_id in quellen:
         return quellen[quelle_id]
-    return next((q for q in quellen.values() if q.web_vorlage or q.web_sitzung), None)
+    if quelle_id.endswith("-demo"):
+        return quellen.get(quelle_id.removesuffix("-demo"))
+    if any(quelle_id == qid.split(":", 1)[0] + ":demo" for qid in quellen):
+        return next((q for q in quellen.values() if q.typ == "oparl"), None)
+    return None
 
 
 def _lade_verlauf(speicher: Speicher, stadt: Stadt, vorgang_ids: list[str], heute: date) -> dict[str, list[dict]]:
@@ -182,7 +186,8 @@ def _bewerte(kand, orte_rows: list, auftrag: Suchauftrag, status: dict, heute: d
 
 
 def _dto(stadt: Stadt, kand, orte_rows: list, verlauf: list[dict], dokumente: list,
-         status: dict, heute: date, quellen: dict[str, Quelle], quelle_meta: dict) -> dict:
+         status: dict, heute: date, quellen: dict[str, Quelle], quelle_meta: dict,
+         plan: dict | None = None, staende: list[dict] | None = None) -> dict:
     cfg = _cfg_fuer(quellen, kand["quelle_id"])
     vid = kand["id"]
     orte, herkunft = _orte_anzeige(stadt, orte_rows)
@@ -202,6 +207,19 @@ def _dto(stadt: Stadt, kand, orte_rows: list, verlauf: list[dict], dokumente: li
     text = zusammenfassung(kand["titel"], kand["art"], kand["referenz"], kand["datum"], status,
                            ortsnamen, len(dok_liste))
     meta = quelle_meta.get(kand["quelle_id"], {})
+    typ = "bauleitplanung" if plan is not None else (cfg.typ if cfg else meta.get("typ", "unbekannt"))
+    original = kand["web"] or (cfg.web_vorlage.format(id=kurz_id(vid)) if cfg and cfg.web_vorlage else None)
+    hinweise = []
+    if plan is not None:
+        text = plan_zusammenfassung(kand["titel"], plan, status)
+        verlauf = plan_verlauf(plan, staende or [], original or vid, heute)
+        hinweise.append("Der Verlauf zeigt den aktuellen Beteiligungszeitraum und lokal festgestellte Änderungen, "
+                        "nicht die vollständige amtliche Verfahrensgeschichte.")
+        if plan["detail_status"] != "ok":
+            hinweise.append("Dokumentlinks der Detailseite sind noch nicht vollständig erfasst bzw. erneut geprüft; siehe Originalverfahren.")
+        if meta.get("demo"):
+            hinweise.append("Offline-Demo: Beschreibung und Dokumentlinks sind ausgewählte Auszüge, kein vollständiger Bestand.")
+        hinweise.append("Beteiligungsfristen aus der Quelle übernommen; für verbindliche Fristen die Originalseite prüfen.")
     return {
         "id": vid,
         "titel": kand["titel"],
@@ -218,32 +236,44 @@ def _dto(stadt: Stadt, kand, orte_rows: list, verlauf: list[dict], dokumente: li
         "orte_herkunft": herkunft,
         "zusammenfassung": text,
         "verlauf": [dict(e) for e in verlauf],
+        "hinweise": hinweise,
+        "beteiligung": ({"phase": plan["phase"], "beginn": plan["beginn"], "ende": plan["ende"],
+                         "beginn_de": zeit_de(plan["beginn"]).split(",")[0], "ende_de": zeit_de(plan["ende"]).split(",")[0],
+                         "beginn_zeit_de": zeit_de(plan["beginn"]), "ende_zeit_de": zeit_de(plan["ende"]),
+                         "organisation": plan["organisation"], "beschreibung": plan["beschreibung"],
+                         "zuletzt_gesehen": plan["gesehen"], "gelistet": bool(plan["gelistet"])}
+                        if plan is not None else None),
         "dokumente": dok_liste,
         "links": {
-            "ratsinfo_vorlage": cfg.web_vorlage.format(id=kurz_id(vid)) if cfg and cfg.web_vorlage else None,
-            "oparl": vid,
+            "original": original,
+            "original_text": ("Verfahren in Bauleitplanung Online öffnen" if typ == "bauleitplanung"
+                              else "Vorlage im Ratsinformationssystem öffnen" if typ == "oparl"
+                              else "Originalverfahren öffnen"),
+            "ratsinfo_vorlage": original if typ == "oparl" else None,
+            "oparl": vid if typ == "oparl" else None,
         },
-        "quelle": {"id": kand["quelle_id"], "name": meta.get("name", ""), "demo": bool(meta.get("demo"))},
+        "quelle": {"id": kand["quelle_id"], "name": meta.get("name", ""), "demo": bool(meta.get("demo")), "typ": typ},
     }
 
 
 def _quelle_meta(speicher: Speicher) -> dict[str, dict]:
-    return {r["id"]: {"name": r["name"], "demo": bool(r["demo"]), "status": r["status"],
+    return {r["id"]: {"name": r["name"], "demo": bool(r["demo"]), "typ": r["typ"], "status": r["status"],
                       "letzter_erfolg": r["letzter_erfolg"]} for r in speicher.quellen()}
 
 
-def suche(speicher: Speicher, auftrag: Suchauftrag, heute: date) -> dict:
+def suche(speicher: Speicher, auftrag: Suchauftrag, heute: date, *, zeitpunkt: datetime | None = None) -> dict:
     """Sucht Vorgänge. Ohne Ort- und Themenfilter müssen zunächst alle Stichworte vorkommen.
     Findet das nichts, gelten mindestens ein Stichwort (Rückfall, ist im Ergebnis gekennzeichnet)."""
-    ergebnis = _suche(speicher, auftrag, heute, freitext_oder=False)
+    ergebnis = _suche(speicher, auftrag, heute, freitext_oder=False, zeitpunkt=zeitpunkt)
     if (ergebnis["gesamt"] == 0 and len(auftrag.freitext) >= 2
             and not (auftrag.orte or auftrag.plz or auftrag.themen)):
-        ergebnis = _suche(speicher, auftrag, heute, freitext_oder=True)
+        ergebnis = _suche(speicher, auftrag, heute, freitext_oder=True, zeitpunkt=zeitpunkt)
         ergebnis["freitext_oder"] = ergebnis["gesamt"] > 0
     return ergebnis
 
 
-def _suche(speicher: Speicher, auftrag: Suchauftrag, heute: date, freitext_oder: bool) -> dict:
+def _suche(speicher: Speicher, auftrag: Suchauftrag, heute: date, freitext_oder: bool,
+           zeitpunkt: datetime | None = None) -> dict:
     stadt = auftrag.stadt
     db = speicher.db
     bedingungen = ["v.geloescht = 0", "v.quelle_id IN (SELECT id FROM quelle WHERE stadt = ?)"]
@@ -297,7 +327,7 @@ def _suche(speicher: Speicher, auftrag: Suchauftrag, heute: date, freitext_oder:
         params.append(auftrag.bis)
 
     sql = (
-        "SELECT v.id, v.quelle_id, v.referenz, v.titel, v.art, v.datum, v.suchtext FROM vorgang v "
+        "SELECT v.id, v.quelle_id, v.referenz, v.titel, v.art, v.datum, v.suchtext, v.web FROM vorgang v "
         f"WHERE {' AND '.join(bedingungen)} ORDER BY v.datum DESC LIMIT {KANDIDATEN_MAX}"
     )
     kandidaten = db.execute(sql, params).fetchall()
@@ -313,7 +343,10 @@ def _suche(speicher: Speicher, auftrag: Suchauftrag, heute: date, freitext_oder:
     for r in _bulk(db, "SELECT * FROM dokument WHERE geloescht = 0 AND vorgang_id IN ({ph})", ids):
         dok_map[r["vorgang_id"]].append(dict(r))
     verlauf_map = _lade_verlauf(speicher, stadt, ids, heute)
-    status_map = {vid: bestimme_status(verlauf_map.get(vid, [])) for vid in ids}
+    plan_map = {r["vorgang_id"]: dict(r) for r in _bulk(
+        db, "SELECT * FROM planverfahren WHERE vorgang_id IN ({ph})", ids)}
+    status_map = {vid: (plan_status(plan_map[vid], heute, zeitpunkt) if vid in plan_map
+                        else bestimme_status(verlauf_map.get(vid, []))) for vid in ids}
 
     bewertet = [(
         _bewerte(k, orte_map.get(k["id"], []), auftrag, status_map[k["id"]], heute, begriffe),
@@ -325,23 +358,31 @@ def _suche(speicher: Speicher, auftrag: Suchauftrag, heute: date, freitext_oder:
     seite = bewertet[auftrag.offset: auftrag.offset + auftrag.limit]
     quellen = _quellen_cfg(stadt)
     meta = _quelle_meta(speicher)
+    staende_map: dict[str, list[dict]] = defaultdict(list)
+    plan_ids = [k["id"] for _, k in seite if k["id"] in plan_map]
+    for r in _bulk(db, "SELECT * FROM planstand WHERE vorgang_id IN ({ph}) ORDER BY id", plan_ids):
+        staende_map[r["vorgang_id"]].append(dict(r))
     treffer = []
     for punkte, k in seite:
         vid = k["id"]
         dto = _dto(stadt, k, orte_map.get(vid, []), verlauf_map.get(vid, []), dok_map.get(vid, []),
-                   status_map[vid], heute, quellen, meta)
+                   status_map[vid], heute, quellen, meta, plan_map.get(vid), staende_map.get(vid, []))
         dto["punkte"] = punkte
         treffer.append(dto)
     return {"gesamt": gesamt_kandidaten, "treffer": treffer,
             "kandidaten_gekappt": gesamt_kandidaten >= KANDIDATEN_MAX, "freitext_oder": False}
 
 
-def vorgang_detail(speicher: Speicher, stadt: Stadt, vorgang_id: str, heute: date) -> dict | None:
+def vorgang_detail(speicher: Speicher, stadt: Stadt, vorgang_id: str, heute: date, *,
+                   zeitpunkt: datetime | None = None) -> dict | None:
     zeile = speicher.db.execute(
-        "SELECT v.id, v.quelle_id, v.referenz, v.titel, v.art, v.datum, v.suchtext FROM vorgang v "
+        "SELECT v.id, v.quelle_id, v.referenz, v.titel, v.art, v.datum, v.suchtext, v.web FROM vorgang v "
         "WHERE v.id = ? AND v.geloescht = 0", (vorgang_id,)
     ).fetchone()
     if zeile is None:
+        return None
+    quelle = speicher.db.execute("SELECT stadt FROM quelle WHERE id=?", (zeile["quelle_id"],)).fetchone()
+    if not quelle or quelle["stadt"] != stadt.schluessel:
         return None
     orte_rows = speicher.db.execute(
         "SELECT vorgang_id, typ, schluessel, quelle FROM ortsbezug WHERE vorgang_id = ?", (vorgang_id,)
@@ -349,6 +390,10 @@ def vorgang_detail(speicher: Speicher, stadt: Stadt, vorgang_id: str, heute: dat
     dokumente = [dict(r) for r in speicher.db.execute(
         "SELECT * FROM dokument WHERE geloescht = 0 AND vorgang_id = ?", (vorgang_id,)).fetchall()]
     verlauf = _lade_verlauf(speicher, stadt, [vorgang_id], heute).get(vorgang_id, [])
-    status = bestimme_status(verlauf)
+    plan_row = speicher.db.execute("SELECT * FROM planverfahren WHERE vorgang_id=?", (vorgang_id,)).fetchone()
+    plan = dict(plan_row) if plan_row else None
+    staende = [dict(r) for r in speicher.db.execute(
+        "SELECT * FROM planstand WHERE vorgang_id=? ORDER BY id", (vorgang_id,)).fetchall()]
+    status = plan_status(plan, heute, zeitpunkt) if plan else bestimme_status(verlauf)
     return _dto(stadt, zeile, orte_rows, verlauf, dokumente, status, heute,
-                _quellen_cfg(stadt), _quelle_meta(speicher))
+                _quellen_cfg(stadt), _quelle_meta(speicher), plan, staende)

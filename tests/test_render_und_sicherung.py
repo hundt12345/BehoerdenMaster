@@ -44,12 +44,16 @@ def test_render_blueprint_passt_zum_sqlite_betrieb():
     assert service["startCommand"] == "python -m behoerdenmaster -v serve --host 0.0.0.0 --port $PORT"
     assert "preDeployCommand" not in service
     assert service["healthCheckPath"] == "/healthz" and service["maxShutdownDelaySeconds"] >= 60
-    # Render Free: keine Disk; die SQLite-Datei liegt flüchtig in /tmp und wird bei Start per Demo neu aufgebaut.
+    # Render Free: keine Disk; die SQLite-Datei liegt flüchtig in /tmp und wird nach jedem
+    # Start vom Hintergrundabruf neu gefüllt. Deshalb ist das Erstabruf-Fenster begrenzt.
     assert "disk" not in service
     env = {e["key"]: e for e in service["envVars"]}
     assert Path(env["BEHOERDEN_DB"]["value"]).is_relative_to("/tmp")
-    assert env["BEHOERDEN_SYNC_ENABLED"]["value"] == "false"
-    assert env["BEHOERDEN_DEMO"]["value"] == "true"
+    assert env["BEHOERDEN_SYNC_ENABLED"]["value"] == "true"
+    assert env["BEHOERDEN_SYNC_QUELLEN"]["value"] == "koeln:ris"
+    # Ein rollierendes Fenster (Tage) statt eines festen Datums, das veralten würde.
+    assert env["BEHOERDEN_SYNC_SEIT"]["value"].endswith("d") or env["BEHOERDEN_SYNC_SEIT"]["value"].isdigit()
+    assert env["BEHOERDEN_DEMO"]["value"] == "false"
     assert env["WEB_CONCURRENCY"]["value"] == "1"
     assert env["BEHOERDEN_KONTAKT"]["sync"] is False and "value" not in env["BEHOERDEN_KONTAKT"]
     assert all(isinstance(e["value"], str) for e in env.values() if "value" in e)

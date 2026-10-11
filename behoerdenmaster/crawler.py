@@ -25,7 +25,16 @@ from .speicher import Speicher, jetzt_iso
 
 log = logging.getLogger("behoerdenmaster.crawler")
 
-ENTITAETEN = ("gremien", "sitzungen", "vorlagen")
+ENTITAETEN = ("gremien", "vorlagen", "sitzungen")
+"""Abrufreihenfolge.
+
+Bewusst nicht alphabetisch und nicht in der historischen Reihenfolge: Die Gremien stehen
+zuerst, weil Vorlagen deren Namen für den Ortsbezug auswerten. **Vorlagen kommen vor
+Sitzungen**, denn nur Vorlagen sind die durchsuchbaren Vorgänge. Bei einem knappen
+Anfragebudget (z. B. Render Free mit 100 Anfragen) erzeugt ein Lauf sonst unter Umständen
+Sitzungsdaten, aber keine einzigen Treffer für die Startseite.
+"""
+
 PUFFER = timedelta(hours=1)
 SPERR_ABKUEHLZEIT_BASIS = timedelta(minutes=10)
 SPERR_ABKUEHLZEIT_MAX = timedelta(hours=6)

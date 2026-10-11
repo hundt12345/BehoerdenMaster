@@ -85,11 +85,14 @@ def test_unterbrochener_lauf_setzt_an_derselben_stelle_fort(stadt, db, uhr):
     extra = [synth_vorlage(910 + i, f"Vorlage {i}", modified="2024-05-02T10:00:00+02:00") for i in range(3)]
     fake = FakeOParl(papers=vorlagen + extra, meetings=sitzungen, orgs=gremien, seite=2)
 
-    # 4 Anfragen Stammdaten + robots, dann genau eine Seite Vorlagen
-    erster = crawle_oparl(db, stadt, stadt.quellen[0], _abrufer(uhr, fake, max_anfragen=6),
+    # Fünf Anfragen: robots.txt, System, Body, eine Seite Gremien und genau eine Seite
+    # Vorlagen. Reihenfolge bewusst: Gremien zuerst (Ortsbezug der Vorlagen braucht ihre
+    # Namen), Vorlagen vor Sitzungen, damit ein knappes Budget sichtbare Treffer erzeugt.
+    erster = crawle_oparl(db, stadt, stadt.quellen[0], _abrufer(uhr, fake, max_anfragen=5),
                           LaufOptionen(seit="2020-01-01"))
     assert erster.status == "teilweise"
     assert db.zaehle()["vorgang"] == 2
+    assert db.zaehle()["sitzung"] == 0, "Sitzungen kommen erst nach den Vorlagen an die Reihe"
     stand = db.stand_lesen("koeln:ris", "vorlagen")
     assert stand["naechste_url"].endswith("page=2") or "page=2" in stand["naechste_url"]
 

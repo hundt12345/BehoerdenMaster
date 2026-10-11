@@ -1,0 +1,15 @@
+{
+ "id": "https://buergerinfo.stadt-koeln.de/oparl/system",
+ "type": "https://schema.oparl.org/1.1/System",
+ "oparlVersion": "https://schema.oparl.org/1.1/",
+ "otherOParlVersions": [],
+ "body": "https://buergerinfo.stadt-koeln.de/oparl/bodies",
+ "name": "Stadt Köln - OParl 1.1",
+ "contactEmail": "12-session@stadt-koeln.de",
+ "contactName": "Stadt Köln | Amt für Digitalisierung und Informationstechnik",
+ "website": "https://buergerinfo.stadt-koeln.de/",
+ "vendor": "https://www.somacos.de?oparl=v1.6.1",
+ "product": "Sitzungsmanagementsystem Session  Copyright SOMACOS GmbH & Co. KG",
+ "created": "2019-04-11T00:00:00+02:00",
+ "modified": "2019-05-20T11:00:00+02:00"
+}

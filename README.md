@@ -16,9 +16,9 @@ Kommunale Vorgänge durchsuchen und nachvollziehbar zusammenfassen – zuerst f�
 
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/hundt12345/BehoerdenMaster/tree/arena/027b2661-behoerdenmaster)
 
-Die [`render.yaml`](render.yaml) konfiguriert einen Python-3.13-Web-Service in Frankfurt im **kostenlosen Tarif (Render Free)**. Free hat keine persistente Disk: die SQLite-Datei liegt in `/tmp` und wird bei Neustart/Redeploy neu mit der Demo aufgebaut. Der Dienst schläft nach Inaktivität ein; der erste Aufruf danach dauert etwas länger. Für dauerhafte Daten siehe [docs/render.md](docs/render.md). Der Button verwendet den aktuellen PR-Branch; nach dessen Merge kann auch `main` ausgewählt werden.
+Die [`render.yaml`](render.yaml) konfiguriert einen Python-3.13-Web-Service in Frankfurt im **kostenlosen Tarif (Render Free)**. Free hat keine persistente Disk: die SQLite-Datei liegt in `/tmp` und wird nach jedem Neustart vom Hintergrundabruf neu gefüllt. Damit dieser Erstabruf klein und höflich bleibt, begrenzt `BEHOERDEN_SYNC_SEIT` ihn auf ein **rollierendes 90-Tage-Fenster** statt auf den Wahlperiodenbeginn. Der Dienst schläft nach Inaktivität ein; der erste Aufruf danach dauert etwas länger. Für dauerhafte Daten siehe [docs/render.md](docs/render.md). Der Button verwendet den aktuellen PR-Branch; nach dessen Merge kann auch `main` ausgewählt werden.
 
-Beim ersten Start: klar markierte Offline-Demo, **automatische Behördenabrufe aus**. Optionaler Hintergrundabruf erst nach Probelauf und mit eigener Kontaktadresse; keine Live-Abfragen durch Suchanfragen. [Schritt-für-Schritt-Anleitung, Einstellungen, Live-Probe und Sicherung](docs/render.md).
+Der Blueprint ruft **das Ratsinformationssystem Köln (OParl) automatisch ab**, sobald eine eigene Kontaktadresse gesetzt ist. Beispieldaten sind ausgeschaltet. Ohne Kontaktadresse wird **nicht** abgerufen – die Seite startet trotzdem und erklärt den Grund sichtbar, statt still nichts anzuzeigen. Suchanfragen lösen weiterhin nie einen Behördenabruf aus. [Schritt-für-Schritt-Anleitung, Einstellungen, Live-Probe und Sicherung](docs/render.md); bei einer leeren Startseite der Abschnitt [Fehlerbehebung](docs/render.md#fehlerbehebung).
 
 ## Schnellstart – auch ohne Netz
 
@@ -81,7 +81,9 @@ Nicht mehr gelistete Verfahren bleiben gespeichert und werden entsprechend marki
 
 ### Ratsinformationssystem / OParl
 
-**OParl bleibt die Standardquelle**, wenn `--quelle` fehlt. Vor einem größeren Erstabruf die zulässigen Grenzen mit der Stadt abstimmen (Kontakt aus dem OParl-System: `12-session@stadt-koeln.de`).
+**OParl ist die Standardquelle**, wenn `--quelle` fehlt, und die Quelle, die der Render-Blueprint automatisch abruft. Vor einem größeren Erstabruf die zulässigen Grenzen mit der Stadt abstimmen (Kontakt aus dem OParl-System: `12-session@stadt-koeln.de`).
+
+Der Abruf folgt der Reihenfolge **Gremien → Vorlagen → Sitzungen**. Die Vorlagen stehen bewusst vor den Sitzungen, denn nur sie sind die durchsuchbaren Vorgänge: Bei einem knappen Anfragebudget erzeugt ein Lauf sonst unter Umständen Sitzungsdaten, aber **keine einzigen Treffer** für die Startseite. Der Erstabruf lässt sich über `--seit` bzw. `BEHOERDEN_SYNC_SEIT` begrenzen; eine Tagesanzahl wie `90` ist ein rollierendes Fenster und veraltet nicht.
 
 ```bash
 python -m behoerdenmaster probe --quelle ris
@@ -112,8 +114,9 @@ Die Kölner OParl-robots.txt enthält keine Gruppe für unbekannte Clients; für
 
 ## Grenzen und Datenqualität
 
-- **Kein erfolgreicher End-to-End-Live-Crawl in dieser Entwicklungsumgebung:** Öffentliche Bauleit-JSON-Daten und eine UUID-Detailseite wurden zur Recherche erfolgreich gelesen; Adapter, Crawls und Fehlerfälle sind gegen Fixtures/Mock-HTTP getestet. Direkte Netzwerkabrufe aus der Sandbox waren nicht zuverlässig möglich. Auch Kölns Ratsinformation meldete zeitweise „Server ist nicht verfügbar“. `probe` und ein kleiner Lauf auf dem eigenen Rechner bleiben der Praxistest.
-- Das Projekt [mandari](https://github.com/mandariOSS/mandari/issues/348) berichtet seit September 2026 über nicht erreichbare Kölner Hosts und vermutet eine IP-Sperre; **keine öffentlich bestätigte Aussage der Stadt**. Keine Ausweich-Hosts oder andere Umgehung.
+- **Schnittstelle am 11.10.2026 wieder erreichbar, aber kein Live-Abruf aus Sandbox oder Render-Netz bestätigt:** `robots.txt`, `/oparl/system`, `/oparl/bodies` sowie Gremien-, Vorlagen- und Sitzungslisten mit `modified_since` und realem `links.next` wurden geprüft und antworten. Die robots.txt der Stadt hat keine Gruppe für unbekannte Clients, `BehoerdenMaster` darf also abrufen und unterliegt keinem `Crawl-delay`. Der vollständige Abrufpfad (robots → System → Body → Listen → SQLite → Suche → API) ist mit den dabei aufgezeichneten **Originalantworten** als End-to-End-Test hinterlegt: [`fixtures/oparl/koeln/live_2026-10-11`](fixtures/oparl/koeln/live_2026-10-11/README.md). Aus der Entwicklungs-Sandbox sind ausgehende Abrufe zu den Behörden-Hosts jedoch gesperrt, und ob die Stadt Abrufe aus einer Rechenzentrums-IP zulässt, ist ungeprüft. `probe` und ein kleiner Lauf auf dem eigenen Rechner bzw. in der Render-Shell bleiben der Praxistest.
+- **Freitextsuche nutzt Wortstämme, kein vollständiges Stemming.** Eine Frageform wie „Abendmärkten“ findet den Titel „Abendmärkte“, weil höchstens eine deutsche Endung entfernt wird und der Stamm mindestens fünf Zeichen behält – Kurzwörter wie „Rat“ oder „Bau“ werden deshalb nicht zu Wildcards. Umlaut-Plurale („Bebauungspläne“ zu „Bebauungsplan“) und Synonyme werden **nicht** erkannt.
+- Das Projekt [mandari](https://github.com/mandariOSS/mandari/issues/348) berichtete seit September 2026 über nicht erreichbare Kölner Hosts und vermutete eine IP-Sperre; **keine öffentlich bestätigte Aussage der Stadt**. Keine Ausweich-Hosts oder andere Umgehung.
 - **Ortsbezug ist eine Heuristik:** OParl aus Betreff/Gremiennamen, Bauleitplanung aus Titel/öffentlicher Beschreibung. Die Herkunft wird im API-Ergebnis angezeigt. Kein Polygonabgleich und keine garantierte Zuordnung zur tatsächlichen Planfläche; auch andere im Text genannte Orte können Treffer auslösen. Kontaktangaben aus Detailseiten werden nicht als Lage übernommen.
 - **PLZ-Zuordnung:** 9 Bezirke / 86 Stadtteile sind hinterlegt. Nur 5 der 46 Kölner PLZ haben eine ungefähre Stadtteil-Zuordnung; die übrigen suchen nur ausdrückliche PLZ-Nennungen. PLZ- und Stadtteilgrenzen sind nicht identisch.
 - **„Geplant/offen“ priorisiert**, filtert aber nicht ausschließlich offene Vorgänge. Eine beendete Beteiligung bedeutet nicht, dass das Bauvorhaben abgeschlossen ist. Fristen werden einschließlich gelieferter Uhrzeiten/Zeitzonen geprüft und in Europe/Berlin dargestellt; maßgeblich bleibt die Originalseite.
@@ -144,6 +147,7 @@ config/cities/*.toml
 | `oparl.py`, `crawler.py` | OParl-Abbildung, Crawler-Registry, gemeinsamer Cooldown |
 | `bauleitplanung.py` | Öffentliche Suche, Scope-Prüfung, Dokumentlinks, zweistufiger Crawl |
 | `speicher.py` | Upserts, additive Schema-Migration, atomare Seiten, persistente Warteschlange |
+| `betrieb.py` | Startinitialisierung, robuste Umgebungsauswertung mit Warnungen, Hintergrundabruf |
 | `suche.py` | Gemeinsame Filter/Ranking, quellengerechte Links und Ergebnisobjekte |
 | `auswertung.py`, `plan_auswertung.py` | Rats-Ergebnisse bzw. Beteiligungsstatus, Zusammenfassungen, Verlauf |
 | `demo.py`, `fixtures/` | Offline-Demo mit getrennt gekennzeichneten Quellen |
@@ -171,14 +175,14 @@ Bestehende SQLite-Dateien werden beim Öffnen additiv erweitert; vorhandene Rats
 | Methode | Pfad | Zweck |
 |---|---|---|
 | GET / HEAD | `/healthz` | Lokaler Datenbank-Healthcheck (200/503), keine Behördenabfrage |
-| GET | `/api/status` | Quellen, Bestand, letzte Läufe, Server-Pausen und Hintergrundabruf-Status |
+| GET | `/api/status` | Quellen, Bestand, letzte Läufe, Server-Pausen und Hintergrundabruf-Status. Zusätzlich `bestand_leer` und `hinweise`: Bei einem leeren Bestand wird der Grund samt zuständiger Einstellung erklärt, statt nur null Treffer zu liefern. `betrieb.warnungen` meldet Konfigurationsprobleme, die den Dienst bewusst nicht stoppen. |
 | POST | `/api/frage` | `{"frage":"…","stadt":"koeln","limit":10,"offset":0}` |
 | GET | `/api/plz/{plz}?thema=bauen,verkehr&stadt=koeln` | PLZ-Suche |
 | GET | `/api/vorgang?id=<URL-kodierte-Quell-ID>&stadt=koeln` | Detail mit Verlauf/Dokumenten; auf die gewählte Stadt beschränkt |
 
 `links.original` / `original_text` zeigen die richtige Quellansicht. OParl-spezifische Linkfelder bleiben erhalten, sind bei Bauleitplanung aber `null`. Bauleittreffer haben zusätzlich `beteiligung` und quellspezifische `hinweise`; `verlauf[].typ` trennt Beteiligungsdaten von Abrufbeobachtungen. Interaktive API-Dokumentation: `/docs`.
 
-Für Netzwerk-/Preview-Zugriff: `python -m behoerdenmaster serve --host 0.0.0.0 --port 8000`. Ohne `--port` gilt `$PORT` (Render) oder lokal 8000. Der Browser spricht dieselbe Anwendung über relative `/api`-URLs an; kein browserseitiger Zugriff auf ein Sandbox-`localhost`. Ein Web-Lifespan initialisiert das Schema und startet nur bei `BEHOERDEN_SYNC_ENABLED=true` die Hintergrund-Aktualisierung. Es gibt keinen öffentlichen Crawl-/Admin-Endpunkt; manuelle Abrufe laufen über die CLI und teilen sich mit dem Hintergrunddienst eine Dateisperre.
+Für Netzwerk-/Preview-Zugriff: `python -m behoerdenmaster serve --host 0.0.0.0 --port 8000`. Ohne `--port` gilt `$PORT` (Render) oder lokal 8000. Der Browser spricht dieselbe Anwendung über relative `/api`-URLs an; kein browserseitiger Zugriff auf ein Sandbox-`localhost`. Ein Web-Lifespan initialisiert das Schema und startet die Hintergrund-Aktualisierung nur bei `BEHOERDEN_SYNC_ENABLED=true` **und** gesetzter `BEHOERDEN_KONTAKT`. Fehlt die Kontaktadresse, startet der Dienst trotzdem und meldet das in `betrieb.warnungen`; ungültige Einzelwerte fallen auf ihren Standard zurück, statt den Start abzubrechen. Es gibt keinen öffentlichen Crawl-/Admin-Endpunkt; manuelle Abrufe laufen über die CLI und teilen sich mit dem Hintergrunddienst eine Dateisperre.
 
 ## Datenbank sichern
 
@@ -195,7 +199,9 @@ pytest -q
 python -m pyflakes behoerdenmaster tests
 ```
 
-Offline getestet werden Fragen/Orte, beide Quelladapter, JSON-/HTML-Schema, Organisationsfilter, sichere Links/Weiterleitungen, robots, Backoff/HTTP-Datum, Budget, Pagination/Fortsetzung, atomare Checkpoints, KeyboardInterrupt, Cooldown über Prozessgrenzen, Schema-Migration, fehlende Verfahren, Änderungs-Snapshots, Demo-/Echtdaten-Trennung, Suche, API und CLI sowie Render-Blueprint, Startup/Healthcheck, Einmal-Seeding, Neustart-Fälligkeit, Hintergrundabruf/Shutdown, Prozesssperre und WAL-Sicherung. GitHub Actions führt die Python-Tests und eine JavaScript-Syntaxprüfung aus; **keine Live-Behördenabfragen** in der CI.
+Offline getestet werden Fragen/Orte, beide Quelladapter, JSON-/HTML-Schema, Organisationsfilter, sichere Links/Weiterleitungen, robots, Backoff/HTTP-Datum, Budget, Pagination/Fortsetzung, atomare Checkpoints, KeyboardInterrupt, Cooldown über Prozessgrenzen, Schema-Migration, fehlende Verfahren, Änderungs-Snapshots, Demo-/Echtdaten-Trennung, Suche, API und CLI sowie Render-Blueprint, Startup/Healthcheck, Einmal-Seeding, Neustart-Fälligkeit, Hintergrundabruf/Shutdown, Prozesssperre und WAL-Sicherung.
+
+Hinzu kommen drei Prüfungen gegen die veröffentlichte Instanz: der **vollständige Abrufpfad gegen die Originalantworten vom 11.10.2026** (robots → System → Body → Listen mit echtem `links.next` → SQLite → Suche → API, einschließlich geschlossener Beratungsfolge mit überliefertem Ergebnis), die **Abrufreihenfolge bei knappem Budget** (Vorlagen vor Sitzungen, damit ein Teilabruf sichtbare Treffer hinterlässt) sowie **Diagnose und Robustheit eines leeren Bestands** (erklärter Leerstand in API und Oberfläche, warnende statt abstürzende Umgebungsauswertung, rollierendes Erstabruf-Fenster). GitHub Actions führt die Python-Tests und eine JavaScript-Syntaxprüfung aus; **keine Live-Behördenabfragen** in der CI.
 
 ## Lizenz und Datenschutz
 

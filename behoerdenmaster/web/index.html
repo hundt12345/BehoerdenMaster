@@ -14,6 +14,16 @@
     header p { margin:4px 0 0; color:var(--muted); }
     main { max-width: 980px; margin: 0 auto; padding: 20px 16px 60px; }
     .banner { background:#fff7e0; border:1px solid #f1d58a; border-radius:8px; padding:10px 14px; margin-bottom:16px; color:#6b4b00; }
+    .banner.leer { background:#fdf1f1; border-color:#eec3c3; color:#7d2b2b; }
+    .banner strong { display:block; margin-bottom:6px; }
+    .banner ul { margin:0 0 10px 18px; padding:0; }
+    .banner li { margin:4px 0; }
+    .banner-aktion { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+    .banner-aktion a { color:inherit; }
+    button.sekundaer { background:#fff; border:1px solid currentColor; color:inherit; padding:6px 12px;
+                       border-radius:8px; cursor:pointer; font-weight:600; font-size:13px; }
+    button.sekundaer:disabled { opacity:.6; cursor:wait; }
+    .warnung { display:block; color:var(--bad); }
     .tabs { display:flex; gap:8px; margin-bottom:14px; }
     .tabs button { border:1px solid var(--line); background:#fff; padding:8px 14px; border-radius:8px; cursor:pointer; font-weight:600; color:var(--muted); }
     .tabs button.aktiv { background:var(--accent); border-color:var(--accent); color:#fff; }
@@ -318,18 +328,44 @@
       const s = await api("/api/status");
       const demo = (s.quellen || []).filter((q) => q.demo);
       const echte = (s.quellen || []).filter((q) => !q.demo);
-      if (demo.length) {
-        const b = $("banner");
+      const b = $("banner");
+
+      if (s.bestand_leer) {
+        // Ein leerer Bestand ist der häufigste Grund für „keine Daten angezeigt“.
+        // Er wird erklärt, statt nur eine trefferlose Suche anzubieten.
+        b.replaceChildren(
+          el("strong", null, "Datenbestand leer – deshalb werden keine Vorgänge angezeigt."),
+          el("ul", null, ...(s.hinweise || []).map((h) => el("li", null, h))),
+          el("div", { class: "banner-aktion" },
+            el("button", { class: "sekundaer", type: "button", id: "status-neu" }, "Status neu prüfen"),
+            el("a", { href: "/api/status", target: "_blank", rel: "noopener" }, "Details als JSON"))
+        );
+        b.className = "banner leer";
+        const knopf = $("status-neu");
+        if (knopf) knopf.addEventListener("click", () => { knopf.disabled = true; status(); });
+      } else if (demo.length) {
         b.textContent = "Die als Beispieldaten markierten Treffer sind Offline-Auszüge vom 09.10.2026, keine Live-Daten. " +
           "Für aktuelle Planverfahren: python -m behoerdenmaster crawl --quelle bauleitplanung.";
-        b.classList.remove("versteckt");
+        b.className = "banner";
+      } else {
+        b.className = "banner versteckt";
       }
-      const abrufe = echte.map((q) => `${q.name}: ${q.letzter_erfolg ? "Stand " + q.letzter_erfolg.slice(0, 16).replace("T", " ") : "noch nicht abgerufen"} (${q.status})`);
+
+      const abrufe = echte.map((q) => {
+        let text = `${q.name}: ${q.letzter_erfolg ? "Stand " + q.letzter_erfolg.slice(0, 16).replace("T", " ") : "noch nicht abgerufen"} (${q.status})`;
+        if (q.fehlertext) text += ` – ${q.fehlertext}`;
+        return text;
+      });
       $("stand").textContent = abrufe.length ? "Datenstand · " + abrufe.join(" · ") : "Datenstand: Offline-Beispiele vom 09.10.2026; noch kein Live-Abruf.";
+      const anzahl = (s.zaehler && s.zaehler.vorgang) || 0;
+      $("stand").textContent += ` · Bestand: ${anzahl} ${anzahl === 1 ? "Vorgang" : "Vorgänge"}`;
       if (s.betrieb) {
         $("stand").textContent += s.betrieb.automatische_abrufe
           ? (s.betrieb.sync_dienst_laeuft ? " · Automatische Aktualisierung im Hintergrund aktiv." : " · Automatische Aktualisierung konfiguriert, Dienst derzeit nicht aktiv.")
           : " · Automatische Aktualisierung ausgeschaltet.";
+        for (const w of s.betrieb.warnungen || []) {
+          $("stand").append(el("span", { class: "warnung" }, " ⚠ " + w));
+        }
       }
     } catch (e) { $("stand").textContent = "Status nicht verfügbar."; }
   }

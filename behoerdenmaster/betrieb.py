@@ -13,7 +13,7 @@ import os
 import threading
 from collections.abc import Mapping
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Callable
 
@@ -45,6 +45,30 @@ def _zahl(env: Mapping[str, str], key: str, default: int, minimum: int) -> int:
     return wert
 
 
+def pruefe_seit(wert: str) -> str:
+    """`BEHOERDEN_SYNC_SEIT`: entweder `YYYY-MM-DD` oder eine Tagesanzahl (`90`, `90d`).
+
+    Eine Tagesanzahl ist ein **rollierendes Fenster** und damit für Instanzen ohne
+    persistente Disk geeignet: Der Erstabruf bleibt klein, obwohl das Datum nicht
+    nachgepflegt werden muss. Der leere Wert übernimmt `seit` aus der Stadtkonfiguration.
+    """
+    roh = (wert or "").strip()
+    if not roh:
+        return ""
+    kandidaten = roh[:-1] if roh[-1] in "dD" else roh
+    if kandidaten.isdigit():
+        if int(kandidaten) < 1:
+            raise ValueError("BEHOERDEN_SYNC_SEIT muss als Tagesanzahl mindestens 1 sein.")
+        return f"{int(kandidaten)}d"
+    try:
+        date.fromisoformat(roh)
+    except ValueError as exc:
+        raise ValueError(
+            "BEHOERDEN_SYNC_SEIT muss ein Datum (YYYY-MM-DD) oder eine Tagesanzahl (z. B. 90) sein."
+        ) from exc
+    return roh
+
+
 @dataclass(frozen=True)
 class Betrieb:
     demo: bool = False
@@ -54,24 +78,82 @@ class Betrieb:
     sync_intervall: int = 21600  # sechs Stunden pro Quelle; auch nach Neustarts
     sync_budget: int = 100  # pro Quelle und Etappe, einschließlich robots.txt
     sync_startverzoegerung: int = 30
+    sync_seit: str = ""  # leer = `seit` aus der Stadtkonfiguration; "90d" = rollierendes Fenster
+    # Konfigurationsprobleme, die den Dienst bewusst nicht stoppen (z. B. fehlende Kontaktadresse).
+    warnungen: tuple[str, ...] = ()
 
     @classmethod
-    def aus_umgebung(cls, env: Mapping[str, str] | None = None) -> "Betrieb":
+    def aus_umgebung(cls, env: Mapping[str, str] | None = None, *, streng: bool = True) -> "Betrieb":
+        """Umgebung auswerten.
+
+        `streng=True` (CLI) bricht bei ungültigen Werten ab. `streng=False` (Web-Service)
+        hält die Seite erreichbar: Ein einzelner falsch gesetzter Umgebungswert darf nicht
+        dazu führen, dass gar nichts mehr ausgeliefert wird. Das Problem wird stattdessen
+        in `warnungen` und über `/api/status` sichtbar.
+        """
         env = os.environ if env is None else env
-        aktiv = _bool(env, "BEHOERDEN_SYNC_ENABLED")
+        warnungen: list[str] = []
+
+        def flag(key: str, default: bool = False) -> bool:
+            try:
+                return _bool(env, key, default)
+            except ValueError as exc:
+                if streng:
+                    raise
+                warnungen.append(f"{exc} Der Standardwert {'true' if default else 'false'} wird verwendet.")
+                return default
+
+        def zahl(key: str, default: int, minimum: int) -> int:
+            try:
+                return _zahl(env, key, default, minimum)
+            except ValueError as exc:
+                if streng:
+                    raise
+                warnungen.append(f"{exc} Der Standardwert {default} wird verwendet.")
+                return default
+
+        def seit() -> str:
+            try:
+                return pruefe_seit(env.get("BEHOERDEN_SYNC_SEIT", ""))
+            except ValueError as exc:
+                if streng:
+                    raise
+                warnungen.append(f"{exc} Das Datum aus der Stadtkonfiguration wird verwendet.")
+                return ""
+
+        aktiv = flag("BEHOERDEN_SYNC_ENABLED")
         kontakt = env.get("BEHOERDEN_KONTAKT", "").strip()
-        if aktiv and not kontakt:
-            raise ValueError("BEHOERDEN_KONTAKT ist für automatische Abrufe erforderlich.")
         if "\n" in kontakt or "\r" in kontakt:
             raise ValueError("BEHOERDEN_KONTAKT darf keine Zeilenumbrüche enthalten.")
+        if aktiv and not kontakt:
+            if streng:
+                raise ValueError("BEHOERDEN_KONTAKT ist für automatische Abrufe erforderlich.")
+            warnungen.append(
+                "BEHOERDEN_SYNC_ENABLED ist aktiviert, aber BEHOERDEN_KONTAKT fehlt. Automatische Abrufe "
+                "bleiben ausgeschaltet, damit die Behörde nicht von einem nicht identifizierbaren Client "
+                "abgerufen wird. Bitte eine erreichbare Kontaktadresse als Umgebungswert setzen."
+            )
+            aktiv = False
         quellen = tuple(dict.fromkeys(q.strip() for q in env.get("BEHOERDEN_SYNC_QUELLEN", "").split(",") if q.strip()))
         return cls(
-            demo=_bool(env, "BEHOERDEN_DEMO"), sync_aktiv=aktiv, kontakt=kontakt,
+            demo=flag("BEHOERDEN_DEMO"), sync_aktiv=aktiv, kontakt=kontakt,
             sync_quellen=quellen,
-            sync_intervall=_zahl(env, "BEHOERDEN_SYNC_INTERVALL", 21600, 300),
-            sync_budget=_zahl(env, "BEHOERDEN_SYNC_MAX_ANFRAGEN", 100, 1),
-            sync_startverzoegerung=_zahl(env, "BEHOERDEN_SYNC_STARTVERZOEGERUNG", 30, 0),
+            sync_intervall=zahl("BEHOERDEN_SYNC_INTERVALL", 21600, 300),
+            sync_budget=zahl("BEHOERDEN_SYNC_MAX_ANFRAGEN", 100, 1),
+            sync_startverzoegerung=zahl("BEHOERDEN_SYNC_STARTVERZOEGERUNG", 30, 0),
+            sync_seit=seit(),
+            warnungen=tuple(warnungen),
         )
+
+    def seit_datum(self, referenz: date | None = None) -> str | None:
+        """Aufgelöstes `--seit` für den Erstabruf; None überlässt der Konfiguration den Vorrang."""
+        if not self.sync_seit:
+            return None
+        if self.sync_seit.endswith("d"):
+            tage = int(self.sync_seit[:-1])
+            tag = (referenz or datetime.now(timezone.utc).date()) - timedelta(days=tage)
+            return tag.isoformat()
+        return self.sync_seit
 
     def oeffentlicher_status(self) -> dict:
         # Insbesondere keine Kontaktadresse, Dateipfade oder sonstigen Env-Werte veröffentlichen.
@@ -79,7 +161,10 @@ class Betrieb:
             "automatische_abrufe": self.sync_aktiv,
             "intervall_sekunden": self.sync_intervall,
             "max_anfragen_pro_quelle": self.sync_budget,
+            "startverzoegerung_sekunden": self.sync_startverzoegerung,
+            "erstabruf_seit": self.sync_seit,
             "quellen": list(self.sync_quellen),
+            "warnungen": list(self.warnungen),
         }
 
 
@@ -89,6 +174,9 @@ def initialisiere(db_pfad: str | Path, staedte: dict[str, Stadt], betrieb: Betri
     Der Marker verhindert, dass gelöschte Demo-Daten beim Redeploy wiederkommen.
     Bereits vorhandene Vorgänge werden nie durch automatisches Seeding ergänzt
     oder überschrieben. Manuelles `demo` bleibt unabhängig davon möglich.
+
+    Der Grund für eine nicht geladene Demo wird in `betrieb_meta` festgehalten, damit
+    `/api/status` eine leere Startseite erklären kann statt nur nichts anzuzeigen.
     """
     with Speicher(db_pfad) as sp:
         if betrieb.demo:
@@ -102,11 +190,19 @@ def initialisiere(db_pfad: str | Path, staedte: dict[str, Stadt], betrieb: Betri
                                 from .demo import lade_demo
 
                                 lade_demo(sp, staedte["koeln"])
+                                sp.betrieb_setzen("demo_status", "geladen")
                                 log.info("Offline-Demo einmalig geladen; keine Live-Daten")
+                            else:
+                                sp.betrieb_setzen("demo_status", "bestand_vorhanden" if not leer else "keine_stadt_koeln")
                             sp.betrieb_setzen("demo_initialisiert", jetzt_iso())
+                        else:
+                            sp.betrieb_setzen("demo_status", sp.betrieb_wert("demo_status") or "bereits_initialisiert")
             except CrawlLaeuft:
                 # Ein manueller Import ist kein Grund, den Web-Service zu blockieren.
+                sp.betrieb_setzen("demo_status", "uebersprungen_import_laeuft")
                 log.info("Demo-Initialisierung übersprungen: Ein Import/Crawl läuft bereits")
+        else:
+            sp.betrieb_setzen("demo_status", "deaktiviert")
         for stadt in staedte.values():
             for quelle in stadt.quellen:
                 sp.quelle_anlegen(stadt.quell_id(quelle), stadt.schluessel, quelle.schluessel,
@@ -211,8 +307,8 @@ class SyncDienst:
                     )
                     try:
                         log.info("Automatischer Abruf %s, Budget %d", qid, self.betrieb.sync_budget)
-                        bericht = CRAWLER[quelle.typ](sp, stadt, quelle, abrufer,
-                                                      LaufOptionen(max_anfragen=self.betrieb.sync_budget))
+                        bericht = CRAWLER[quelle.typ](sp, stadt, quelle, abrufer, LaufOptionen(
+                            seit=self.betrieb.seit_datum(), max_anfragen=self.betrieb.sync_budget))
                         berichte.append(bericht)
                         log.info("Abruf %s: %s (%d Anfragen)", qid, bericht.status, bericht.anfragen)
                     except CrawlVerweigert as exc:

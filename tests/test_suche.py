@@ -1,10 +1,11 @@
 from datetime import date
 
 import httpx
+import pytest
 
 from behoerdenmaster.abruf import Abrufer
 from behoerdenmaster.crawler import LaufOptionen, crawle_oparl
-from behoerdenmaster.suche import Suchauftrag, suche, vorgang_detail
+from behoerdenmaster.suche import Suchauftrag, stamm, suche, vorgang_detail
 
 from conftest import (
     FakeOParl, KOERPER, demo_objekte, synth_beratung, synth_gremium, synth_sitzung,
@@ -105,6 +106,44 @@ def test_freitext_wirkt_als_und_bei_fehlendem_filter(stadt, db, uhr):
     _aufbau(stadt, db, uhr)
     erg = suche(db, Suchauftrag(stadt=stadt, freitext=["venloer", "verkehrsberuhigung"]), HEUTE)
     assert [t["id"] for t in erg["treffer"]] == [_id(603)]
+
+
+@pytest.mark.parametrize("wort,stamm_form", [
+    ("abendmaerkten", "abendmaerkt"),   # Frageform im Dativ Plural findet den Titel im Plural
+    ("verkehrsberuhigungen", "verkehrsberuhigung"),
+    ("schulen", "schul"),
+    ("rathaus", "rathau"),
+    ("rat", "rat"),                      # zu kurz: keine Abkürzung, sonst träfe „Rat“ alles
+    ("bau", "bau"),
+    ("sitzung", "sitzung"),              # keine der Endungen
+])
+def test_stamm_bildet_suchform_mit_laengengrenze(wort, stamm_form):
+    assert stamm(wort) == stamm_form
+
+
+def test_freitext_findet_flektierte_form(stadt, db, uhr):
+    """Gespeichert ist „Verkehrsberuhigung“; gefragt wird im Plural. Ohne Stamm: null Treffer."""
+    _aufbau(stadt, db, uhr)
+    assert "verkehrsberuhigungen" not in db.db.execute(
+        "SELECT suchtext FROM vorgang WHERE id=?", (_id(603),)).fetchone()[0]
+
+    erg = suche(db, Suchauftrag(stadt=stadt, freitext=["Verkehrsberuhigungen"]), HEUTE)
+    assert [t["id"] for t in erg["treffer"]] == [_id(603)]
+
+
+def test_stamm_erhaelt_die_und_verknuepfung(stadt, db, uhr):
+    """Der Stamm ergänzt Trefferformen, verwischt aber keine Wortgrenzen zwischen Stichworten."""
+    _aufbau(stadt, db, uhr)
+    erg = suche(db, Suchauftrag(stadt=stadt, freitext=["Verkehrsberuhigungen", "venloer"]), HEUTE)
+    assert [t["id"] for t in erg["treffer"]] == [_id(603)]
+
+
+def test_stamm_macht_kurzwoerter_nicht_zu_wildkarden(stadt, db, uhr):
+    """„Bauen“ darf nicht zu „bau“ werden und dann Bebauungspläne und Wohnungsbau treffen."""
+    _aufbau(stadt, db, uhr)
+    assert stamm("bauen") == "bauen"
+    erg = suche(db, Suchauftrag(stadt=stadt, freitext=["Bauen"]), HEUTE)
+    assert erg["gesamt"] == 0
 
 
 def test_quellen_links_und_dokumente(stadt, db, uhr):

@@ -1,8 +1,11 @@
 # Render Blueprint: ein kostenloser Python-Web-Service (Render Free, ohne Disk).
+#
 # Achtung: Free-Services haben kein persistentes Dateisystem. Die SQLite-Datenbank liegt
-# in /tmp und wird bei Neustart/Redeploy/Schlafmodus neu angelegt; die klar markierte
-# Offline-Demo wird dann beim Start automatisch wieder geladen. Live-Abrufe sind aus.
-# Für dauerhafte Daten: plan auf einen bezahlten Tarif und eine Disk (siehe docs/render.md).
+# in /tmp und wird bei Neustart/Redeploy/Schlafmodus neu angelegt. Der Hintergrundabruf
+# füllt sie deshalb nach jedem Start erneut; BEHOERDEN_SYNC_SEIT hält diesen Erstabruf
+# klein (rollierendes Fenster statt fester Jahresbeginn).
+# Für dauerhafte Daten ohne erneuten Abruf: bezahlter Tarif plus Disk (siehe docs/render.md).
+#
 # Branch absichtlich nicht festgelegt: Render verwendet den ausgewählten Blueprint-Branch.
 services:
   - type: web
@@ -23,21 +26,30 @@ services:
         value: /tmp/behoerdenmaster/behoerdenmaster.sqlite
       - key: BEHOERDEN_CONFIG_DIR
         value: /opt/render/project/src/config/cities
-      # Einmalige, in jedem Treffer markierte Demo, damit der erste Deploy etwas zeigt.
+      # Keine Beispieldaten: Die Seite soll echte Vorgänge zeigen und einen leeren Bestand
+      # offen erklären, statt Offline-Auszüge als Treffer auszugeben.
       - key: BEHOERDEN_DEMO
-        value: "true"
-      # Live-Abrufe bleiben aus. Vor Aktivierung Probelauf und Abrufgrenzen klären.
-      - key: BEHOERDEN_SYNC_ENABLED
         value: "false"
+      # Automatischer Abruf der einen Quelle, die derzeit verlässlich antwortet.
+      # Wirksam erst, wenn BEHOERDEN_KONTAKT gesetzt ist (siehe unten). Ohne Kontaktadresse
+      # bleibt der Abruf ausgeschaltet und die Seite meldet das sichtbar, statt zu starten
+      # und still nichts zu tun.
+      - key: BEHOERDEN_SYNC_ENABLED
+        value: "true"
       - key: BEHOERDEN_SYNC_QUELLEN
-        value: koeln:bauleitplanung,koeln:ris
+        value: koeln:ris
+      # Rollierendes Fenster für den Erstabruf: 90 Tage statt des in koeln.toml hinterlegten
+      # Wahlperiodenbeginns. Hält den Abruf nach jedem Neustart klein und höflich.
+      - key: BEHOERDEN_SYNC_SEIT
+        value: "90"
       - key: BEHOERDEN_SYNC_INTERVALL
         value: "21600"
       - key: BEHOERDEN_SYNC_MAX_ANFRAGEN
-        value: "100"
+        value: "120"
       - key: BEHOERDEN_SYNC_STARTVERZOEGERUNG
-        value: "30"
+        value: "15"
       # Render fragt nach der eigenen erreichbaren Kontaktadresse; kein Wert im Git-Repo.
+      # Diese Angabe ist die Voraussetzung dafür, dass überhaupt abgerufen wird.
       - key: BEHOERDEN_KONTAKT
         sync: false
       - key: WEB_CONCURRENCY

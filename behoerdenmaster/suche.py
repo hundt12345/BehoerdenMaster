@@ -55,6 +55,34 @@ def _platz(n: int) -> str:
     return ",".join("?" for _ in range(n))
 
 
+_ABKUERZUNGEN = ("chen", "lein", "ern", "em", "er", "es", "en", "e", "s", "n")
+_STAMM_MINDESTLAENGE = 5
+
+
+def stamm(wort: str) -> str:
+    """Suchstamm eines normalisierten deutschen Worts.
+
+    Die Suche arbeitet mit Teilstringtreffern auf dem normalisierten Suchtext. Ohne Stamm
+    findet die natürliche Frageform „Abendmärkten“ den gespeicherten Titel „Abendmärkte“
+    nicht, obwohl es derselbe Begriff ist – der Bestand wirkt dann leer, obwohl er es nicht
+    ist. Es wird höchstens eine Endung entfernt, und nur wenn der Stamm lang genug bleibt:
+    Kurzwörter wie „Rat“ oder „Bau“ sollen nicht plötzlich beliebig viel treffen.
+    """
+    for endung in _ABKUERZUNGEN:
+        if wort.endswith(endung) and len(wort) - len(endung) >= _STAMM_MINDESTLAENGE:
+            return wort[: -len(endung)]
+    return wort
+
+
+def _suchbegriffe(wort: str) -> list[str]:
+    """Vollform plus Stamm, ohne Doppelte. Leere oder zu kurze Eingaben fallen weg."""
+    n = norm(wort)
+    if not n:
+        return []
+    s = stamm(n)
+    return [n] if s == n else [n, s]
+
+
 def _bulk(db, vorlage: str, ids: list[str]) -> list:
     """Führt eine SQL-Abfrage mit IN-Liste in Blöcken aus."""
     zeilen: list = []
@@ -312,13 +340,19 @@ def _suche(speicher: Speicher, auftrag: Suchauftrag, heute: date, freitext_oder:
 
     if auftrag.freitext and not (ortsklauseln or begriffe):
         if freitext_oder:
-            woerter = [norm(w) for w in auftrag.freitext if len(norm(w)) >= 4] or [norm(w) for w in auftrag.freitext]
-            bedingungen.append("(" + " OR ".join("instr(v.suchtext, ?) > 0" for _ in woerter) + ")")
-            params += woerter
+            woerter = [w for w in auftrag.freitext if len(norm(w)) >= 4] or list(auftrag.freitext)
+            varianten = [b for w in woerter for b in _suchbegriffe(w)]
+            if varianten:
+                bedingungen.append("(" + " OR ".join("instr(v.suchtext, ?) > 0" for _ in varianten) + ")")
+                params += varianten
         else:
             for w in auftrag.freitext:
-                bedingungen.append("instr(v.suchtext, ?) > 0")
-                params.append(norm(w))
+                varianten = _suchbegriffe(w)
+                if not varianten:
+                    continue
+                # Vollform ODER Stamm desselben Worts; über mehrere Wörter bleibt es UND.
+                bedingungen.append("(" + " OR ".join("instr(v.suchtext, ?) > 0" for _ in varianten) + ")")
+                params += varianten
     if auftrag.von:
         bedingungen.append("v.datum >= ?")
         params.append(auftrag.von)

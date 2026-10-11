@@ -46,10 +46,55 @@ def _stand(sp: Speicher) -> dict:
     return {
         "quellen": [
             {"id": r["id"], "name": r["name"], "demo": bool(r["demo"]), "status": r["status"],
-             "letzter_erfolg": r["letzter_erfolg"], "abkuehlung_bis": r["abkuehlung_bis"]}
+             "letzter_erfolg": r["letzter_erfolg"], "abkuehlung_bis": r["abkuehlung_bis"],
+             "fehlertext": r["fehlertext"]}
             for r in sp.quellen()
         ],
     }
+
+
+def _hinweise(zaehler: dict[str, int], quellen: list[dict], laeufe: list[dict],
+              einstellungen: Betrieb, demo_status: str, sync_ids: list[str]) -> list[str]:
+    """Erklärt einen leeren Bestand, statt den Nutzer mit einer trefferlosen Suche zurückzulassen.
+
+    Die Hinweise beschreiben nur den lokalen Zustand und die dafür zuständigen
+    Einstellungen; sie enthalten keine Pfade, Kontaktadressen oder sonstige Env-Werte.
+    """
+    hinweise: list[str] = []
+    echt = [q for q in quellen if not q["demo"]]
+    # Nur die Quellen nennen, für die der Hintergrunddienst tatsächlich eingerichtet ist.
+    geplant = [q for q in echt if q["id"] in sync_ids] or echt
+    if zaehler.get("vorgang", 0) > 0:
+        return hinweise
+
+    hinweise.append("Der Datenbestand ist leer: Es ist noch kein Vorgang abgerufen worden, "
+                    "deshalb liefert jede Suche null Treffer.")
+    for q in echt:
+        if q["fehlertext"]:
+            hinweise.append(f"{q['name']}: letzter Abruf mit „{q['status']}“ – {q['fehlertext']}")
+        elif q["abkuehlung_bis"]:
+            hinweise.append(f"{q['name']}: Derzeit in Abkühlzeit bis {q['abkuehlung_bis'][:16].replace('T', ' ')} UTC.")
+
+    if not einstellungen.sync_aktiv:
+        if any(w.startswith("BEHOERDEN_SYNC_ENABLED") for w in einstellungen.warnungen):
+            hinweise.extend(einstellungen.warnungen)
+        else:
+            hinweise.append("Automatische Abrufe sind ausgeschaltet (BEHOERDEN_SYNC_ENABLED=false oder nicht gesetzt). "
+                            "Ohne Abruf füllt sich die Datenbank nicht von selbst.")
+            hinweise.append("Zum Aktivieren BEHOERDEN_SYNC_ENABLED=true und eine erreichbare "
+                            "BEHOERDEN_KONTAKT setzen; der Abruf startet danach automatisch im Hintergrund.")
+    elif not laeufe:
+        hinweise.append(f"Automatische Abrufe sind aktiv. Der Hintergrunddienst startet "
+                        f"{einstellungen.sync_startverzoegerung} s nach dem Hochfahren und ruft dann "
+                        f"{', '.join(q['name'] for q in geplant)} ab. "
+                        "Bis dahin bleibt die Suche leer; diese Seite lädt den Status beim Öffnen neu.")
+    if demo_status == "deaktiviert":
+        hinweise.append("Beispieldaten sind ausgeschaltet (BEHOERDEN_DEMO=false). Sie würden nur "
+                        "offline und klar markiert angezeigt, aber keine echten Abrufe ersetzen.")
+    elif demo_status == "uebersprungen_import_laeuft":
+        hinweise.append("Die einmalige Demo wurde übersprungen, weil beim Start bereits ein "
+                        "Import/Crawl dieselbe Datenbank benutzt hat.")
+    return hinweise
 
 
 def create_app(db_pfad: str | Path | None = None, config_dir: Path | None = None,
@@ -57,7 +102,10 @@ def create_app(db_pfad: str | Path | None = None, config_dir: Path | None = None
     db = str(db_pfad or os.environ.get("BEHOERDEN_DB") or STANDARD_DB)
     staedte = lade_staedte(config_dir or config_verzeichnis())
     gazetteers = {k: Gazetteer(s) for k, s in staedte.items()}
-    einstellungen = betrieb or Betrieb.aus_umgebung()
+    # streng=False: Ein falsch gesetzter Umgebungswert darf die Seite nicht unbeantwortbar machen.
+    einstellungen = betrieb or Betrieb.aus_umgebung(streng=False)
+    alle_quell_ids = [s.quell_id(q) for s in staedte.values() for q in s.quellen]
+    sync_quellen_effektiv = list(einstellungen.sync_quellen) or alle_quell_ids
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
@@ -111,10 +159,17 @@ def create_app(db_pfad: str | Path | None = None, config_dir: Path | None = None
                  "status": r["status"], "anfragen": r["anfragen"], "fehlertext": r["fehlertext"]}
                 for r in sp.letzte_laeufe(5)
             ]
+            demo_status = sp.betrieb_wert("demo_status")
         daten["version"] = __version__
         daten["betrieb"] = einstellungen.oeffentlicher_status() | {
             "sync_dienst_laeuft": bool(app.state.sync_dienst and app.state.sync_dienst.laeuft),
+            "quellen_effektiv": sync_quellen_effektiv,
+            "demo_modus": einstellungen.demo,
+            "demo_status": demo_status,
         }
+        daten["bestand_leer"] = daten["zaehler"].get("vorgang", 0) == 0
+        daten["hinweise"] = _hinweise(daten["zaehler"], daten["quellen"], daten["letzte_laeufe"],
+                                      einstellungen, demo_status, sync_quellen_effektiv)
         daten["staedte"] = [{"schluessel": s.schluessel, "name": s.name, "hinweis": s.hinweis}
                             for s in staedte.values()]
         return daten

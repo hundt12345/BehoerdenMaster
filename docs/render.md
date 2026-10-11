@@ -2,9 +2,9 @@
 
 Das Repository enthält eine fertige [`render.yaml`](../render.yaml) für **einen nativen Python-Web-Service in Frankfurt im kostenlosen Tarif (Render Free)**. Es ist kein Docker, separater Worker, externer Sprachmodellschlüssel oder PostgreSQL erforderlich.
 
-**Wichtig: Render Free hat kein persistentes Dateisystem.** Die SQLite-Datenbank liegt in `/tmp/behoerdenmaster/` und geht bei Neustart, Redeploy oder nach dem Schlafmodus verloren. Der Dienst wird dann mit der Offline-Demo neu aufgebaut, das ist für eine Homepage-Demo ausreichend. Eigene Daten, die bleiben sollen, brauchen einen bezahlten Tarif mit Disk: dann `plan` auf z. B. `0.5c-512mb` setzen, einen `disk`-Block mit `mountPath: /var/data` ergänzen und `BEHOERDEN_DB` auf `/var/data/behoerdenmaster.sqlite` setzen. Das Einchecken der Datenbank ersetzt keine Disk.
+**Wichtig: Render Free hat kein persistentes Dateisystem.** Die SQLite-Datenbank liegt in `/tmp/behoerdenmaster/` und geht bei Neustart, Redeploy oder nach dem Schlafmodus verloren. Sie wird dann vom Hintergrundabruf neu gefüllt. Damit dieser Erstabruf nach jedem Neustart klein und höflich bleibt, begrenzt `BEHOERDEN_SYNC_SEIT` ihn auf ein **rollierendes Fenster** (Blueprint: 90 Tage) statt auf den Wahlperiodenbeginn aus `koeln.toml`. Eigene Daten, die ohne erneuten Abruf bleiben sollen, brauchen einen bezahlten Tarif mit Disk: dann `plan` auf z. B. `0.5c-512mb` setzen, einen `disk`-Block mit `mountPath: /var/data` ergänzen und `BEHOERDEN_DB` auf `/var/data/behoerdenmaster.sqlite` setzen. Das Einchecken der Datenbank ersetzt keine Disk.
 
-Der erste Deploy zeigt ausschließlich die **klar markierte Offline-Demo vom 09.10.2026**. Automatische Behördenabrufe sind standardmäßig **ausgeschaltet**. Es wurde kein Service in deinem Konto angelegt; die Veröffentlichung führst du mit den folgenden Schritten selbst aus.
+Der Blueprint ruft **eine Quelle automatisch ab**: das Ratsinformationssystem Köln (OParl). Beispieldaten sind ausgeschaltet (`BEHOERDEN_DEMO=false`), damit die Seite keine Offline-Auszüge als Treffer ausgibt. Der Abruf wird erst wirksam, sobald `BEHOERDEN_KONTAKT` gesetzt ist; ohne Kontaktadresse bleibt er ausgeschaltet und die Startseite sagt das ausdrücklich, statt still nichts anzuzeigen. Es wurde kein Service in deinem Konto angelegt; die Veröffentlichung führst du mit den folgenden Schritten selbst aus.
 
 ## 1. Blueprint anlegen
 
@@ -23,7 +23,7 @@ Der erste Deploy zeigt ausschließlich die **klar markierte Offline-Demo vom 09.
    python -m behoerdenmaster -v serve --host 0.0.0.0 --port $PORT
    ```
 
-5. Nach erfolgreichem Deploy die angezeigte `https://…onrender.com`-Adresse öffnen. Frage „Welche Bauvorhaben sind in Köln Ehrenfeld geplant?“ und PLZ `50827` ausprobieren. Demo-Markierungen und Quellen-/Datenstand beachten. `/healthz` muss HTTP 200 liefern, `/api/status` den lokalen Bestand.
+5. Nach erfolgreichem Deploy die angezeigte `https://…onrender.com`-Adresse öffnen. **Direkt nach dem Start ist der Bestand leer**; der Hintergrundabruf beginnt nach `BEHOERDEN_SYNC_STARTVERZOEGERUNG` Sekunden. `/healthz` muss sofort HTTP 200 liefern, `/api/status` den lokalen Bestand und unter `hinweise` den Grund für einen noch leeren Bestand. Auf der Startseite „Status neu prüfen“ benutzen, bis `zaehler.vorgang` steigt. Danach Frage „Was wurde zu Abendmärkten beschlossen?“ und PLZ `50827` ausprobieren; Quellen-/Datenstand im Fuß beachten. Bleibt `vorgang` bei `0`, weiter mit [Fehlerbehebung: Startseite zeigt keine Daten](#fehlerbehebung).
 
 **Warum `pip install -e .`?** Die Stadtkonfigurationen und Demo-Fixtures liegen im Repository, nicht im Python-Wheel. Der editable Install verwendet den ausgecheckten Code samt diesen Dateien. `.python-version` wählt Python **3.13**; ein abweichendes `PYTHON_VERSION` im Render-Dashboard würde diese Datei übersteuern.
 
@@ -37,19 +37,20 @@ Unter **Service → Environment** verwalten; Änderungen anschließend deployen.
 |---|---|
 | `BEHOERDEN_DB` | `/tmp/behoerdenmaster/behoerdenmaster.sqlite` (Free, flüchtig). Mit bezahlter Disk: `/var/data/behoerdenmaster.sqlite` |
 | `BEHOERDEN_CONFIG_DIR` | `/opt/render/project/src/config/cities` |
-| `BEHOERDEN_DEMO` | `true`: einmalige Demo nur bei leerem Bestand; `false` für einen leeren produktiven Erststart |
-| `BEHOERDEN_KONTAKT` | eigene erreichbare Adresse; für Live-Abrufe Pflicht |
-| `BEHOERDEN_SYNC_ENABLED` | **`false`**; `true` schaltet Hintergrundabrufe ein |
-| `BEHOERDEN_SYNC_QUELLEN` | `koeln:bauleitplanung,koeln:ris`; kommagetrennte vollständige Quell-IDs. Leer = alle konfigurierten Quellen. |
+| `BEHOERDEN_DEMO` | **`false`**: kein Seeding mit Offline-Beispielen. `true` lädt die einmalige, klar markierte Demo nur bei leerem Bestand |
+| `BEHOERDEN_KONTAKT` | eigene erreichbare Adresse; **Voraussetzung dafür, dass überhaupt abgerufen wird** |
+| `BEHOERDEN_SYNC_ENABLED` | **`true`**; `false` schaltet Hintergrundabrufe aus |
+| `BEHOERDEN_SYNC_QUELLEN` | **`koeln:ris`**; kommagetrennte vollständige Quell-IDs. Leer = alle konfigurierten Quellen. |
+| `BEHOERDEN_SYNC_SEIT` | **`90`** = rollierend die letzten 90 Tage; alternativ festes Datum `YYYY-MM-DD`. Leer = `seit` aus `config/cities/koeln.toml`. Gilt nur für den Erstabruf, Folgeläufe nutzen den gespeicherten Änderungsstand. |
 | `BEHOERDEN_SYNC_INTERVALL` | `21600` Sekunden = **6 Stunden pro Quelle**; mindestens 300 Sekunden |
-| `BEHOERDEN_SYNC_MAX_ANFRAGEN` | `100` **pro Quelle und Etappe**, einschließlich robots und Weiterleitungen; mindestens 1 |
-| `BEHOERDEN_SYNC_STARTVERZOEGERUNG` | `30` Sekunden nach Start, mindestens 0; keine Abrufe im Healthcheck |
+| `BEHOERDEN_SYNC_MAX_ANFRAGEN` | `120` **pro Quelle und Etappe**, einschließlich robots und Weiterleitungen; mindestens 1 |
+| `BEHOERDEN_SYNC_STARTVERZOEGERUNG` | `15` Sekunden nach Start, mindestens 0; keine Abrufe im Healthcheck |
 | `WEB_CONCURRENCY` | **`1`**, keine mehreren Worker/Instanzen für diesen Aufbau |
 | `PYTHONUNBUFFERED` | `1`, zeitnahe Service-Logs |
 | `FORWARDED_ALLOW_IPS` | `*`, HTTPS-Proxy von Render vertrauen; nur für diesen hinter Render betriebenen Service |
 | `PORT` | von Render gesetzt; nicht hart auf eine andere Nummer festlegen |
 
-Ungültige Werte bzw. aktivierter Sync ohne Kontakt stoppen den Start mit einer verständlichen Fehlermeldung. Nicht unterstützte oder unbekannte Sync-Quellen werden nicht stillschweigend abgerufen.
+**Einzelne ungültige Umgebungswerte schalten den Webdienst nicht mehr ab.** Der CLI-Befehl bricht bei einem falschen Wert weiterhin mit einer verständlichen Meldung ab; der Web-Service startet dagegen, verwendet den Standardwert und meldet das Problem in `betrieb.warnungen` von `/api/status` sowie im Fuß der Startseite. Aktivierter Sync ohne Kontaktadresse führt also nicht zu einem Absturz, sondern dazu, dass **nicht abgerufen** wird und die Startseite das erklärt. Unbekannte Sync-Quellen werden weiterhin nicht stillschweigend abgerufen.
 
 ## 3. Echte Daten zunächst manuell prüfen
 
@@ -71,19 +72,24 @@ python -m behoerdenmaster status
 
 Bei Status `teilweise` wurde nur das Budget erreicht; ein neuer Aufruf setzt den gespeicherten Cursor bzw. die Detail-Warteschlange fort. Bei `gesperrt`, 401/403/429, robots-Verbot oder Netzfehler **nicht in einer Schleife wiederholen**. Server-Pause/`Retry-After` und Cooldown respektieren; kein `--trotz-sperre` im automatischen Betrieb. Vor einem größeren RIS-Erstabruf Abrufgrenzen mit der Stadt abstimmen. Siehe [README: echte Daten abrufen](../README.md#echte-daten-abrufen).
 
-**Kein erfolgreicher End-to-End-Live-Crawl aus der Entwicklungs-Sandbox wurde bestätigt.** Die Offline-Tests beweisen Adapter-/Betriebsverhalten, nicht die Erreichbarkeit oder Freigabe vom Render-Netz aus. Ein Probelauf auf Render bleibt erforderlich.
+**Stand der Prüfung (11.10.2026):** Die OParl-Schnittstelle der Stadt Köln antwortet wieder. Geprüft wurden `robots.txt`, `/oparl/system`, `/oparl/bodies`, die Gremien-, Vorlagen- und Sitzungslisten einschließlich `modified_since` und des realen `links.next`. Die robots.txt der Stadt enthält keine Gruppe für unbekannte Clients; `BehoerdenMaster` darf daher abrufen und unterliegt keinem `Crawl-delay` (zur Kontrolle: `GPTBot` ist vollständig ausgeschlossen, `Googlebot` hat 20 s Verzögerung). Der komplette Abrufpfad ist mit den dabei aufgezeichneten **Originalantworten** als End-to-End-Test hinterlegt ([`fixtures/oparl/koeln/live_2026-10-11`](../fixtures/oparl/koeln/live_2026-10-11/README.md)).
 
-## 4. Optionale automatische Aktualisierung
+**Kein Live-Abruf aus der Entwicklungs-Sandbox und keiner aus dem Render-Netz bestätigt.** Dort ist der ausgehende Zugriff eingeschränkt; die Tests spielen die echten Antworten nach, statt sie live zu holen. Erreichbarkeit, Freigabe und Antwortzeiten vom Render-Netz aus bleiben deshalb im Probelauf zu prüfen – ebenso die Frage, ob die Stadt den Abruf aus einer Rechenzentrums-IP zulässt.
 
-Erst nach erfolgreichen Probeläufen und geklärten Nutzungs-/Abrufgrenzen unter **Environment** setzen, z. B. zunächst nur Bauleitplanung:
+## 4. Automatische Aktualisierung
+
+Der Blueprint schaltet sie für `koeln:ris` bereits ein. Wirksam wird sie erst mit einer eigenen Kontaktadresse; ohne sie bleibt der Abruf aus und die Startseite meldet das. Um eine weitere Quelle zu ergänzen oder das Fenster anzupassen, unter **Environment** setzen:
 
 ```text
 BEHOERDEN_SYNC_ENABLED=true
 BEHOERDEN_KONTAKT=<deine eigene erreichbare Kontaktadresse>
-BEHOERDEN_SYNC_QUELLEN=koeln:bauleitplanung
+BEHOERDEN_SYNC_QUELLEN=koeln:ris,koeln:bauleitplanung
+BEHOERDEN_SYNC_SEIT=90
 BEHOERDEN_SYNC_INTERVALL=21600
-BEHOERDEN_SYNC_MAX_ANFRAGEN=100
+BEHOERDEN_SYNC_MAX_ANFRAGEN=120
 ```
+
+**Abrufreihenfolge:** Gremien → **Vorlagen** → Sitzungen. Die Vorlagen stehen bewusst vor den Sitzungen, denn nur sie sind die durchsuchbaren Vorgänge. Bei einem knappen Budget erzeugt ein Lauf sonst im ungünstigsten Fall Sitzungsdaten und **keine einzigen Treffer** für die Startseite. Reicht das Budget nicht, wird der Lauf `teilweise` und setzt beim nächsten Mal fort.
 
 Nach Deploy startet genau ein Hintergrund-Thread im Web-Service; Quellen laufen **nacheinander**, nie parallel. Bei mehreren Quellen die IDs kommagetrennt setzen. Fälligkeit basiert auf `letzter_versuch` in SQLite; ein Restart/Redeploy startet keine neue Abrufserie innerhalb des Intervalls. Längere persistierte Server-Pausen haben Vorrang. Ein budgetbegrenzter Teilabruf wird frühestens nach dem Intervall fortgesetzt, nicht sofort in einer Endlosschleife.
 
@@ -93,9 +99,9 @@ Mindestabstand, robots, Budgets, Backoff, sichere Weiterleitungen und Sperrabbru
 
 Zum Abschalten `BEHOERDEN_SYNC_ENABLED=false` setzen und neu deployen. Manuelle, budgetbegrenzte Crawls in der Service-Shell bleiben möglich.
 
-## 5. Demo entfernen, Daten sichern, Redeploys
+## 5. Daten sichern, Redeploys
 
-Sobald echte Daten vorhanden sind, die verbliebenen Beispiele entfernen:
+Beispieldaten sind im Blueprint ausgeschaltet. Wurden sie früher geladen oder manuell mit `BEHOERDEN_DEMO=true` aktiviert, lassen sie sich entfernen:
 
 ```bash
 python -m behoerdenmaster demo --loeschen
@@ -117,9 +123,14 @@ Automatische Deploys sind im Blueprint mit `autoDeployTrigger: off` absichtlich 
 
 ## Fehlerbehebung
 
+- **Startseite öffnet sich, zeigt aber keine Daten:** Das ist fast immer eine **leere Datenbank**, keine kaputte Suche. `/api/status` öffnen und drei Dinge prüfen:
+  1. `zaehler.vorgang` – steht dort `0`, gibt es schlicht nichts anzuzeigen. `bestand_leer: true` und das Feld `hinweise` benennen den Grund und die zuständige Einstellung; dieselben Hinweise stehen als Banner auf der Startseite.
+  2. `betrieb.automatische_abrufe` – ist es `false`, obwohl `BEHOERDEN_SYNC_ENABLED=true` gesetzt sein sollte, fehlt `BEHOERDEN_KONTAKT` (siehe `betrieb.warnungen`) **oder die Umgebungswerte des Blueprints sind am laufenden Service gar nicht angekommen**. Das ist leicht zu übersehen: Ein manuell angelegter Service liest `render.yaml` nicht, und ein Blueprint übernimmt geänderte Umgebungswerte erst nach einem erneuten Sync/Deploy. Unter **Service → Environment** gegen die Tabelle in Abschnitt 2 vergleichen – insbesondere `BEHOERDEN_SYNC_QUELLEN`, das in `betrieb.quellen` sichtbar ist.
+  3. `letzte_laeufe` und `quellen[].status`/`fehlertext` – leer bzw. `nie` heißt: es wurde noch nie abgerufen. `gesperrt`, `nicht erreichbar` oder `fehler` zeigen den Grund im Klartext; `teilweise` bedeutet nur ein erschöpftes Budget.
+  Direkt nach dem Start ist ein leerer Bestand **erwartbar**: Der Hintergrundabruf beginnt erst nach `BEHOERDEN_SYNC_STARTVERZOEGERUNG` Sekunden und braucht bei 3 s Mindestabstand einige Minuten. Die Startseite bietet dafür „Status neu prüfen“ an.
 - **Healthcheck schlägt fehl:** Service-Logs lesen; Disk-Mount, Schreibrechte und `BEHOERDEN_DB` prüfen. `/healthz` prüft ausschließlich, ob die vorhandene SQLite-Datei samt Quell-Tabelle lesbar ist; Fehler liefern 503, keine Pfad-/Kontaktdaten. Es ist kein Nachweis aktueller oder vollständiger Behördeninformationen.
-- **Leerer Bestand nach Redeploy:** Meist DB außerhalb der Disk oder Service ohne Disk. Richtigen Pfad wiederherstellen; nicht zur „Reparatur“ bestehende Dateien löschen.
-- **Start scheitert mit Sync-Konfiguration:** tatsächliche Kontaktadresse, boolesche Flags, numerische Grenzen und Quellen-IDs prüfen. Für einen sicheren Demo-Start Sync ausschalten.
+- **Leerer Bestand nach Redeploy:** Auf Render Free erwartet – `/tmp` ist flüchtig, der Hintergrundabruf füllt die Datenbank nach jedem Start neu. Wer das nicht will, braucht eine Disk (Abschnitt 5). Sonst: DB außerhalb der Disk oder Service ohne Disk; richtigen Pfad wiederherstellen und nicht zur „Reparatur“ bestehende Dateien löschen.
+- **Start scheitert mit Sync-Konfiguration:** Seit der robusteren Auswertung startet der Web-Service auch mit ungültigen Werten und meldet sie in `betrieb.warnungen`. Schlägt der Start dennoch fehl, liegen Zeilenumbrüche in `BEHOERDEN_KONTAKT`, eine unbekannte Quell-ID in `BEHOERDEN_SYNC_QUELLEN` oder ein nicht implementierter Quelltyp vor. Die CLI (`crawl`, `probe`) bleibt streng und bricht mit einer Meldung ab.
 - **Shell-Crawl gibt Exitcode 3 zurück:** Ein anderer Crawl/Demo-Import läuft oder eine Cooldown-Sperre ist aktiv. Nicht durch parallele Prozesse bzw. Lock-Dateilöschung umgehen.
 - **Suchtreffer fehlen:** Quellenstatus/letzte Läufe kontrollieren, noch nicht abgeschlossene Erstabrufe fortsetzen. PLZ-Mapping und Ortsbezug sind ausdrücklich unvollständig/heuristisch; keine Vollständigkeit versprechen.
 - **Bauleitquelle geändert/gesperrt:** automatischen Abruf ausschalten, Betreiber/Schema prüfen. Keine Logins, privaten Stellungnahmen oder Sperrumgehung implementieren.

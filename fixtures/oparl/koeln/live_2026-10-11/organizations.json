@@ -1,0 +1,126 @@
+{
+ "data": [
+  {
+   "id": "https://buergerinfo.stadt-koeln.de/oparl/bodies/stadtverwaltung_koeln/organizations/gr/1",
+   "type": "https://schema.oparl.org/1.1/Organization",
+   "body": "https://buergerinfo.stadt-koeln.de/oparl/bodies/stadtverwaltung_koeln",
+   "name": "Rat"
+  },
+  {
+   "id": "https://buergerinfo.stadt-koeln.de/oparl/bodies/stadtverwaltung_koeln/organizations/gr/203",
+   "type": "https://schema.oparl.org/1.1/Organization",
+   "body": "https://buergerinfo.stadt-koeln.de/oparl/bodies/stadtverwaltung_koeln",
+   "name": "Kreiswahlausschuss für die Landtagswahl 2027",
+   "meeting": "https://buergerinfo.stadt-koeln.de/oparl/bodies/stadtverwaltung_koeln/organizations/gr/203/meetings",
+   "shortName": "Kreiswahlausschuss",
+   "classification": "Fachausschüsse und weitere Gremien",
+   "startDate": "2026-05-12",
+   "created": "2026-06-15T10:07:10+02:00",
+   "modified": "2026-08-31T16:12:00+02:00"
+  },
+  {
+   "id": "https://buergerinfo.stadt-koeln.de/oparl/bodies/stadtverwaltung_koeln/organizations/gr/201",
+   "type": "https://schema.oparl.org/1.1/Organization",
+   "body": "https://buergerinfo.stadt-koeln.de/oparl/bodies/stadtverwaltung_koeln",
+   "name": "Mobilitätsausschuss",
+   "meeting": "https://buergerinfo.stadt-koeln.de/oparl/bodies/stadtverwaltung_koeln/organizations/gr/201/meetings",
+   "shortName": "MoA",
+   "classification": "Fachausschüsse und weitere Gremien",
+   "startDate": "2025-11-06",
+   "created": "2025-11-07T10:37:12+01:00",
+   "modified": "2026-09-22T15:33:12+02:00"
+  },
+  {
+   "id": "https://buergerinfo.stadt-koeln.de/oparl/bodies/stadtverwaltung_koeln/organizations/gr/200",
+   "type": "https://schema.oparl.org/1.1/Organization",
+   "body": "https://buergerinfo.stadt-koeln.de/oparl/bodies/stadtverwaltung_koeln",
+   "name": "Ausschuss für Stadtentwicklung und regionale Zusammenarbeit",
+   "meeting": "https://buergerinfo.stadt-koeln.de/oparl/bodies/stadtverwaltung_koeln/organizations/gr/200/meetings",
+   "shortName": "ASrZ",
+   "classification": "Fachausschüsse und weitere Gremien",
+   "startDate": "2025-11-06",
+   "created": "2025-11-07T10:26:39+01:00",
+   "modified": "2026-10-02T08:58:53+02:00"
+  },
+  {
+   "id": "https://buergerinfo.stadt-koeln.de/oparl/bodies/stadtverwaltung_koeln/organizations/gr/199",
+   "type": "https://schema.oparl.org/1.1/Organization",
+   "body": "https://buergerinfo.stadt-koeln.de/oparl/bodies/stadtverwaltung_koeln",
+   "name": "Ausschuss Soziales, Gesundheit, Seniorinnen und Senioren",
+   "meeting": "https://buergerinfo.stadt-koeln.de/oparl/bodies/stadtverwaltung_koeln/organizations/gr/199/meetings",
+   "shortName": "ASGS",
+   "classification": "Fachausschüsse und weitere Gremien",
+   "startDate": "2025-11-06",
+   "created": "2025-11-07T10:18:54+01:00",
+   "modified": "2026-09-18T11:12:13+02:00"
+  },
+  {
+   "id": "https://buergerinfo.stadt-koeln.de/oparl/bodies/stadtverwaltung_koeln/organizations/gr/198",
+   "type": "https://schema.oparl.org/1.1/Organization",
+   "body": "https://buergerinfo.stadt-koeln.de/oparl/bodies/stadtverwaltung_koeln",
+   "name": "Ausschuss für Wirtschaft und Digitalisierung",
+   "meeting": "https://buergerinfo.stadt-koeln.de/oparl/bodies/stadtverwaltung_koeln/organizations/gr/198/meetings",
+   "shortName": "AWD",
+   "classification": "Fachausschüsse und weitere Gremien",
+   "startDate": "2025-11-06",
+   "created": "2025-11-07T10:03:58+01:00",
+   "modified": "2026-10-01T14:33:50+02:00"
+  },
+  {
+   "id": "https://buergerinfo.stadt-koeln.de/oparl/bodies/stadtverwaltung_koeln/organizations/gr/197",
+   "type": "https://schema.oparl.org/1.1/Organization",
+   "body": "https://buergerinfo.stadt-koeln.de/oparl/bodies/stadtverwaltung_koeln",
+   "name": "Ausschuss für Bauen und Wohnen",
+   "meeting": "https://buergerinfo.stadt-koeln.de/oparl/bodies/stadtverwaltung_koeln/organizations/gr/197/meetings",
+   "shortName": "ABW",
+   "classification": "Fachausschüsse und weitere Gremien",
+   "startDate": "2025-11-06",
+   "created": "2025-11-07T09:51:54+01:00",
+   "modified": "2026-09-23T15:13:48+02:00"
+  },
+  {
+   "id": "https://buergerinfo.stadt-koeln.de/oparl/bodies/stadtverwaltung_koeln/organizations/gr/196",
+   "type": "https://schema.oparl.org/1.1/Organization",
+   "body": "https://buergerinfo.stadt-koeln.de/oparl/bodies/stadtverwaltung_koeln",
+   "name": "GUT & KLIMA FREUNDE",
+   "meeting": "https://buergerinfo.stadt-koeln.de/oparl/bodies/stadtverwaltung_koeln/organizations/gr/196/meetings",
+   "shortName": "GUT & KLIMA",
+   "classification": "Fraktionen und Gruppen",
+   "startDate": "2025-11-01",
+   "created": "2025-11-03T16:17:19+01:00",
+   "modified": "2025-11-03T16:44:54+01:00"
+  },
+  {
+   "id": "https://buergerinfo.stadt-koeln.de/oparl/bodies/stadtverwaltung_koeln/organizations/gr/195",
+   "type": "https://schema.oparl.org/1.1/Organization",
+   "body": "https://buergerinfo.stadt-koeln.de/oparl/bodies/stadtverwaltung_koeln",
+   "name": "Freie Demokratische Partei/Kölner Stadtgesellschaft (FDP/KSG)",
+   "meeting": "https://buergerinfo.stadt-koeln.de/oparl/bodies/stadtverwaltung_koeln/organizations/gr/195/meetings",
+   "shortName": "FDP/KSG",
+   "classification": "Fraktionen und Gruppen",
+   "startDate": "2025-11-01",
+   "created": "2025-11-03T16:13:25+01:00",
+   "modified": "2025-11-03T16:43:46+01:00"
+  },
+  {
+   "id": "https://buergerinfo.stadt-koeln.de/oparl/bodies/stadtverwaltung_koeln/organizations/gr/194",
+   "type": "https://schema.oparl.org/1.1/Organization",
+   "body": "https://buergerinfo.stadt-koeln.de/oparl/bodies/stadtverwaltung_koeln",
+   "name": "Bündnis Sahra Wagenknecht (BSW)",
+   "meeting": "https://buergerinfo.stadt-koeln.de/oparl/bodies/stadtverwaltung_koeln/organizations/gr/194/meetings",
+   "shortName": "BSW",
+   "classification": "Fraktionen und Gruppen",
+   "startDate": "2025-11-01",
+   "created": "2025-11-03T16:10:19+01:00",
+   "modified": "2025-11-03T16:44:04+01:00"
+  }
+ ],
+ "pagination": {
+  "elementsPerPage": 25,
+  "currentPage": 1
+ },
+ "links": {
+  "first": "https://buergerinfo.stadt-koeln.de/oparl/bodies/stadtverwaltung_koeln/organizations?modified_since=2025-11-01T00:00:00+01:00",
+  "self": "https://buergerinfo.stadt-koeln.de/oparl/bodies/stadtverwaltung_koeln/organizations?modified_since=2025-11-01T00:00:00+01:00"
+ }
+}

@@ -2,14 +2,14 @@ name: Quellen-Sonde (temporär)
 
 # NUR zur einmaligen Erfassung von Originalantworten der Behörden-Endpunkte während
 # der Entwicklung. Läuft ausschließlich, wenn sich `.sonde/` ändert, und wird nach der
-# Umsetzung samt Verzeichnis entfernt. Nicht Teil der regulären Testsuite.
+# Umsetzung samt Verzeichnis `sonde-raw/` entfernt. Nicht Teil der regulären Testsuite.
 on:
   push:
     paths:
       - ".sonde/**"
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   sonde:
@@ -46,7 +46,7 @@ jobs:
         if: always()
         shell: bash
         run: |
-          python3 - <<'PY'
+          python3 - <<'PY' > sonde/digest.txt 2>&1
           import json, re
           from pathlib import Path
           S = Path("sonde")
@@ -58,52 +58,44 @@ jobs:
               except OSError:
                   return ""
 
-          def kopf(titel, text, n=1800):
-              print(f"\n########## {titel}\n{text[:n]}")
-
           b = roh("bekanntmachungen-2026")
-          print("\n########## DIGEST bekanntmachungen-2026")
+          print("########## DIGEST bekanntmachungen-2026")
           print("GROESSE", len(b))
           treffer = re.findall(r'<a[^>]*href="([^"]*mediaasset/content/bekanntmachungen/[^"]*)"[^>]*>(.*?)</a>', b, re.S)
           print("ANKER_GESAMT", len(treffer))
           print("DATEINAMEN", [u.rsplit("/", 1)[-1] for u, _ in treffer[:12]])
           if treffer:
               u, txt = treffer[0]
-              print("ANKERTEXT_ROH", repr(txt[:700]))
+              print("ANKERTEXT_ROH", repr(txt[:800]))
               i = b.index(u)
-              print("UMFELD_VORHER", repr(b[max(0, i - 900):i]))
-              print("UMFELD_NACHHER", repr(b[i + len(u): i + len(u) + 700]))
-          print("KLASSEN", sorted({f"{t}.{c}" for t, c in re.findall(r'<(\w+)[^>]*class="([^"]+)"', b[:40000])})[:60])
-          print("LISTEN_TAGS", re.findall(r'<(ul|ol|li|table|tr|td|div|article)[^>]{0,120}>', b[b.find("Download-Liste"):][:1500]) if "Download-Liste" in b else "kein Marker")
-          for marker in ("Hinweisver", "mediaasset", "Suchbegriffe", "letter=", "Anzahl", "Pagination", "pager"):
+              print("UMFELD_VORHER", repr(b[max(0, i - 1200):i]))
+              print("UMFELD_NACHHER", repr(b[i + len(u): i + len(u) + 900]))
+          print("KLASSEN", sorted({f"{t}.{c}" for t, c in re.findall(r'<(\w+)[^>]*class="([^"]+)"', b[:60000])})[:70])
+          for marker in ("Hinweisver", "mediaasset", "Suchbegriffe", "letter=", "pager", "views-row", "Downloads"):
               print("MARKER", marker, b.count(marker))
 
           u = roh("bekanntmachungen-buchstabeU")
-          print("\n########## DIGEST bekanntmachungen-buchstabeU", len(u))
+          print("\n########## DIGEST bekanntmachungen-buchstabeU GROESSE", len(u))
           print("ANKER", len(re.findall(r'mediaasset/content/bekanntmachungen/', u)))
+          print("ERSTE_ZIELE", re.findall(r'href="([^"]*mediaasset/content/bekanntmachungen/[^"]*)"', u)[:5])
 
           m = roh("meinungfuer-projekte")
-          print("\n########## DIGEST meinungfuer-projekte", len(m))
+          print("\n########## DIGEST meinungfuer-projekte GROESSE", len(m))
           print("ALTERNATE", re.findall(r'<link[^>]*rel="alternate"[^>]*>', m))
-          print("META", re.findall(r'<meta[^>]*(?:description|og:title)[^>]*>', m)[:3])
           anker = re.findall(r'<a[^>]*href="([^"]*mitmachen[^"]*)"[^>]*>(.*?)</a>', m, re.S)
           print("ANKER_GESAMT", len(anker))
           print("ANKER_ZIELE", [a[0] for a in anker[:12]])
-          print("PROJEKT_MARKER", {w: m.count(w) for w in ("Online-Beteiligung", "geschlossen", "Projekt", "card", "teaser", "project")})
+          print("MARKER", {w: m.count(w) for w in ("Online-Beteiligung", "geschlossen", "Projekt", "card", "teaser")})
           if anker:
               ziel = anker[min(3, len(anker) - 1)][0]
               if ziel.startswith("/"):
                   ziel = "https://meinungfuer.koeln" + ziel
               i = m.find(ziel)
-              print("KARTE_UMFELD", repr(m[max(0, i - 2500):i + 2500]) if i > 0 else "Ziel nicht im HTML gefunden")
+              print("KARTE_UMFELD", repr(m[max(0, i - 3000):i + 3000]) if i > 0 else "Ziel nicht im HTML")
           print("KLASSEN", sorted({f"{t}.{c}" for t, c in re.findall(r'<(\w+)[^>]*class="([^"]+)"', m)})[:80])
-          k = roh("meinungfuer-rss")
-          f = roh("meinungfuer-feed")
-          s = roh("meinungfuer-sitemap")
-          print("\n########## RSS?", len(k), len(f), "SITEMAP", len(s))
-          print("RSS_KOPF", repr(k[:200]))
-          print("FEED_KOPF", repr(f[:200]))
-          print("SITEMAP_KOPF", repr(s[:400]))
+          print("RSS_KOPF", repr(roh("meinungfuer-rss")[:300]))
+          print("FEED_KOPF", repr(roh("meinungfuer-feed")[:300]))
+          print("SITEMAP_KOPF", repr(roh("meinungfuer-sitemap")[:500]))
 
           print("\n########## DIGEST offenedaten-katalog")
           try:
@@ -113,9 +105,21 @@ jobs:
               katalog = None
           if katalog:
               print("ANZAHL", len(katalog))
-              print("TITEL", [d.get("title") for d in katalog][:50])
+              print("TITEL", [d.get("title") for d in katalog][:60])
               urls = sorted({v.get("downloadURL", "") for d in katalog
                              for v in (d.get("distribution") or []) if isinstance(v, dict)})
               print("EIGENE_URLS", [u for u in urls if "offenedaten-koeln.de" in u][:20])
               print("EXTERNE_HOSTS", sorted({re.sub(r"^https?://([^/]+).*$", r"\1", u) for u in urls if u})[:20])
           PY
+      - name: Ergebnis zurück auf den Branch schreiben
+        if: always()
+        shell: bash
+        run: |
+          set -e
+          mkdir -p sonde-raw
+          cp sonde/*.roh sonde/*.txt sonde-raw/ 2>/dev/null || true
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f sonde-raw
+          git commit -q -m "sonde: Rohantworten und Digest (temporär)" || echo "nichts zu committen"
+          git push origin HEAD:arena/9fc31c25-behoerdenmaster

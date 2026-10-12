@@ -66,6 +66,51 @@
     footer { color:var(--muted); font-size:13px; margin-top:30px; border-top:1px solid var(--line); padding-top:14px; }
     .versteckt { display:none; }
     .mehr { margin:14px 0; }
+
+    /* --- Grafische Ladeübersicht ------------------------------------------ */
+    .kpi-reihe { display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:10px; margin:6px 0 18px; }
+    .kpi { background:#fff; border:1px solid var(--line); border-radius:10px; padding:12px 14px; }
+    .kpi .zahl { display:block; font-size:26px; font-weight:700; line-height:1.1; }
+    .kpi .bez { display:block; color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.03em; margin-top:2px; }
+    .karte.lade { padding:16px 18px; }
+    .karte.lade h3 { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+    .zustand { display:inline-flex; align-items:center; gap:6px; font-size:12px; padding:2px 9px; border-radius:999px;
+               border:1px solid var(--line); background:#eef2f9; color:#33405a; }
+    .zustand::before { content:""; width:8px; height:8px; border-radius:50%; background:currentColor; }
+    .zustand.beispiel { background:#f3e8ff; border-color:#d9c2f5; color:#5b2a86; }
+    .zustand.aktuell, .zustand.ok { background:#e6f5ec; border-color:#b8e0c6; color:var(--ok); }
+    .zustand.laeuft { background:#e8f0fd; border-color:#c3d6f5; color:var(--accent); }
+    .zustand.teilweise, .zustand.offen { background:#fff4d6; border-color:#f2d98a; color:#7a5300; }
+    .zustand.pause, .zustand.fehler, .zustand.gesperrt { background:#fbeaea; border-color:#f0c2c2; color:var(--bad); }
+    .zustand.nie, .zustand.leer, .zustand.wartet { background:#f1f3f7; border-color:#dfe4ee; color:var(--muted); }
+    svg.diagramm { width:100%; height:auto; display:block; }
+    svg.diagramm text { font:12px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; fill:#33405a; }
+    svg.diagramm text.achse { fill:var(--muted); font-size:11px; }
+    svg.diagramm text.wert { font-weight:600; }
+    svg.diagramm .gitter { stroke:#e6eaf2; stroke-width:1; }
+    svg.diagramm rect.balken { transition:opacity .15s ease; }
+    svg.diagramm rect.balken:hover { opacity:.75; }
+    .legende { display:flex; flex-wrap:wrap; gap:12px; margin:10px 0 0; padding:0; list-style:none; font-size:13px; }
+    .legende li { display:flex; align-items:center; gap:6px; color:var(--muted); }
+    .legende .punkt { width:12px; height:12px; border-radius:3px; display:inline-block; }
+    .ladepfad { display:flex; flex-wrap:wrap; align-items:stretch; gap:6px; margin:12px 0 4px; padding:0; list-style:none; }
+    .ladepfad li { flex:1 1 150px; min-width:140px; background:#f8fafd; border:1px solid var(--line);
+                   border-radius:8px; padding:8px 10px; position:relative; }
+    .ladepfad li::after { content:"→"; position:absolute; right:-9px; top:50%; transform:translateY(-50%);
+                          color:#b9c2d4; font-weight:700; }
+    .ladepfad li:last-child::after { content:""; }
+    .ladepfad .schritt { display:block; font-size:11px; text-transform:uppercase; letter-spacing:.03em; color:var(--muted); }
+    .ladepfad .wert { display:block; margin-top:3px; font-size:13px; }
+    .ladepfad li.offen { border-color:#f2d98a; background:#fffaf0; }
+    .ladepfad li.wartet { border-style:dashed; }
+    .ladepfad li.beispiel { border-color:#d9c2f5; background:#faf5ff; }
+    .fortschritt { background:#eef2f9; border-radius:999px; height:8px; overflow:hidden; margin:10px 0 4px; }
+    .fortschritt span { display:block; height:100%; background:var(--accent); }
+    .fortschritt.pause span { background:var(--warn); }
+    .klein { font-size:13px; color:var(--muted); }
+    .tabellen-umschlag { overflow-x:auto; }
+    ul.dokumentliste { margin:6px 0 0; padding-left:18px; font-size:13px; color:var(--muted); }
+    ul.dokumentliste li { margin:2px 0; }
   </style>
 </head>
 <body>
@@ -79,6 +124,7 @@
   <div class="tabs" role="tablist">
     <button id="tab-frage" class="aktiv" role="tab" aria-selected="true">Frage stellen</button>
     <button id="tab-plz" role="tab" aria-selected="false">PLZ-Suche</button>
+    <button id="tab-laden" role="tab" aria-selected="false">Datenladen</button>
   </div>
 
   <section id="panel-frage">
@@ -107,6 +153,19 @@
       <button class="primaer" type="submit">Suchen</button>
     </form>
     <p class="hinweis">Die Zuordnung PLZ → Stadtteil ist eine Näherung. Vorgänge mit ausdrücklicher PLZ-Nennung werden immer gefunden.</p>
+  </section>
+
+  <section id="panel-laden" class="versteckt">
+    <p class="hinweis">
+      Was aus welcher Quelle bereits geladen wurde: Vorgänge, Sitzungen und Dokumentverweise aus der lokalen Datenbank.
+      Die Anzeige löst <strong>keinen</strong> Behördenabruf aus und lädt keine PDF-Dateien herunter – Dokumente bleiben verlinkt.
+      Aktualisiert wird der Bestand nur durch den Abruf (CLI oder Hintergrunddienst).
+    </p>
+    <div class="banner-aktion" style="margin-bottom:14px">
+      <button class="sekundaer" type="button" id="laden-neu">Übersicht neu laden</button>
+      <a href="/api/ladebericht" target="_blank" rel="noopener">Rohdaten als JSON</a>
+    </div>
+    <div id="lade-ausgabe" aria-live="polite"></div>
   </section>
 
   <div id="ausgabe" aria-live="polite"></div>
@@ -279,18 +338,258 @@
   }
 
   function umschalten(aktiv) {
-    const frage = aktiv === "frage";
-    $("tab-frage").classList.toggle("aktiv", frage);
-    $("tab-plz").classList.toggle("aktiv", !frage);
-    $("tab-frage").setAttribute("aria-selected", String(frage));
-    $("tab-plz").setAttribute("aria-selected", String(!frage));
-    $("panel-frage").classList.toggle("versteckt", !frage);
-    $("panel-plz").classList.toggle("versteckt", frage);
+    for (const [name, tabId, panelId] of [["frage", "tab-frage", "panel-frage"],
+                                          ["plz", "tab-plz", "panel-plz"],
+                                          ["laden", "tab-laden", "panel-laden"]]) {
+      const an = name === aktiv;
+      $(tabId).classList.toggle("aktiv", an);
+      $(tabId).setAttribute("aria-selected", String(an));
+      $(panelId).classList.toggle("versteckt", !an);
+    }
     ausgabeLeeren();
+    if (aktiv === "laden") ladeUebersichtLaden();
   }
 
   $("tab-frage").addEventListener("click", () => umschalten("frage"));
   $("tab-plz").addEventListener("click", () => umschalten("plz"));
+  $("tab-laden").addEventListener("click", () => umschalten("laden"));
+
+  // --- Grafische Ladeübersicht: Dokumente aus den Quellen ----------------
+  const SVG_NS = "http://www.w3.org/2000/svg";
+  const ROLLEN_FARBEN = { vorlage:"#1f5fbf", plandokument:"#0e8a6e", tagesordnung:"#7a5cc6",
+    einladung:"#c98a1a", ergebnisprotokoll:"#a32a2a", wortprotokoll:"#8a5a44",
+    protokoll:"#3f7f9f", dokument:"#8a93a6" };
+  const ZUSTAND_FARBEN = { ok:"#1b7a3d", aktuell:"#1b7a3d", laeuft:"#1f5fbf", teilweise:"#9a6700",
+    offen:"#9a6700", pause:"#9a6700", gesperrt:"#a32a2a", fehler:"#a32a2a", beispiel:"#5b2a86",
+    nie:"#b9c2d4", leer:"#dfe4ee", wartet:"#dfe4ee" };
+  // Laufstatus aus der Datenbank auf die CSS-Klassen der Oberfläche abbilden.
+  const STATUS_KLASSE = { ok:"aktuell", laeuft:"laeuft", teilweise:"teilweise", gesperrt:"fehler",
+    "nicht erreichbar":"fehler", fehler:"fehler", demo:"beispiel" };
+
+  function s(tag, attrs, ...kinder) {
+    const e = document.createElementNS(SVG_NS, tag);
+    if (attrs) for (const [k, v] of Object.entries(attrs)) {
+      if (v === null || v === undefined || v === false) continue;
+      e.setAttribute(k, v === true ? "" : v);
+    }
+    for (const kind of kinder) {
+      if (kind === null || kind === undefined || kind === false) continue;
+      e.append(kind instanceof Node ? kind : document.createTextNode(String(kind)));
+    }
+    return e;
+  }
+
+  const zahl = (n) => (n || 0).toLocaleString("de-DE");
+  const rolleName = (r) => ({ vorlage:"Vorlage", plandokument:"Planungsdokument", tagesordnung:"Tagesordnung",
+    einladung:"Einladung", ergebnisprotokoll:"Ergebnisprotokoll", wortprotokoll:"Wortprotokoll",
+    protokoll:"Protokoll", dokument:"Dokument" }[r] || "Dokument");
+  const rolleFarbe = (r) => ROLLEN_FARBEN[r] || "#8a93a6";
+  const kurzDatum = (iso) => iso ? iso.slice(0, 16).replace("T", " ") : "–";
+  const einheit = (n, singular, plural) => `${zahl(n)} ${n === 1 ? singular : plural}`;
+  const ENTITAETEN_TEXT = { gremien:"Gremien", sitzungen:"Sitzungen", vorlagen:"Vorlagen",
+    verfahren:"Verfahren", organisationen:"Gremien" };
+  const entitaetName = (e) => ENTITAETEN_TEXT[e] || e;
+
+  function legende(eintraege) {
+    return el("ul", { class: "legende" }, ...eintraege.map((e) => el("li", null,
+      el("span", { class: "punkt", style: `background:${e.farbe}` }), `${e.text} (${zahl(e.anzahl)})`)));
+  }
+
+  /** Waagerechte, gestapelte Balken: Dokumentverweise je Quelle, aufgeteilt nach Rolle. */
+  function diagrammDokumente(quellen) {
+    const daten = quellen.filter((q) => (q.zaehler.dokumente || 0) > 0);
+    if (!daten.length) {
+      return el("p", { class: "klein" }, "In keiner Quelle sind bisher Dokumentverweise gespeichert.");
+    }
+    const breite = 660, links = 210, rechts = 60, hoehe = daten.length * 40 + 34;
+    const max = Math.max(...daten.map((q) => q.zaehler.dokumente));
+    const spur = breite - links - rechts;
+    const g = s("svg", { class: "diagramm", viewBox: `0 0 ${breite} ${hoehe}`, role: "img",
+      "aria-label": "Dokumentverweise je Quelle und Rolle als gestapelte Balken" });
+    // Senkrechte Grundlinie bei x = links (nicht als Diagonale über das Diagramm).
+    g.append(s("line", { class: "gitter", x1: links, y1: 18, x2: links, y2: hoehe - 16 }));
+    g.append(s("text", { class: "achse", x: links, y: 12 }, "0"));
+    g.append(s("text", { class: "achse", x: links + spur, y: 12, "text-anchor": "end" },
+      einheit(max, "Dokumentverweis", "Dokumentverweise")));
+    daten.forEach((q, i) => {
+      const y = 24 + i * 40;
+      const gesamt = q.zaehler.dokumente;
+      const balkenBreite = Math.max(3, (gesamt / max) * spur);
+      g.append(s("text", { x: links - 10, y: y + 17, "text-anchor": "end" },
+        q.name.length > 30 ? q.name.slice(0, 29) + "…" : q.name));
+      g.append(s("text", { class: "achse", x: links - 10, y: y + 30, "text-anchor": "end" },
+        q.demo ? "Beispieldaten" : q.typ_text));
+      let x = links;
+      for (const e of q.dokumente_nach_rolle) {
+        const w = (e.anzahl / gesamt) * balkenBreite;
+        const r = s("rect", { class: "balken", x, y, width: Math.max(1, w), height: 24, rx: 3,
+          fill: rolleFarbe(e.rolle), opacity: q.demo ? 0.62 : 1 });
+        r.append(s("title", null, `${q.name} · ${rolleName(e.rolle)}: ${zahl(e.anzahl)}`));
+        g.append(r);
+        if (w > 26) g.append(s("text", { x: x + w / 2, y: y + 16, "text-anchor": "middle", fill: "#fff",
+          class: "wert" }, zahl(e.anzahl)));
+        x += w;
+      }
+      g.append(s("text", { class: "wert", x: links + balkenBreite + 8, y: y + 17 }, zahl(gesamt)));
+      if (q.demo) {
+        // Schraffur macht Offline-Daten auch bei Schwarz-Weiß-Druck erkennbar.
+        // Bewusst einzelne, beschnittene Linien statt eines SVG-Musters: Das rendert
+        // in Browsern und in PDF-/Bildrenderern identisch.
+        const clipId = `schraffur-${i}`;
+        g.append(s("defs", null, s("clipPath", { id: clipId },
+          s("rect", { x: links, y, width: balkenBreite, height: 24, rx: 3 }))));
+        const striche = s("g", { "clip-path": `url(#${clipId})`, stroke: "#ffffff",
+          "stroke-width": 2.5, opacity: 0.5, "pointer-events": "none" });
+        for (let d = -24; d < balkenBreite + 24; d += 9) {
+          striche.append(s("line", { x1: links + d, y1: y + 24, x2: links + d + 24, y2: y }));
+        }
+        g.append(striche);
+      }
+    });
+    return g;
+  }
+
+  /** Senkrechte Balken: Anfragen je protokolliertem Abruflauf, Farbe = Laufstatus. */
+  function diagrammVerlauf(laeufe) {
+    if (!laeufe.length) {
+      return el("p", { class: "klein" },
+        "Für diese Quelle ist noch kein Abruflauf protokolliert. Läufe erscheinen nach dem ersten echten Abruf.");
+    }
+    const breite = 660, hoehe = 150, unten = 34, links = 44;
+    const reihenfolge = laeufe.slice().reverse();
+    const max = Math.max(1, ...reihenfolge.map((l) => l.anfragen));
+    const spur = breite - links - 12;
+    const schritt = spur / reihenfolge.length;
+    const balken = Math.min(46, Math.max(8, schritt - 8));
+    const g = s("svg", { class: "diagramm", viewBox: `0 0 ${breite} ${hoehe}`, role: "img",
+      "aria-label": "Anfragen je Abruflauf, Farbe zeigt den Status" });
+    g.append(s("line", { class: "gitter", x1: links, y1: hoehe - unten, x2: breite - 12, y2: hoehe - unten }));
+    g.append(s("text", { class: "achse", x: links - 6, y: 14, "text-anchor": "end" }, zahl(max)));
+    g.append(s("text", { class: "achse", x: links - 6, y: hoehe - unten + 4, "text-anchor": "end" }, "0"));
+    reihenfolge.forEach((l, i) => {
+      const h = Math.max(2, (l.anfragen / max) * (hoehe - unten - 26));
+      const x = links + i * schritt + (schritt - balken) / 2;
+      const r = s("rect", { class: "balken", x, y: hoehe - unten - h, width: balken, height: h, rx: 3,
+        fill: (ZUSTAND_FARBEN[l.status] || "#8a93a6") });
+      r.append(s("title", null, `${kurzDatum(l.gestartet)} · ${l.status_text} · ${zahl(l.anfragen)} Anfragen` +
+        (l.dauer_sekunden !== null ? ` · ${l.dauer_sekunden} s` : "") + (l.fehlertext ? ` · ${l.fehlertext}` : "")));
+      g.append(r);
+      if (schritt > 34) g.append(s("text", { class: "achse", x: x + balken / 2, y: hoehe - unten + 14,
+        "text-anchor": "middle" }, (l.gestartet || "").slice(5, 10)));
+    });
+    return g;
+  }
+
+  function ladepfad(weg) {
+    return el("ul", { class: "ladepfad" }, ...(weg || []).map((w) => el("li", { class: w.zustand || "" },
+      el("span", { class: "schritt" }, w.schritt), el("span", { class: "wert" }, w.wert))));
+  }
+
+  function fortschrittBisAbruf(q) {
+    if (!q.naechster_abruf || !q.intervall_sekunden) return null;
+    const ziel = Date.parse(q.naechster_abruf);
+    const rest = ziel - Date.now();
+    if (Number.isNaN(ziel)) return null;
+    const anteil = Math.max(0, Math.min(1, 1 - rest / (q.intervall_sekunden * 1000)));
+    const minuten = Math.round(Math.abs(rest) / 60000);
+    const text = rest <= 0 ? "Abruf fällig" :
+      `nächster Abruf in ${minuten >= 120 ? Math.round(minuten / 60) + " h" : minuten + " min"}`;
+    return el("div", null,
+      el("div", { class: "fortschritt" + (rest <= 0 ? " pause" : "") },
+        el("span", { style: `width:${(anteil * 100).toFixed(1)}%` })),
+      el("div", { class: "klein" }, `${text} · Intervall ${Math.round(q.intervall_sekunden / 3600)} h`));
+  }
+
+  function laufTabelle(laeufe) {
+    if (!laeufe.length) return null;
+    const zeilen = laeufe.map((l) => el("tr", null,
+      el("td", null, kurzDatum(l.gestartet)),
+      el("td", null, el("span", { class: "zustand " + (STATUS_KLASSE[l.status] || "nie") }, l.status_text)),
+      el("td", null, zahl(l.anfragen)),
+      el("td", null, l.dauer_sekunden === null ? "–" : l.dauer_sekunden + " s"),
+      el("td", null, (l.zaehler || []).length ? l.zaehler.map((z) => `${z.text}: ${zahl(z.anzahl)}`).join(" · ") : "–"),
+      el("td", null, l.fehlertext || "–")));
+    return el("div", { class: "tabellen-umschlag" }, el("table", { class: "verlauf" },
+      el("thead", null, el("tr", null, el("th", null, "Beginn"), el("th", null, "Status"),
+        el("th", null, "Anfragen"), el("th", null, "Dauer"), el("th", null, "Was wurde geladen"), el("th", null, "Hinweis"))),
+      el("tbody", null, ...zeilen)));
+  }
+
+  function quellenKarte(q) {
+    const z = q.zaehler || {};
+    const zustand = el("span", { class: "zustand " + q.ladezustand }, q.ladezustand_text);
+    const kopf = el("h3", null, q.name, zustand,
+      q.demo ? el("span", { class: "chip demo" }, "Beispieldaten") : el("span", { class: "chip" }, q.typ_text));
+    const kpis = el("div", { class: "kpi-reihe" },
+      el("div", { class: "kpi" }, el("span", { class: "zahl" }, zahl(z.vorgaenge)), el("span", { class: "bez" }, "Vorgänge")),
+      el("div", { class: "kpi" }, el("span", { class: "zahl" }, zahl(z.dokumente)), el("span", { class: "bez" }, "Dokumentverweise")),
+      el("div", { class: "kpi" }, el("span", { class: "zahl" }, zahl(z.sitzungen)), el("span", { class: "bez" }, "Sitzungen")),
+      el("div", { class: "kpi" }, el("span", { class: "zahl" }, zahl(z.gremien)), el("span", { class: "bez" }, "Gremien")));
+    const staende = (q.staende || []).length
+      ? el("p", { class: "klein" }, "Listenstand: " + q.staende.map((st) =>
+          `${entitaetName(st.entitaet)}: ${st.offen ? "unterbrochen, wird fortgesetzt" : "vollständig gelesen"}` +
+          (st.aktualisiert ? ` (${kurzDatum(st.aktualisiert)})` : "")).join(" · "))
+      : null;
+    const dokumente = (q.dokumente || []).length
+      ? el("details", null,
+          el("summary", null, `Geladene Dokumentverweise (${q.dokumente.length}${z.dokumente > q.dokumente.length ? " von " + z.dokumente : ""})`),
+          el("ul", { class: "dokumentliste" }, ...q.dokumente.map((d) => el("li", null,
+            d.url ? el("a", { href: d.url, target: "_blank", rel: "noopener" }, d.name) : d.name,
+            ` · ${d.rolle_text}`, d.datum ? " · " + d.datum.slice(0, 10) : ""))))
+      : el("p", { class: "klein" }, "Noch keine Dokumentverweise in dieser Quelle gespeichert.");
+    const verlauf = el("details", null,
+      el("summary", null, `Abrufverlauf: ${einheit((q.laeufe || []).length, "Lauf", "Läufe")} – Anfragen je Lauf`),
+      diagrammVerlauf(q.laeufe || []), laufTabelle(q.laeufe || []));
+    return el("article", { class: "karte lade" }, kopf,
+      el("p", { class: "klein" }, `Letzter Erfolg: ${kurzDatum(q.letzter_erfolg)}` +
+        (q.letzter_versuch ? ` · Letzter Versuch: ${kurzDatum(q.letzter_versuch)}` : "") +
+        (q.abkuehlung_bis ? ` · Abkühlzeit bis ${kurzDatum(q.abkuehlung_bis)}` : "")),
+      q.fehlertext ? el("p", { class: "hinweis" }, "Hinweis: " + q.fehlertext) : null,
+      fortschrittBisAbruf(q), kpis,
+      el("div", null, el("strong", { class: "klein" }, "Weg der Daten"), ladepfad(q.abrufweg), staende),
+      dokumente, verlauf);
+  }
+
+  function ladeUebersicht(daten) {
+    const ausgabe = $("lade-ausgabe");
+    const g = daten.gesamt || {};
+    const rollen = daten.dokumente_nach_rolle || [];
+    const kpis = el("div", { class: "kpi-reihe" },
+      el("div", { class: "kpi" }, el("span", { class: "zahl" }, zahl(g.vorgaenge)), el("span", { class: "bez" }, "Vorgänge insgesamt")),
+      el("div", { class: "kpi" }, el("span", { class: "zahl" }, zahl(g.dokumente)), el("span", { class: "bez" }, "Dokumentverweise")),
+      el("div", { class: "kpi" }, el("span", { class: "zahl" }, zahl(g.quellen_mit_bestand)), el("span", { class: "bez" }, "Quellen mit Bestand")),
+      el("div", { class: "kpi" }, el("span", { class: "zahl" }, zahl(g.sitzungen)), el("span", { class: "bez" }, "Sitzungen")),
+      el("div", { class: "kpi" }, el("span", { class: "zahl" }, zahl(g.tagesordnungspunkte)), el("span", { class: "bez" }, "Tagesordnungspunkte")));
+    const hinweise = (daten.hinweise || []).map((h) => el("p", { class: "hinweis" }, h));
+    const betrieb = daten.betrieb || {};
+    const betriebText = betrieb.automatische_abrufe
+      ? `Automatische Abrufe: aktiv, Intervall ${Math.round((betrieb.intervall_sekunden || 0) / 3600)} h, ` +
+        `Budget ${betrieb.max_anfragen_pro_quelle} Anfragen je Quelle und Etappe. ` +
+        (betrieb.sync_dienst_laeuft ? "Der Hintergrunddienst läuft." : "Der Hintergrunddienst ist derzeit nicht aktiv.")
+      : "Automatische Abrufe: ausgeschaltet. Der Bestand wächst nur über manuelle Läufe in der Kommandozeile.";
+
+    ausgabe.replaceChildren(
+      kpis,
+      el("section", { class: "karte lade" },
+        el("h3", null, "Dokumente je Quelle"),
+        el("p", { class: "klein" }, `Stand der lokalen Datenbank: ${kurzDatum(daten.generiert)} UTC. Gestapelte Balken je Rolle; schraffiert = Offline-Beispieldaten.`),
+        diagrammDokumente(daten.quellen || []),
+        legende(rollen.map((r) => ({ text: r.text, anzahl: r.anzahl, farbe: rolleFarbe(r.rolle) })))),
+      el("p", { class: "hinweis" }, betriebText),
+      ...hinweise,
+      ...(daten.quellen || []).filter((q) => !q.demo || (q.zaehler.dokumente || 0) > 0).map(quellenKarte));
+  }
+
+  async function ladeUebersichtLaden(knopf) {
+    if (knopf) knopf.disabled = true;
+    try {
+      ladeUebersicht(await api("/api/ladebericht?laeufe=8"));
+    } catch (e) {
+      $("lade-ausgabe").replaceChildren(el("div", { class: "fehler" }, "Ladeübersicht nicht verfügbar: " + e.message));
+    } finally { if (knopf) knopf.disabled = false; }
+  }
+
+  $("laden-neu").addEventListener("click", (ev) => ladeUebersichtLaden(ev.currentTarget));
 
   $("form-frage").addEventListener("submit", async (ev) => {
     ev.preventDefault();

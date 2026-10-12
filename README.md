@@ -7,6 +7,7 @@ Kommunale Vorgänge durchsuchen und nachvollziehbar zusammenfassen – zuerst f�
 - **Fragen in natürlicher Sprache**, etwa „Welche Bauvorhaben sind in Köln Ehrenfeld geplant?“: regelbasiertes Erkennen von Stadtteilen, Bezirken, Themen, Zeiträumen und „geplant/offen“.
 - **PLZ-Suche**, optional mit Themenfilter.
 - **Zwei Kölner Quellen in einer Suche:** Ratsinformation **OParl** und **Bauleitplanung Online NRW**.
+- **Tab „Datenladen“:** grafische Ladeübersicht – Dokumentverweise je Quelle und Rolle als gestapelte Balken, Ladepfad (Zugriff → Listen → Details → Dokumente → Suchbestand), Listenstand, nächster Abruf und das Abrufprotokoll je Quelle. Rein aus der lokalen Datenbank, ohne Behördenabruf.
 - **Pro Vorgang:** Zusammenfassung, Status, Original-Link, Dokumentlinks und ein quellenabhängiges **Verlaufsprotokoll**:
   - OParl: Beratungsfolge mit Gremium, Sitzung, TOP und überliefertem Ergebnis.
   - Bauleitplanung: Beteiligungszeitraum, Phase und **lokal beobachtete Inhaltsänderungen**. Keine erfundene Ratsberatung und keine Behauptung einer vollständigen amtlichen Historie.
@@ -33,6 +34,7 @@ pytest -q                        # Tests mit simulierten Quellen, keine Live-Abf
 python -m behoerdenmaster demo
 python -m behoerdenmaster frage "Welche Bauvorhaben sind in Köln Ehrenfeld geplant?"
 python -m behoerdenmaster plz 50827 --thema bauen
+python -m behoerdenmaster ladebericht   # was aus welcher Quelle geladen wurde
 python -m behoerdenmaster serve   # http://127.0.0.1:8000
 ```
 
@@ -124,7 +126,7 @@ Die Kölner OParl-robots.txt enthält keine Gruppe für unbekannte Clients; für
 - **„Geplant/offen“ priorisiert**, filtert aber nicht ausschließlich offene Vorgänge. Eine beendete Beteiligung bedeutet nicht, dass das Bauvorhaben abgeschlossen ist. Fristen werden einschließlich gelieferter Uhrzeiten/Zeitzonen geprüft und in Europe/Berlin dargestellt; maßgeblich bleibt die Originalseite.
 - **Zusammenfassungen sind regelbasiert.** Bei Bauleitplanung werden Original-Sätze zu Ziel, Umfang und Zeitplan ausgewählt. Keine unabhängige Bestätigung von Investorenankündigungen, kein LLM und kein PDF-Volltext.
 - RIS und Bauleitplanung können dasselbe Vorhaben als unterschiedliche Vorgänge führen. **Keine automatische Zusammenführung** und keine vollständige Historie vor dem ersten lokalen Abruf.
-- **Noch nicht umgesetzt:** Bürgerbeteiligung `meinungfuer.koeln`, PDF-Volltext und optionale Sprachmodell-Zusammenfassungen. Recherche: [`docs/recherche.md`](docs/recherche.md).
+- **Noch nicht umgesetzt:** Bürgerbeteiligung `meinungfuer.koeln`, PDF-Volltext und optionale Sprachmodell-Zusammenfassungen. Recherche: [`docs/recherche.md`](docs/recherche.md). **Vorschläge für weitere Datenquellen der Stadt Köln** (SessionNet-RSS, öffentliche Bekanntmachungen/Amtsblatt, Kölner Bebauungsplan-Übersicht per ArcGIS, Offene Daten Köln/DKAN, Geoportal-Dienste, Beteiligungsportal, Mängelmelder, Presse-RSS, Statistik) mit geprüften Adressen, Lizenzen und Aufwand: [`docs/quellen-koeln.md`](docs/quellen-koeln.md).
 
 ## Architektur
 
@@ -152,6 +154,7 @@ config/cities/*.toml
 | `betrieb.py` | Startinitialisierung, robuste Umgebungsauswertung mit Warnungen, Hintergrundabruf |
 | `suche.py` | Gemeinsame Filter/Ranking, quellengerechte Links und Ergebnisobjekte |
 | `auswertung.py`, `plan_auswertung.py` | Rats-Ergebnisse bzw. Beteiligungsstatus, Zusammenfassungen, Verlauf |
+| `ladebericht.py` | Ladeübersicht: Bestand je Quelle/Rolle, Ladepfad, Listenstand, Abrufprotokoll (nur lesend) |
 | `demo.py`, `fixtures/` | Offline-Demo mit getrennt gekennzeichneten Quellen |
 | `api.py`, `cli.py`, `web/` | API, CLI und responsive Weboberfläche |
 
@@ -179,6 +182,7 @@ Bestehende SQLite-Dateien werden beim Öffnen additiv erweitert; vorhandene Rats
 | GET / HEAD | `/healthz` | Lokaler Datenbank-Healthcheck (200/503), keine Behördenabfrage |
 | GET | `/api/status` | Quellen, Bestand, letzte Läufe, Server-Pausen und Hintergrundabruf-Status. Zusätzlich `bestand_leer` und `hinweise`: Bei einem leeren Bestand wird der Grund samt zuständiger Einstellung erklärt, statt nur null Treffer zu liefern. `betrieb.warnungen` meldet Konfigurationsprobleme, die den Dienst bewusst nicht stoppen, `betrieb.kontakt_hinterlegt` ob eine Kontaktadresse vorliegt – die Adresse selbst wird nie ausgegeben. |
 | POST | `/api/frage` | `{"frage":"…","stadt":"koeln","limit":10,"offset":0}` |
+| GET | `/api/ladebericht?stadt=koeln&laeufe=8` | Ladeübersicht: Bestand, Dokumentverweise je Quelle und Rolle, Ladepfad, Listenstand, nächster Abruf, Abrufprotokoll. Nur lokale Daten, kein Behördenabruf. Dieselben Zahlen liefert `python -m behoerdenmaster ladebericht [--json]`. |
 | GET | `/api/plz/{plz}?thema=bauen,verkehr&stadt=koeln` | PLZ-Suche |
 | GET | `/api/vorgang?id=<URL-kodierte-Quell-ID>&stadt=koeln` | Detail mit Verlauf/Dokumenten; auf die gewählte Stadt beschränkt |
 
@@ -201,7 +205,7 @@ pytest -q
 python -m pyflakes behoerdenmaster tests
 ```
 
-Offline getestet werden Fragen/Orte, beide Quelladapter, JSON-/HTML-Schema, Organisationsfilter, sichere Links/Weiterleitungen, robots, Backoff/HTTP-Datum, Budget, Pagination/Fortsetzung, atomare Checkpoints, KeyboardInterrupt, Cooldown über Prozessgrenzen, Schema-Migration, fehlende Verfahren, Änderungs-Snapshots, Demo-/Echtdaten-Trennung, Suche, API und CLI sowie Render-Blueprint, Startup/Healthcheck, Einmal-Seeding, Neustart-Fälligkeit, Hintergrundabruf/Shutdown, Prozesssperre und WAL-Sicherung. Dazu die **Umgebungsvoreinstellung**: Abrufe sind ohne gesetzte Variablen aktiv, die Projekt-Kontaktadresse ersetzt ein fehlendes `BEHOERDEN_KONTAKT`, ein leer gesetzter Wert verzichtet bewusst darauf, und keine der Adressen verlässt den Server.
+Offline getestet werden die Ladeübersicht (Dokumentverweise je Quelle und Rolle, Ladepfad, Listenstand, Abrufprotokoll, Abkühlzeit, leerer Bestand, API- und CLI-Ausgabe, kein Netzaufbau), Fragen/Orte, beide Quelladapter, JSON-/HTML-Schema, Organisationsfilter, sichere Links/Weiterleitungen, robots, Backoff/HTTP-Datum, Budget, Pagination/Fortsetzung, atomare Checkpoints, KeyboardInterrupt, Cooldown über Prozessgrenzen, Schema-Migration, fehlende Verfahren, Änderungs-Snapshots, Demo-/Echtdaten-Trennung, Suche, API und CLI sowie Render-Blueprint, Startup/Healthcheck, Einmal-Seeding, Neustart-Fälligkeit, Hintergrundabruf/Shutdown, Prozesssperre und WAL-Sicherung. Dazu die **Umgebungsvoreinstellung**: Abrufe sind ohne gesetzte Variablen aktiv, die Projekt-Kontaktadresse ersetzt ein fehlendes `BEHOERDEN_KONTAKT`, ein leer gesetzter Wert verzichtet bewusst darauf, und keine der Adressen verlässt den Server.
 
 Hinzu kommen drei Prüfungen gegen die veröffentlichte Instanz: der **vollständige Abrufpfad gegen die Originalantworten vom 11.10.2026** (robots → System → Body → Listen mit echtem `links.next` → SQLite → Suche → API, einschließlich geschlossener Beratungsfolge mit überliefertem Ergebnis), die **Abrufreihenfolge bei knappem Budget** (Vorlagen vor Sitzungen, damit ein Teilabruf sichtbare Treffer hinterlässt) sowie **Diagnose und Robustheit eines leeren Bestands** (erklärter Leerstand in API und Oberfläche, warnende statt abstürzende Umgebungsauswertung, rollierendes Erstabruf-Fenster). GitHub Actions führt die Python-Tests und eine JavaScript-Syntaxprüfung aus; **keine Live-Behördenabfragen** in der CI.
 
@@ -214,6 +218,7 @@ Hinzu kommen drei Prüfungen gegen die veröffentlichte Instanz: der **vollstän
 ## Nächste Schritte
 
 1. Abrufgrenzen und Nutzungsbedingungen mit den Betreibern abstimmen; beide Quellen auf einem geeigneten Rechner in kleinen Etappen live prüfen.
-2. Bürgerbeteiligung Köln (`meinungfuer.koeln`) ergänzen.
-3. PDF-Volltext mit Quellenbezug und optionalen Sprachmodell-Zusammenfassungen.
-4. PLZ-Zuordnung für die übrigen 41 Kölner PLZ ergänzen und mögliche Verknüpfungen zwischen RIS und Bauleitplanung prüfen.
+2. Weitere Kölner Quellen in der Reihenfolge aus [`docs/quellen-koeln.md`](docs/quellen-koeln.md) anbinden – vorgeschlagen zuerst der SessionNet-RSS-Feed und die öffentlichen Bekanntmachungen (kleiner Aufwand, amtlicher Statuswechsel), danach die Kölner Bebauungsplan-Übersicht (Geometrie statt Orts-Heuristik).
+3. Bürgerbeteiligung Köln (`meinungfuer.koeln`) ergänzen.
+4. PDF-Volltext mit Quellenbezug und optionalen Sprachmodell-Zusammenfassungen.
+5. PLZ-Zuordnung für die übrigen 41 Kölner PLZ ergänzen und mögliche Verknüpfungen zwischen RIS und Bauleitplanung prüfen. Eigenständig zusammengestellte Themenüberblicke mit Quellenangabe: [`docs/presse-koeln.md`](docs/presse-koeln.md).

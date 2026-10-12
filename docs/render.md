@@ -6,6 +6,17 @@ Das Repository enthält eine fertige [`render.yaml`](../render.yaml) für **eine
 
 Der Blueprint ruft **eine Quelle automatisch ab**: das Ratsinformationssystem Köln (OParl). Beispieldaten sind ausgeschaltet (`BEHOERDEN_DEMO=false`), damit die Seite keine Offline-Auszüge als Treffer ausgibt.
 
+> **Disclaimer zu den Stadt-Köln-RSS-Feeds.** Der Blueprint ruft das Ratsinformations-Feed
+> (`koeln:ris-rss`) und das Pressefeed (`koeln:presse-rss`) automatisch ab: je Feed eine Anfrage pro Lauf,
+> Intervall 6 Stunden, robots.txt vorab geprüft, erkennbarer User-Agent mit Kontakt. BehoerdenMaster ist kein
+> offizielles Angebot der Stadt Köln; die Inhalte stammen von der Stadt und sind nicht inhaltlich geprüft.
+> **Offen:** (a) Die Kontaktaufnahme mit der Stadt vor einem vollständigen Erstabruf (mandari Issue #348,
+> siehe [`docs/recherche.md`](recherche.md)) ist noch nicht erfolgt. (b) Die Lizenz des Sitzungs-Feeds ist
+> nicht pro Feed bestätigt, sondern aus OParl übernommen; die Lizenz des Presse-Feeds stammt aus dem Datensatz
+> auf offenedaten-koeln.de (DL-DE-BY 2.0). Hinweise zeigen Quelle und Lizenz derzeit nur in der
+> Ladeübersicht, nicht je Hinweis. Die Anfragen wurden vor der Veröffentlichung nicht live aus dem
+> Entwicklungsumfeld geprüft.
+
 **Abrufe sind standardmäßig aktiv** – auch ohne eigene Env-Werte. Als Kontaktadresse dient `BEHOERDEN_KONTAKT`; solange die fehlt, die im Repository hinterlegte, erreichbare Projekt-Kontaktadresse (`PROJEKT_KONTAKT` in `behoerdenmaster/config.py`). Genau daran hing die zuletzt veröffentlichte Instanz: Sie war mit **keinem** `BEHOERDEN_SYNC_ENABLED` und **keiner** `BEHOERDEN_KONTAKT` gestartet, der automatische Abruf blieb aus, und die Datenbank blieb leer. Seit diesem PR füllt sich der Bestand von selbst; `BEHOERDEN_SYNC_ENABLED=false` schaltet weiterhin bewusst ab, ein leer gesetztes `BEHOERDEN_KONTAKT` verzichtet bewusst auf die Repository-Adresse (auch dann bleibt der Abruf aus, und die Startseite sagt das ausdrücklich, statt still nichts anzuzeigen). Eigene Instanzen sollten die Projekt-Adresse durch eine eigene, erreichbare Adresse ersetzen. Es wurde kein Service in deinem Konto angelegt; die Veröffentlichung führst du mit den folgenden Schritten selbst aus.
 
 ## 1. Blueprint anlegen
@@ -42,7 +53,7 @@ Unter **Service → Environment** verwalten; Änderungen anschließend deployen.
 | `BEHOERDEN_DEMO` | **`false`**: kein Seeding mit Offline-Beispielen. `true` lädt die einmalige, klar markierte Demo nur bei leerem Bestand |
 | `BEHOERDEN_KONTAKT` | eigene erreichbare Adresse. **Voreinstellung:** die im Repository hinterlegte Projekt-Adresse; leer gesetzt = bewusster Verzicht (Abruf bleibt aus) |
 | `BEHOERDEN_SYNC_ENABLED` | **`true`** (Voreinstellung); `false` schaltet Hintergrundabrufe aus |
-| `BEHOERDEN_SYNC_QUELLEN` | **`koeln:ris`**; kommagetrennte vollständige Quell-IDs. Leer = alle konfigurierten Quellen. |
+| `BEHOERDEN_SYNC_QUELLEN` | **`koeln:ris,koeln:ris-rss,koeln:presse-rss`** (Blueprint); kommagetrennte vollständige Quell-IDs. Leer = alle konfigurierten Quellen. |
 | `BEHOERDEN_SYNC_SEIT` | **`90`** = rollierend die letzten 90 Tage; alternativ festes Datum `YYYY-MM-DD`. Leer = `seit` aus `config/cities/koeln.toml`. Gilt nur für den Erstabruf, Folgeläufe nutzen den gespeicherten Änderungsstand. |
 | `BEHOERDEN_SYNC_INTERVALL` | `21600` Sekunden = **6 Stunden pro Quelle**; mindestens 300 Sekunden |
 | `BEHOERDEN_SYNC_MAX_ANFRAGEN` | `120` **pro Quelle und Etappe**, einschließlich robots und Weiterleitungen; mindestens 1 |
@@ -84,7 +95,7 @@ Bei Status `teilweise` wurde nur das Budget erreicht; ein neuer Aufruf setzt den
 
 ## 4. Automatische Aktualisierung
 
-Der Blueprint schaltet sie für `koeln:ris` bereits ein; ohne eigene Env-Werte gilt dieselbe Voreinstellung. Um eine weitere Quelle zu ergänzen oder das Fenster anzupassen, unter **Environment** setzen:
+Der Blueprint schaltet sie für `koeln:ris`, `koeln:ris-rss` und `koeln:presse-rss` bereits ein; ohne eigene Env-Werte gilt dieselbe Voreinstellung. Um eine weitere Quelle zu ergänzen oder das Fenster anzupassen, unter **Environment** setzen:
 
 ```text
 BEHOERDEN_SYNC_ENABLED=true

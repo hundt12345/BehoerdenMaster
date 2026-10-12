@@ -67,7 +67,7 @@ typ = "presse-rss"
 name = "Pressemeldungen Stadt Köln (RSS)"
 system_url = "https://www.stadt-koeln.de/externe-dienste/rss/pressemeldungen.xml"
 min_intervall_sekunden = 3.0
-lizenz = "Pressemitteilung der Stadt Köln; Quellenangabe bei Weiterverwendung"
+lizenz = "Datenlizenz Deutschland – Namensnennung – Version 2.0 (laut Datensatz \"Pressemeldungen\" auf offenedaten-koeln.de; der Feed selbst nennt keine Lizenz)"
 
 [bezirke]
 "1" = "Innenstadt"

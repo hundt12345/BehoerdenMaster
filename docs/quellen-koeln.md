@@ -25,11 +25,10 @@ Stand 12.10.2026, nach der Umsetzung im Repository:
 **Live-Probelauf der beiden Listenquellen bestätigt (12.10.2026).** Aus einem
 Rechenzentrums-Netz (GitHub-Actions-Runner) wurden beide neuen Quellen mit dem Projekt-User-Agent
 abgerufen: Die Bekanntmachungs-Jahresliste 2026 wurde seitenweise gelesen (`rel="next"`), der
-Probelauf endete nach dem Anfragenbudget von acht Anfragen (robots.txt + sieben Listenseiten) mit
-**105 erkannten Bekanntmachungen** in einer leeren Datenbank, Status `teilweise`; der Cursor für die
-Fortsetzung wurde gespeichert, ein zweiter Lauf aktualisierte dieselben Einträge statt sie zu
-verdoppeln. Die Beteiligungsliste lieferte mit zwei Anfragen (robots.txt + Liste)
-**56 Projekte, 0 verworfen**, Status `ok`. Die anschließende Suche fand zu „Köln-Niehl“ die
+Probelauf endete nach dem Anfragenbudget von zehn Anfragen (robots.txt + neun Listenseiten) mit
+**135 erkannten Bekanntmachungen** in einer leeren Datenbank, Status `teilweise`, und **keiner
+doppelt gelesenen Seite**; der Cursor für die Fortsetzung stand danach auf `?page=10`. Die Beteiligungsliste lieferte mit zwei Anfragen (robots.txt + Liste)
+**56 Projekte, 0 verworfen**, Status `ok` (ein Abruf je Lauf). Die anschließende Suche fand zu „Köln-Niehl“ die
 Bekanntmachung „Feldgärtenstraße in Köln-Niehl“ (Ortsbezug Stadtteil **Niehl**) und zu „Flittard“
 das Projekt „GRÜNZUG Flittard-Stammheim“ mit den Stadtteilen **Flittard/Stammheim**; der
 Ladebericht wies für Bekanntmachungen „Originale: verlinkt; das PDF wird nicht geladen und nicht

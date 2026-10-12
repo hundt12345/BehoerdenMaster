@@ -28,13 +28,17 @@ Rechenzentrums-Netz (GitHub-Actions-Runner) und **nicht** aus der gesperrten Ent
 probe --quelle bekanntmachungen
   → 15 Bekanntmachungen auf der ersten Seite (weitere Seiten vorhanden; Treffer 1–15 von 191), 2 Anfragen
 
-crawl --quelle bekanntmachungen --max-anfragen 8   (leere Datenbank)
-  → status=teilweise, 7 Listenseiten gelesen, 105 Bekanntmachungen neu; Anfragebudget erreicht
-    (robots.txt + 7 Seiten), Cursor für die Fortsetzung gespeichert
+crawl --quelle bekanntmachungen --max-anfragen 10   (leere Datenbank)
+  → status=teilweise, 9 Listenseiten gelesen, 135 Bekanntmachungen neu, 0 aktualisiert
+    (9 Seiten × 15 = 135: keine Seite wurde doppelt gelesen)
+  → Cursor danach: …/oeffentliche-bekanntmachungen-2026?page=10  (Seitennummerierung 1-basiert)
 ```
 
 Damit sind die Seitennummerierung (`rel="next"`, 1-basiert), das Fortsetzen am Cursor und die
 Übernahme von Titel, Datum, Hinweisveröffentlichung und Link gegen die **echte** Quelle belegt.
+Ein Zwischenstand mit falscher Seitenrechnung hatte dieselbe erste Seite zweimal gelesen
+(105 Zeilen, davon 15 Aktualisierungen); der Vergleich mit den echten Rohantworten hat den Fehler
+gefunden, die Tests halten ihn seither fest.
 Ein Eintrag ohne Jahresordner im Dateinamen (`0176-02_vertretungsberechtigten_gebäudewirtschaft.pdf`,
 Seite 2) wurde dabei korrekt als Eintrag mit Datum `2026-09-15` erfasst – das Datum stammt aus
 `<time itemprop="startDate">`, nicht aus dem Dateinamen. Nicht geprüft ist ein Abruf aus dem

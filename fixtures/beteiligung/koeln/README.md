@@ -28,7 +28,9 @@ probe --quelle beteiligung
                 „ohne Statusangabe: Qualifizierungsverfahren Neubrücker Ring in Köln-Neubrück“
 
 crawl --quelle beteiligung --max-anfragen 3   (leere Datenbank)
-  → status=ok, 56 Beteiligungen neu, 2 Anfragen
+  → status=ok, 56 Beteiligungen neu, 0 aktualisiert, 2 Anfragen
+    (robots.txt + Liste; die Suche nach „Flittard“ findet „GRÜNZUG Flittard-Stammheim“
+     mit den Stadtteilen Flittard und Stammheim)
 ```
 
 Der Abruf lief mit dem regulären Adapter aus einem Rechenzentrums-Netz (GitHub-Actions-Runner),

@@ -117,7 +117,8 @@ def test_factory_initialisiert_nicht_im_build_erst_im_lifespan(tmp_path):
         assert client.head("/healthz").status_code == 200
         status = client.get("/api/status").json()
         assert status["zaehler"]["vorgang"] == 0
-        assert {q["id"] for q in status["quellen"]} == {"koeln:ris", "koeln:bauleitplanung"}
+        assert {q["id"] for q in status["quellen"]} == {
+        "koeln:ris", "koeln:bauleitplanung", "koeln:ris-rss", "koeln:presse-rss"}
         assert not status["betrieb"]["sync_dienst_laeuft"]
 
 

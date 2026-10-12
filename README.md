@@ -7,7 +7,8 @@ Kommunale Vorgänge durchsuchen und nachvollziehbar zusammenfassen – zuerst f�
 - **Fragen in natürlicher Sprache**, etwa „Welche Bauvorhaben sind in Köln Ehrenfeld geplant?“: regelbasiertes Erkennen von Stadtteilen, Bezirken, Themen, Zeiträumen und „geplant/offen“.
 - **PLZ-Suche**, optional mit Themenfilter.
 - **Zwei Kölner Quellen in einer Suche:** Ratsinformation **OParl** und **Bauleitplanung Online NRW**.
-- **Tab „Datenladen“:** grafische Ladeübersicht – Dokumentverweise je Quelle und Rolle als gestapelte Balken, Ladepfad (Zugriff → Listen → Details → Dokumente → Suchbestand), Listenstand, nächster Abruf und das Abrufprotokoll je Quelle. Rein aus der lokalen Datenbank, ohne Behördenabruf.
+- **Zwei RSS-Hinweisquellen (ohne Suche):** Sitzungstermine der Ratsinformation (SessionNet-RSS) und Pressemeldungen der Stadt. Sie landen als Hinweise mit Titel, Datum, Link und Kurztext in eigener Tabelle, nicht als Vorgänge.
+- **Datenquellen und Ladestand:** eingeklappter Bereich unten auf der Startseite mit einer Grafik (Dokumentverweise je Quelle und Rolle) und einer Zeile je Quelle (Zustand, letzter Erfolg, Bestand). Die Daten kommen rein aus der lokalen Datenbank, ohne Behördenabruf; der ausführliche Ladepfad bleibt im JSON-Endpunkt `/api/ladebericht`.
 - **Pro Vorgang:** Zusammenfassung, Status, Original-Link, Dokumentlinks und ein quellenabhängiges **Verlaufsprotokoll**:
   - OParl: Beratungsfolge mit Gremium, Sitzung, TOP und überliefertem Ergebnis.
   - Bauleitplanung: Beteiligungszeitraum, Phase und **lokal beobachtete Inhaltsänderungen**. Keine erfundene Ratsberatung und keine Behauptung einer vollständigen amtlichen Historie.
@@ -126,7 +127,7 @@ Die Kölner OParl-robots.txt enthält keine Gruppe für unbekannte Clients; für
 - **„Geplant/offen“ priorisiert**, filtert aber nicht ausschließlich offene Vorgänge. Eine beendete Beteiligung bedeutet nicht, dass das Bauvorhaben abgeschlossen ist. Fristen werden einschließlich gelieferter Uhrzeiten/Zeitzonen geprüft und in Europe/Berlin dargestellt; maßgeblich bleibt die Originalseite.
 - **Zusammenfassungen sind regelbasiert.** Bei Bauleitplanung werden Original-Sätze zu Ziel, Umfang und Zeitplan ausgewählt. Keine unabhängige Bestätigung von Investorenankündigungen, kein LLM und kein PDF-Volltext.
 - RIS und Bauleitplanung können dasselbe Vorhaben als unterschiedliche Vorgänge führen. **Keine automatische Zusammenführung** und keine vollständige Historie vor dem ersten lokalen Abruf.
-- **Noch nicht umgesetzt:** Bürgerbeteiligung `meinungfuer.koeln`, PDF-Volltext und optionale Sprachmodell-Zusammenfassungen. Recherche: [`docs/recherche.md`](docs/recherche.md). **Vorschläge für weitere Datenquellen der Stadt Köln** (SessionNet-RSS, öffentliche Bekanntmachungen/Amtsblatt, Kölner Bebauungsplan-Übersicht per ArcGIS, Offene Daten Köln/DKAN, Geoportal-Dienste, Beteiligungsportal, Mängelmelder, Presse-RSS, Statistik) mit geprüften Adressen, Lizenzen und Aufwand: [`docs/quellen-koeln.md`](docs/quellen-koeln.md).
+- **Noch nicht umgesetzt:** Bürgerbeteiligung `meinungfuer.koeln`, Bekanntmachungen/Amtsblatt, Offene Daten Köln, Statistik, PDF-Volltext und optionale Sprachmodell-Zusammenfassungen. **Geoportal-Dienste (Bebauungsplan-Übersicht, Verkehr, Baustellen) sind laut `robots.txt` für alle Crawler gesperrt** und deshalb nicht angebunden. Stand und Begründung: [`docs/quellen-koeln.md`](docs/quellen-koeln.md#umsetzungsstand). Recherche: [`docs/recherche.md`](docs/recherche.md).
 
 ## Architektur
 

@@ -50,7 +50,7 @@ def test_render_blueprint_passt_zum_sqlite_betrieb():
     env = {e["key"]: e for e in service["envVars"]}
     assert Path(env["BEHOERDEN_DB"]["value"]).is_relative_to("/tmp")
     assert env["BEHOERDEN_SYNC_ENABLED"]["value"] == "true"
-    assert env["BEHOERDEN_SYNC_QUELLEN"]["value"] == "koeln:ris"
+    assert env["BEHOERDEN_SYNC_QUELLEN"]["value"] == "koeln:ris,koeln:ris-rss,koeln:presse-rss"
     # Ein rollierendes Fenster (Tage) statt eines festen Datums, das veralten würde.
     assert env["BEHOERDEN_SYNC_SEIT"]["value"].endswith("d") or env["BEHOERDEN_SYNC_SEIT"]["value"].isdigit()
     assert env["BEHOERDEN_DEMO"]["value"] == "false"

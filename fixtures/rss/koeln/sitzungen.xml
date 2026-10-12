@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Ratsinformationssystem der Stadt Köln</title>
+    <link>https://buergerinfo.stadt-koeln.de</link>
+    <description>Tagesaktuelle Ratsinformationen der Stadt Köln</description>
+    <language>de-de</language>
+    <item>
+      <title>Ausschuss Allgemeine Verwaltung und Rechtsfragen / Vergabe / Internationales | 12.10.2026 - 17:00 (Sitzung AVR/0008/2026)</title>
+      <description><![CDATA[Sondersitzung des Ausschusses Allgemeine Verwaltung und Rechtsfragen / Vergabe / Internationales im Rathaus Spanischer Bau, Theo-Burauen-Saal (Raum-Nr. B 121)
+<table><tr><td>Sitzungsnummer:</td><td>AVR/0008/2026</td></tr><tr><td>Gremium:</td><td>Ausschuss Allgemeine Verwaltung und Rechtsfragen / Vergabe / Internationales</td></tr><tr><td>Datum</td><td>12.10.2026</td></tr><tr><td>Zeit</td><td>17:00</td></tr><tr><td>Ort:</td><td>Rathaus Spanischer Bau, Theo-Burauen-Saal (Raum-Nr. B 121)</td></tr></table>]]></description>
+      <link>https://buergerinfo.stadt-koeln.de/rssgo.asp?si34706</link>
+      <category>Sitzungen</category>
+    </item>
+    <item>
+      <title>Betriebsausschuss Bühnen der Stadt Köln | 12.10.2026 - 16:15 (Sitzung BBü/0017/2026)</title>
+      <description><![CDATA[Sondersitzung des Betriebsausschusses Bühnen der Stadt Köln im Rathaus Spanischer Bau, Ratssaal
+<table><tr><td>Sitzungsnummer:</td><td>BBü/0017/2026</td></tr><tr><td>Gremium:</td><td>Betriebsausschuss Bühnen der Stadt Köln</td></tr><tr><td>Datum</td><td>12.10.2026</td></tr><tr><td>Zeit</td><td>16:15</td></tr><tr><td>Ort:</td><td>Rathaus Spanischer Bau, Ratssaal</td></tr></table>]]></description>
+      <link>https://buergerinfo.stadt-koeln.de/rssgo.asp?si35939</link>
+      <category>Sitzungen</category>
+    </item>
+    <item>
+      <title>Bezirksvertretung 3 (Lindenthal) | 02.11.2026 - 16:00 (Sitzung BV3/0008/2026)</title>
+      <description><![CDATA[Sitzung der Bezirksvertretung Lindenthal im Bezirksrathaus Lindenthal, Großer Sitzungssaal (7.Etage) , Aachener Str. 220, 50931 Köln
+<table><tr><td>Sitzungsnummer:</td><td>BV3/0008/2026</td></tr><tr><td>Gremium:</td><td>Bezirksvertretung 3 (Lindenthal)</td></tr><tr><td>Datum</td><td>02.11.2026</td></tr><tr><td>Zeit</td><td>16:00</td></tr><tr><td>Ort:</td><td>Bezirksrathaus Lindenthal, Großer Sitzungssaal (7.Etage) , Aachener Str. 220, 50931 Köln</td></tr></table>]]></description>
+      <link>https://buergerinfo.stadt-koeln.de/rssgo.asp?si34722</link>
+      <category>Sitzungen</category>
+    </item>
+    <item>
+      <title>Vorlage: Erlenweg in Köln-Bickendorf – Beschluss | Stand 12.10.2026</title>
+      <description><![CDATA[Vorlage ohne Sitzungstitel]]></description>
+      <link>https://buergerinfo.stadt-koeln.de/vo0050.asp?__kvonr=101373</link>
+      <category>Vorlagen</category>
+    </item>
+    <item>
+      <title>Sitzung mit fremdem Link | 13.10.2026 - 10:00 (Sitzung XX/0001/2026)</title>
+      <description><![CDATA[Test für einen fremden Host]]></description>
+      <link>https://example.org/rssgo.asp?si1</link>
+      <category>Sitzungen</category>
+    </item>
+  </channel>
+</rss>

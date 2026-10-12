@@ -50,6 +50,25 @@ min_intervall_sekunden = 3.0
 web_vorlage = "https://nw.bauleitplanung-online.de/verfahren/{id}/public/detail"
 lizenz = "Öffentliche Verfahrensinformationen; Nutzungsbedingungen der Plattform beachten"
 
+# RSS-Feed der Ratsinformation (SessionNet): Sitzungstermine als Hinweis. Ergänzt OParl, ersetzt es nicht.
+# Die Nummer aus rssgo.asp?siNNNN entspricht OParl meetings/NNNN. robots.txt: keine Sperre für unbekannte Clients.
+[[quellen]]
+schluessel = "ris-rss"
+typ = "ris-rss"
+name = "Sitzungstermine Ratsinformation (RSS)"
+system_url = "https://buergerinfo.stadt-koeln.de/rssfeed.asp?id=1&filter=snvf"
+min_intervall_sekunden = 3.0
+lizenz = "Datenlizenz Deutschland – Zero – Version 2.0 (laut docs/quellen-koeln.md, je Feed bestätigen)"
+
+# Pressemitteilungen der Stadt Köln als RSS. Nur Titel, Datum, Link und Kurztext; keine Volltexte Dritter.
+[[quellen]]
+schluessel = "presse-rss"
+typ = "presse-rss"
+name = "Pressemeldungen Stadt Köln (RSS)"
+system_url = "https://www.stadt-koeln.de/externe-dienste/rss/pressemeldungen.xml"
+min_intervall_sekunden = 3.0
+lizenz = "Datenlizenz Deutschland – Namensnennung – Version 2.0 (laut Datensatz \"Pressemeldungen\" auf offenedaten-koeln.de; der Feed selbst nennt keine Lizenz)"
+
 [bezirke]
 "1" = "Innenstadt"
 "2" = "Rodenkirchen"

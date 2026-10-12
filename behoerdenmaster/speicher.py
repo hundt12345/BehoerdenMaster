@@ -164,6 +164,23 @@ CREATE TABLE IF NOT EXISTS planstand (
     inhalt_hash TEXT NOT NULL,
     inhalt TEXT NOT NULL
 );
+-- RSS-Hinweise (Sitzungstermine, Pressemeldungen): nur Titel, Datum, Link, Kurztext.
+-- Sie sind bewusst KEIN Vorgang und erscheinen nicht in der Suche.
+CREATE TABLE IF NOT EXISTS hinweis (
+    quelle_id TEXT NOT NULL,
+    id TEXT NOT NULL,
+    art TEXT NOT NULL DEFAULT '',
+    titel TEXT NOT NULL DEFAULT '',
+    datum TEXT NOT NULL DEFAULT '',
+    zeit TEXT NOT NULL DEFAULT '',
+    ort TEXT NOT NULL DEFAULT '',
+    gremium TEXT NOT NULL DEFAULT '',
+    web TEXT NOT NULL DEFAULT '',
+    kurztext TEXT NOT NULL DEFAULT '',
+    bezug TEXT NOT NULL DEFAULT '',
+    abgerufen TEXT NOT NULL DEFAULT '',
+    PRIMARY KEY (quelle_id, id)
+);
 CREATE TABLE IF NOT EXISTS crawl_aufgabe (
     quelle_id TEXT NOT NULL,
     vorgang_id TEXT NOT NULL,
@@ -396,6 +413,14 @@ class Speicher:
             for typ, schluessel, quelle in orte:
                 self.db.execute("INSERT OR IGNORE INTO ortsbezug VALUES (?,?,?,?)", (vid, typ, schluessel, quelle))
 
+    # --- RSS-Hinweise -------------------------------------------------------------
+
+    def hinweise_speichern(self, quelle_id: str, zeilen: list[dict]) -> None:
+        """Upsert je (Quelle, ID). Fehlende Einträge werden NICHT gelöscht."""
+        with self.transaktion():
+            for zeile in zeilen:
+                self._upsert("hinweis", {**zeile, "quelle_id": quelle_id}, pk=("quelle_id", "id"))
+
     # --- Bauleitverfahren und beobachtete Änderungen -----------------------------
 
     def planverfahren_speichern(self, zeile: dict, stand: dict,
@@ -528,6 +553,7 @@ class Speicher:
             "planstaende": (
                 "SELECT COUNT(*) FROM planstand st JOIN vorgang v ON v.id=st.vorgang_id WHERE v.quelle_id=?"
             ),
+            "hinweise": "SELECT COUNT(*) FROM hinweis WHERE quelle_id=?",
         }
         return {name: self.db.execute(sql, (quelle_id,)).fetchone()[0] for name, sql in zahlen.items()}
 

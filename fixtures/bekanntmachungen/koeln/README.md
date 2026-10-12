@@ -18,3 +18,24 @@ das verlinkte PDF wird nie geladen.
 (auch die Besonderheit `<figcaption class="downloadbeschreibung"<abbr …>` und Dateinamen ohne
 Jahresordner), damit Parser und Tests nicht gegen eine erfundene Struktur prüfen. Ein Live-Lauf
 bleibt trotzdem nötig: Die Stadt kann Markup und Seitennummerierung jederzeit ändern.
+
+## Live-Probelauf (12.10.2026)
+
+Derselbe Auszug stammt aus einem Probelauf mit dem regulären Adapter, ausgeführt aus einem
+Rechenzentrums-Netz (GitHub-Actions-Runner) und **nicht** aus der gesperrten Entwicklungssandbox:
+
+```text
+probe --quelle bekanntmachungen
+  → 15 Bekanntmachungen auf der ersten Seite (weitere Seiten vorhanden; Treffer 1–15 von 191), 2 Anfragen
+
+crawl --quelle bekanntmachungen --max-anfragen 8   (leere Datenbank)
+  → status=teilweise, 7 Listenseiten gelesen, 105 Bekanntmachungen neu; Anfragebudget erreicht
+    (robots.txt + 7 Seiten), Cursor für die Fortsetzung gespeichert
+```
+
+Damit sind die Seitennummerierung (`rel="next"`, 1-basiert), das Fortsetzen am Cursor und die
+Übernahme von Titel, Datum, Hinweisveröffentlichung und Link gegen die **echte** Quelle belegt.
+Ein Eintrag ohne Jahresordner im Dateinamen (`0176-02_vertretungsberechtigten_gebäudewirtschaft.pdf`,
+Seite 2) wurde dabei korrekt als Eintrag mit Datum `2026-09-15` erfasst – das Datum stammt aus
+`<time itemprop="startDate">`, nicht aus dem Dateinamen. Nicht geprüft ist ein Abruf aus dem
+Render-Netz; die Stadt kann Markup und Seitennummerierung jederzeit ändern.

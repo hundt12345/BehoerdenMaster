@@ -18,3 +18,21 @@ diese eine Liste aufgerufen, keine Detailseite und kein `/jsonapi`-Endpunkt.
 **Wofür die Fixture gut ist:** Sie hält die real beobachteten Varianten der Statuszeile fest
 (Jahresangabe in Tagen, ohne Tagesangabe, ganz ohne Statuszeile), damit die Statusableitung nicht
 gegen erfundene Texte getestet wird.
+
+## Live-Probelauf (12.10.2026)
+
+```text
+probe --quelle beteiligung
+  → 56 Beteiligungsangebote übernommen, 0 verworfen, 2 Anfragen (robots.txt + Liste)
+     Beispiele: „Beteiligung geschlossen: GRÜNZUG Flittard-Stammheim“,
+                „ohne Statusangabe: Qualifizierungsverfahren Neubrücker Ring in Köln-Neubrück“
+
+crawl --quelle beteiligung --max-anfragen 3   (leere Datenbank)
+  → status=ok, 56 Beteiligungen neu, 2 Anfragen
+```
+
+Der Abruf lief mit dem regulären Adapter aus einem Rechenzentrums-Netz (GitHub-Actions-Runner),
+nicht aus der gesperrten Entwicklungssandbox. Die Plattform antwortete auch einer
+Rechenzentrums-IP; der Abstand von 5 Sekunden (`Crawl-delay: 5` der Plattform) wurde eingehalten.
+Ein Abruf aus dem Render-Netz steht aus. Gelesen wurde ausschließlich diese eine Liste –
+keine Detailseite, kein `/jsonapi`, keine Beiträge Dritter.

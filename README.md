@@ -14,11 +14,11 @@ Kommunale Vorgänge durchsuchen und nachvollziehbar zusammenfassen – zuerst f�
 
 ## Auf Render veröffentlichen
 
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/hundt12345/BehoerdenMaster/tree/arena/027b2661-behoerdenmaster)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/hundt12345/BehoerdenMaster/tree/arena/e6358663-behoerdenmaster)
 
 Die [`render.yaml`](render.yaml) konfiguriert einen Python-3.13-Web-Service in Frankfurt im **kostenlosen Tarif (Render Free)**. Free hat keine persistente Disk: die SQLite-Datei liegt in `/tmp` und wird nach jedem Neustart vom Hintergrundabruf neu gefüllt. Damit dieser Erstabruf klein und höflich bleibt, begrenzt `BEHOERDEN_SYNC_SEIT` ihn auf ein **rollierendes 90-Tage-Fenster** statt auf den Wahlperiodenbeginn. Der Dienst schläft nach Inaktivität ein; der erste Aufruf danach dauert etwas länger. Für dauerhafte Daten siehe [docs/render.md](docs/render.md). Der Button verwendet den aktuellen PR-Branch; nach dessen Merge kann auch `main` ausgewählt werden.
 
-Der Blueprint ruft **das Ratsinformationssystem Köln (OParl) automatisch ab**, sobald eine eigene Kontaktadresse gesetzt ist. Beispieldaten sind ausgeschaltet. Ohne Kontaktadresse wird **nicht** abgerufen – die Seite startet trotzdem und erklärt den Grund sichtbar, statt still nichts anzuzeigen. Suchanfragen lösen weiterhin nie einen Behördenabruf aus. [Schritt-für-Schritt-Anleitung, Einstellungen, Live-Probe und Sicherung](docs/render.md); bei einer leeren Startseite der Abschnitt [Fehlerbehebung](docs/render.md#fehlerbehebung).
+Der Blueprint ruft **das Ratsinformationssystem Köln (OParl) automatisch ab**. Abrufe sind **standardmäßig aktiv**; als Kontaktadresse dient `BEHOERDEN_KONTAKT` – und solange die fehlt, die im Repository hinterlegte, erreichbare **Projekt-Kontaktadresse** (`behoerdenmaster/config.py`: `PROJEKT_KONTAKT`). Ein Deployment füllt seinen Bestand also auch ohne eigene Umgebungswerte, statt wegen einer fehlenden Einstellung dauerhaft leer zu bleiben; `BEHOERDEN_SYNC_ENABLED=false` schaltet bewusst ab, ein leer gesetztes `BEHOERDEN_KONTAKT` verzichtet bewusst auf die Voreinstellung. Beispieldaten sind ausgeschaltet. Suchanfragen lösen weiterhin nie einen Behördenabruf aus. [Schritt-für-Schritt-Anleitung, Einstellungen, Live-Probe und Sicherung](docs/render.md); bei einer leeren Startseite der Abschnitt [Fehlerbehebung](docs/render.md#fehlerbehebung).
 
 ## Schnellstart – auch ohne Netz
 
@@ -54,11 +54,13 @@ Die Datenbank liegt standardmäßig unter `data/behoerdenmaster.sqlite`; `--db` 
 
 ## Echte Daten abrufen
 
-Jeder Abruf benötigt eine eigene, erreichbare Kontaktadresse im User-Agent:
+Jeder Abruf nennt eine erreichbare Kontaktadresse im User-Agent. Eigene Adresse setzen:
 
 ```bash
 export BEHOERDEN_KONTAKT="it@ihre-organisation.example"   # durch die eigene Adresse ersetzen
 ```
+
+Ist `BEHOERDEN_KONTAKT` nicht gesetzt, gilt die im Repository hinterlegte Projekt-Kontaktadresse (`PROJEKT_KONTAKT` in `behoerdenmaster/config.py`). Sie steht bewusst öffentlich im Code, damit auch ein Deployment ohne eigene Env-Werte identifizierbar abruft; eigene Instanzen sollten sie ersetzen. Ein **leer** gesetzter Wert verzichtet bewusst darauf – automatische Abrufe bleiben dann aus und werden in `/api/status` und auf der Startseite erklärt. Dieselbe Auflösung gilt für die CLI: `--kontakt` bzw. `BEHOERDEN_KONTAKT` haben Vorrang, sonst gilt die Projektadresse; die Verwendung wird vor dem Lauf angezeigt.
 
 ### Bauleitplanung Online Köln
 
@@ -175,14 +177,14 @@ Bestehende SQLite-Dateien werden beim Öffnen additiv erweitert; vorhandene Rats
 | Methode | Pfad | Zweck |
 |---|---|---|
 | GET / HEAD | `/healthz` | Lokaler Datenbank-Healthcheck (200/503), keine Behördenabfrage |
-| GET | `/api/status` | Quellen, Bestand, letzte Läufe, Server-Pausen und Hintergrundabruf-Status. Zusätzlich `bestand_leer` und `hinweise`: Bei einem leeren Bestand wird der Grund samt zuständiger Einstellung erklärt, statt nur null Treffer zu liefern. `betrieb.warnungen` meldet Konfigurationsprobleme, die den Dienst bewusst nicht stoppen. |
+| GET | `/api/status` | Quellen, Bestand, letzte Läufe, Server-Pausen und Hintergrundabruf-Status. Zusätzlich `bestand_leer` und `hinweise`: Bei einem leeren Bestand wird der Grund samt zuständiger Einstellung erklärt, statt nur null Treffer zu liefern. `betrieb.warnungen` meldet Konfigurationsprobleme, die den Dienst bewusst nicht stoppen, `betrieb.kontakt_hinterlegt` ob eine Kontaktadresse vorliegt – die Adresse selbst wird nie ausgegeben. |
 | POST | `/api/frage` | `{"frage":"…","stadt":"koeln","limit":10,"offset":0}` |
 | GET | `/api/plz/{plz}?thema=bauen,verkehr&stadt=koeln` | PLZ-Suche |
 | GET | `/api/vorgang?id=<URL-kodierte-Quell-ID>&stadt=koeln` | Detail mit Verlauf/Dokumenten; auf die gewählte Stadt beschränkt |
 
 `links.original` / `original_text` zeigen die richtige Quellansicht. OParl-spezifische Linkfelder bleiben erhalten, sind bei Bauleitplanung aber `null`. Bauleittreffer haben zusätzlich `beteiligung` und quellspezifische `hinweise`; `verlauf[].typ` trennt Beteiligungsdaten von Abrufbeobachtungen. Interaktive API-Dokumentation: `/docs`.
 
-Für Netzwerk-/Preview-Zugriff: `python -m behoerdenmaster serve --host 0.0.0.0 --port 8000`. Ohne `--port` gilt `$PORT` (Render) oder lokal 8000. Der Browser spricht dieselbe Anwendung über relative `/api`-URLs an; kein browserseitiger Zugriff auf ein Sandbox-`localhost`. Ein Web-Lifespan initialisiert das Schema und startet die Hintergrund-Aktualisierung nur bei `BEHOERDEN_SYNC_ENABLED=true` **und** gesetzter `BEHOERDEN_KONTAKT`. Fehlt die Kontaktadresse, startet der Dienst trotzdem und meldet das in `betrieb.warnungen`; ungültige Einzelwerte fallen auf ihren Standard zurück, statt den Start abzubrechen. Es gibt keinen öffentlichen Crawl-/Admin-Endpunkt; manuelle Abrufe laufen über die CLI und teilen sich mit dem Hintergrunddienst eine Dateisperre.
+Für Netzwerk-/Preview-Zugriff: `python -m behoerdenmaster serve --host 0.0.0.0 --port 8000`. Ohne `--port` gilt `$PORT` (Render) oder lokal 8000. Der Browser spricht dieselbe Anwendung über relative `/api`-URLs an; kein browserseitiger Zugriff auf ein Sandbox-`localhost`. Ein Web-Lifespan initialisiert das Schema und startet die Hintergrund-Aktualisierung, sofern `BEHOERDEN_SYNC_ENABLED` nicht auf `false` gesetzt ist; als Kontaktadresse dient `BEHOERDEN_KONTAKT`, sonst die im Repository hinterlegte `PROJEKT_KONTAKT`. Ein leer gesetztes `BEHOERDEN_KONTAKT` (bewusster Verzicht) lässt den Abruf aus; der Dienst startet trotzdem und meldet das in `betrieb.warnungen`. Ungültige Einzelwerte fallen auf ihren Standard zurück, statt den Start abzubrechen. Es gibt keinen öffentlichen Crawl-/Admin-Endpunkt; manuelle Abrufe laufen über die CLI und teilen sich mit dem Hintergrunddienst eine Dateisperre.
 
 ## Datenbank sichern
 
@@ -199,7 +201,7 @@ pytest -q
 python -m pyflakes behoerdenmaster tests
 ```
 
-Offline getestet werden Fragen/Orte, beide Quelladapter, JSON-/HTML-Schema, Organisationsfilter, sichere Links/Weiterleitungen, robots, Backoff/HTTP-Datum, Budget, Pagination/Fortsetzung, atomare Checkpoints, KeyboardInterrupt, Cooldown über Prozessgrenzen, Schema-Migration, fehlende Verfahren, Änderungs-Snapshots, Demo-/Echtdaten-Trennung, Suche, API und CLI sowie Render-Blueprint, Startup/Healthcheck, Einmal-Seeding, Neustart-Fälligkeit, Hintergrundabruf/Shutdown, Prozesssperre und WAL-Sicherung.
+Offline getestet werden Fragen/Orte, beide Quelladapter, JSON-/HTML-Schema, Organisationsfilter, sichere Links/Weiterleitungen, robots, Backoff/HTTP-Datum, Budget, Pagination/Fortsetzung, atomare Checkpoints, KeyboardInterrupt, Cooldown über Prozessgrenzen, Schema-Migration, fehlende Verfahren, Änderungs-Snapshots, Demo-/Echtdaten-Trennung, Suche, API und CLI sowie Render-Blueprint, Startup/Healthcheck, Einmal-Seeding, Neustart-Fälligkeit, Hintergrundabruf/Shutdown, Prozesssperre und WAL-Sicherung. Dazu die **Umgebungsvoreinstellung**: Abrufe sind ohne gesetzte Variablen aktiv, die Projekt-Kontaktadresse ersetzt ein fehlendes `BEHOERDEN_KONTAKT`, ein leer gesetzter Wert verzichtet bewusst darauf, und keine der Adressen verlässt den Server.
 
 Hinzu kommen drei Prüfungen gegen die veröffentlichte Instanz: der **vollständige Abrufpfad gegen die Originalantworten vom 11.10.2026** (robots → System → Body → Listen mit echtem `links.next` → SQLite → Suche → API, einschließlich geschlossener Beratungsfolge mit überliefertem Ergebnis), die **Abrufreihenfolge bei knappem Budget** (Vorlagen vor Sitzungen, damit ein Teilabruf sichtbare Treffer hinterlässt) sowie **Diagnose und Robustheit eines leeren Bestands** (erklärter Leerstand in API und Oberfläche, warnende statt abstürzende Umgebungsauswertung, rollierendes Erstabruf-Fenster). GitHub Actions führt die Python-Tests und eine JavaScript-Syntaxprüfung aus; **keine Live-Behördenabfragen** in der CI.
 

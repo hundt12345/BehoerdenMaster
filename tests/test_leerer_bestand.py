@@ -12,6 +12,7 @@ Diese Tests sichern drei Dinge:
 
 from __future__ import annotations
 
+import json
 from datetime import date, datetime, timedelta, timezone
 
 import httpx
@@ -21,7 +22,7 @@ from fastapi.testclient import TestClient
 from behoerdenmaster.abruf import Abrufer
 from behoerdenmaster.api import create_app
 from behoerdenmaster.betrieb import Betrieb, SyncDienst, initialisiere, pruefe_seit
-from behoerdenmaster.config import lade_stadt
+from behoerdenmaster.config import PROJEKT_KONTAKT, lade_stadt
 from behoerdenmaster.speicher import Speicher
 
 from conftest import FakeOParl, Uhr, demo_objekte
@@ -61,6 +62,23 @@ def test_status_zeigt_grund_einer_nicht_erreichbaren_quelle(tmp_path):
     ris = next(q for q in daten["quellen"] if q["id"] == "koeln:ris")
     assert ris["fehlertext"].startswith("Keine Antwort")
     assert ris["status"] == "nicht erreichbar"
+
+
+def test_status_zeigt_aktiven_abruf_mit_projektkontakt_ohne_die_adresse(tmp_path):
+    """Der beobachtete Render-Fall: keine Env-Werte gesetzt, trotzdem darf nichts leer bleiben."""
+    betrieb = Betrieb.aus_umgebung({}, streng=False)
+    assert betrieb.sync_aktiv and betrieb.kontakt == PROJEKT_KONTAKT
+    client, _ = _client(tmp_path, betrieb)
+    with client:
+        daten = client.get("/api/status").json()
+
+    assert daten["bestand_leer"] is True
+    assert daten["betrieb"]["automatische_abrufe"] is True
+    assert daten["betrieb"]["kontakt_hinterlegt"] is True
+    assert PROJEKT_KONTAKT not in json.dumps(daten, ensure_ascii=False)
+    assert any("BEHOERDEN_KONTAKT" in w for w in daten["betrieb"]["warnungen"])
+    text = " ".join(daten["hinweise"])
+    assert "Hintergrunddienst" in text and "BEHOERDEN_SYNC_ENABLED" not in text
 
 
 def test_status_kuendigt_den_noch_nicht_gestarteten_hintergrundabruf_an(tmp_path):
@@ -106,7 +124,9 @@ def test_volle_ladung_startet_ohne_warnung(tmp_path):
 
 
 def test_sync_ohne_kontaktadresse_wird_abgeschaltet_statt_abzubrechen():
-    betrieb = Betrieb.aus_umgebung({"BEHOERDEN_SYNC_ENABLED": "true"}, streng=False)
+    # Ein leer gesetztes BEHOERDEN_KONTAKT verzichtet bewusst auf die Repository-Adresse.
+    betrieb = Betrieb.aus_umgebung({"BEHOERDEN_SYNC_ENABLED": "true", "BEHOERDEN_KONTAKT": ""},
+                                   streng=False)
 
     assert betrieb.sync_aktiv is False
     assert len(betrieb.warnungen) == 1
@@ -120,7 +140,7 @@ def test_sync_ohne_kontaktadresse_wird_abgeschaltet_statt_abzubrechen():
 
 def test_cli_modus_bricht_weiter_ab():
     with pytest.raises(ValueError, match="BEHOERDEN_KONTAKT"):
-        Betrieb.aus_umgebung({"BEHOERDEN_SYNC_ENABLED": "true"})
+        Betrieb.aus_umgebung({"BEHOERDEN_SYNC_ENABLED": "true", "BEHOERDEN_KONTAKT": ""})
 
 
 def test_ungueltige_werte_werden_im_webdienst_zu_warnungen_mit_standard():

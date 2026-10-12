@@ -8,6 +8,7 @@ Folgelinks), gelöschte Objekte mit deleted=true sowie Fehlerantworten nach Skri
 from __future__ import annotations
 
 import json
+import os
 from datetime import datetime
 
 import httpx
@@ -186,3 +187,16 @@ class FakeOParl:
             "pagination": {"currentPage": seite, "elementsPerPage": self.seite},
             "links": links,
         })
+
+
+@pytest.fixture(autouse=True)
+def _reproduzierbare_umgebung(monkeypatch):
+    """Kein Test darf von der Umgebung des Aufrufers abhängen – und nie live abrufen.
+
+    `BEHOERDEN_SYNC_ENABLED=false` hält einen aus der Umgebung gebildeten Betrieb offline.
+    Wer die Voreinstellung prüft, bildet `Betrieb` aus einer eigenen, kontrollierten
+    Abbildung statt aus `os.environ`.
+    """
+    for schluessel in [k for k in os.environ if k.startswith("BEHOERDEN_")]:
+        monkeypatch.delenv(schluessel, raising=False)
+    monkeypatch.setenv("BEHOERDEN_SYNC_ENABLED", "false")

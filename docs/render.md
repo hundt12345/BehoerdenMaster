@@ -4,19 +4,21 @@ Das Repository enthält eine fertige [`render.yaml`](../render.yaml) für **eine
 
 **Wichtig: Render Free hat kein persistentes Dateisystem.** Die SQLite-Datenbank liegt in `/tmp/behoerdenmaster/` und geht bei Neustart, Redeploy oder nach dem Schlafmodus verloren. Sie wird dann vom Hintergrundabruf neu gefüllt. Damit dieser Erstabruf nach jedem Neustart klein und höflich bleibt, begrenzt `BEHOERDEN_SYNC_SEIT` ihn auf ein **rollierendes Fenster** (Blueprint: 90 Tage) statt auf den Wahlperiodenbeginn aus `koeln.toml`. Eigene Daten, die ohne erneuten Abruf bleiben sollen, brauchen einen bezahlten Tarif mit Disk: dann `plan` auf z. B. `0.5c-512mb` setzen, einen `disk`-Block mit `mountPath: /var/data` ergänzen und `BEHOERDEN_DB` auf `/var/data/behoerdenmaster.sqlite` setzen. Das Einchecken der Datenbank ersetzt keine Disk.
 
-Der Blueprint ruft **eine Quelle automatisch ab**: das Ratsinformationssystem Köln (OParl). Beispieldaten sind ausgeschaltet (`BEHOERDEN_DEMO=false`), damit die Seite keine Offline-Auszüge als Treffer ausgibt. Der Abruf wird erst wirksam, sobald `BEHOERDEN_KONTAKT` gesetzt ist; ohne Kontaktadresse bleibt er ausgeschaltet und die Startseite sagt das ausdrücklich, statt still nichts anzuzeigen. Es wurde kein Service in deinem Konto angelegt; die Veröffentlichung führst du mit den folgenden Schritten selbst aus.
+Der Blueprint ruft **eine Quelle automatisch ab**: das Ratsinformationssystem Köln (OParl). Beispieldaten sind ausgeschaltet (`BEHOERDEN_DEMO=false`), damit die Seite keine Offline-Auszüge als Treffer ausgibt.
+
+**Abrufe sind standardmäßig aktiv** – auch ohne eigene Env-Werte. Als Kontaktadresse dient `BEHOERDEN_KONTAKT`; solange die fehlt, die im Repository hinterlegte, erreichbare Projekt-Kontaktadresse (`PROJEKT_KONTAKT` in `behoerdenmaster/config.py`). Genau daran hing die zuletzt veröffentlichte Instanz: Sie war mit **keinem** `BEHOERDEN_SYNC_ENABLED` und **keiner** `BEHOERDEN_KONTAKT` gestartet, der automatische Abruf blieb aus, und die Datenbank blieb leer. Seit diesem PR füllt sich der Bestand von selbst; `BEHOERDEN_SYNC_ENABLED=false` schaltet weiterhin bewusst ab, ein leer gesetztes `BEHOERDEN_KONTAKT` verzichtet bewusst auf die Repository-Adresse (auch dann bleibt der Abruf aus, und die Startseite sagt das ausdrücklich, statt still nichts anzuzeigen). Eigene Instanzen sollten die Projekt-Adresse durch eine eigene, erreichbare Adresse ersetzen. Es wurde kein Service in deinem Konto angelegt; die Veröffentlichung führst du mit den folgenden Schritten selbst aus.
 
 ## 1. Blueprint anlegen
 
 1. Bei Render anmelden und dem Render-GitHub-Zugriff dieses Repository freigeben (besonders bei einem privaten Repository).
 2. Für den aktuellen, noch nicht gemergten Pull Request diesen Link öffnen:
 
-   **[Auf Render bereitstellen](https://render.com/deploy?repo=https://github.com/hundt12345/BehoerdenMaster/tree/arena/027b2661-behoerdenmaster)**
+   **[Auf Render bereitstellen](https://render.com/deploy?repo=https://github.com/hundt12345/BehoerdenMaster/tree/arena/e6358663-behoerdenmaster)**
 
    **Wichtig:** Ein manuell angelegter Web-Service muss **Runtime = Python 3** haben. Steht dort `Node` und Start `npm start`, meldet Render den Fehler `Could not read package.json`, weil dieses Repository kein Node-Projekt ist. Den Service dann mit dem Blueprint neu anlegen oder Runtime/Build-/Start-Befehl wie in Schritt 4 setzen.
 
-   Alternativ im Render-Dashboard **New → Blueprint**, Repository `hundt12345/BehoerdenMaster`, Branch **`arena/027b2661-behoerdenmaster`**, Blueprint-Pfad **`render.yaml`** auswählen. Nach dem Merge kannst du stattdessen `main` verwenden. Die YAML legt keinen Branch fest und folgt dem beim Blueprint ausgewählten Branch.
-3. Namen, **Region Frankfurt** und den Tarif **Free** kontrollieren. Bei `BEHOERDEN_KONTAKT` eine **eigene erreichbare Kontaktadresse** eingeben; sie wird für den identifizierbaren Crawler-User-Agent benötigt. Keine GitHub-/Render-Zugangsdaten eingeben! Der Kontakt steht nicht im Repository und wird nicht über `/api/status` ausgegeben.
+   Alternativ im Render-Dashboard **New → Blueprint**, Repository `hundt12345/BehoerdenMaster`, Branch **`arena/e6358663-behoerdenmaster`**, Blueprint-Pfad **`render.yaml`** auswählen. Nach dem Merge kannst du stattdessen `main` verwenden. Die YAML legt keinen Branch fest und folgt dem beim Blueprint ausgewählten Branch.
+3. Namen, **Region Frankfurt** und den Tarif **Free** kontrollieren. `BEHOERDEN_KONTAKT` ist mit der Projekt-Kontaktadresse vorbelegt; für eine eigene Instanz dort eine **eigene erreichbare Kontaktadresse** eintragen. Sie wird für den identifizierbaren Crawler-User-Agent benötigt. Keine GitHub-/Render-Zugangsdaten eingeben! Die Adresse wird nicht über `/api/status` ausgegeben; `/api/status` zeigt mit `betrieb.kontakt_hinterlegt` nur, ob eine hinterlegt ist.
 4. Render baut mit `python -m pip install -e .` und startet den Web-Service mit:
 
    ```bash
@@ -38,8 +40,8 @@ Unter **Service → Environment** verwalten; Änderungen anschließend deployen.
 | `BEHOERDEN_DB` | `/tmp/behoerdenmaster/behoerdenmaster.sqlite` (Free, flüchtig). Mit bezahlter Disk: `/var/data/behoerdenmaster.sqlite` |
 | `BEHOERDEN_CONFIG_DIR` | `/opt/render/project/src/config/cities` |
 | `BEHOERDEN_DEMO` | **`false`**: kein Seeding mit Offline-Beispielen. `true` lädt die einmalige, klar markierte Demo nur bei leerem Bestand |
-| `BEHOERDEN_KONTAKT` | eigene erreichbare Adresse; **Voraussetzung dafür, dass überhaupt abgerufen wird** |
-| `BEHOERDEN_SYNC_ENABLED` | **`true`**; `false` schaltet Hintergrundabrufe aus |
+| `BEHOERDEN_KONTAKT` | eigene erreichbare Adresse. **Voreinstellung:** die im Repository hinterlegte Projekt-Adresse; leer gesetzt = bewusster Verzicht (Abruf bleibt aus) |
+| `BEHOERDEN_SYNC_ENABLED` | **`true`** (Voreinstellung); `false` schaltet Hintergrundabrufe aus |
 | `BEHOERDEN_SYNC_QUELLEN` | **`koeln:ris`**; kommagetrennte vollständige Quell-IDs. Leer = alle konfigurierten Quellen. |
 | `BEHOERDEN_SYNC_SEIT` | **`90`** = rollierend die letzten 90 Tage; alternativ festes Datum `YYYY-MM-DD`. Leer = `seit` aus `config/cities/koeln.toml`. Gilt nur für den Erstabruf, Folgeläufe nutzen den gespeicherten Änderungsstand. |
 | `BEHOERDEN_SYNC_INTERVALL` | `21600` Sekunden = **6 Stunden pro Quelle**; mindestens 300 Sekunden |
@@ -50,11 +52,15 @@ Unter **Service → Environment** verwalten; Änderungen anschließend deployen.
 | `FORWARDED_ALLOW_IPS` | `*`, HTTPS-Proxy von Render vertrauen; nur für diesen hinter Render betriebenen Service |
 | `PORT` | von Render gesetzt; nicht hart auf eine andere Nummer festlegen |
 
-**Einzelne ungültige Umgebungswerte schalten den Webdienst nicht mehr ab.** Der CLI-Befehl bricht bei einem falschen Wert weiterhin mit einer verständlichen Meldung ab; der Web-Service startet dagegen, verwendet den Standardwert und meldet das Problem in `betrieb.warnungen` von `/api/status` sowie im Fuß der Startseite. Aktivierter Sync ohne Kontaktadresse führt also nicht zu einem Absturz, sondern dazu, dass **nicht abgerufen** wird und die Startseite das erklärt. Unbekannte Sync-Quellen werden weiterhin nicht stillschweigend abgerufen.
+**Einzelne ungültige Umgebungswerte schalten den Webdienst nicht mehr ab.** Der CLI-Befehl bricht bei einem falschen Wert weiterhin mit einer verständlichen Meldung ab; der Web-Service startet dagegen, verwendet den Standardwert und meldet das Problem in `betrieb.warnungen` von `/api/status` sowie im Fuß der Startseite. Ein ohne jede Kontaktadresse aktivierter Sync führt also nicht zu einem Absturz, sondern dazu, dass **nicht abgerufen** wird und die Startseite das erklärt. Unbekannte Sync-Quellen werden weiterhin nicht stillschweigend abgerufen.
+
+**Ein bereits laufender Service liest ein geändertes `render.yaml` nicht nach.** Blueprint-Änderungen werden erst nach einem erneuten Sync/Deploy wirksam; ein manuell angelegter Service liest die Datei gar nicht. Deshalb liegt die Voreinstellung für Abruf und Kontaktadresse **im Code** und nicht nur im Blueprint: Ein Redeploy reicht, damit der Dienst abruft.
 
 ## 3. Echte Daten zunächst manuell prüfen
 
 Unter **Service → Shell** arbeiten. Die Shell des Web-Service sieht dieselbe Disk und seine Environment-Werte. **Keinen separaten Render-Cron-Job oder One-off-Job** für diese Datenbank anlegen: diese können die Disk des Web-Service nicht benutzen.
+
+Eine Kontaktadresse muss in der Shell nicht gesetzt werden: `probe` und `crawl` nutzen dieselbe Voreinstellung wie der Web-Dienst und zeigen die verwendete Adresse vor dem Lauf an. Eine eigene Adresse kann per `--kontakt` oder `BEHOERDEN_KONTAKT` angegeben werden.
 
 ```bash
 # Keine DB-Schreibvorgänge, höchstens 5 HTTP-Anfragen, keine Wiederholungen.
@@ -78,7 +84,7 @@ Bei Status `teilweise` wurde nur das Budget erreicht; ein neuer Aufruf setzt den
 
 ## 4. Automatische Aktualisierung
 
-Der Blueprint schaltet sie für `koeln:ris` bereits ein. Wirksam wird sie erst mit einer eigenen Kontaktadresse; ohne sie bleibt der Abruf aus und die Startseite meldet das. Um eine weitere Quelle zu ergänzen oder das Fenster anzupassen, unter **Environment** setzen:
+Der Blueprint schaltet sie für `koeln:ris` bereits ein; ohne eigene Env-Werte gilt dieselbe Voreinstellung. Um eine weitere Quelle zu ergänzen oder das Fenster anzupassen, unter **Environment** setzen:
 
 ```text
 BEHOERDEN_SYNC_ENABLED=true
@@ -125,11 +131,12 @@ Automatische Deploys sind im Blueprint mit `autoDeployTrigger: off` absichtlich 
 
 - **Startseite öffnet sich, zeigt aber keine Daten:** Das ist fast immer eine **leere Datenbank**, keine kaputte Suche. `/api/status` öffnen und drei Dinge prüfen:
   1. `zaehler.vorgang` – steht dort `0`, gibt es schlicht nichts anzuzeigen. `bestand_leer: true` und das Feld `hinweise` benennen den Grund und die zuständige Einstellung; dieselben Hinweise stehen als Banner auf der Startseite.
-  2. `betrieb.automatische_abrufe` – ist es `false`, obwohl `BEHOERDEN_SYNC_ENABLED=true` gesetzt sein sollte, fehlt `BEHOERDEN_KONTAKT` (siehe `betrieb.warnungen`) **oder die Umgebungswerte des Blueprints sind am laufenden Service gar nicht angekommen**. Das ist leicht zu übersehen: Ein manuell angelegter Service liest `render.yaml` nicht, und ein Blueprint übernimmt geänderte Umgebungswerte erst nach einem erneuten Sync/Deploy. Unter **Service → Environment** gegen die Tabelle in Abschnitt 2 vergleichen – insbesondere `BEHOERDEN_SYNC_QUELLEN`, das in `betrieb.quellen` sichtbar ist.
+  2. `betrieb.automatische_abrufe` – ist es `false`, wurde `BEHOERDEN_SYNC_ENABLED=false` gesetzt oder `BEHOERDEN_KONTAKT` bewusst leer gelassen; `betrieb.warnungen` nennt den Grund. Abrufe sind **standardmäßig aktiv**, ein `false` kommt also fast immer aus der Umgebung des Services und nicht aus dem Code. Unter **Service → Environment** gegen die Tabelle in Abschnitt 2 vergleichen – insbesondere `BEHOERDEN_SYNC_QUELLEN`, das in `betrieb.quellen_effektiv` sichtbar ist. Das ist leicht zu übersehen: Ein manuell angelegter Service liest `render.yaml` nicht, und ein Blueprint übernimmt geänderte Umgebungswerte erst nach einem erneuten Sync/Deploy.
   3. `letzte_laeufe` und `quellen[].status`/`fehlertext` – leer bzw. `nie` heißt: es wurde noch nie abgerufen. `gesperrt`, `nicht erreichbar` oder `fehler` zeigen den Grund im Klartext; `teilweise` bedeutet nur ein erschöpftes Budget.
   Direkt nach dem Start ist ein leerer Bestand **erwartbar**: Der Hintergrundabruf beginnt erst nach `BEHOERDEN_SYNC_STARTVERZOEGERUNG` Sekunden und braucht bei 3 s Mindestabstand einige Minuten. Die Startseite bietet dafür „Status neu prüfen“ an.
 - **Healthcheck schlägt fehl:** Service-Logs lesen; Disk-Mount, Schreibrechte und `BEHOERDEN_DB` prüfen. `/healthz` prüft ausschließlich, ob die vorhandene SQLite-Datei samt Quell-Tabelle lesbar ist; Fehler liefern 503, keine Pfad-/Kontaktdaten. Es ist kein Nachweis aktueller oder vollständiger Behördeninformationen.
 - **Leerer Bestand nach Redeploy:** Auf Render Free erwartet – `/tmp` ist flüchtig, der Hintergrundabruf füllt die Datenbank nach jedem Start neu. Wer das nicht will, braucht eine Disk (Abschnitt 5). Sonst: DB außerhalb der Disk oder Service ohne Disk; richtigen Pfad wiederherstellen und nicht zur „Reparatur“ bestehende Dateien löschen.
+- **Kontaktadresse prüfen, ohne sie zu verraten:** `betrieb.kontakt_hinterlegt` ist `true`, sobald eine Adresse vorliegt – egal ob aus `BEHOERDEN_KONTAKT` oder aus der Repository-Voreinstellung. Die Adresse selbst erscheint nirgends in der API; sie ist nur im User-Agent der Abrufe und damit im Quellcode bzw. in den Env-Werten des Services zu sehen.
 - **Start scheitert mit Sync-Konfiguration:** Seit der robusteren Auswertung startet der Web-Service auch mit ungültigen Werten und meldet sie in `betrieb.warnungen`. Schlägt der Start dennoch fehl, liegen Zeilenumbrüche in `BEHOERDEN_KONTAKT`, eine unbekannte Quell-ID in `BEHOERDEN_SYNC_QUELLEN` oder ein nicht implementierter Quelltyp vor. Die CLI (`crawl`, `probe`) bleibt streng und bricht mit einer Meldung ab.
 - **Shell-Crawl gibt Exitcode 3 zurück:** Ein anderer Crawl/Demo-Import läuft oder eine Cooldown-Sperre ist aktiv. Nicht durch parallele Prozesse bzw. Lock-Dateilöschung umgehen.
 - **Suchtreffer fehlen:** Quellenstatus/letzte Läufe kontrollieren, noch nicht abgeschlossene Erstabrufe fortsetzen. PLZ-Mapping und Ortsbezug sind ausdrücklich unvollständig/heuristisch; keine Vollständigkeit versprechen.

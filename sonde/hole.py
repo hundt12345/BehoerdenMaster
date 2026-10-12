@@ -1,5 +1,7 @@
 """Einmalige Sondierung: prüft Kandidaten-Endpunkte und sammelt Nachweise (temporär).
 
+Zweck und Stand: siehe Commit-Historie der Sondierung (wird nach dem Live-Probelauf entfernt).
+
 Wird nur vom Arbeitsablauf `.github/workflows/sonde.yml` ausgeführt, schreibt die Rohantworten
 nach `sonde-raw/` und druckt eine kurze Diagnose. Nach der Umsetzung entfernt.
 """

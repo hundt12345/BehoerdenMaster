@@ -4,10 +4,14 @@ Das Repository enthält eine fertige [`render.yaml`](../render.yaml) für **eine
 
 **Wichtig: Render Free hat kein persistentes Dateisystem.** Die SQLite-Datenbank liegt in `/tmp/behoerdenmaster/` und geht bei Neustart, Redeploy oder nach dem Schlafmodus verloren. Sie wird dann vom Hintergrundabruf neu gefüllt. Damit dieser Erstabruf nach jedem Neustart klein und höflich bleibt, begrenzt `BEHOERDEN_SYNC_SEIT` ihn auf ein **rollierendes Fenster** (Blueprint: 90 Tage) statt auf den Wahlperiodenbeginn aus `koeln.toml`. Eigene Daten, die ohne erneuten Abruf bleiben sollen, brauchen einen bezahlten Tarif mit Disk: dann `plan` auf z. B. `0.5c-512mb` setzen, einen `disk`-Block mit `mountPath: /var/data` ergänzen und `BEHOERDEN_DB` auf `/var/data/behoerdenmaster.sqlite` setzen. Das Einchecken der Datenbank ersetzt keine Disk.
 
-Der Blueprint ruft **eine Quelle automatisch ab**: das Ratsinformationssystem Köln (OParl). Beispieldaten sind ausgeschaltet (`BEHOERDEN_DEMO=false`), damit die Seite keine Offline-Auszüge als Treffer ausgibt.
+Der Blueprint ruft **fünf Kölner Quellen automatisch ab**: die öffentlichen Bekanntmachungen (`koeln:bekanntmachungen`), die Bürgerbeteiligung „Meinung für Köln“ (`koeln:beteiligung`), die beiden RSS-Feeds (`koeln:ris-rss`, `koeln:presse-rss`) und zuletzt das Ratsinformationssystem Köln (`koeln:ris`, OParl). Die kleinen Quellen stehen bewusst vorn: Quellen laufen **nacheinander**, und ein knappes Zeitfenster soll die Startseite erst nach wenigen Minuten mit Inhalten füllen statt sie lange leer lassen. Beispieldaten sind ausgeschaltet (`BEHOERDEN_DEMO=false`), damit die Seite keine Offline-Auszüge als Treffer ausgibt.
 
-> **Disclaimer zu den Stadt-Köln-RSS-Feeds.** Der Blueprint ruft das Ratsinformations-Feed
-> (`koeln:ris-rss`) und das Pressefeed (`koeln:presse-rss`) automatisch ab: je Feed eine Anfrage pro Lauf,
+> **Disclaimer zu den zusätzlichen Stadt-Köln-Quellen.** Der Blueprint ruft neben der Ratsinformation
+> die öffentlichen Bekanntmachungen (`koeln:bekanntmachungen`) und die Projektliste der Beteiligungsplattform
+> (`koeln:beteiligung`) ab: Bekanntmachungen listenweise (bis zu drei Jahrgänge, je Seite eine Anfrage, das
+> verlinkte PDF wird **nicht** geladen und nicht ausgewertet), die Beteiligung mit genau einer Anfrage pro Lauf.
+> Ferner laufen das Ratsinformations-Feed
+> (`koeln:ris-rss`) und das Pressefeed (`koeln:presse-rss`): je Feed eine Anfrage pro Lauf,
 > Intervall 6 Stunden, robots.txt vorab geprüft, erkennbarer User-Agent mit Kontakt. BehoerdenMaster ist kein
 > offizielles Angebot der Stadt Köln; die Inhalte stammen von der Stadt und sind nicht inhaltlich geprüft.
 > **Offen:** (a) Die Kontaktaufnahme mit der Stadt vor einem vollständigen Erstabruf (mandari Issue #348,
@@ -53,10 +57,11 @@ Unter **Service → Environment** verwalten; Änderungen anschließend deployen.
 | `BEHOERDEN_DEMO` | **`false`**: kein Seeding mit Offline-Beispielen. `true` lädt die einmalige, klar markierte Demo nur bei leerem Bestand |
 | `BEHOERDEN_KONTAKT` | eigene erreichbare Adresse. **Voreinstellung:** die im Repository hinterlegte Projekt-Adresse; leer gesetzt = bewusster Verzicht (Abruf bleibt aus) |
 | `BEHOERDEN_SYNC_ENABLED` | **`true`** (Voreinstellung); `false` schaltet Hintergrundabrufe aus |
-| `BEHOERDEN_SYNC_QUELLEN` | **`koeln:ris,koeln:ris-rss,koeln:presse-rss`** (Blueprint); kommagetrennte vollständige Quell-IDs. Leer = alle konfigurierten Quellen. |
+| `BEHOERDEN_SYNC_QUELLEN` | **`koeln:bekanntmachungen,koeln:beteiligung,koeln:ris-rss,koeln:presse-rss,koeln:ris`** (Blueprint); kommagetrennte vollständige Quell-IDs **in Abrufreihenfolge**. Leer = alle konfigurierten Quellen. |
 | `BEHOERDEN_SYNC_SEIT` | **`90`** = rollierend die letzten 90 Tage; alternativ festes Datum `YYYY-MM-DD`. Leer = `seit` aus `config/cities/koeln.toml`. Gilt nur für den Erstabruf, Folgeläufe nutzen den gespeicherten Änderungsstand. |
 | `BEHOERDEN_SYNC_INTERVALL` | `21600` Sekunden = **6 Stunden pro Quelle**; mindestens 300 Sekunden |
 | `BEHOERDEN_SYNC_MAX_ANFRAGEN` | `120` **pro Quelle und Etappe**, einschließlich robots und Weiterleitungen; mindestens 1 |
+| `BEHOERDEN_SYNC_ZEITBUDGET` | `240` Sekunden **Zeitfenster je Quelle und Etappe**, mindestens 30. Läuft es ab, wird die Quelle unterbrochen und beim nächsten Mal am gespeicherten Cursor fortgesetzt – die nachfolgenden Quellen kommen also auch dann an die Reihe, wenn eine Quelle viel zu tun hat |
 | `BEHOERDEN_SYNC_STARTVERZOEGERUNG` | `15` Sekunden nach Start, mindestens 0; keine Abrufe im Healthcheck |
 | `WEB_CONCURRENCY` | **`1`**, keine mehreren Worker/Instanzen für diesen Aufbau |
 | `PYTHONUNBUFFERED` | `1`, zeitnahe Service-Logs |
@@ -91,24 +96,30 @@ Bei Status `teilweise` wurde nur das Budget erreicht; ein neuer Aufruf setzt den
 
 **Stand der Prüfung (11.10.2026):** Die OParl-Schnittstelle der Stadt Köln antwortet wieder. Geprüft wurden `robots.txt`, `/oparl/system`, `/oparl/bodies`, die Gremien-, Vorlagen- und Sitzungslisten einschließlich `modified_since` und des realen `links.next`. Die robots.txt der Stadt enthält keine Gruppe für unbekannte Clients; `BehoerdenMaster` darf daher abrufen und unterliegt keinem `Crawl-delay` (zur Kontrolle: `GPTBot` ist vollständig ausgeschlossen, `Googlebot` hat 20 s Verzögerung). Der komplette Abrufpfad ist mit den dabei aufgezeichneten **Originalantworten** als End-to-End-Test hinterlegt ([`fixtures/oparl/koeln/live_2026-10-11`](../fixtures/oparl/koeln/live_2026-10-11/README.md)).
 
+**Für die beiden neuen Listenquellen liegt ein Live-Probelauf vor (12.10.2026):** Bekanntmachungen
+und „Meinung für Köln“ wurden aus einem Rechenzentrums-Netz mit dem Projekt-User-Agent abgerufen und
+in eine Testdatenbank geschrieben (105 Bekanntmachungen, 56 Beteiligungsangebote); beide Stadt-Hosts
+antworteten. Ein Abruf aus dem Render-Netz steht weiterhin aus.
+
 **Kein Live-Abruf aus der Entwicklungs-Sandbox und keiner aus dem Render-Netz bestätigt.** Dort ist der ausgehende Zugriff eingeschränkt; die Tests spielen die echten Antworten nach, statt sie live zu holen. Erreichbarkeit, Freigabe und Antwortzeiten vom Render-Netz aus bleiben deshalb im Probelauf zu prüfen – ebenso die Frage, ob die Stadt den Abruf aus einer Rechenzentrums-IP zulässt.
 
 ## 4. Automatische Aktualisierung
 
-Der Blueprint schaltet sie für `koeln:ris`, `koeln:ris-rss` und `koeln:presse-rss` bereits ein; ohne eigene Env-Werte gilt dieselbe Voreinstellung. Um eine weitere Quelle zu ergänzen oder das Fenster anzupassen, unter **Environment** setzen:
+Der Blueprint schaltet sie für `koeln:bekanntmachungen`, `koeln:beteiligung`, `koeln:ris-rss`, `koeln:presse-rss` und `koeln:ris` bereits ein; ohne eigene Env-Werte gilt die Voreinstellung „alle konfigurierten Quellen“. Um eine weitere Quelle zu ergänzen oder das Fenster anzupassen, unter **Environment** setzen:
 
 ```text
 BEHOERDEN_SYNC_ENABLED=true
 BEHOERDEN_KONTAKT=<deine eigene erreichbare Kontaktadresse>
-BEHOERDEN_SYNC_QUELLEN=koeln:ris,koeln:bauleitplanung
+BEHOERDEN_SYNC_QUELLEN=koeln:bekanntmachungen,koeln:beteiligung,koeln:ris-rss,koeln:presse-rss,koeln:ris
 BEHOERDEN_SYNC_SEIT=90
 BEHOERDEN_SYNC_INTERVALL=21600
 BEHOERDEN_SYNC_MAX_ANFRAGEN=120
+BEHOERDEN_SYNC_ZEITBUDGET=240
 ```
 
-**Abrufreihenfolge:** Gremien → **Vorlagen** → Sitzungen. Die Vorlagen stehen bewusst vor den Sitzungen, denn nur sie sind die durchsuchbaren Vorgänge. Bei einem knappen Budget erzeugt ein Lauf sonst im ungünstigsten Fall Sitzungsdaten und **keine einzigen Treffer** für die Startseite. Reicht das Budget nicht, wird der Lauf `teilweise` und setzt beim nächsten Mal fort.
+**Abrufreihenfolge zwischen den Quellen** ist die Reihenfolge in `BEHOERDEN_SYNC_QUELLEN`; die kleinen Quellen (Bekanntmachungen, Beteiligung, Feeds) stehen bewusst vor der großen Ratsinformation. **Innerhalb der Ratsinformation:** Gremien → **Vorlagen** → Sitzungen. Die Vorlagen stehen bewusst vor den Sitzungen, denn nur sie sind die durchsuchbaren Vorgänge. Bei einem knappen Budget erzeugt ein Lauf sonst im ungünstigsten Fall Sitzungsdaten und **keine einzigen Treffer** für die Startseite. Reicht das Budget nicht, wird der Lauf `teilweise` und setzt beim nächsten Mal fort.
 
-Nach Deploy startet genau ein Hintergrund-Thread im Web-Service; Quellen laufen **nacheinander**, nie parallel. Bei mehreren Quellen die IDs kommagetrennt setzen. Fälligkeit basiert auf `letzter_versuch` in SQLite; ein Restart/Redeploy startet keine neue Abrufserie innerhalb des Intervalls. Längere persistierte Server-Pausen haben Vorrang. Ein budgetbegrenzter Teilabruf wird frühestens nach dem Intervall fortgesetzt, nicht sofort in einer Endlosschleife.
+Nach Deploy startet genau ein Hintergrund-Thread im Web-Service; Quellen laufen **nacheinander**, nie parallel. Jede Quelle erhält dabei höchstens `BEHOERDEN_SYNC_ZEITBUDGET` Sekunden, damit eine einzige Quelle die Etappe nicht blockiert. Bei mehreren Quellen die IDs kommagetrennt setzen. Fälligkeit basiert auf `letzter_versuch` in SQLite; ein Restart/Redeploy startet keine neue Abrufserie innerhalb des Intervalls. Längere persistierte Server-Pausen haben Vorrang. Ein budgetbegrenzter Teilabruf wird frühestens nach dem Intervall fortgesetzt, nicht sofort in einer Endlosschleife.
 
 Der Thread teilt sich eine nicht blockierende **Dateisperre** mit `crawl` und `demo` aus der Shell. Ist ein Import/Abruf schon aktiv, beginnt kein zweiter Crawl. Lock-Dateien nicht löschen, um eine Sperre „freizugeben“; das Betriebssystem gibt den Lock beim Prozessende frei. Ein Dateilock ist kein verteilter Lock für andere Disks/Instanzen.
 

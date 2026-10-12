@@ -265,15 +265,31 @@ def datum_anzeige(iso: str) -> str:
     return f"{iso[8:10]}.{iso[5:7]}.{iso[:4]}" if len(iso) >= 10 and iso[4] == "-" else ""
 
 
+# Weiter-Link der Quelle: <a href="…?page=2#listtop" … rel="next">. Die Reihenfolge der
+# Attribute ist nicht zugesichert, deshalb Lookahead auf rel="next" im selben Tag.
+_WEITER_LINK = re.compile(r'<a\b(?=[^>]*rel="next")[^>]*>', re.I)
+_HREF = re.compile(r'href="([^"]+)"', re.I)
+
+
 def _naechste_seite(html: str, seite_url: str) -> str:
-    """Folgeseite der Liste über die Seitennummer im Navigationsbereich (``?page=N``)."""
+    """Folgeseite der Liste: zuerst der Weiter-Link der Quelle, sonst die Seitennummer.
+
+    Die Quelle zählt die Seiten **1-basiert**: Ohne Parameter steht man auf Seite 1, und der
+    Weiter-Link führt auf ``?page=2``. Wird stattdessen nur gerechnet, muss die Seite ohne
+    Parameter deshalb als Seite 1 gelten – sonst liest ein Lauf die erste Seite erneut.
+    """
     from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
-    nummern = [
-        int(m.group(1)) for m in re.finditer(r'[?&]page=(\d+)', html)
-    ]
+    for tag in _WEITER_LINK.finditer(html):
+        href = _HREF.search(tag.group(0))
+        if href:
+            ziel = _link_pruefen(href.group(1), seite_url)
+            if ziel:
+                return ziel
+
+    nummern = [int(m.group(1)) for m in re.finditer(r"[?&]page=(\d+)", html)]
     aktuell = dict(parse_qsl(urlsplit(seite_url).query)).get("page")
-    aktuell = int(aktuell) if aktuell and aktuell.isdigit() else 0
+    aktuell = int(aktuell) if aktuell and aktuell.isdigit() else 1
     kandidaten = sorted({n for n in nummern if n > aktuell})
     if not kandidaten:
         return ""
@@ -404,7 +420,9 @@ def status_aus_zeile(zeile) -> dict:
 
 def zusammenfassung(titel: str, art: str, zeile) -> str:
     """Kurzbeschreibung aus den Feldern der Quelle – keine Ergänzung aus dem Nichts."""
-    teile = [f"„{titel}“."]
+    # Viele Bekanntmachungstitel tragen bereits Anführungszeichen („Arbeitstitel: …“);
+    # dann wird der Titel nicht noch einmal in Anführungszeichen gesetzt.
+    teile = [titel + "."] if ("„" in titel or "“" in titel) else [f"„{titel}“."]
     if zeile["kurztext"]:
         teile.append(zeile["kurztext"])
     teile.append(zeile["status_text"])

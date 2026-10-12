@@ -138,6 +138,39 @@ def test_bekanntmachung_ohne_datum_und_mit_schreibfehler_der_quelle():
     assert eintraege[0].zusatz == "Hinweisveröffentlichung 30.09.2026"
 
 
+def test_weiterlink_der_quelle_hat_vorrang(liste):
+    """Der Weiter-Link (`rel="next"`) bestimmt die Folgeseite – nicht eine eigene Rechnung."""
+    _, weiter, _ = parse_bekanntmachungen(liste, LISTE_URL)
+    assert weiter == f"{LISTE_URL}?page=2"
+
+
+def test_seitennummerierung_ist_einbasiert():
+    """Ohne Weiter-Link gilt: Ohne Parameter ist man auf Seite 1, die nächste ist Seite 2.
+
+    Wird das verwechselt (``?page=1`` als zweite Seite gelesen), liest jeder Lauf die erste
+    Seite erneut und zählt dieselben Bekanntmachungen doppelt.
+    """
+    pager = ("<ul><li>" + "</li><li>".join(
+        f'<a href="?page={n}" data-start="{(n - 1) * 15}">{n}</a>' for n in range(1, 6)) + "</li></ul>")
+
+    _, weiter, _ = parse_bekanntmachungen(pager, LISTE_URL)
+    assert weiter == f"{LISTE_URL}?page=2"
+
+    _, weiter, _ = parse_bekanntmachungen(pager, f"{LISTE_URL}?page=2")
+    assert weiter == f"{LISTE_URL}?page=3"
+
+    # Auf der letzten Seite gibt es keinen höheren Seitenlink: die Liste ist zu Ende.
+    letzte = '<ul><li><a href="?page=4">4</a></li><li><a href="?page=5">5</a></li></ul>'
+    assert parse_bekanntmachungen(letzte, f"{LISTE_URL}?page=5")[1] == ""
+
+
+def test_weiterlink_auf_fremden_host_wird_ignoriert():
+    html = '<a href="https://boese.example/?page=99" rel="next">weiter</a>' \
+           '<a href="?page=4" title="Eine Seite vor">4</a>'
+    _, weiter, _ = parse_bekanntmachungen(html, LISTE_URL)
+    assert weiter == f"{LISTE_URL}?page=4"
+
+
 def test_jahrgaenge_werden_auf_die_neuesten_begrenzt(quelle_bekanntmachungen):
     assert jahrgaenge(quelle_bekanntmachungen, "2026-10-12") == [2026, 2025]
     assert jahrgaenge(quelle_bekanntmachungen, "2030-01-05") == [2030, 2029, 2028]
@@ -150,10 +183,16 @@ JAHRES_URL = "https://www.stadt-koeln.de/politik-und-verwaltung/bekanntmachungen
 
 
 def _seiten_fuer_jahre(liste: str, jahre=(2026, 2025)) -> dict[str, str]:
-    """Erste Seite je Jahrgang; die (hier leere) Folgeseite beendet die Abrufreihe."""
+    """Erste Seite je Jahrgang; die (hier leere) Folgeseite beendet die Abrufreihe.
+
+    Der Weiter-Link der Fixture zeigt auf 2026; für andere Jahrgänge wird er wie in der
+    Quelle jeweils auf den eigenen Jahrgang umgeschrieben.
+    """
     seiten = {}
     for jahr in jahre:
-        seiten[JAHRES_URL.format(jahr=jahr)] = liste
+        seite = liste.replace("oeffentliche-bekanntmachungen-2026?page=2",
+                              f"oeffentliche-bekanntmachungen-{jahr}?page=2")
+        seiten[JAHRES_URL.format(jahr=jahr)] = seite
         seiten[JAHRES_URL.format(jahr=jahr) + "?page=2"] = "<html></html>"
     return seiten
 
@@ -195,6 +234,10 @@ def test_crawl_speichert_bekanntmachung_mit_dokument_und_ortsbezug(tmp_path, uhr
         assert all(".pdf" not in a for a in fake.aufrufe)
 
         assert sp.zaehle_quelle("koeln:bekanntmachungen")["bekanntmachungen"] == 3
+        # Die erste Seite wird nicht erneut gelesen (1-basierte Seitennummerierung der Quelle).
+        assert not any("page=1" in a for a in fake.aufrufe)
+        assert [a for a in fake.aufrufe if "page=" in a] == [
+            f"{JAHRES_URL.format(jahr=2026)}?page=2", f"{JAHRES_URL.format(jahr=2025)}?page=2"]
 
 
 def test_crawl_setzt_nach_budget_am_cursor_fort(tmp_path, uhr, liste, stadt):

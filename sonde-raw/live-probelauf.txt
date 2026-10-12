@@ -1,0 +1,55 @@
+== Live-Probelauf 2026-10-12T19:11:57Z UTC ==
+
+== probe bekanntmachungen ==
+usage: behoerdenmaster [-h] [--db DB] [--stadt STADT] [-v]
+                       {status,backup,probe,crawl,frage,plz,ladebericht,demo,serve} ...
+behoerdenmaster: error: unrecognized arguments: --db /tmp/probe.sqlite
+
+== probe beteiligung ==
+usage: behoerdenmaster [-h] [--db DB] [--stadt STADT] [-v]
+                       {status,backup,probe,crawl,frage,plz,ladebericht,demo,serve} ...
+behoerdenmaster: error: unrecognized arguments: --db /tmp/probe.sqlite
+
+== crawl (kleines Budget) und Suche ==
+bekanntmachungen: status=teilweise anfragen=8 zaehler={"listen:seiten": 7, "bekanntmachungen:neu": 90, "bekanntmachungen:aktualisiert": 15} fehlertext=Anfragebudget von 8 erreicht
+  Bestand: {"vorgaenge": 90, "sitzungen": 0, "gremien": 0, "tagesordnungspunkte": 0, "beratungen": 0, "dokumente": 90, "planverfahren": 0, "planstaende": 0, "hinweise": 0, "meldungen": 90, "bekanntmachungen": 90, "beteiligungen": 0}
+beteiligung: status=ok anfragen=2 zaehler={"beteiligungen:neu": 56} fehlertext=
+  Bestand: {"vorgaenge": 56, "sitzungen": 0, "gremien": 0, "tagesordnungspunkte": 0, "beratungen": 0, "dokumente": 0, "planverfahren": 0, "planstaende": 0, "hinweise": 0, "meldungen": 56, "bekanntmachungen": 0, "beteiligungen": 56}
+FRAGE: Was wurde zum Bebauungsplan in Köln-Niehl bekannt gemacht?
+  Gesamt: 1
+  - [bekanntmachungen] Öffentliche Bekanntmachung von Bauleitplänen Frühzeitige Beteiligung der Öffentlichkeit an einem Beb
+    Status: amtlich bekannt gemacht | Amtliche Bekanntmachung der Stadt Köln, veröffentlicht am 07.10.2026. Verfahrensschritt laut Quelle: Frühzeitige Beteiligung der Öffentlichkeit. Hinweisveröffentlichung 0
+    Orte: ['Niehl'] | Link: https://www.stadt-koeln.de/mediaasset/content/bekanntmachungen/2026/2026.10.07_0191-01_feldgaertenstr_foeb.pdf
+    Zusammenfassung: „Öffentliche Bekanntmachung von Bauleitplänen Frühzeitige Beteiligung der Öffentlichkeit an einem Bebauungsplan-Entwurf Arbeitstitel: „Feldgärtenstraße in Köln-Niehl““. Amtliche Bekanntmachung der Stadt Köln, veröffentlicht am 07.10.2026. Verfahrensschritt lau
+FRAGE: Welche Bürgerbeteiligung gibt es in Flittard?
+  Gesamt: 1
+  - [beteiligung] GRÜNZUG Flittard-Stammheim
+    Status: Beteiligung geschlossen | Auskunft der Plattform: Online-Beteiligung seit 10 Tagen geschlossen. Der genaue Beteiligungszeitraum steht auf der Projektseite. (Stand des lokalen Abrufs: 12.10.2026)
+    Orte: ['Stammheim', 'Flittard'] | Link: https://meinungfuer.koeln/gruenzug-flittard-stammheim
+    Zusammenfassung: „GRÜNZUG Flittard-Stammheim“. In den Stadtteilen Flittard und Stammheim soll ein neuer GRÜNZUG Flittard-Stammheim entstehen. In der Zeit vom 10. September bis 01. Oktober waren Sie gefragt: Wie stellen Sie sich den zukünftigen GRÜNZUG Flittard-Stammheim vor? W
+FRAGE: Wo ist ein Bebauungsplan in Kraft getreten?
+  Gesamt: 30
+  - [bekanntmachungen] Öffentliche Bekanntmachung von Bauleitplänen Inkrafttreten eines Bebauungsplans gemäß § 10 Baugesetz
+    Status: amtlich bekannt gemacht | Amtliche Bekanntmachung der Stadt Köln, veröffentlicht am 07.10.2026. Verfahrensschritt laut Quelle: Inkrafttreten eines Bebauungsplans. Hinweisveröffentlichung 07.10.202
+    Orte: ['Esch/Auweiler'] | Link: https://www.stadt-koeln.de/mediaasset/content/bekanntmachungen/2026/2026.10.07_0190-01_satzung_volkhovener-str.pdf
+    Zusammenfassung: „Öffentliche Bekanntmachung von Bauleitplänen Inkrafttreten eines Bebauungsplans gemäß § 10 Baugesetzbuch (BauGB) Arbeitstitel: “Volkhovener Straße in Köln-Esch/Auweiler““. Amtliche Bekanntmachung der Stadt Köln, veröffentlicht am 07.10.2026. Verfahrensschritt
+  - [bekanntmachungen] Öffentliche Bekanntmachung von Bauleitplänen Inkrafttreten eines Bebauungsplans gemäß § 10 Baugesetz
+    Status: amtlich bekannt gemacht | Amtliche Bekanntmachung der Stadt Köln, veröffentlicht am 26.08.2026. Verfahrensschritt laut Quelle: Inkrafttreten eines Bebauungsplans. Hinweisveröffentlichung 26.08.202
+    Orte: ['Deutz'] | Link: https://www.stadt-koeln.de/mediaasset/content/bekanntmachungen/2026/2026.08.26_0155-01_deutzer-hafen_teilplan-a.pdf
+    Zusammenfassung: „Öffentliche Bekanntmachung von Bauleitplänen Inkrafttreten eines Bebauungsplans gemäß § 10 Baugesetzbuch (BauGB) Arbeitstitel: “Deutzer Hafen-Teilplan A“- in Köln-Deutz“. Amtliche Bekanntmachung der Stadt Köln, veröffentlicht am 26.08.2026. Verfahrensschritt 
+  - [bekanntmachungen] Öffentliche Bekanntmachung von Bauleitplänen Inkrafttreten eines Bebauungsplans gemäß § 10 Baugesetz
+    Status: amtlich bekannt gemacht | Amtliche Bekanntmachung der Stadt Köln, veröffentlicht am 05.08.2026. Verfahrensschritt laut Quelle: Inkrafttreten eines Bebauungsplans. Hinweisveröffentlichung 05.08.202
+    Orte: ['Neustadt-Süd'] | Link: https://www.stadt-koeln.de/mediaasset/content/bekanntmachungen/2026/2026.08.05_0146-01_trierer_str.pdf
+    Zusammenfassung: „Öffentliche Bekanntmachung von Bauleitplänen Inkrafttreten eines Bebauungsplans gemäß § 10 Baugesetzbuch (BauGB) Arbeitstitel: Trierer Straße in Köln-Neustadt/Süd“. Amtliche Bekanntmachung der Stadt Köln, veröffentlicht am 05.08.2026. Verfahrensschritt laut Q
+LADEBERICHT bekanntmachungen teilweise {"vorgaenge": 90, "sitzungen": 0, "gremien": 0, "tagesordnungspunkte": 0, "beratungen": 0, "dokumente": 90, "planverfahren": 0, "planstaende": 0, "hinweise": 0, "meldungen": 90, "bekanntmachungen": 90, "beteiligungen": 0}
+    Zugriff | öffentliche Jahreslisten · Mindestabstand laut Stadtkonfiguration | ok
+    Listen | 90 Bekanntmachungen gelistet · Abrufreihe unterbrochen, wird fortgesetzt | offen
+    Originale | verlinkt; das PDF wird nicht geladen und nicht ausgewertet | ok
+    Dokumente | 90 Dokumentverweise (nur verlinkt) | ok
+    Suchbestand | 90 Vorgänge · 0 Planverfahren | ok
+LADEBERICHT beteiligung aktuell {"vorgaenge": 56, "sitzungen": 0, "gremien": 0, "tagesordnungspunkte": 0, "beratungen": 0, "dokumente": 0, "planverfahren": 0, "planstaende": 0, "hinweise": 0, "meldungen": 56, "bekanntmachungen": 0, "beteiligungen": 56}
+    Zugriff | eine öffentliche Projektliste je Lauf · Mindestabstand laut Stadtkonfiguration | ok
+    Projekte | 56 Beteiligungsangebote · 0 Dokumentverweise | ok
+    Beiträge Dritter | nicht übernommen (keine Kommentare, Namen oder Fotos) | ok
+    Dokumente | 0 Dokumentverweise (nur verlinkt) | leer
+    Suchbestand | 56 Vorgänge · 0 Planverfahren | ok

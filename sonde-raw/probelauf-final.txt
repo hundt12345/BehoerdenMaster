@@ -1,0 +1,62 @@
+== Live-Probelauf 2026-10-12T19:25:13Z UTC ==
+
+== probe bekanntmachungen ==
+Hinweis: Keine Kontaktadresse angegeben; verwendet wird die Projekt-Kontaktadresse aus behoerdenmaster/config.py (behordenkontakt123@posteo.de).
+Öffentliche Bekanntmachungen Stadt Köln: 15 Bekanntmachungen auf der ersten Seite (weitere Seiten vorhanden; Treffer 1–15 von 191)
+  - 07.10.2026 Öffentliche Bekanntmachung von Bauleitplänen Frühzeitige Beteiligung der Öffentlichkeit an
+  - 07.10.2026 Öffentliche Bekanntmachung von Bauleitplänen Inkrafttreten eines Bebauungsplans gemäß § 10
+  - 01.10.2026 Jahresabschluss der Stadtbahngesellschaft Rhein-Sieg mbH i. L. zum 31. Dezember 2025
+Anfragen: 2. Der Probelauf speichert nichts.
+
+== probe beteiligung ==
+Hinweis: Keine Kontaktadresse angegeben; verwendet wird die Projekt-Kontaktadresse aus behoerdenmaster/config.py (behordenkontakt123@posteo.de).
+Bürgerbeteiligung Meinung für Köln: 56 Beteiligungsangebote übernommen, 0 verworfen
+  - Beteiligung geschlossen: GRÜNZUG Flittard-Stammheim
+  - Beteiligung geschlossen: Forsteinrichtungswerk
+  - ohne Statusangabe: Qualifizierungsverfahren Neubrücker Ring in Köln-Neubrück
+Anfragen: 2. Der Probelauf speichert nichts.
+
+== crawl und Suche ==
+bekanntmachungen: status=teilweise anfragen=10 zaehler={"listen:seiten": 9, "bekanntmachungen:neu": 135} fehlertext=Anfragebudget von 10 erreicht
+  Bestand: {"vorgaenge": 135, "sitzungen": 0, "gremien": 0, "tagesordnungspunkte": 0, "beratungen": 0, "dokumente": 135, "planverfahren": 0, "planstaende": 0, "hinweise": 0, "meldungen": 135, "bekanntmachungen": 135, "beteiligungen": 0}
+beteiligung: status=ok anfragen=2 zaehler={"beteiligungen:neu": 56} fehlertext=
+  Bestand: {"vorgaenge": 56, "sitzungen": 0, "gremien": 0, "tagesordnungspunkte": 0, "beratungen": 0, "dokumente": 0, "planverfahren": 0, "planstaende": 0, "hinweise": 0, "meldungen": 56, "bekanntmachungen": 0, "beteiligungen": 56}
+Cursor: [('liste:2026', 'https://www.stadt-koeln.de/politik-und-verwaltung/bekanntmachungen/oeffentliche-bekanntmachungen-2026?page=10'), ('projekte', '')]
+FRAGE: Was wurde zum Bebauungsplan in Köln-Niehl bekannt gemacht?
+  Gesamt: 2
+  - [bekanntmachungen] Öffentliche Bekanntmachung von Bauleitplänen Frühzeitige Beteiligung der Öffentlichkeit an eine
+    Status: amtlich bekannt gemacht | Amtliche Bekanntmachung der Stadt Köln, veröffentlicht am 07.10.2026. Verfahrensschritt laut Quelle: Frühzeitige Beteiligung der Öffentlichkeit. Hinwe
+    Orte: ['Niehl'] | https://www.stadt-koeln.de/mediaasset/content/bekanntmachungen/2026/2026.10.07_0191-01_feldgaertenstr_foeb.pdf
+  - [bekanntmachungen] Öffentliche Bekanntmachung von Bauleitplänen Einleitungsbeschluss des Ausschusses für Stadtentw
+    Status: amtlich bekannt gemacht | Amtliche Bekanntmachung der Stadt Köln, veröffentlicht am 29.04.2026. Hinweisveröffentlichung 29.04.2026. Maßgeblich ist die verlinkte Bekanntmachung;
+    Orte: ['Niehl'] | https://www.stadt-koeln.de/mediaasset/content/bekanntmachungen/2026/2026.04.29_0081-01_feldgaertenstr.pdf
+FRAGE: Welche Bürgerbeteiligung gibt es in Flittard?
+  Gesamt: 1
+  - [beteiligung] GRÜNZUG Flittard-Stammheim
+    Status: Beteiligung geschlossen | Auskunft der Plattform: Online-Beteiligung seit 10 Tagen geschlossen. Der genaue Beteiligungszeitraum steht auf der Projektseite. (Stand des lokalen A
+    Orte: ['Stammheim', 'Flittard'] | https://meinungfuer.koeln/gruenzug-flittard-stammheim
+FRAGE: Welche Bekanntmachung gibt es zur Gebäudewirtschaft?
+  Gesamt: 2
+  - [bekanntmachungen] Vertretungsberechtigung bei der Gebäudewirtschaft der Stadt Köln
+    Status: amtlich bekannt gemacht | Amtliche Bekanntmachung der Stadt Köln, veröffentlicht am 15.09.2026. Hinweisveröffentlichung 23.09.2026. Maßgeblich ist die verlinkte Bekanntmachung;
+    Orte: [] | https://www.stadt-koeln.de/mediaasset/content/bekanntmachungen/2026/0176-02_vertretungsberechtigten_gebäudewir
+  - [bekanntmachungen] 16. Satzung zur Änderung der Satzung der Gebäudewirtschaft der Stadt Köln vom 8. Juni 2026
+    Status: amtlich bekannt gemacht | Amtliche Bekanntmachung der Stadt Köln, veröffentlicht am 10.06.2026. Hinweisveröffentlichung 17.06.2026. Maßgeblich ist die verlinkte Bekanntmachung;
+    Orte: [] | https://www.stadt-koeln.de/mediaasset/content/bekanntmachungen/2026/2026.06.10_0095-01_betriebssatzung_gebaeud
+FRAGE: Grünzug Flittard
+  Gesamt: 1
+  - [beteiligung] GRÜNZUG Flittard-Stammheim
+    Status: Beteiligung geschlossen | Auskunft der Plattform: Online-Beteiligung seit 10 Tagen geschlossen. Der genaue Beteiligungszeitraum steht auf der Projektseite. (Stand des lokalen A
+    Orte: ['Stammheim', 'Flittard'] | https://meinungfuer.koeln/gruenzug-flittard-stammheim
+LADEBERICHT bekanntmachungen teilweise {"vorgaenge": 135, "sitzungen": 0, "gremien": 0, "tagesordnungspunkte": 0, "beratungen": 0, "dokumente": 135, "planverfahren": 0, "planstaende": 0, "hinweise": 0, "meldungen": 135, "bekanntmachungen": 135, "beteiligungen": 0}
+    Zugriff | öffentliche Jahreslisten · Mindestabstand laut Stadtkonfiguration | ok
+    Listen | 135 Bekanntmachungen gelistet · Abrufreihe unterbrochen, wird fortgesetzt | offen
+    Originale | verlinkt; das PDF wird nicht geladen und nicht ausgewertet | ok
+    Dokumente | 135 Dokumentverweise (nur verlinkt) | ok
+    Suchbestand | 135 Vorgänge · 0 Planverfahren | ok
+LADEBERICHT beteiligung aktuell {"vorgaenge": 56, "sitzungen": 0, "gremien": 0, "tagesordnungspunkte": 0, "beratungen": 0, "dokumente": 0, "planverfahren": 0, "planstaende": 0, "hinweise": 0, "meldungen": 56, "bekanntmachungen": 0, "beteiligungen": 56}
+    Zugriff | eine öffentliche Projektliste je Lauf · Mindestabstand laut Stadtkonfiguration | ok
+    Projekte | 56 Beteiligungsangebote · 0 Dokumentverweise | ok
+    Beiträge Dritter | nicht übernommen (keine Kommentare, Namen oder Fotos) | ok
+    Dokumente | 0 Dokumentverweise (nur verlinkt) | leer
+    Suchbestand | 56 Vorgänge · 0 Planverfahren | ok

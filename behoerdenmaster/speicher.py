@@ -499,6 +499,96 @@ class Speicher:
             ).fetchone()[0]
         return ergebnis
 
+    # --- Ladeübersicht (nur lesend, keine Netzabrufe) -----------------------
+
+    def zaehle_quelle(self, quelle_id: str) -> dict[str, int]:
+        """Bestand einer einzelnen Quelle. Dokumente werden über Vorgang oder Sitzung zugeordnet."""
+        zahlen = {
+            "vorgaenge": "SELECT COUNT(*) FROM vorgang WHERE quelle_id=? AND geloescht=0",
+            "sitzungen": "SELECT COUNT(*) FROM sitzung WHERE quelle_id=? AND geloescht=0",
+            "gremien": "SELECT COUNT(*) FROM gremium WHERE quelle_id=? AND geloescht=0",
+            "tagesordnungspunkte": (
+                "SELECT COUNT(*) FROM tagesordnungspunkt t JOIN sitzung s ON s.id=t.sitzung_id "
+                "WHERE s.quelle_id=? AND t.geloescht=0"
+            ),
+            "beratungen": (
+                "SELECT COUNT(*) FROM beratung b JOIN vorgang v ON v.id=b.vorgang_id "
+                "WHERE v.quelle_id=? AND b.geloescht=0"
+            ),
+            "dokumente": (
+                "SELECT COUNT(*) FROM dokument d "
+                "LEFT JOIN vorgang v ON v.id=d.vorgang_id "
+                "LEFT JOIN sitzung s ON s.id=d.sitzung_id "
+                "WHERE d.geloescht=0 AND COALESCE(NULLIF(v.quelle_id,''), NULLIF(s.quelle_id,''))=?"
+            ),
+            "planverfahren": (
+                "SELECT COUNT(*) FROM planverfahren p JOIN vorgang v ON v.id=p.vorgang_id "
+                "WHERE v.quelle_id=? AND v.geloescht=0"
+            ),
+            "planstaende": (
+                "SELECT COUNT(*) FROM planstand st JOIN vorgang v ON v.id=st.vorgang_id WHERE v.quelle_id=?"
+            ),
+        }
+        return {name: self.db.execute(sql, (quelle_id,)).fetchone()[0] for name, sql in zahlen.items()}
+
+    def dokumente_nach_quelle(self) -> list[sqlite3.Row]:
+        """Dokumente je Quelle und Rolle – die Grundlage für das Balkendiagramm der Ladeübersicht."""
+        return self.db.execute(
+            """
+            SELECT COALESCE(NULLIF(v.quelle_id,''), NULLIF(s.quelle_id,''), '') AS quelle_id,
+                   COALESCE(NULLIF(d.rolle,''), 'dokument') AS rolle,
+                   COUNT(*) AS anzahl
+              FROM dokument d
+              LEFT JOIN vorgang v ON v.id = d.vorgang_id
+              LEFT JOIN sitzung s ON s.id = d.sitzung_id
+             WHERE d.geloescht = 0
+             GROUP BY 1, 2
+            """
+        ).fetchall()
+
+    def dokumente_quelle(self, quelle_id: str, limit: int = 25) -> list[sqlite3.Row]:
+        """Einzelne Dokumentverweise einer Quelle (Name, Rolle, Link) für die Ladeübersicht."""
+        return self.db.execute(
+            """
+            SELECT d.id, d.name, d.dateiname, d.rolle, d.datum, d.url, d.download_url,
+                   COALESCE(NULLIF(v.quelle_id,''), NULLIF(s.quelle_id,''), '') AS quelle_id
+              FROM dokument d
+              LEFT JOIN vorgang v ON v.id = d.vorgang_id
+              LEFT JOIN sitzung s ON s.id = d.sitzung_id
+             WHERE d.geloescht = 0 AND COALESCE(NULLIF(v.quelle_id,''), NULLIF(s.quelle_id,'')) = ?
+             ORDER BY d.datum DESC, d.name
+             LIMIT ?
+            """,
+            (quelle_id, limit),
+        ).fetchall()
+
+    def laeufe(self, limit: int = 20, quelle_id: str | None = None) -> list[sqlite3.Row]:
+        """Abrufprotokolle, neueste zuerst; optional auf eine Quelle begrenzt."""
+        if quelle_id is None:
+            return self.db.execute(
+                "SELECT * FROM crawl_lauf ORDER BY id DESC LIMIT ?", (limit,)
+            ).fetchall()
+        return self.db.execute(
+            "SELECT * FROM crawl_lauf WHERE quelle_id=? ORDER BY id DESC LIMIT ?", (quelle_id, limit)
+        ).fetchall()
+
+    def staende(self, quelle_id: str | None = None) -> list[sqlite3.Row]:
+        """Cursor der Quellenlisten (z. B. unterbrochene Abrufreihen)."""
+        if quelle_id is None:
+            return self.db.execute("SELECT * FROM crawl_stand ORDER BY quelle_id, entitaet").fetchall()
+        return self.db.execute(
+            "SELECT * FROM crawl_stand WHERE quelle_id=? ORDER BY entitaet", (quelle_id,)
+        ).fetchall()
+
+    def aufgaben_nach_quelle(self) -> dict[str, int]:
+        """Noch wartende Detailabrufe je Quelle (nur Bauleitplanung nutzt diese Warteschlange)."""
+        return {
+            r["quelle_id"]: r["anzahl"]
+            for r in self.db.execute(
+                "SELECT quelle_id, COUNT(*) AS anzahl FROM crawl_aufgabe GROUP BY quelle_id"
+            )
+        }
+
     def loesche_quelle_daten(self, quelle_id: str) -> None:
         """Entfernt alle Daten einer Quelle (z. B. Demo-Daten vor einem echten Abruf)."""
         with self.transaktion():

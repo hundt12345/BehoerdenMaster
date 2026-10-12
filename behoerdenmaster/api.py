@@ -20,6 +20,7 @@ from .auswertung import heute, jetzt
 from .betrieb import Betrieb, SyncDienst, initialisiere
 from .config import PROJEKTWURZEL, Stadt, config_verzeichnis, lade_staedte
 from .geo import Gazetteer
+from .ladebericht import ladebericht
 from .nlq import Verstaendnis, verstehe
 from .speicher import Speicher
 from .suche import Suchauftrag, suche, vorgang_detail
@@ -174,6 +175,29 @@ def create_app(db_pfad: str | Path | None = None, config_dir: Path | None = None
                                       einstellungen, demo_status, sync_quellen_effektiv)
         daten["staedte"] = [{"schluessel": s.schluessel, "name": s.name, "hinweis": s.hinweis}
                             for s in staedte.values()]
+        return daten
+
+    @app.get("/api/ladebericht")
+    def ladebericht_endpunkt(
+        stadt: str | None = None,
+        laeufe: int = Query(default=8, ge=1, le=50, description="protokollierte Läufe je Quelle"),
+    ):
+        """Was aus welcher Quelle geladen wurde – rein lokal, ohne Behördenabruf."""
+        st = stadt_waehlen(stadt)
+        with Speicher(db) as sp:
+            daten = ladebericht(
+                sp, st,
+                intervall_sekunden=einstellungen.sync_intervall,
+                sync_aktiv=einstellungen.sync_aktiv,
+                laeufe_pro_quelle=laeufe,
+            )
+        daten["betrieb"] = {
+            "automatische_abrufe": einstellungen.sync_aktiv,
+            "intervall_sekunden": einstellungen.sync_intervall,
+            "max_anfragen_pro_quelle": einstellungen.sync_budget,
+            "sync_dienst_laeuft": bool(app.state.sync_dienst and app.state.sync_dienst.laeuft),
+            "warnungen": list(einstellungen.warnungen),
+        }
         return daten
 
     @app.post("/api/frage")

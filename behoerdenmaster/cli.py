@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import logging
 import os
 import sqlite3
@@ -13,11 +14,13 @@ from . import __version__
 from .abruf import Abrufer, BudgetErschoepft, NichtErlaubt, ObjektNichtVorhanden, QuelleGesperrt, QuelleNichtErreichbar
 from .auswertung import heute, jetzt
 from .bauleitplanung import BauleitplanungQuelle
+from .betrieb import Betrieb
 from .config import PROJEKT_KONTAKT, Quelle, Stadt, config_verzeichnis, lade_staedte
 from .crawl_sperre import CrawlLaeuft, crawl_sperre
 from .crawler import CRAWLER, ENTITAETEN, CrawlVerweigert, LaufOptionen
 from .demo import demo_quell_id, lade_demo, loesche_demo
 from .geo import Gazetteer
+from .ladebericht import einheit, entitaet_name, ladebericht
 from .nlq import verstehe
 from .oparl import OParlQuelle
 from .sicherung import sichere_datenbank
@@ -235,6 +238,54 @@ def cmd_plz(args) -> int:
     return 0
 
 
+def cmd_ladebericht(args) -> int:
+    """Textfassung der grafischen Ladeübersicht – dieselben Zahlen wie der Tab „Datenladen“."""
+    stadt = _stadt(args.stadt)
+    betrieb = Betrieb.aus_umgebung(streng=False)
+    with Speicher(_db_pfad(args)) as sp:
+        daten = ladebericht(sp, stadt, intervall_sekunden=betrieb.sync_intervall,
+                            sync_aktiv=betrieb.sync_aktiv, laeufe_pro_quelle=args.laeufe)
+    if args.json:
+        print(json.dumps(daten, ensure_ascii=False, indent=2))
+        return 0
+
+    g = daten["gesamt"]
+    print(f"BehoerdenMaster {__version__} · Ladeübersicht {stadt.name} · Stand {daten['generiert']}")
+    print(f"Bestand: {einheit(g['vorgaenge'], 'Vorgang', 'Vorgänge')} · "
+          f"{einheit(g['dokumente'], 'Dokumentverweis', 'Dokumentverweise')} · "
+          f"{einheit(g['sitzungen'], 'Sitzung', 'Sitzungen')} · "
+          f"{einheit(g['gremien'], 'Gremium', 'Gremien')} · "
+          f"{g['quellen_mit_bestand']} von {g['quellen']} Quellen mit Daten")
+    if daten["dokumente_nach_rolle"]:
+        print("Dokumente nach Rolle: " + ", ".join(
+            f"{r['text']} {r['anzahl']}" for r in daten["dokumente_nach_rolle"]))
+    for q in daten["quellen"]:
+        z = q["zaehler"]
+        print(f"\n- {q['name']} [{q['typ_text']}]")
+        print(f"  Zustand: {q['ladezustand_text']} · letzter Erfolg: {q['letzter_erfolg'] or '–'}")
+        if q["naechster_abruf"]:
+            print(f"  Nächster Abruf fällig: {q['naechster_abruf']}")
+        if q["abkuehlung_bis"]:
+            print(f"  Server-Pause bis: {q['abkuehlung_bis']}")
+        if q["fehlertext"]:
+            print(f"  Hinweis: {q['fehlertext']}")
+        print(f"  Geladen: {einheit(z.get('vorgaenge', 0), 'Vorgang', 'Vorgänge')} · "
+              f"{einheit(z.get('dokumente', 0), 'Dokumentverweis', 'Dokumentverweise')} · "
+              f"{einheit(z.get('sitzungen', 0), 'Sitzung', 'Sitzungen')} · "
+              f"{einheit(z.get('tagesordnungspunkte', 0), 'TOP', 'TOPs')}")
+        print("  Weg: " + " → ".join(f"{w['schritt']} ({w['wert']})" for w in q["abrufweg"]))
+        if q["staende"]:
+            print("  Listen: " + ", ".join(
+                f"{entitaet_name(s['entitaet'])} {'unterbrochen' if s['offen'] else 'vollständig'}"
+                for s in q["staende"]))
+        for lauf in q["laeufe"]:
+            zaehler = ", ".join(f"{za['text']}: {za['anzahl']}" for za in lauf["zaehler"]) or "keine Zähler"
+            print(f"  Lauf {lauf['gestartet']}: {lauf['status_text']}, {lauf['anfragen']} Anfragen – {zaehler}")
+    for hinweis in daten["hinweise"]:
+        print(f"\nHinweis: {hinweis}")
+    return 0
+
+
 def cmd_demo(args) -> int:
     stadt = _stadt(args.stadt)
     with crawl_sperre(_db_pfad(args)), Speicher(_db_pfad(args)) as sp:
@@ -305,6 +356,10 @@ def baue_parser() -> argparse.ArgumentParser:
     pp.add_argument("--thema", help="Themen, kommagetrennt (z. B. bauen)")
     pp.add_argument("--limit", type=int, default=10)
 
+    pl = sub.add_parser("ladebericht", help="Ladeübersicht: was aus welcher Quelle geladen wurde")
+    pl.add_argument("--laeufe", type=int, default=8, help="Berücksichtigte Abrufläufe je Quelle (Standard 8)")
+    pl.add_argument("--json", action="store_true", help="Maschinenlesbare Ausgabe (dieselbe Struktur wie /api/ladebericht)")
+
     pd = sub.add_parser("demo", help="Beispieldaten laden (offline ausprobieren)")
     pd.add_argument("--loeschen", action="store_true", help="Beispieldaten wieder entfernen")
 
@@ -322,6 +377,7 @@ def main(argv: list[str] | None = None) -> int:
     befehle = {
         "status": cmd_status, "probe": cmd_probe, "crawl": cmd_crawl, "frage": cmd_frage,
         "plz": cmd_plz, "demo": cmd_demo, "backup": cmd_backup, "serve": cmd_serve,
+        "ladebericht": cmd_ladebericht,
     }
     try:
         return befehle[args.befehl](args)

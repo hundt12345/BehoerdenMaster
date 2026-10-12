@@ -2,6 +2,13 @@
 
 Stand: 9. Oktober 2026. Diese Notizen halten fest, was geprüft wurde, welche Entscheidungen daraus folgen und was offen ist.
 
+> **Nachtrag 12. Oktober 2026:** Weitere Kölner Quellen wurden geprüft und als Vorschlagsliste
+> dokumentiert – SessionNet-RSS, öffentliche Bekanntmachungen/Amtsblatt, Kölner
+> Bebauungsplan-Übersicht (ArcGIS), Offene Daten Köln (DKAN 2), Geoportal-Dienste,
+> Beteiligungsportal, Mängelmelder, Presse-RSS und Statistik. Siehe
+> [quellen-koeln.md](quellen-koeln.md). Eigene Themenüberblicke mit Quellenangabe stehen in
+> [presse-koeln.md](presse-koeln.md).
+
 ## 1. Ratsinformation Köln (OParl) – Hauptquelle
 
 - **Schnittstelle:** `https://buergerinfo.stadt-koeln.de/oparl/system` (OParl 1.1, Hersteller Somacos, E-Mail-Kontakt `12-session@stadt-koeln.de`). Körperschaft `stadtverwaltung_koeln` (AGS 05315000).

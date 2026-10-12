@@ -35,8 +35,6 @@ pytest -q                        # Tests mit simulierten Quellen, keine Live-Abf
 python -m behoerdenmaster demo
 python -m behoerdenmaster frage "Welche Bauvorhaben sind in Köln Ehrenfeld geplant?"
 python -m behoerdenmaster plz 50827 --thema bauen
-python -m behoerdenmaster probe --quelle bekanntmachungen  # erste Listenseite prüfen
-python -m behoerdenmaster probe --quelle beteiligung       # Projektliste prüfen
 python -m behoerdenmaster ladebericht   # was aus welcher Quelle geladen wurde
 python -m behoerdenmaster serve   # http://127.0.0.1:8000
 ```
@@ -127,7 +125,7 @@ Liste wird als Fehler gewertet und **nicht** als „alles geschlossen“ gedeute
 
 ### Ratsinformationssystem / OParl
 
-**OParl ist die Standardquelle**, wenn `--quelle` fehlt, und die Quelle, die der Render-Blueprint automatisch abruft. Vor einem größeren Erstabruf die zulässigen Grenzen mit der Stadt abstimmen (Kontakt aus dem OParl-System: `12-session@stadt-koeln.de`).
+**OParl ist die Standardquelle**, wenn `--quelle` fehlt, und im Render-Blueprint die letzte Quelle der Etappe – die kleinen Quellen füllen den Bestand zuerst. Vor einem größeren Erstabruf die zulässigen Grenzen mit der Stadt abstimmen (Kontakt aus dem OParl-System: `12-session@stadt-koeln.de`).
 
 Der Abruf folgt der Reihenfolge **Gremien → Vorlagen → Sitzungen**. Die Vorlagen stehen bewusst vor den Sitzungen, denn nur sie sind die durchsuchbaren Vorgänge: Bei einem knappen Anfragebudget erzeugt ein Lauf sonst unter Umständen Sitzungsdaten, aber **keine einzigen Treffer** für die Startseite. Der Erstabruf lässt sich über `--seit` bzw. `BEHOERDEN_SYNC_SEIT` begrenzen; eine Tagesanzahl wie `90` ist ein rollierendes Fenster und veraltet nicht.
 

@@ -1,0 +1,48 @@
+name: Quellen-Sonde (temporär, nur manuell)
+
+# Nur zur Erkundung/Erfassung von Originalantworten. Wird nach der Umsetzung entfernt.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sonde:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Abrufe durchführen
+        shell: bash
+        run: |
+          set -u
+          mkdir -p sonde
+          UA="BehoerdenMaster/0.1 (+https://github.com/hundt12345/BehoerdenMaster; Kontakt: behordenkontakt123@posteo.de)"
+          hole() {
+            local name="$1"; local url="$2"
+            local code
+            code=$(curl -sS -L --max-time 60 -A "$UA" \
+              -H 'Accept: text/html,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8' \
+              -o "sonde/$name.roh" -w '%{http_code}' "$url" || echo "000")
+            echo "$name|$code|$url" >> sonde/manifest.txt
+            echo "== $name -> HTTP $code ($(wc -c < "sonde/$name.roh" 2>/dev/null || echo 0) Bytes)"
+          }
+          hole robots-stadtkoeln        "https://www.stadt-koeln.de/robots.txt"
+          hole robots-meinungfuer       "https://meinungfuer.koeln/robots.txt"
+          hole robots-offenedaten       "https://www.offenedaten-koeln.de/robots.txt"
+          hole bekanntmachungen-2026    "https://www.stadt-koeln.de/politik-und-verwaltung/bekanntmachungen/oeffentliche-bekanntmachungen-2026"
+          hole bekanntmachungen-2025    "https://www.stadt-koeln.de/politik-und-verwaltung/bekanntmachungen/oeffentliche-bekanntmachungen-2025"
+          hole bekanntmachungen-2026-buchstabeU "https://www.stadt-koeln.de/politik-und-verwaltung/bekanntmachungen/oeffentliche-bekanntmachungen-2026?letter=U"
+          hole meinungfuer-projekte     "https://meinungfuer.koeln/mitmachen/alle-projekte"
+          hole meinungfuer-rss          "https://meinungfuer.koeln/rss"
+          hole meinungfuer-feed         "https://meinungfuer.koeln/feed"
+          hole meinungfuer-sitemap      "https://meinungfuer.koeln/sitemap.xml"
+          hole offenedaten-katalog      "https://www.offenedaten-koeln.de/api/1/metastore/schemas/dataset/items?page-size=50"
+          hole offenedaten-suche        "https://www.offenedaten-koeln.de/api/1/search/?fulltext=Strasse&page-size=3"
+          ls -l sonde || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sonde-rohdaten
+          path: sonde/
+          retention-days: 7

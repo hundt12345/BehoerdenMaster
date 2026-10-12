@@ -68,6 +68,10 @@ class Quelle:
     web_gremium: str | None
     lizenz: str
     organisation: str = ""  # zusätzliche Prüfung des Köln-Filters bei Bauleitplanung
+    # Listenquelle mit Jahresarchiv (öffentliche Bekanntmachungen): `listen_vorlage`
+    # enthält den Platzhalter `{jahr}`, `start_jahr` den ältesten zu prüfenden Jahrgang.
+    listen_vorlage: str | None = None
+    start_jahr: int = 0
 
 
 @dataclass(frozen=True)
@@ -145,6 +149,8 @@ def _lade_datei(pfad: Path) -> Stadt:
             web_gremium=q.get("web_gremium"),
             lizenz=q.get("lizenz", ""),
             organisation=q.get("organisation", ""),
+            listen_vorlage=q.get("listen_vorlage"),
+            start_jahr=int(q.get("start_jahr", 0) or 0),
         )
         for q in daten.get("quellen", [])
     )

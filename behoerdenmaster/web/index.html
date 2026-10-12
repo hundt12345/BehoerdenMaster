@@ -173,10 +173,12 @@
 
   <footer>
     <div id="stand"></div>
-    <p>Quellen: Ratsinformationssystem Köln (OParl, Datenlizenz Deutschland – Zero – 2.0) und
-       Bauleitplanung Online NRW (öffentliche Verfahrensinformationen; gesonderte Nutzungsbedingungen).
-       Auszüge und automatisch abgeleiteter Status ohne Gewähr. Maßgeblich sind die amtlichen Originale.
-       Eine beendete Beteiligungsfrist bedeutet keinen Bauabschluss.</p>
+    <p>Quellen: Ratsinformationssystem Köln (OParl, Datenlizenz Deutschland – Zero – 2.0),
+       Bauleitplanung Online NRW (öffentliche Verfahrensinformationen; gesonderte Nutzungsbedingungen),
+       öffentliche Bekanntmachungen der Stadt Köln und die Beteiligungsplattform „Meinung für Köln“
+       (jeweils nur Titel, Datum, Statusangabe und Link). Auszüge und automatisch abgeleiteter Status
+       ohne Gewähr. Maßgeblich sind die amtlichen Originale. Eine beendete Beteiligungsfrist bedeutet
+       keinen Bauabschluss, und eine Bekanntmachung ist kein Beschluss des Rates.</p>
   </footer>
 </main>
 
@@ -224,12 +226,20 @@
       t.art ? el("span", { class: "chip" }, t.art) : null,
       t.referenz ? el("span", { class: "chip" }, "Nr. " + t.referenz) : null,
       t.datum_de ? el("span", { class: "chip" }, (t.beteiligung ? "Beteiligung ab " : "vom ") + t.datum_de) : null,
+      t.meldung && t.meldung.art_quelle ? el("span", { class: "chip" }, t.meldung.art_quelle) : null,
       el("span", { class: statusKlasse(t.status) }, t.status.kurz),
       t.quelle && t.quelle.demo ? el("span", { class: "chip demo" }, "Beispieldaten") : null,
     );
     const orte = el("div", { class: "meta" },
       ...t.orte.map((o) => el("span", { class: "chip", title: "Ortsbezug" }, o.name)));
     const zusammen = el("p", { class: "zusammenfassung" }, t.zusammenfassung);
+    const meldung = t.meldung ? el("div", { class: "beteiligung" },
+      el("strong", null, t.meldung.verfahrensschritt || t.meldung.art_quelle || t.status.kurz),
+      el("div", null, t.meldung.status_text),
+      t.meldung.zusatz ? el("div", { class: "hinweis" }, t.meldung.zusatz) : null,
+      el("small", null, `Quelle: ${t.quelle ? t.quelle.name : ""}`
+        + (t.meldung.gesehen_de ? ` · zuletzt abgerufen am ${t.meldung.gesehen_de}` : ""))) : null;
+
     const beteiligung = t.beteiligung ? el("div", { class: "beteiligung" },
       el("strong", null, t.beteiligung.phase),
       el("div", null, `Beteiligung: ${t.beteiligung.beginn_zeit_de || t.beteiligung.beginn_de || "Beginn unbekannt"} – ${t.beteiligung.ende_zeit_de || t.beteiligung.ende_de || "Frist unbekannt"}`),
@@ -242,9 +252,11 @@
       el("td", null, (e.top && e.top.ergebnis) || (e.anstehend ? "anstehend" : "–")),
       el("td", null, e.sitzung && e.sitzung.url ? el("a", { href: e.sitzung.url, target: "_blank", rel: "noopener" }, "Sitzung") : ""),
     ));
-    const verlauf = t.beteiligung
+    const verlauf = t.beteiligung || t.meldung
       ? el("details", null,
-          el("summary", null, `Beteiligung & beobachteter Verlauf (${t.verlauf.length} Einträge)`),
+          el("summary", null, t.beteiligung
+            ? `Beteiligung & beobachteter Verlauf (${t.verlauf.length} Einträge)`
+            : `Angaben der Quelle & beobachteter Verlauf (${t.verlauf.length} Einträge)`),
           el("ol", { class: "ereignisse" }, ...t.verlauf.map((e) => el("li", null,
             el("strong", null, `${e.datum_de || "ohne Datum"} · ${e.ereignis}`),
             el("small", null, e.beschreibung)))))
@@ -271,7 +283,7 @@
       el("span", { class: "hinweis" }, t.quelle ? t.quelle.name : ""));
 
     const hinweise = (t.hinweise || []).map((h) => el("p", { class: "hinweis" }, h));
-    return el("article", { class: "karte" }, kopf, meta, orte, beteiligung, zusammen,
+    return el("article", { class: "karte" }, kopf, meta, orte, beteiligung, meldung, zusammen,
       el("div", { class: "verlauf-container" }, verlauf), dokumente, ...hinweise, links);
   }
 

@@ -187,6 +187,22 @@ CREATE TABLE IF NOT EXISTS crawl_aufgabe (
     url TEXT NOT NULL,
     PRIMARY KEY (quelle_id, vorgang_id)
 );
+-- Listenbasierte Meldungen (amtliche Bekanntmachungen, Bürgerbeteiligung): der Vorgang
+-- trägt Titel, Datum und Original-Link, hier stehen die Angaben, die nur diese Quelle
+-- macht. Es werden keine PDF-Dateien geladen und keine Beiträge Dritter gespeichert.
+CREATE TABLE IF NOT EXISTS meldung (
+    vorgang_id TEXT PRIMARY KEY,
+    art_quelle TEXT NOT NULL DEFAULT '',
+    verfahrensschritt TEXT NOT NULL DEFAULT '',
+    status_kurz TEXT NOT NULL DEFAULT '',
+    status_text TEXT NOT NULL DEFAULT '',
+    offen INTEGER NOT NULL DEFAULT 0,
+    kurztext TEXT NOT NULL DEFAULT '',
+    zusatz TEXT NOT NULL DEFAULT '',
+    frist TEXT NOT NULL DEFAULT '',
+    gesehen TEXT NOT NULL DEFAULT ''
+);
+CREATE INDEX IF NOT EXISTS ix_meldung_gesehen ON meldung (gesehen);
 CREATE INDEX IF NOT EXISTS ix_planstand_vorgang ON planstand (vorgang_id, id);
 CREATE INDEX IF NOT EXISTS ix_ortsbezug ON ortsbezug (typ, schluessel);
 CREATE INDEX IF NOT EXISTS ix_vorgang_datum ON vorgang (datum);
@@ -421,6 +437,44 @@ class Speicher:
             for zeile in zeilen:
                 self._upsert("hinweis", {**zeile, "quelle_id": quelle_id}, pk=("quelle_id", "id"))
 
+    # --- Listenbasierte Meldungen (Bekanntmachungen, Bürgerbeteiligung) ----------
+
+    def meldung_speichern(self, zeile: dict, meldung: dict, orte: set[tuple[str, str, str]],
+                          dokumente: list[dict]) -> bool:
+        """Vorgang samt Quellenangaben speichern. Rückgabe: neu angelegt?
+
+        Fehlende Einträge einer Liste werden **nicht** entfernt: Eine nicht mehr
+        gelistete Bekanntmachung bleibt gültig, ein beendetes Beteiligungsangebot ist
+        kein gelöschter Vorgang. Alle Schreibvorgänge einer Meldung sind atomar.
+        """
+        vid = zeile["id"]
+        with self.transaktion():
+            neu = self.db.execute("SELECT 1 FROM vorgang WHERE id=?", (vid,)).fetchone() is None
+            self._upsert("vorgang", zeile)
+            self._upsert("meldung", {"vorgang_id": vid, **meldung}, pk=("vorgang_id",))
+            self.db.execute("DELETE FROM ortsbezug WHERE vorgang_id=?", (vid,))
+            self.db.executemany("INSERT OR IGNORE INTO ortsbezug VALUES (?,?,?,?)",
+                                [(vid, typ, schluessel, herkunft) for typ, schluessel, herkunft in orte])
+            self.db.execute("DELETE FROM dokument WHERE vorgang_id=? AND sitzung_id=''", (vid,))
+            for dok in dokumente:
+                self._upsert("dokument", {**dok, "vorgang_id": vid, "sitzung_id": ""},
+                             pk=("id", "vorgang_id", "sitzung_id"))
+        return neu
+
+    def meldungen(self, vorgang_ids: Iterable[str]) -> dict[str, dict]:
+        ids = list(dict.fromkeys(v for v in vorgang_ids if v))
+        if not ids:
+            return {}
+        ergebnis: dict[str, dict] = {}
+        for i in range(0, len(ids), 400):
+            teil = ids[i:i + 400]
+            platz = ",".join("?" for _ in teil)
+            for zeile in self.db.execute(
+                f"SELECT * FROM meldung WHERE vorgang_id IN ({platz})", teil
+            ).fetchall():
+                ergebnis[zeile["vorgang_id"]] = dict(zeile)
+        return ergebnis
+
     # --- Bauleitverfahren und beobachtete Änderungen -----------------------------
 
     def planverfahren_speichern(self, zeile: dict, stand: dict,
@@ -554,6 +608,18 @@ class Speicher:
                 "SELECT COUNT(*) FROM planstand st JOIN vorgang v ON v.id=st.vorgang_id WHERE v.quelle_id=?"
             ),
             "hinweise": "SELECT COUNT(*) FROM hinweis WHERE quelle_id=?",
+            "meldungen": (
+                "SELECT COUNT(*) FROM meldung m JOIN vorgang v ON v.id=m.vorgang_id "
+                "WHERE v.quelle_id=? AND v.geloescht=0"
+            ),
+            "bekanntmachungen": (
+                "SELECT COUNT(*) FROM meldung m JOIN vorgang v ON v.id=m.vorgang_id "
+                "WHERE v.quelle_id=? AND v.art='Bekanntmachung' AND v.geloescht=0"
+            ),
+            "beteiligungen": (
+                "SELECT COUNT(*) FROM meldung m JOIN vorgang v ON v.id=m.vorgang_id "
+                "WHERE v.quelle_id=? AND v.art='Beteiligungsangebot' AND v.geloescht=0"
+            ),
         }
         return {name: self.db.execute(sql, (quelle_id,)).fetchone()[0] for name, sql in zahlen.items()}
 
@@ -622,7 +688,7 @@ class Speicher:
             sitzungen = [r[0] for r in self.db.execute("SELECT id FROM sitzung WHERE quelle_id=?", (quelle_id,))]
             self.db.execute("DELETE FROM crawl_aufgabe WHERE quelle_id=?", (quelle_id,))
             for vid in vorgaenge:
-                for tab in ("planverfahren", "planstand"):
+                for tab in ("planverfahren", "planstand", "meldung"):
                     self.db.execute(f"DELETE FROM {tab} WHERE vorgang_id=?", (vid,))
                 for tab in ("beratung", "dokument", "vorgang_beziehung", "ortsbezug"):
                     col = "vorgang_id"

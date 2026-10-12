@@ -11,6 +11,7 @@ from __future__ import annotations
 import logging
 import os
 import threading
+import time
 from collections.abc import Mapping
 from dataclasses import dataclass, field
 from datetime import date, datetime, timedelta, timezone
@@ -77,6 +78,11 @@ class Betrieb:
     sync_quellen: tuple[str, ...] = ()  # vollständige IDs, z. B. koeln:bauleitplanung
     sync_intervall: int = 21600  # sechs Stunden pro Quelle; auch nach Neustarts
     sync_budget: int = 100  # pro Quelle und Etappe, einschließlich robots.txt
+    # Zeitfenster je Quelle und Etappe. Quellen laufen nacheinander; ohne Fenster kann eine
+    # einzige große Quelle (Erstabruf der Ratsinformation) alle anderen so lange blockieren,
+    # dass deren Daten erst Stunden später erscheinen. Nach dem Fenster wird die Quelle
+    # unterbrochen und beim nächsten Mal an ihrem gespeicherten Cursor fortgesetzt.
+    sync_zeitbudget: int = 240
     sync_startverzoegerung: int = 30
     sync_seit: str = ""  # leer = `seit` aus der Stadtkonfiguration; "90d" = rollierendes Fenster
     # Konfigurationsprobleme, die den Dienst bewusst nicht stoppen (z. B. fehlende Kontaktadresse).
@@ -154,6 +160,7 @@ class Betrieb:
             sync_quellen=quellen,
             sync_intervall=zahl("BEHOERDEN_SYNC_INTERVALL", 21600, 300),
             sync_budget=zahl("BEHOERDEN_SYNC_MAX_ANFRAGEN", 100, 1),
+            sync_zeitbudget=zahl("BEHOERDEN_SYNC_ZEITBUDGET", 240, 30),
             sync_startverzoegerung=zahl("BEHOERDEN_SYNC_STARTVERZOEGERUNG", 30, 0),
             sync_seit=seit(),
             warnungen=tuple(warnungen),
@@ -176,6 +183,7 @@ class Betrieb:
             "kontakt_hinterlegt": bool(self.kontakt),
             "intervall_sekunden": self.sync_intervall,
             "max_anfragen_pro_quelle": self.sync_budget,
+            "zeitbudget_pro_quelle_sekunden": self.sync_zeitbudget,
             "startverzoegerung_sekunden": self.sync_startverzoegerung,
             "erstabruf_seit": self.sync_seit,
             "quellen": list(self.sync_quellen),
@@ -316,13 +324,15 @@ class SyncDienst:
                     fruehestens = naechster_abruf(zeile, self.betrieb.sync_intervall)
                     if fruehestens and self.clock() < fruehestens:
                         continue
+                    frist = time.monotonic() + self.betrieb.sync_zeitbudget
                     abrufer = self.abrufer_factory(
                         kontakt=self.betrieb.kontakt, min_intervall=quelle.min_intervall_sekunden,
                         max_anfragen=self.betrieb.sync_budget, sleep=self._pause,
-                        soll_abbrechen=self._stop.is_set,
+                        soll_abbrechen=lambda frist=frist: self._stop.is_set() or time.monotonic() >= frist,
                     )
                     try:
-                        log.info("Automatischer Abruf %s, Budget %d", qid, self.betrieb.sync_budget)
+                        log.info("Automatischer Abruf %s, Budget %d Anfragen, Zeitfenster %d s",
+                                 qid, self.betrieb.sync_budget, self.betrieb.sync_zeitbudget)
                         bericht = CRAWLER[quelle.typ](sp, stadt, quelle, abrufer, LaufOptionen(
                             seit=self.betrieb.seit_datum(), max_anfragen=self.betrieb.sync_budget))
                         berichte.append(bericht)

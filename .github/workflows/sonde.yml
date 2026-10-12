@@ -1,7 +1,8 @@
 name: Quellen-Sonde (temporär)
 
-# Nur zur Entwicklung: holt Rohantworten der Kandidaten-Quellen und legt sie im Zweig ab.
-# Läuft ausschließlich, wenn sich `sonde/` ändert. Wird nach der Umsetzung entfernt.
+# Nur zur Entwicklung: Live-Probelauf der Kandidaten-Quellen aus einem Netz mit Internetzugang.
+# Läuft ausschließlich, wenn sich `sonde/` ändert. Wird nach der Umsetzung samt `sonde/`,
+# `sonde-raw/` und `.sonde/` aus dem Zweig entfernt.
 on:
   push:
     paths:
@@ -18,17 +19,87 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.13"
-      - run: python -m pip install httpx
+      - run: python -m pip install -e .
       - name: Kandidaten abfragen
         continue-on-error: true
         run: python sonde/hole.py
-      - name: Rohantworten in den Zweig schreiben
+      - name: Live-Probelauf der neuen Quellen
+        continue-on-error: true
+        shell: bash
+        run: |
+          mkdir -p sonde-raw
+          {
+            echo "== Live-Probelauf $(date -u +%FT%TZ) UTC =="
+            echo
+            echo "== probe bekanntmachungen =="
+            python -m behoerdenmaster probe --quelle bekanntmachungen || true
+            echo
+            echo "== probe beteiligung =="
+            python -m behoerdenmaster probe --quelle beteiligung || true
+            echo
+            echo "== crawl (kleines Budget) und Suche =="
+            python - <<'PY' || true
+          import json
+
+          from behoerdenmaster.abruf import Abrufer
+          from behoerdenmaster.auswertung import heute
+          from behoerdenmaster.config import lade_stadt
+          from behoerdenmaster.crawler import CRAWLER, LaufOptionen
+          from behoerdenmaster.geo import Gazetteer
+          from behoerdenmaster.ladebericht import ladebericht
+          from behoerdenmaster.nlq import verstehe
+          from behoerdenmaster.speicher import Speicher
+          from behoerdenmaster.suche import Suchauftrag, suche
+
+          stadt = lade_stadt("koeln")
+          with Speicher("/tmp/live.sqlite") as sp:
+              for typ, budget in (("bekanntmachungen", 8), ("beteiligung", 3)):
+                  quelle = next(q for q in stadt.quellen if q.typ == typ)
+                  abrufer = Abrufer(kontakt="behordenkontakt123@posteo.de",
+                                    min_intervall=quelle.min_intervall_sekunden,
+                                    max_anfragen=budget, wiederholungen=0)
+                  bericht = CRAWLER[typ](sp, stadt, quelle, abrufer, LaufOptionen(max_anfragen=budget))
+                  abrufer.schliessen()
+                  print(f"{typ}: status={bericht.status} anfragen={bericht.anfragen} "
+                        f"zaehler={json.dumps(bericht.zaehler, ensure_ascii=False)} "
+                        f"fehlertext={bericht.fehlertext[:200]}")
+                  print("  Bestand:", json.dumps(sp.zaehle_quelle(f"koeln:{quelle.schluessel}"),
+                                                 ensure_ascii=False))
+              fragen = ("Was wurde zum Bebauungsplan in Köln-Niehl bekannt gemacht?",
+                        "Welche Bürgerbeteiligung gibt es in Flittard?",
+                        "Welche Bekanntmachung gibt es zur Gebäudewirtschaft?")
+              for frage in fragen:
+                  print("FRAGE:", frage)
+                  v = verstehe(frage, stadt, Gazetteer(stadt))
+                  auftrag = Suchauftrag(stadt=stadt, orte=v.orte, plz=v.plz, themen=v.themen,
+                                        freitext=v.freitext, von=v.von, bis=v.bis, offen=v.offen,
+                                        limit=3, offset=0)
+                  treffer = suche(sp, auftrag, heute())
+                  print("  Gesamt:", treffer["gesamt"])
+                  for t in treffer["treffer"]:
+                      print(f"  - [{t['quelle']['typ']}] {t['titel'][:100]}")
+                      print(f"    Status: {t['status']['kurz']} | {t['status']['text'][:170]}")
+                      print(f"    Orte: {[o['name'] for o in t['orte']]} | Link: {t['links']['original']}")
+                      print(f"    Zusammenfassung: {t['zusammenfassung'][:260]}")
+                      if t.get("meldung"):
+                          print("    Meldung:", json.dumps(t["meldung"], ensure_ascii=False)[:300])
+              bericht_lb = ladebericht(sp, stadt, intervall_sekunden=21600, sync_aktiv=True)
+              for q in bericht_lb["quellen"]:
+                  if q["schluessel"] in ("bekanntmachungen", "beteiligung"):
+                      print("LADEBERICHT", q["schluessel"], q["ladezustand"],
+                            json.dumps(q["zaehler"], ensure_ascii=False))
+                      for s in q["abrufweg"]:
+                          print("   ", s["schritt"], "|", s["wert"], "|", s["zustand"])
+          PY
+          } > sonde-raw/live-probelauf.txt 2>&1
+          tail -100 sonde-raw/live-probelauf.txt
+      - name: Ergebnis zurück auf den Branch schreiben
         if: always()
         shell: bash
         run: |
           set -e
-          git add -f sonde-raw
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -q -m "sonde: Rohantworten der Kandidaten (temporär)" || echo "nichts zu committen"
+          git add -f sonde-raw
+          git commit -q -m "sonde: Rohantworten und Live-Probelauf (temporär)" || echo "nichts zu committen"
           git push origin HEAD:arena/9fc31c25-behoerdenmaster

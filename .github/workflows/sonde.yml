@@ -1,8 +1,12 @@
-name: Quellen-Sonde (temporär, nur manuell)
+name: Quellen-Sonde (temporär)
 
-# Nur zur Erkundung/Erfassung von Originalantworten. Wird nach der Umsetzung entfernt.
+# NUR zur einmaligen Erfassung von Originalantworten der Behörden-Endpunkte während
+# der Entwicklung. Läuft ausschließlich, wenn sich `.sonde/` ändert, und wird nach der
+# Umsetzung samt Verzeichnis entfernt. Nicht Teil der regulären Testsuite.
 on:
-  workflow_dispatch:
+  push:
+    paths:
+      - ".sonde/**"
 
 permissions:
   contents: read
@@ -19,8 +23,7 @@ jobs:
           mkdir -p sonde
           UA="BehoerdenMaster/0.1 (+https://github.com/hundt12345/BehoerdenMaster; Kontakt: behordenkontakt123@posteo.de)"
           hole() {
-            local name="$1"; local url="$2"
-            local code
+            name="$1"; url="$2"
             code=$(curl -sS -L --max-time 60 -A "$UA" \
               -H 'Accept: text/html,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8' \
               -o "sonde/$name.roh" -w '%{http_code}' "$url" || echo "000")
@@ -32,13 +35,12 @@ jobs:
           hole robots-offenedaten       "https://www.offenedaten-koeln.de/robots.txt"
           hole bekanntmachungen-2026    "https://www.stadt-koeln.de/politik-und-verwaltung/bekanntmachungen/oeffentliche-bekanntmachungen-2026"
           hole bekanntmachungen-2025    "https://www.stadt-koeln.de/politik-und-verwaltung/bekanntmachungen/oeffentliche-bekanntmachungen-2025"
-          hole bekanntmachungen-2026-buchstabeU "https://www.stadt-koeln.de/politik-und-verwaltung/bekanntmachungen/oeffentliche-bekanntmachungen-2026?letter=U"
+          hole bekanntmachungen-buchstabeU "https://www.stadt-koeln.de/politik-und-verwaltung/bekanntmachungen/oeffentliche-bekanntmachungen-2026?letter=U"
           hole meinungfuer-projekte     "https://meinungfuer.koeln/mitmachen/alle-projekte"
           hole meinungfuer-rss          "https://meinungfuer.koeln/rss"
           hole meinungfuer-feed         "https://meinungfuer.koeln/feed"
           hole meinungfuer-sitemap      "https://meinungfuer.koeln/sitemap.xml"
           hole offenedaten-katalog      "https://www.offenedaten-koeln.de/api/1/metastore/schemas/dataset/items?page-size=50"
-          hole offenedaten-suche        "https://www.offenedaten-koeln.de/api/1/search/?fulltext=Strasse&page-size=3"
           ls -l sonde || true
       - uses: actions/upload-artifact@v4
         if: always()

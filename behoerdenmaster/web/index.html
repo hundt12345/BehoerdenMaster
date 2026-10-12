@@ -109,6 +109,8 @@
     .fortschritt.pause span { background:var(--warn); }
     .klein { font-size:13px; color:var(--muted); }
     .tabellen-umschlag { overflow-x:auto; }
+    details.datenquellen { margin: 22px 0 8px; border-top: 1px solid var(--line); padding-top: 12px; }
+    details.datenquellen > summary { cursor: pointer; font-weight: 600; color: var(--muted); }
     ul.dokumentliste { margin:6px 0 0; padding-left:18px; font-size:13px; color:var(--muted); }
     ul.dokumentliste li { margin:2px 0; }
   </style>
@@ -124,7 +126,6 @@
   <div class="tabs" role="tablist">
     <button id="tab-frage" class="aktiv" role="tab" aria-selected="true">Frage stellen</button>
     <button id="tab-plz" role="tab" aria-selected="false">PLZ-Suche</button>
-    <button id="tab-laden" role="tab" aria-selected="false">Datenladen</button>
   </div>
 
   <section id="panel-frage">
@@ -155,20 +156,20 @@
     <p class="hinweis">Die Zuordnung PLZ → Stadtteil ist eine Näherung. Vorgänge mit ausdrücklicher PLZ-Nennung werden immer gefunden.</p>
   </section>
 
-  <section id="panel-laden" class="versteckt">
-    <p class="hinweis">
-      Was aus welcher Quelle bereits geladen wurde: Vorgänge, Sitzungen und Dokumentverweise aus der lokalen Datenbank.
-      Die Anzeige löst <strong>keinen</strong> Behördenabruf aus und lädt keine PDF-Dateien herunter – Dokumente bleiben verlinkt.
-      Aktualisiert wird der Bestand nur durch den Abruf (CLI oder Hintergrunddienst).
-    </p>
-    <div class="banner-aktion" style="margin-bottom:14px">
-      <button class="sekundaer" type="button" id="laden-neu">Übersicht neu laden</button>
-      <a href="/api/ladebericht" target="_blank" rel="noopener">Rohdaten als JSON</a>
-    </div>
-    <div id="lade-ausgabe" aria-live="polite"></div>
-  </section>
 
   <div id="ausgabe" aria-live="polite"></div>
+
+  <details id="datenquellen" class="datenquellen">
+    <summary>Datenquellen und Ladestand (zum Ausklappen)</summary>
+    <p class="hinweis">
+      Rein aus der lokalen Datenbank – ohne Behördenabruf. Dokumente bleiben verlinkt, PDFs werden nicht geladen.
+      Aktualisiert wird der Bestand nur durch den Abruf (CLI oder Hintergrunddienst).
+    </p>
+    <div class="banner-aktion" style="margin-bottom:10px">
+      <button class="sekundaer" type="button" id="laden-neu">Übersicht neu laden</button>
+    </div>
+    <div id="lade-ausgabe" aria-live="polite"></div>
+  </details>
 
   <footer>
     <div id="stand"></div>
@@ -339,20 +340,17 @@
 
   function umschalten(aktiv) {
     for (const [name, tabId, panelId] of [["frage", "tab-frage", "panel-frage"],
-                                          ["plz", "tab-plz", "panel-plz"],
-                                          ["laden", "tab-laden", "panel-laden"]]) {
+                                          ["plz", "tab-plz", "panel-plz"]]) {
       const an = name === aktiv;
       $(tabId).classList.toggle("aktiv", an);
       $(tabId).setAttribute("aria-selected", String(an));
       $(panelId).classList.toggle("versteckt", !an);
     }
     ausgabeLeeren();
-    if (aktiv === "laden") ladeUebersichtLaden();
   }
 
   $("tab-frage").addEventListener("click", () => umschalten("frage"));
   $("tab-plz").addEventListener("click", () => umschalten("plz"));
-  $("tab-laden").addEventListener("click", () => umschalten("laden"));
 
   // --- Grafische Ladeübersicht: Dokumente aus den Quellen ----------------
   const SVG_NS = "http://www.w3.org/2000/svg";
@@ -449,147 +447,61 @@
     return g;
   }
 
-  /** Senkrechte Balken: Anfragen je protokolliertem Abruflauf, Farbe = Laufstatus. */
-  function diagrammVerlauf(laeufe) {
-    if (!laeufe.length) {
-      return el("p", { class: "klein" },
-        "Für diese Quelle ist noch kein Abruflauf protokolliert. Läufe erscheinen nach dem ersten echten Abruf.");
-    }
-    const breite = 660, hoehe = 150, unten = 34, links = 44;
-    const reihenfolge = laeufe.slice().reverse();
-    const max = Math.max(1, ...reihenfolge.map((l) => l.anfragen));
-    const spur = breite - links - 12;
-    const schritt = spur / reihenfolge.length;
-    const balken = Math.min(46, Math.max(8, schritt - 8));
-    const g = s("svg", { class: "diagramm", viewBox: `0 0 ${breite} ${hoehe}`, role: "img",
-      "aria-label": "Anfragen je Abruflauf, Farbe zeigt den Status" });
-    g.append(s("line", { class: "gitter", x1: links, y1: hoehe - unten, x2: breite - 12, y2: hoehe - unten }));
-    g.append(s("text", { class: "achse", x: links - 6, y: 14, "text-anchor": "end" }, zahl(max)));
-    g.append(s("text", { class: "achse", x: links - 6, y: hoehe - unten + 4, "text-anchor": "end" }, "0"));
-    reihenfolge.forEach((l, i) => {
-      const h = Math.max(2, (l.anfragen / max) * (hoehe - unten - 26));
-      const x = links + i * schritt + (schritt - balken) / 2;
-      const r = s("rect", { class: "balken", x, y: hoehe - unten - h, width: balken, height: h, rx: 3,
-        fill: (ZUSTAND_FARBEN[l.status] || "#8a93a6") });
-      r.append(s("title", null, `${kurzDatum(l.gestartet)} · ${l.status_text} · ${zahl(l.anfragen)} Anfragen` +
-        (l.dauer_sekunden !== null ? ` · ${l.dauer_sekunden} s` : "") + (l.fehlertext ? ` · ${l.fehlertext}` : "")));
-      g.append(r);
-      if (schritt > 34) g.append(s("text", { class: "achse", x: x + balken / 2, y: hoehe - unten + 14,
-        "text-anchor": "middle" }, (l.gestartet || "").slice(5, 10)));
-    });
-    return g;
-  }
-
-  function ladepfad(weg) {
-    return el("ul", { class: "ladepfad" }, ...(weg || []).map((w) => el("li", { class: w.zustand || "" },
-      el("span", { class: "schritt" }, w.schritt), el("span", { class: "wert" }, w.wert))));
-  }
-
-  function fortschrittBisAbruf(q) {
-    if (!q.naechster_abruf || !q.intervall_sekunden) return null;
-    const ziel = Date.parse(q.naechster_abruf);
-    const rest = ziel - Date.now();
-    if (Number.isNaN(ziel)) return null;
-    const anteil = Math.max(0, Math.min(1, 1 - rest / (q.intervall_sekunden * 1000)));
-    const minuten = Math.round(Math.abs(rest) / 60000);
-    const text = rest <= 0 ? "Abruf fällig" :
-      `nächster Abruf in ${minuten >= 120 ? Math.round(minuten / 60) + " h" : minuten + " min"}`;
-    return el("div", null,
-      el("div", { class: "fortschritt" + (rest <= 0 ? " pause" : "") },
-        el("span", { style: `width:${(anteil * 100).toFixed(1)}%` })),
-      el("div", { class: "klein" }, `${text} · Intervall ${Math.round(q.intervall_sekunden / 3600)} h`));
-  }
-
-  function laufTabelle(laeufe) {
-    if (!laeufe.length) return null;
-    const zeilen = laeufe.map((l) => el("tr", null,
-      el("td", null, kurzDatum(l.gestartet)),
-      el("td", null, el("span", { class: "zustand " + (STATUS_KLASSE[l.status] || "nie") }, l.status_text)),
-      el("td", null, zahl(l.anfragen)),
-      el("td", null, l.dauer_sekunden === null ? "–" : l.dauer_sekunden + " s"),
-      el("td", null, (l.zaehler || []).length ? l.zaehler.map((z) => `${z.text}: ${zahl(z.anzahl)}`).join(" · ") : "–"),
-      el("td", null, l.fehlertext || "–")));
-    return el("div", { class: "tabellen-umschlag" }, el("table", { class: "verlauf" },
-      el("thead", null, el("tr", null, el("th", null, "Beginn"), el("th", null, "Status"),
-        el("th", null, "Anfragen"), el("th", null, "Dauer"), el("th", null, "Was wurde geladen"), el("th", null, "Hinweis"))),
-      el("tbody", null, ...zeilen)));
-  }
-
-  function quellenKarte(q) {
+  /** Eine Zeile je Quelle: Zustand, letzter Erfolg, Bestand und Hinweis – ohne Abrufverlauf. */
+  function quellenZeile(q) {
     const z = q.zaehler || {};
-    const zustand = el("span", { class: "zustand " + q.ladezustand }, q.ladezustand_text);
-    const kopf = el("h3", null, q.name, zustand,
-      q.demo ? el("span", { class: "chip demo" }, "Beispieldaten") : el("span", { class: "chip" }, q.typ_text));
-    const kpis = el("div", { class: "kpi-reihe" },
-      el("div", { class: "kpi" }, el("span", { class: "zahl" }, zahl(z.vorgaenge)), el("span", { class: "bez" }, "Vorgänge")),
-      el("div", { class: "kpi" }, el("span", { class: "zahl" }, zahl(z.dokumente)), el("span", { class: "bez" }, "Dokumentverweise")),
-      el("div", { class: "kpi" }, el("span", { class: "zahl" }, zahl(z.sitzungen)), el("span", { class: "bez" }, "Sitzungen")),
-      el("div", { class: "kpi" }, el("span", { class: "zahl" }, zahl(z.gremien)), el("span", { class: "bez" }, "Gremien")));
-    const staende = (q.staende || []).length
-      ? el("p", { class: "klein" }, "Listenstand: " + q.staende.map((st) =>
-          `${entitaetName(st.entitaet)}: ${st.offen ? "unterbrochen, wird fortgesetzt" : "vollständig gelesen"}` +
-          (st.aktualisiert ? ` (${kurzDatum(st.aktualisiert)})` : "")).join(" · "))
-      : null;
-    const dokumente = (q.dokumente || []).length
-      ? el("details", null,
-          el("summary", null, `Geladene Dokumentverweise (${q.dokumente.length}${z.dokumente > q.dokumente.length ? " von " + z.dokumente : ""})`),
-          el("ul", { class: "dokumentliste" }, ...q.dokumente.map((d) => el("li", null,
-            d.url ? el("a", { href: d.url, target: "_blank", rel: "noopener" }, d.name) : d.name,
-            ` · ${d.rolle_text}`, d.datum ? " · " + d.datum.slice(0, 10) : ""))))
-      : el("p", { class: "klein" }, "Noch keine Dokumentverweise in dieser Quelle gespeichert.");
-    const verlauf = el("details", null,
-      el("summary", null, `Abrufverlauf: ${einheit((q.laeufe || []).length, "Lauf", "Läufe")} – Anfragen je Lauf`),
-      diagrammVerlauf(q.laeufe || []), laufTabelle(q.laeufe || []));
-    return el("article", { class: "karte lade" }, kopf,
-      el("p", { class: "klein" }, `Letzter Erfolg: ${kurzDatum(q.letzter_erfolg)}` +
-        (q.letzter_versuch ? ` · Letzter Versuch: ${kurzDatum(q.letzter_versuch)}` : "") +
-        (q.abkuehlung_bis ? ` · Abkühlzeit bis ${kurzDatum(q.abkuehlung_bis)}` : "")),
-      q.fehlertext ? el("p", { class: "hinweis" }, "Hinweis: " + q.fehlertext) : null,
-      fortschrittBisAbruf(q), kpis,
-      el("div", null, el("strong", { class: "klein" }, "Weg der Daten"), ladepfad(q.abrufweg), staende),
-      dokumente, verlauf);
+    const bestand = [
+      z.vorgaenge ? einheit(z.vorgaenge, "Vorgang", "Vorgänge") : null,
+      z.sitzungen ? einheit(z.sitzungen, "Sitzung", "Sitzungen") : null,
+      z.hinweise ? einheit(z.hinweise, "Hinweis", "Hinweise") : null,
+      z.dokumente ? einheit(z.dokumente, "Dokumentverweis", "Dokumentverweise") : null,
+    ].filter(Boolean).join(" · ") || "noch kein Bestand";
+    return el("tr", null,
+      el("td", null, q.name, q.demo ? el("span", { class: "chip demo" }, "Beispiel") : null),
+      el("td", null, el("span", { class: "zustand " + q.ladezustand }, q.ladezustand_text)),
+      el("td", { class: "klein" }, q.letzter_erfolg ? kurzDatum(q.letzter_erfolg) : "–"),
+      el("td", { class: "klein" }, bestand),
+      el("td", { class: "klein" }, q.fehlertext || q.abkuehlung_bis ? (q.fehlertext || "") +
+        (q.abkuehlung_bis ? ` (Abkühlzeit bis ${kurzDatum(q.abkuehlung_bis)})` : "") : "–"));
   }
 
   function ladeUebersicht(daten) {
     const ausgabe = $("lade-ausgabe");
     const g = daten.gesamt || {};
     const rollen = daten.dokumente_nach_rolle || [];
-    const kpis = el("div", { class: "kpi-reihe" },
-      el("div", { class: "kpi" }, el("span", { class: "zahl" }, zahl(g.vorgaenge)), el("span", { class: "bez" }, "Vorgänge insgesamt")),
-      el("div", { class: "kpi" }, el("span", { class: "zahl" }, zahl(g.dokumente)), el("span", { class: "bez" }, "Dokumentverweise")),
-      el("div", { class: "kpi" }, el("span", { class: "zahl" }, zahl(g.quellen_mit_bestand)), el("span", { class: "bez" }, "Quellen mit Bestand")),
-      el("div", { class: "kpi" }, el("span", { class: "zahl" }, zahl(g.sitzungen)), el("span", { class: "bez" }, "Sitzungen")),
-      el("div", { class: "kpi" }, el("span", { class: "zahl" }, zahl(g.tagesordnungspunkte)), el("span", { class: "bez" }, "Tagesordnungspunkte")));
-    const hinweise = (daten.hinweise || []).map((h) => el("p", { class: "hinweis" }, h));
     const betrieb = daten.betrieb || {};
     const betriebText = betrieb.automatische_abrufe
-      ? `Automatische Abrufe: aktiv, Intervall ${Math.round((betrieb.intervall_sekunden || 0) / 3600)} h, ` +
-        `Budget ${betrieb.max_anfragen_pro_quelle} Anfragen je Quelle und Etappe. ` +
-        (betrieb.sync_dienst_laeuft ? "Der Hintergrunddienst läuft." : "Der Hintergrunddienst ist derzeit nicht aktiv.")
-      : "Automatische Abrufe: ausgeschaltet. Der Bestand wächst nur über manuelle Läufe in der Kommandozeile.";
-
+      ? `Automatische Abrufe aktiv (Intervall ${Math.round((betrieb.intervall_sekunden || 0) / 3600)} h).`
+      : "Automatische Abrufe ausgeschaltet – der Bestand wächst nur über manuelle Läufe.";
+    const quellen = (daten.quellen || []).filter((q) => !q.demo || (q.zaehler.dokumente || 0) > 0);
+    const kopf = (text) => el("th", null, text);
     ausgabe.replaceChildren(
-      kpis,
-      el("section", { class: "karte lade" },
-        el("h3", null, "Dokumente je Quelle"),
-        el("p", { class: "klein" }, `Stand der lokalen Datenbank: ${kurzDatum(daten.generiert)} UTC. Gestapelte Balken je Rolle; schraffiert = Offline-Beispieldaten.`),
-        diagrammDokumente(daten.quellen || []),
-        legende(rollen.map((r) => ({ text: r.text, anzahl: r.anzahl, farbe: rolleFarbe(r.rolle) })))),
-      el("p", { class: "hinweis" }, betriebText),
-      ...hinweise,
-      ...(daten.quellen || []).filter((q) => !q.demo || (q.zaehler.dokumente || 0) > 0).map(quellenKarte));
+      el("p", { class: "klein" }, `Stand: ${kurzDatum(daten.generiert)} UTC · ${einheit(g.vorgaenge, "Vorgang", "Vorgänge")} · ` +
+        `${einheit(g.dokumente, "Dokumentverweis", "Dokumentverweise")} · ${einheit(g.sitzungen, "Sitzung", "Sitzungen")}. ${betriebText}`),
+      diagrammDokumente(daten.quellen || []),
+      legende(rollen.map((r) => ({ text: r.text, anzahl: r.anzahl, farbe: rolleFarbe(r.rolle) }))),
+      el("div", { class: "tabellen-umschlag" }, el("table", { class: "verlauf" },
+        el("thead", null, el("tr", null, kopf("Quelle"), kopf("Zustand"), kopf("Letzter Erfolg"), kopf("Bestand"), kopf("Hinweis"))),
+        el("tbody", null, ...quellen.map(quellenZeile)))),
+      ...(daten.hinweise || []).map((h) => el("p", { class: "hinweis" }, h)),
+      el("p", { class: "klein" }, el("a", { href: "/api/ladebericht", target: "_blank", rel: "noopener" }, "Rohdaten als JSON")));
   }
 
-  async function ladeUebersichtLaden(knopf) {
-    if (knopf) knopf.disabled = true;
+  let ladeUebersichtGeladen = false;
+  async function ladeUebersichtLaden() {
     try {
       ladeUebersicht(await api("/api/ladebericht?laeufe=8"));
+      ladeUebersichtGeladen = true;
     } catch (e) {
       $("lade-ausgabe").replaceChildren(el("div", { class: "fehler" }, "Ladeübersicht nicht verfügbar: " + e.message));
-    } finally { if (knopf) knopf.disabled = false; }
+    }
   }
 
-  $("laden-neu").addEventListener("click", (ev) => ladeUebersichtLaden(ev.currentTarget));
+  // Die Grafik lädt erst beim Ausklappen; danach nur auf Wunsch neu.
+  $("datenquellen").addEventListener("toggle", (ev) => {
+    if (ev.currentTarget.open && !ladeUebersichtGeladen) ladeUebersichtLaden();
+  });
+  $("laden-neu").addEventListener("click", () => ladeUebersichtLaden());
 
   $("form-frage").addEventListener("submit", async (ev) => {
     ev.preventDefault();

@@ -26,6 +26,8 @@ from .suche import ROLLEN_TEXT
 TYP_TEXT = {
     "oparl": "Ratsinformationssystem (OParl)",
     "bauleitplanung": "Bauleitplanung",
+    "ris-rss": "Sitzungstermine (RSS)",
+    "presse-rss": "Pressemeldungen (RSS)",
     "demo": "Offline-Beispiele",
 }
 
@@ -150,7 +152,7 @@ def _ladezustand(row: Mapping, zahlen: Mapping[str, int]) -> str:
         return "fehler"
     if status == "teilweise":
         return "teilweise"
-    if status == "ok" and (zahlen.get("vorgaenge") or zahlen.get("sitzungen")):
+    if status == "ok" and (zahlen.get("vorgaenge") or zahlen.get("sitzungen") or zahlen.get("hinweise")):
         return "aktuell"
     return "nie"
 
@@ -179,6 +181,12 @@ def _abrufweg(zahlen: Mapping[str, int], staende: list[Mapping], aufgaben: int,
                 "offen" if offen else ("ok" if kurs else "wartet"))
         schritt("Detailseiten", f"{einheit(aufgaben, 'Detailabruf', 'Detailabrufe')} in der Warteschlange" if aufgaben else "Warteschlange leer",
                 "offen" if aufgaben else ("ok" if kurs else "wartet"))
+    elif typ in ("ris-rss", "presse-rss"):
+        schritt("Zugriff", "ein Feed-Abruf je Lauf · Mindestabstand laut Stadtkonfiguration",
+                "ok" if kurs else "wartet")
+        schritt("Hinweise", f"{einheit(zahlen.get('hinweise', 0), 'Hinweis', 'Hinweise')} "
+                "(Titel, Datum, Link, Kurztext) – nicht Teil der Suche",
+                "ok" if zahlen.get("hinweise") else ("leer" if kurs else "wartet"))
     else:
         schritt("Zugriff", "Offline-Auszug, kein Netzabruf", "beispiel")
         schritt("Beispieldaten", f"{zahlen.get('vorgaenge', 0)} Vorgänge aus Fixtures", "beispiel")
@@ -195,7 +203,8 @@ def _quelle_zeile(stadt: Stadt, quelle, row: Mapping | None, *, intervall: int, 
                   zahlen: Mapping[str, int], rollen: list[dict], staende: list[Mapping],
                   aufgaben: int, laeufe: list[dict], dokumente: list[dict]) -> dict:
     demo = bool(row["demo"]) if row is not None else False
-    kurs = bool(zahlen.get("vorgaenge") or zahlen.get("sitzungen") or zahlen.get("dokumente"))
+    kurs = bool(zahlen.get("vorgaenge") or zahlen.get("sitzungen") or zahlen.get("dokumente")
+                or zahlen.get("hinweise"))
     zustand = _ladezustand(row, zahlen) if row is not None else "nie"
     naechster = None
     if row is not None and sync_aktiv and not demo:

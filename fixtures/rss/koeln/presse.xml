@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Pressemeldungen Stadt Köln</title>
+    <link>https://www.stadt-koeln.de</link>
+    <description>RSS-Feed der Stadt Köln mit den aktuellen Pressemitteilungen</description>
+    <item>
+      <title>Köln beschließt weitreichende Erleichterungen für den Wohnungsbau</title>
+      <link>https://www.stadt-koeln.de/politik-und-verwaltung/presseservice/koeln-beschliesst-weitreichende-erleichterungen-fuer-den-wohnungsbau</link>
+      <description><![CDATA["Köln baut bezahlbar": Neue Rahmenbedingungen für kostengünstigeres Bauen]]></description>
+      <pubDate>Mon, 12 Oct 2026 06:31:00 +0100</pubDate>
+      <guid>https://www.stadt-koeln.de/politik-und-verwaltung/presseservice/koeln-beschliesst-weitreichende-erleichterungen-fuer-den-wohnungsbau</guid>
+    </item>
+    <item>
+      <title>Bebauungsplanverfahren Feldgärtenstraße in Köln-Niehl</title>
+      <link>https://www.stadt-koeln.de/politik-und-verwaltung/presseservice/bebauungsplanverfahren-feldgaertenstrasse-koeln-niehl</link>
+      <description><![CDATA[Informationsveranstaltung und Beteiligungsmöglichkeit für Bürger*innen]]></description>
+      <pubDate>Thu, 08 Oct 2026 09:31:00 +0100</pubDate>
+      <guid>https://www.stadt-koeln.de/politik-und-verwaltung/presseservice/bebauungsplanverfahren-feldgaertenstrasse-koeln-niehl</guid>
+    </item>
+  </channel>
+</rss>

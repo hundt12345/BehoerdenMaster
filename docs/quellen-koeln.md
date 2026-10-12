@@ -3,8 +3,28 @@
 Stand der Recherche: **12. Oktober 2026**. Alle genannten Adressen wurden an diesem Tag
 geprüft (Erreichbarkeit, Format, Lizenzangabe). Geprüft heißt nicht abgestimmt: Für
 automatische Abrufe gilt weiter Abschnitt [„Regeln für jede neue Quelle“](#regeln-für-jede-neue-quelle).
-Das Dokument beschreibt **Vorschläge**, keine Zusagen: Umgesetzt sind derzeit nur
-Ratsinformation (OParl) und Bauleitplanung Online NRW.
+Das Dokument beschreibt **Vorschläge**, keine Zusagen: Umgesetzt sind derzeit
+Ratsinformation (OParl), Bauleitplanung Online NRW sowie die RSS-Feeds (Sitzungen, Presse); siehe [Umsetzungsstand](#umsetzungsstand).
+
+## Umsetzungsstand
+
+Stand 12.10.2026, nach der Umsetzung im Repository:
+
+| Quelle (Nr.) | Status | Grund |
+|---|---|---|
+| 1 SessionNet-RSS | **umgesetzt** (`typ = "ris-rss"`) | `robots.txt` ohne Sperre für unseren Client; ein Feed-Abruf je Lauf; Hinweise in eigener Tabelle, nicht in der Suche |
+| 9 Pressemeldungen (RSS) | **umgesetzt** (`typ = "presse-rss"`) | `robots.txt` ohne Sperre; nur Titel, Datum, Link, Kurztext |
+| 2, 3, 6 Geoportal (Bebauungsplan-Übersicht, Verkehr, Baustellen, Baumkataster) | **nicht angebunden** | `https://geoportal.stadt-koeln.de/robots.txt` enthält `User-agent: *` mit `Disallow: /`. Der Abrufer würde ohnehin mit `NichtErlaubt` abbrechen, wir bauen dazu keinen Umweg. Eine Freigabe durch die Stadt oder ein anderer, nicht gesperrter Zugang (z. B. offizieller Open-Data-Export) ist nötig. |
+| 4 Bekanntmachungen/Amtsblatt | offen | HTML-Liste auf `www.stadt-koeln.de` ist nicht gesperrt; Umsetzung steht noch aus (PDFs bleiben verlinkt) |
+| 5 Offene Daten Köln (DKAN) | offen | `robots.txt` ohne Sperre für den Datenbereich; Datensatz-Auswahl und Lizenz je Datensatz noch offen |
+| 7 Meinungfuer | offen | keine offene Lizenz zugesichert; Beiträge Dritter ausgeschlossen |
+| 8 „Sag's uns“, 10 Statistik, 11 Wahlen | nicht umgesetzt | Lizenz- und Personenbezugsprüfung nach den Regeln unten steht aus |
+
+**Bauleitplanung Online (bereits angebunden):** Der Listenabruf entspricht der beobachteten
+Live-Antwort (JSON:API mit `data`, `links`, `meta`). Ein Live-Lauf aus der Entwicklungsumgebung
+ist nicht bestätigt. Als wahrscheinlichster Bruch gilt die Detailseite: Der Adapter verlangt dort
+den Marker `infolistContentMetaDescription`. Die Fehlermeldung des Laufs (`/api/status`,
+`quellen[].fehlertext`) entscheidet, was zu tun ist.
 
 ## Überblick
 

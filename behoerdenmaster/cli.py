@@ -23,6 +23,7 @@ from .geo import Gazetteer
 from .ladebericht import einheit, entitaet_name, ladebericht
 from .nlq import verstehe
 from .oparl import OParlQuelle
+from .rss import ART_JE_TYP, parse_feed
 from .sicherung import sichere_datenbank
 from .speicher import Speicher
 from .suche import Suchauftrag, suche
@@ -112,6 +113,12 @@ def _probe(args) -> int:
                   f"weitere Seiten: {'ja' if naechste else 'nein'}")
             for plan in verfahren[:3]:
                 print(f"  - {plan.titel}: {plan.phase} ({plan.beginn[:10]} – {plan.ende[:10]})")
+        elif quelle.typ in ART_JE_TYP:
+            treffer, verworfen = parse_feed(abrufer.get_text(quelle.system_url), ART_JE_TYP[quelle.typ],
+                                            quelle.system_url)
+            print(f"{quelle.name}: {len(treffer)} Einträge übernommen, {verworfen} verworfen")
+            for h in treffer[:3]:
+                print(f"  - {h.datum} {h.titel[:90]}")
         elif quelle.typ == "oparl":
             oparl = OParlQuelle(abrufer, quelle.system_url, quelle.body_id)
             body = oparl.body()
@@ -139,6 +146,8 @@ def cmd_crawl(args) -> int:
         raise SystemExit(f"Quelltyp '{quelle.typ}' ist noch nicht implementiert. Verfügbar: {', '.join(CRAWLER)}")
     if quelle.typ == "bauleitplanung" and (args.seit or args.nur):
         raise SystemExit("Bauleitplanung prüft stets die ganze öffentliche Liste; --seit und --nur gelten nur für OParl.")
+    if quelle.typ in ART_JE_TYP and (args.seit or args.nur):
+        raise SystemExit("RSS-Feeds haben keinen Zeitfilter; --seit und --nur gelten nur für OParl.")
     if args.max_anfragen is not None and args.max_anfragen < 1:
         raise SystemExit("--max-anfragen muss mindestens 1 sein.")
     entitaeten = tuple(e.strip() for e in args.nur.split(",")) if args.nur else ENTITAETEN

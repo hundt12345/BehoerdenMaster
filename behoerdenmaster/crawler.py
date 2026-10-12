@@ -242,8 +242,17 @@ def crawle_bauleitplanung(speicher, stadt, quelle, abrufer, optionen):
     return crawle(speicher, stadt, quelle, abrufer, optionen)
 
 
+def crawle_rss(speicher, stadt, quelle, abrufer, optionen):
+    # Verzögerter Import: der RSS-Adapter nutzt Funktionen dieses Moduls.
+    from .rss import crawle_rss as crawle
+
+    return crawle(speicher, stadt, quelle, abrufer, optionen)
+
+
 # Registry: Quelltyp aus config/cities -> Crawl-Funktion.
 CRAWLER = {
     "oparl": crawle_oparl,
     "bauleitplanung": crawle_bauleitplanung,
+    "ris-rss": crawle_rss,
+    "presse-rss": crawle_rss,
 }

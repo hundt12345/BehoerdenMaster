@@ -1,0 +1,3179 @@
+<!DOCTYPE html>
+<html lang="de" dir="ltr" prefix="og: https://ogp.me/ns#">
+  <head>
+    <meta charset="utf-8" />
+<noscript><style>form.antibot > * { display: none !important; } form.antibot noscript { display: block !important; }</style>
+</noscript><script type="text/plain" id="cookies_matomo" data-cookieconsent="matomo">var _paq = _paq || [];(function(){var u=(("https:" == document.location.protocol) ? "https://stats.zebralog.de/" : "http://stats.zebralog.de/");_paq.push(["setSiteId", "171"]);_paq.push(["setTrackerUrl", u+"matomo.php"]);_paq.push(["setDocumentTitle", "404/URL = " + encodeURIComponent(document.location.pathname+document.location.search) + "/From = " + encodeURIComponent(document.referrer)]);_paq.push(["setDoNotTrack", 1]);_paq.push(["setCookieDomain", ".meinungfuer.koeln"]);if (!window.matomo_search_results_active) {_paq.push(["trackPageView"]);}_paq.push(["setIgnoreClasses", ["no-tracking","colorbox"]]);_paq.push(["enableLinkTracking"]);var d=document,g=d.createElement("script"),s=d.getElementsByTagName("script")[0];g.type="text/javascript";g.defer=true;g.async=true;g.src=u+"matomo.js";s.parentNode.insertBefore(g,s);})();</script>
+<link rel="canonical" href="https://meinungfuer.koeln/" />
+<link rel="shortlink" href="https://meinungfuer.koeln/" />
+<meta name="generator" content="Drupal 10" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<meta property="og:site_name" content="Beteiligungsportal der Stadt Köln" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://meinungfuer.koeln/" />
+<meta property="og:title" content="Startseite" />
+<meta property="og:description" content="Meinung für Köln" />
+<meta name="twitter:card" content="summary" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="icon" href="/sites/default/files/KOE_VM_Adler_RGB.ico" type="image/vnd.microsoft.icon" />
+<link rel="alternate" hreflang="de" href="https://meinungfuer.koeln/" />
+
+    <title>Startseite | Beteiligungsportal der Stadt Köln</title>
+    <link rel="stylesheet" media="all" href="/sites/default/files/css/css_qfwEQIVAPZssDTGr9d3olaU5An3b7mgpiKhOmCGHMyM.css?delta=0&amp;language=de&amp;theme=dz&amp;include=eJxVUYuOxCAI_KGmfJKhynpuFRqw7fa-_rTdx21iZJgZA4gXrsTVBbIUmdRZPTIZeCmLcFNs8CJzOqkz3k3Hy9QUJQi6LphHvOPjiwgJs8Qh_MIH3Vo1hzuZFOp5Tjw_K_a0kBnGC1sKNKGesCIH1OC8ZNFLfb1xE_rZVWlnge-0qz64H1L55_fCu2iAD3T0qKSMuctXr7Cg1uTTgjUJN-PKNcjO3UFb-xV4gc4wbimeTphWjaQnSbvBM_bcchtI4Y2GWSizm6hSyimuHOFTJuMha1tKMi8b6QFtFW34oVDrD24pt4ZHj0uv-SSFykRhvIkWrE0e7LBKBSY0GrbUuznvsUhYM_0BqQfGXw" />
+<link rel="stylesheet" media="all" href="/sites/default/files/css/css_cssqWIWy-Us5PZQQP4WS2OfOjGPhqjOQBqV7M9vdQ4A.css?delta=1&amp;language=de&amp;theme=dz&amp;include=eJxVUYuOxCAI_KGmfJKhynpuFRqw7fa-_rTdx21iZJgZA4gXrsTVBbIUmdRZPTIZeCmLcFNs8CJzOqkz3k3Hy9QUJQi6LphHvOPjiwgJs8Qh_MIH3Vo1hzuZFOp5Tjw_K_a0kBnGC1sKNKGesCIH1OC8ZNFLfb1xE_rZVWlnge-0qz64H1L55_fCu2iAD3T0qKSMuctXr7Cg1uTTgjUJN-PKNcjO3UFb-xV4gc4wbimeTphWjaQnSbvBM_bcchtI4Y2GWSizm6hSyimuHOFTJuMha1tKMi8b6QFtFW34oVDrD24pt4ZHj0uv-SSFykRhvIkWrE0e7LBKBSY0GrbUuznvsUhYM_0BqQfGXw" />
+
+    <script type="application/json" data-drupal-selector="drupal-settings-json">{"path":{"baseUrl":"\/","pathPrefix":"","currentPath":"","currentPathIsAdmin":false,"isFront":true,"currentLanguage":"de"},"pluralDelimiter":"\u0003","suppressDeprecationErrors":true,"ajaxPageState":{"libraries":"eJx9UgGO4yAM_FAUnoSc4BBvASMM6eZef4a02650VykK9nhAwzDwBd925RgxVTG9gORkWjlVRaxDIZ-wWKlnwEHInDpXKXyjAY31S8o_oPna95zYCJUjG0gQzkrra3CQQzY_NHQEk_tjllYrJxUYuNgDAjk9oPSJEgL7Xm2q1cIdhSP23gdeIKjitm293xEcjj2B0u1xk9Gyp2QHqPeslKASpz6JKAL-YokqW2Dsl6rmQHGXnmv6PM0usN5sZf2y-d326ersjoXf-GrxnYszr9Lit5ru0PXxdT-ToahPlIc0JbZUHd-7SIuHvoN5Fh3ZMWQs8v-L2QQH-dGptcUPW97BCJQ0Cm3AeBfzWHsv6j4W81NN3fiH7-atnuXw81JGjj5RCvoW4PMxslP8TGDVMt0YQ7ILVqRAviVvXk4FOLlpkklWPrCcRvOr7zc9ongt00ic2ShULPMKeRh2gYxxQTdvXJSr40l4pR6wHQraK6FiMueWJzmlYjQLCE4HdQPHf47sWsC_gWta5g","theme":"dz","theme_token":null},"ajaxTrustedUrl":[],"matomo":{"disableCookies":false,"trackColorbox":false,"trackMailto":true},"cookies":{"cookiesjsr":{"config":{"cookie":{"name":"cookiesjsr","expires":31536000000,"domain":"","sameSite":"Lax","secure":false},"library":{"libBasePath":"\/libraries\/cookiesjsr\/dist","libPath":"\/libraries\/cookiesjsr\/dist\/cookiesjsr.min.js","scrollLimit":0},"callback":{"method":"post","url":"\/cookies\/consent\/callback.json","headers":[]},"interface":{"openSettingsHash":"#editCookieSettings","showDenyAll":true,"denyAllOnLayerClose":false,"settingsAsLink":true,"availableLangs":["en","de"],"defaultLang":"en","groupConsent":false,"cookieDocs":true}},"services":{"default":{"id":"default","services":[{"key":"base","type":"default","name":"Erforderliche Cookies","info":{"value":"\u003Cp\u003E\u003Cstrong\u003EZweck:\u003C\/strong\u003E Speicherung der Einwilligung, Speicherung der aktuellen Sitzung etc.\u003C\/p\u003E\r\n\r\n\u003Cp\u003E\u003Cstrong\u003EEmpf\u00e4nger:\u003C\/strong\u003E Der Verantwortliche\/Herausgeber dieser Webseite gem\u00e4\u00df \u003Ca href=\u0022[cookies:imprint_uri]\u0022\u003EImpressum\u003C\/a\u003E.\u003C\/p\u003E\r\n\r\n\u003Cp\u003E\u003Cstrong\u003EBeschreibung:\u003C\/strong\u003E Diese Cookies sind f\u00fcr den technischen Betrieb der Webseite erforderlich. Sie dienen der reinen Funktion der Webseite und stellen das technisch notwendige Mindestma\u00df dar. Daher k\u00f6nnen diese Cookies nicht abgew\u00e4hlt werden.\u003C\/p\u003E\r\n\u003Ctable\u003E\r\n\t\u003Cthead\u003E\r\n\t\t\u003Ctr\u003E\r\n\t\t\t\u003Cth width=\u002215%\u0022\u003ECookie-Name\u003C\/th\u003E\r\n\t\t\t\u003Cth width=\u002215%\u0022\u003ESpeicherdauer\u003C\/th\u003E\r\n\t\t\t\u003Cth\u003EBeschreibung\u003C\/th\u003E\r\n\t\t\u003C\/tr\u003E\r\n\t\u003C\/thead\u003E\r\n\t\u003Ctbody\u003E\r\n\t\t\u003Ctr\u003E\r\n\t\t\t\u003Ctd\u003E\u003Ccode dir=\u0022ltr\u0022 translate=\u0022no\u0022\u003ESSESS\u0026lt;ID\u0026gt;\u003C\/code\u003E\u003C\/td\u003E\r\n\t\t\t\u003Ctd\u003E1 Monat\u003C\/td\u003E\r\n\t\t\t\u003Ctd\u003EWenn Sie auf dieser Website eingeloggt sind, wird ein Sitzungscookie ben\u00f6tigt, um Ihren Browser zu identifizieren und mit Ihrem Benutzerkonto im Server-Backend dieser Website zu verbinden. F\u00fcr Gastbenutzer kann der Cookie bei Teilnahme an Umfragen gesetzt werden, um essentielle Funktionen f\u00fcr Umfragen bereitzustellen.\u003C\/td\u003E\r\n\t\t\u003C\/tr\u003E\r\n\t\t\u003Ctr\u003E\r\n\t\t\t\u003Ctd\u003E\u003Ccode dir=\u0022ltr\u0022 translate=\u0022no\u0022\u003Ecookiesjsr\u003C\/code\u003E\u003C\/td\u003E\r\n\t\t\t\u003Ctd\u003E1 Jahr\u003C\/td\u003E\r\n\t\t\t\u003Ctd\u003EAls Sie diese Website zum ersten Mal besuchten, wurden Sie um Ihre Zustimmung zur Nutzung verschiedener Dienste (auch von Dritten) gebeten, die die Speicherung von Daten in Ihrem Browser erfordern (Cookies, lokale Speicherung). Ihre Entscheidungen zu den einzelnen Diensten (zulassen, ablehnen) werden in diesem Cookie gespeichert und bei jedem Besuch dieser Website erneut verwendet.\u003C\/td\u003E\r\n\t\t\u003C\/tr\u003E\r\n                \u003Ctr\u003E\r\n\u00a0\u00a0 \u00a0\u00a0\u00a0 \u00a0\u00a0\u00a0 \u00a0      \u003Ctd\u003E\u003Ccode dir=\u0022ltr\u0022 translate=\u0022no\u0022\u003Ebd6bf36bfff5a18\u0026lt;ID\u0026gt;\u003C\/code\u003Ebfff5318woor\u003C\/td\u003E\r\n\u00a0\u00a0 \u00a0\u00a0\u00a0 \u00a0\u00a0\u00a0 \u00a0      \u003Ctd\u003E1 Jahr\u003C\/td\u003E\r\n\u00a0\u00a0 \u00a0\u00a0\u00a0 \u00a0\u00a0\u00a0 \u00a0      \u003Ctd\u003ENur f\u00fcr Gastbenutzer. Dies hilft uns, Funktionen im Zusammenhang mit Umfragen bereitzustellen.\u003C\/td\u003E\r\n\u00a0 \u00a0 \u00a0 \u00a0         \u003C\/tr\u003E\r\n\t\u003C\/tbody\u003E\r\n\u003C\/table\u003E\r\n","format":"full_html"},"uri":"","needConsent":false}],"weight":1},"tracking":{"id":"tracking","services":[{"key":"matomo","type":"tracking","name":"Webanalyse-Software Matomo","info":{"value":"\u003Cp\u003E\u003Cstrong\u003EZweck:\u003C\/strong\u003E Statistische Analyse, Reichweitenmessung\u003C\/p\u003E\r\n\r\n\u003Cp\u003E\u003Cstrong\u003EEmpf\u00e4nger:\u003C\/strong\u003E Der Verantwortliche\/Herausgeber dieser Webseite gem\u00e4\u00df \u003Ca href=\u0022[cookies:imprint_uri]\u0022\u003EImpressum\u003C\/a\u003E.\u003C\/p\u003E\r\n\r\n\u003Cp\u003E\u003Cstrong\u003EBeschreibung:\u003C\/strong\u003E \u201eMatomo\u201c ist eine Open-Source-Software, die statistische Auswertungen auf unserer Webseite erm\u00f6glicht, insbesondere zu Besucherzugriffen, Seitenaufrufen, Downloads, der zuvor besuchten Webseite sowie zur Messung des Erfolgs von Eintr\u00e4gen in Suchmaschinen. Diese von Ihrem Browser automatisch \u00fcbertragenen Informationen werden zum Zweck der statistischen Analyse zu einem anonymisierten Nutzerprofil zusammengefasst.\u003Cp\u003E\r\n\u003Cp\u003EDie gesammelten Informationen werden ausschlie\u00dflich auf unseren eigenen Webservern bzw. Datenbanken verarbeitet und nicht an Dritte weitergegeben. Wir verwenden \u201eMatomo\u201c zudem mit einer Erweiterung, wodurch die IP-Adressen gek\u00fcrzt gespeichert werden, um eine direkte Personenbeziehbarkeit zu erschweren. Ihr Besuch dieser Webseite wird nur ausgewertet, wenn Sie bei der Cookie-Abfrage den Dienst \u201eMatomo\u201c aktiviert haben. Au\u00dferdem respektieren wir die \u201eDo not track\u201c-Einstellung Ihres Browsers: Sollten Sie bei Ihrem Browser eingestellt haben, dass Ihre Nutzungsdaten nicht gespeichert werden sollen, ist \u201eMatomo\u201c auf unserer Seite automatisch deaktiviert.\u003Cp\u003E\r\n\r\n\u003Ctable\u003E\r\n\t\u003Cthead\u003E\r\n\t\t\u003Ctr\u003E\r\n\t\t\t\u003Cth width=\u002215%\u0022\u003ECookie-Name\u003C\/th\u003E\r\n\t\t\t\u003Cth width=\u002215%\u0022\u003ESpeicherdauer\u003C\/th\u003E\r\n\t\t\t\u003Cth\u003EBeschreibung\u003C\/th\u003E\r\n\t\t\u003C\/tr\u003E\r\n\t\u003C\/thead\u003E\r\n\t\u003Ctbody\u003E\r\n\t\t\u003Ctr\u003E\r\n\t\t\t\u003Ctd\u003E\u003Ccode dir=\u0022ltr\u0022 translate=\u0022no\u0022\u003E_pk_id.\u0026lt;ID\u0026gt;\u003C\/code\u003E\u003C\/td\u003E\r\n\t\t\t\u003Ctd\u003E13 Monate\u003C\/td\u003E\r\n\t\t\t\u003Ctd\u003ESpeichert eine eindeutige Besucher-ID.\u003C\/td\u003E\r\n\t\t\u003C\/tr\u003E\r\n\t\t\u003Ctr\u003E\r\n\t\t\t\u003Ctd\u003E\u003Ccode dir=\u0022ltr\u0022 translate=\u0022no\u0022\u003E_pk_ses.\u0026lt;ID\u0026gt;\u003C\/code\u003E\u003C\/td\u003E\r\n\t\t\t\u003Ctd\u003E30 Minuten\u003C\/td\u003E\r\n\t\t\t\u003Ctd\u003ESession-Cookie, welches f\u00fcr die Dauer des Besuchs Daten speichert.\u003C\/td\u003E\r\n\t\t\u003C\/tr\u003E\r\n\t\t\u003Ctr\u003E\r\n\t\t\t\u003Ctd\u003E\u003Ccode dir=\u0022ltr\u0022 translate=\u0022no\u0022\u003E_pk_ref.\u0026lt;ID\u0026gt;\u003C\/code\u003E\u003C\/td\u003E\r\n\t\t\t\u003Ctd\u003E6 Monate\u003C\/td\u003E\r\n\t\t\t\u003Ctd\u003ESpeichert Informationen \u00fcber den Referrer, von dem aus der Besucher auf unsere Seite kam.\u003C\/td\u003E\r\n\t\t\u003C\/tr\u003E\r\n\t\u003C\/tbody\u003E\r\n\u003C\/table\u003E\r\n","format":"full_html"},"uri":"","needConsent":true}],"weight":10},"external_services":{"id":"external_services","services":[{"key":"vimeo","type":"external_services","name":"Externe Videos von Vimeo","info":{"value":"\u003Cp\u003E\u003Cstrong\u003EZweck:\u003C\/strong\u003E Einbindung von Videos\u003C\/p\u003E\u003Cp\u003E\u003Cstrong\u003EEmpf\u00e4nger:\u003C\/strong\u003E Vimeo.com, Inc., 330 West 34th Street, 10th Floor New York, New York 10001, USA. E-Mail: \u003Ca href=\u0022mailto:legal@vimeo.com\u0022\u003Elegal@vimeo.com\u003C\/a\u003E Telefon: 1-212-314-7457\u003C\/p\u003E\u003Cp\u003E\u003Cstrong\u003EBeschreibung:\u003C\/strong\u003E \u00dcber auf unserer Webseite eingebundene Plugins der Streaming-Plattform \u201evimeo.com\u201c k\u00f6nnen unmittelbar auf unserer Webseite Videos abgespielt werden. Zweck der Einbindung ist es, die auf Vimeo ver\u00f6ffentlichten Videos auch direkt auf dieser Webseite einzubinden. Wir setzen Vimeo nur mit Ihrer Einwilligung ein, die Sie jederzeit widerrufen k\u00f6nnen. Die entsprechende Datenverarbeitung beruht auf Art. 6 Abs. 1 lit. a) DS-GVO.\u003Cbr\u003E\u003Cbr\u003EDie Videos sind im \u201eerweiterten Datenschutz-Modus\u201c eingebunden, d.h. dass keine Daten an Vimeo \u00fcbertragen werden, wenn keine Videos geladen werden. W\u00e4hrend des Ladens von Videos wird eine Verbindung zu den Vimeo-Servern hergestellt. Hierdurch werden verschiedene auf Ihrem Endger\u00e4t gespeicherte Daten an den Vimeo-Server \u00fcbermittelt, u.a. welche unserer Internetseiten Sie besucht haben. Zudem werden Zugriffsdaten, insbesondere die IP-Adresse, Browserinformationen sowie Datum und Uhrzeit der Serveranfrage an Vimeo \u00fcbermittelt. Videos werden nur mit Ihrer Zustimmung geladen, die Sie durch das Akzeptieren aller Cookies oder die Aktivierung des Services \u201eVimeo\u201c in den Cookie-Einstellungen geben.\u003C\/p\u003E\u003Cp\u003EDie Daten\u00fcbertragung an Vimeo erfolgt unabh\u00e4ngig davon, ob Sie bei Vimeo ein Nutzerkonto haben oder nicht. Vimeo speichert die Daten als Nutzungsprofile und verarbeitet sie f\u00fcr Zwecke der statistischen Analyse und der Werbung. Wenn Sie beim Laden des Videos als Mitglied bei Vimeo eingeloggt sind, ordnet Vimeo die erhaltenen Informationen Ihrem pers\u00f6nlichen Benutzerkonto zu. Sie k\u00f6nnen diese Zuordnung verhindern, indem Sie sich vor der Nutzung unserer Internetseite aus Ihrem Vimeo-Benutzerkonto abmelden und die entsprechenden Cookies l\u00f6schen.\u003C\/p\u003E\u003Cp\u003EWeitere Informationen zu Zweck und Umfang der Datenerhebung und ihrer Verarbeitung durch Vimeo erhalten Sie in der \u003Ca href=\u0022https:\/\/vimeo.com\/legal\/privacy\/policy\u0022\u003EDatenschutzerkl\u00e4rung von Vimeo\u003C\/a\u003E. Dort erhalten Sie auch weitere Informationen zu Ihren Rechten und Einstellungsm\u00f6glichkeiten zum Schutze Ihrer Privatsph\u00e4re. Vimeo verarbeitet Ihre personenbezogenen Daten auch in den USA.\u003C\/p\u003E","format":"basic_html"},"uri":"","needConsent":true},{"key":"youtube","type":"external_services","name":"Externe Videos von YouTube","info":{"value":"\u003Cp\u003E\u003Cstrong\u003EZweck:\u003C\/strong\u003E Einbindung von Videos\u003C\/p\u003E\u003Cp\u003E\u003Cstrong\u003EEmpf\u00e4nger: \u003C\/strong\u003EYouTube, LLC, 901 Cherry Avenue, San Bruno, CA 94066, USA sowie Google Ireland Ltd., Gordon House, Barrow Street, Dublin 4, Irland und Google, LLC, 1600 Amphitheatre Parkway Mountain View, CA 94043, USA.\u003C\/p\u003E\u003Cp\u003E\u003Cstrong\u003EBeschreibung:\u003C\/strong\u003E \u00dcber auf unserer Webseite eingebundene Plugins der Streaming-Plattform \u201eyoutube.de\u201c bzw. \u201eyoutube.com\u201c k\u00f6nnen unmittelbar auf unserer Webseite Videos abgespielt werden. Zweck der Einbindung ist es, die auf YouTube ver\u00f6ffentlichten Videos auch direkt auf dieser Webseite einzubinden. Wir setzen YouTube nur mit Ihrer Einwilligung ein, die Sie jederzeit widerrufen k\u00f6nnen. Die entsprechende Datenverarbeitung beruht auf Art. 6 Abs. 1 lit. a) DS-GVO.\u003Cbr\u003E\u003Cbr\u003EDie Videos sind im \u201eerweiterten Datenschutz-Modus\u201c eingebunden, d.h. dass keine Daten an YouTube \u00fcbertragen werden, wenn keine Videos geladen werden. W\u00e4hrend des Ladens von Videos wird eine Verbindung zu den YouTube-Servern hergestellt. Hierdurch werden verschiedene auf Ihrem Endger\u00e4t gespeicherte Daten an den YouTube-Server \u00fcbermittelt, u.a. welche unserer Internetseiten Sie besucht haben. Zudem werden Zugriffsdaten, insbesondere die IP-Adresse, Browserinformationen sowie Datum und Uhrzeit der Serveranfrage an YouTube \u00fcbermittelt. Videos werden nur mit Ihrer Zustimmung geladen, die Sie durch das Akzeptieren aller Cookies oder die Aktivierung des Services \u201eYouTube\u201c in den Cookie-Einstellungen geben.\u003C\/p\u003E\u003Cp\u003EDie Daten\u00fcbertragung an YouTube erfolgt unabh\u00e4ngig davon, ob Sie bei YouTube ein Nutzerkonto haben oder nicht. YouTube speichert die Daten als Nutzungsprofile und verarbeitet sie unabh\u00e4ngig vom Vorhandensein eines Nutzerkontos bei Google f\u00fcr Zwecke der statistischen Analyse und der Werbung. Wenn Sie beim Laden des Videos als Mitglied bei YouTube eingeloggt sind, ordnet YouTube die erhaltenen Informationen Ihrem pers\u00f6nlichen Benutzerkonto zu. Sie k\u00f6nnen diese Zuordnung verhindern, indem Sie sich vor der Nutzung unserer Internetseite aus Ihrem YouTube-Benutzerkonto sowie anderen Benutzerkonten der Firma Google abmelden und die entsprechenden Cookies l\u00f6schen.\u003C\/p\u003E\u003Cp\u003EWeitere Informationen zu Zweck und Umfang der Datenerhebung und ihrer Verarbeitung durch YouTube erhalten Sie in der \u003Ca href=\u0022https:\/\/policies.google.com\/privacy?hl=de\u0026amp;gl=de\u0022\u003EDatenschutzerkl\u00e4rung von Google\u003C\/a\u003E. Dort erhalten Sie auch weitere Informationen zu Ihren Rechten und Einstellungsm\u00f6glichkeiten zum Schutze Ihrer Privatsph\u00e4re. Google verarbeitet Ihre personenbezogenen Daten auch in den USA.\u003C\/p\u003E","format":"basic_html"},"uri":"","needConsent":true}],"weight":30}},"translation":{"_core":{"default_config_hash":"r0JMDv27tTPrhzD4ypdLS0Jijl0-ccTUdlBkqvbAa8A"},"langcode":"en","bannerText":"Wir verwenden Cookies, um diesen Dienst bereitzustellen, u.a. zur Einbindung externer Inhalte und zur statistischen Analyse. Dabei werden Daten ggf. auch an Dritte au\u00dferhalb der EU\/EWR weitergegeben und dort verarbeitet. Mit der Auswahl \u201eAlle akzeptieren\u201c stimmen Sie der Nutzung aller Cookies und aller \u00e4hnlichen Technologien auf unserer Webseite zu. Sie k\u00f6nnen unter \u201eCookies bearbeiten\u201c Ihre Einwilligung auch nur f\u00fcr einzelne Funktionen erteilen und dort jederzeit f\u00fcr die Zukunft widerrufen.","privacyPolicy":"Datenschutz","privacyUri":"\/datenschutz","imprint":"Impressum","imprintUri":"","cookieDocs":"Cookie-Dokumentation","cookieDocsUri":"\/cookies\/documentation","officialWebsite":"Offizielle Webseite","denyAll":"Alle ablehnen","alwaysActive":"Immer aktiv","settings":"Cookies bearbeiten","acceptAll":"Alle akzeptieren","requiredCookies":"Erforderliche Cookies","cookieSettings":"Cookies bearbeiten","close":"Schlie\u00dfen","readMore":"Weiterlesen","allowed":"erlaubt","denied":"abgelehnt","settingsAllServices":"Einstellungen f\u00fcr alle Services","saveSettings":"Speichern","default_langcode":"de","disclaimerText":"","disclaimerTextPosition":"above","processorDetailsLabel":"Weitere Informationen","processorLabel":"Anbieter","processorWebsiteUrlLabel":"Webseite","processorPrivacyPolicyUrlLabel":"Datenschutzbestimmungen","processorCookiePolicyUrlLabel":"Cookie-Regeln","processorContactLabel":"","placeholderAcceptAllText":"","allowAll":"Alle akzeptieren","credit":"","default":{"title":"Was sind Cookies?","details":"Cookies sind kleine Textdateien, die von Ihrem Browser auf Ihrem Ger\u00e4t abgelegt werden. Anhand der gespeicherten Informationen kann eine Webseite erkennen, dass Sie diese zuvor mit dem Browser auf Ihrem Endger\u00e4t aufgerufen und besucht haben. Wir nutzen diese Informationen, um die Webseite optimal nach Ihren Pr\u00e4ferenzen zu gestalten und anzuzeigen. Dabei wird nur das Cookie selbst auf Ihrem Ger\u00e4t identifiziert. Personenbezogene Daten werden nur dann gespeichert, wenn Sie ausdr\u00fccklich eingewilligt haben oder wenn dies unbedingt erforderlich ist, um den von uns angebotenen und von Ihnen in Anspruch genommenen Dienst zu nutzen. Ihre Entscheidung k\u00f6nnen Sie jederzeit \u00fcber die Kategorien auf der linken Seite \u00e4ndern. Weitere Informationen zum Datenschutz und den einzelnen Funktionalit\u00e4ten unserer Webseite sowie zum Drittlandtransfer finden Sie in unseren allgemeinen Datenschutzhinweisen."},"tracking":{"title":"Statistische Analyse","details":"Wir benutzen Matomo, um anonymisierte Daten \u00fcber die Besucher der Webseite zu sammeln und auszuwerten, z.B. verwendete Browser oder Betriebssysteme. Dies hilft uns, die Webseite benutzerfreundlicher zu gestalten. Die Daten werden nicht an Dritte weitergegeben und Ihr Besuch wird nur mit Ihrer Einwilligung ausgewertet."},"external_services":{"title":"Externe Dienste","details":"In diese Webseite k\u00f6nnen Inhalte anderer Dienste eingebunden sein, darunter Videos von Videoportalen. Die externen Dienste werden nur mit Ihrer Zustimmung geladen und zur Verf\u00fcgung gestellt. Es werden keine Daten \u00fcber Sie als Nutzer an den jeweiligen Anbieter \u00fcbertragen, solange Sie den Service hier nicht aktivieren oder einzelne Cookies akzeptiert haben."}}},"cookiesTexts":{"_core":{"default_config_hash":"r0JMDv27tTPrhzD4ypdLS0Jijl0-ccTUdlBkqvbAa8A"},"langcode":"en","bannerText":"Wir verwenden Cookies, um diesen Dienst bereitzustellen, u.a. zur Einbindung externer Inhalte und zur statistischen Analyse. Dabei werden Daten ggf. auch an Dritte au\u00dferhalb der EU\/EWR weitergegeben und dort verarbeitet. Mit der Auswahl \u201eAlle akzeptieren\u201c stimmen Sie der Nutzung aller Cookies und aller \u00e4hnlichen Technologien auf unserer Webseite zu. Sie k\u00f6nnen unter \u201eCookies bearbeiten\u201c Ihre Einwilligung auch nur f\u00fcr einzelne Funktionen erteilen und dort jederzeit f\u00fcr die Zukunft widerrufen.","privacyPolicy":"Datenschutz","privacyUri":"\/datenschutz","imprint":"Impressum","imprintUri":"","cookieDocs":"Cookie-Dokumentation","cookieDocsUri":"\/cookies\/documentation","officialWebsite":"Offizielle Webseite","denyAll":"Alle ablehnen","alwaysActive":"Immer aktiv","settings":"Cookies bearbeiten","acceptAll":"Alle akzeptieren","requiredCookies":"Erforderliche Cookies","cookieSettings":"Cookies bearbeiten","close":"Schlie\u00dfen","readMore":"Weiterlesen","allowed":"erlaubt","denied":"abgelehnt","settingsAllServices":"Einstellungen f\u00fcr alle Services","saveSettings":"Speichern","default_langcode":"de","disclaimerText":"","disclaimerTextPosition":"above","processorDetailsLabel":"Weitere Informationen","processorLabel":"Anbieter","processorWebsiteUrlLabel":"Webseite","processorPrivacyPolicyUrlLabel":"Datenschutzbestimmungen","processorCookiePolicyUrlLabel":"Cookie-Regeln","processorContactLabel":"","placeholderAcceptAllText":"","allowAll":"Alle akzeptieren","credit":""},"services":{"base":{"uuid":"bdd44bbf-bb1c-40c7-81e2-d09b190d83de","langcode":"en","status":true,"dependencies":[],"_core":{"default_config_hash":"XM4JB6AQPEeejASzikI0SZ5bJNvp4j6qJ9Ri1kK7vyw"},"id":"base","label":"Erforderliche Cookies","group":"default","info":{"value":"\u003Cp\u003E\u003Cstrong\u003EZweck:\u003C\/strong\u003E Speicherung der Einwilligung, Speicherung der aktuellen Sitzung etc.\u003C\/p\u003E\r\n\r\n\u003Cp\u003E\u003Cstrong\u003EEmpf\u00e4nger:\u003C\/strong\u003E Der Verantwortliche\/Herausgeber dieser Webseite gem\u00e4\u00df \u003Ca href=\u0022[cookies:imprint_uri]\u0022\u003EImpressum\u003C\/a\u003E.\u003C\/p\u003E\r\n\r\n\u003Cp\u003E\u003Cstrong\u003EBeschreibung:\u003C\/strong\u003E Diese Cookies sind f\u00fcr den technischen Betrieb der Webseite erforderlich. Sie dienen der reinen Funktion der Webseite und stellen das technisch notwendige Mindestma\u00df dar. Daher k\u00f6nnen diese Cookies nicht abgew\u00e4hlt werden.\u003C\/p\u003E\r\n\u003Ctable\u003E\r\n\t\u003Cthead\u003E\r\n\t\t\u003Ctr\u003E\r\n\t\t\t\u003Cth width=\u002215%\u0022\u003ECookie-Name\u003C\/th\u003E\r\n\t\t\t\u003Cth width=\u002215%\u0022\u003ESpeicherdauer\u003C\/th\u003E\r\n\t\t\t\u003Cth\u003EBeschreibung\u003C\/th\u003E\r\n\t\t\u003C\/tr\u003E\r\n\t\u003C\/thead\u003E\r\n\t\u003Ctbody\u003E\r\n\t\t\u003Ctr\u003E\r\n\t\t\t\u003Ctd\u003E\u003Ccode dir=\u0022ltr\u0022 translate=\u0022no\u0022\u003ESSESS\u0026lt;ID\u0026gt;\u003C\/code\u003E\u003C\/td\u003E\r\n\t\t\t\u003Ctd\u003E1 Monat\u003C\/td\u003E\r\n\t\t\t\u003Ctd\u003EWenn Sie auf dieser Website eingeloggt sind, wird ein Sitzungscookie ben\u00f6tigt, um Ihren Browser zu identifizieren und mit Ihrem Benutzerkonto im Server-Backend dieser Website zu verbinden. F\u00fcr Gastbenutzer kann der Cookie bei Teilnahme an Umfragen gesetzt werden, um essentielle Funktionen f\u00fcr Umfragen bereitzustellen.\u003C\/td\u003E\r\n\t\t\u003C\/tr\u003E\r\n\t\t\u003Ctr\u003E\r\n\t\t\t\u003Ctd\u003E\u003Ccode dir=\u0022ltr\u0022 translate=\u0022no\u0022\u003Ecookiesjsr\u003C\/code\u003E\u003C\/td\u003E\r\n\t\t\t\u003Ctd\u003E1 Jahr\u003C\/td\u003E\r\n\t\t\t\u003Ctd\u003EAls Sie diese Website zum ersten Mal besuchten, wurden Sie um Ihre Zustimmung zur Nutzung verschiedener Dienste (auch von Dritten) gebeten, die die Speicherung von Daten in Ihrem Browser erfordern (Cookies, lokale Speicherung). Ihre Entscheidungen zu den einzelnen Diensten (zulassen, ablehnen) werden in diesem Cookie gespeichert und bei jedem Besuch dieser Website erneut verwendet.\u003C\/td\u003E\r\n\t\t\u003C\/tr\u003E\r\n                \u003Ctr\u003E\r\n\u00a0\u00a0 \u00a0\u00a0\u00a0 \u00a0\u00a0\u00a0 \u00a0      \u003Ctd\u003E\u003Ccode dir=\u0022ltr\u0022 translate=\u0022no\u0022\u003Ebd6bf36bfff5a18\u0026lt;ID\u0026gt;\u003C\/code\u003Ebfff5318woor\u003C\/td\u003E\r\n\u00a0\u00a0 \u00a0\u00a0\u00a0 \u00a0\u00a0\u00a0 \u00a0      \u003Ctd\u003E1 Jahr\u003C\/td\u003E\r\n\u00a0\u00a0 \u00a0\u00a0\u00a0 \u00a0\u00a0\u00a0 \u00a0      \u003Ctd\u003ENur f\u00fcr Gastbenutzer. Dies hilft uns, Funktionen im Zusammenhang mit Umfragen bereitzustellen.\u003C\/td\u003E\r\n\u00a0 \u00a0 \u00a0 \u00a0         \u003C\/tr\u003E\r\n\t\u003C\/tbody\u003E\r\n\u003C\/table\u003E\r\n","format":"full_html"},"consentRequired":false,"purpose":"","processor":"","processorContact":"","processorUrl":"","processorPrivacyPolicyUrl":"","processorCookiePolicyUrl":"","placeholderMainText":"Dieser Inhalt ist blockiert, weil die erforderlichen Cookies nicht akzeptiert wurden.","placeholderAcceptText":"Nur erforderliche Cookies akzeptieren."},"matomo":{"uuid":"a3f2430c-81b1-4d15-8ed9-09297e1edd01","langcode":"en","status":true,"dependencies":{"enforced":{"module":["cookies_matomo"]}},"_core":{"default_config_hash":"MuR-RJ9O7-x8eNBQ4DQzKrOb4RKGHCB5_GPI12N7nS4"},"id":"matomo","label":"Webanalyse-Software Matomo","group":"tracking","info":{"value":"\u003Cp\u003E\u003Cstrong\u003EZweck:\u003C\/strong\u003E Statistische Analyse, Reichweitenmessung\u003C\/p\u003E\r\n\r\n\u003Cp\u003E\u003Cstrong\u003EEmpf\u00e4nger:\u003C\/strong\u003E Der Verantwortliche\/Herausgeber dieser Webseite gem\u00e4\u00df \u003Ca href=\u0022[cookies:imprint_uri]\u0022\u003EImpressum\u003C\/a\u003E.\u003C\/p\u003E\r\n\r\n\u003Cp\u003E\u003Cstrong\u003EBeschreibung:\u003C\/strong\u003E \u201eMatomo\u201c ist eine Open-Source-Software, die statistische Auswertungen auf unserer Webseite erm\u00f6glicht, insbesondere zu Besucherzugriffen, Seitenaufrufen, Downloads, der zuvor besuchten Webseite sowie zur Messung des Erfolgs von Eintr\u00e4gen in Suchmaschinen. Diese von Ihrem Browser automatisch \u00fcbertragenen Informationen werden zum Zweck der statistischen Analyse zu einem anonymisierten Nutzerprofil zusammengefasst.\u003Cp\u003E\r\n\u003Cp\u003EDie gesammelten Informationen werden ausschlie\u00dflich auf unseren eigenen Webservern bzw. Datenbanken verarbeitet und nicht an Dritte weitergegeben. Wir verwenden \u201eMatomo\u201c zudem mit einer Erweiterung, wodurch die IP-Adressen gek\u00fcrzt gespeichert werden, um eine direkte Personenbeziehbarkeit zu erschweren. Ihr Besuch dieser Webseite wird nur ausgewertet, wenn Sie bei der Cookie-Abfrage den Dienst \u201eMatomo\u201c aktiviert haben. Au\u00dferdem respektieren wir die \u201eDo not track\u201c-Einstellung Ihres Browsers: Sollten Sie bei Ihrem Browser eingestellt haben, dass Ihre Nutzungsdaten nicht gespeichert werden sollen, ist \u201eMatomo\u201c auf unserer Seite automatisch deaktiviert.\u003Cp\u003E\r\n\r\n\u003Ctable\u003E\r\n\t\u003Cthead\u003E\r\n\t\t\u003Ctr\u003E\r\n\t\t\t\u003Cth width=\u002215%\u0022\u003ECookie-Name\u003C\/th\u003E\r\n\t\t\t\u003Cth width=\u002215%\u0022\u003ESpeicherdauer\u003C\/th\u003E\r\n\t\t\t\u003Cth\u003EBeschreibung\u003C\/th\u003E\r\n\t\t\u003C\/tr\u003E\r\n\t\u003C\/thead\u003E\r\n\t\u003Ctbody\u003E\r\n\t\t\u003Ctr\u003E\r\n\t\t\t\u003Ctd\u003E\u003Ccode dir=\u0022ltr\u0022 translate=\u0022no\u0022\u003E_pk_id.\u0026lt;ID\u0026gt;\u003C\/code\u003E\u003C\/td\u003E\r\n\t\t\t\u003Ctd\u003E13 Monate\u003C\/td\u003E\r\n\t\t\t\u003Ctd\u003ESpeichert eine eindeutige Besucher-ID.\u003C\/td\u003E\r\n\t\t\u003C\/tr\u003E\r\n\t\t\u003Ctr\u003E\r\n\t\t\t\u003Ctd\u003E\u003Ccode dir=\u0022ltr\u0022 translate=\u0022no\u0022\u003E_pk_ses.\u0026lt;ID\u0026gt;\u003C\/code\u003E\u003C\/td\u003E\r\n\t\t\t\u003Ctd\u003E30 Minuten\u003C\/td\u003E\r\n\t\t\t\u003Ctd\u003ESession-Cookie, welches f\u00fcr die Dauer des Besuchs Daten speichert.\u003C\/td\u003E\r\n\t\t\u003C\/tr\u003E\r\n\t\t\u003Ctr\u003E\r\n\t\t\t\u003Ctd\u003E\u003Ccode dir=\u0022ltr\u0022 translate=\u0022no\u0022\u003E_pk_ref.\u0026lt;ID\u0026gt;\u003C\/code\u003E\u003C\/td\u003E\r\n\t\t\t\u003Ctd\u003E6 Monate\u003C\/td\u003E\r\n\t\t\t\u003Ctd\u003ESpeichert Informationen \u00fcber den Referrer, von dem aus der Besucher auf unsere Seite kam.\u003C\/td\u003E\r\n\t\t\u003C\/tr\u003E\r\n\t\u003C\/tbody\u003E\r\n\u003C\/table\u003E\r\n","format":"full_html"},"consentRequired":true,"purpose":"","processor":"","processorContact":"","processorUrl":"","processorPrivacyPolicyUrl":"https:\/\/matomo.org\/privacy-policy\/","processorCookiePolicyUrl":"https:\/\/matomo.org\/faq\/general\/faq_146\/","placeholderMainText":"Dieser Inhalt ist blockiert, weil die Matomo-Cookies nicht akzeptiert wurden.","placeholderAcceptText":"Nur Matomo-Cookies akzeptieren."},"vimeo":{"uuid":"26f14753-bf2c-4a88-ab66-762ef51be665","langcode":"en","status":true,"dependencies":[],"id":"vimeo","label":"Externe Videos von Vimeo","group":"external_services","info":{"value":"\u003Cp\u003E\u003Cstrong\u003EZweck:\u003C\/strong\u003E Einbindung von Videos\u003C\/p\u003E\u003Cp\u003E\u003Cstrong\u003EEmpf\u00e4nger:\u003C\/strong\u003E Vimeo.com, Inc., 330 West 34th Street, 10th Floor New York, New York 10001, USA. E-Mail: \u003Ca href=\u0022mailto:legal@vimeo.com\u0022\u003Elegal@vimeo.com\u003C\/a\u003E Telefon: 1-212-314-7457\u003C\/p\u003E\u003Cp\u003E\u003Cstrong\u003EBeschreibung:\u003C\/strong\u003E \u00dcber auf unserer Webseite eingebundene Plugins der Streaming-Plattform \u201evimeo.com\u201c k\u00f6nnen unmittelbar auf unserer Webseite Videos abgespielt werden. Zweck der Einbindung ist es, die auf Vimeo ver\u00f6ffentlichten Videos auch direkt auf dieser Webseite einzubinden. Wir setzen Vimeo nur mit Ihrer Einwilligung ein, die Sie jederzeit widerrufen k\u00f6nnen. Die entsprechende Datenverarbeitung beruht auf Art. 6 Abs. 1 lit. a) DS-GVO.\u003Cbr\u003E\u003Cbr\u003EDie Videos sind im \u201eerweiterten Datenschutz-Modus\u201c eingebunden, d.h. dass keine Daten an Vimeo \u00fcbertragen werden, wenn keine Videos geladen werden. W\u00e4hrend des Ladens von Videos wird eine Verbindung zu den Vimeo-Servern hergestellt. Hierdurch werden verschiedene auf Ihrem Endger\u00e4t gespeicherte Daten an den Vimeo-Server \u00fcbermittelt, u.a. welche unserer Internetseiten Sie besucht haben. Zudem werden Zugriffsdaten, insbesondere die IP-Adresse, Browserinformationen sowie Datum und Uhrzeit der Serveranfrage an Vimeo \u00fcbermittelt. Videos werden nur mit Ihrer Zustimmung geladen, die Sie durch das Akzeptieren aller Cookies oder die Aktivierung des Services \u201eVimeo\u201c in den Cookie-Einstellungen geben.\u003C\/p\u003E\u003Cp\u003EDie Daten\u00fcbertragung an Vimeo erfolgt unabh\u00e4ngig davon, ob Sie bei Vimeo ein Nutzerkonto haben oder nicht. Vimeo speichert die Daten als Nutzungsprofile und verarbeitet sie f\u00fcr Zwecke der statistischen Analyse und der Werbung. Wenn Sie beim Laden des Videos als Mitglied bei Vimeo eingeloggt sind, ordnet Vimeo die erhaltenen Informationen Ihrem pers\u00f6nlichen Benutzerkonto zu. Sie k\u00f6nnen diese Zuordnung verhindern, indem Sie sich vor der Nutzung unserer Internetseite aus Ihrem Vimeo-Benutzerkonto abmelden und die entsprechenden Cookies l\u00f6schen.\u003C\/p\u003E\u003Cp\u003EWeitere Informationen zu Zweck und Umfang der Datenerhebung und ihrer Verarbeitung durch Vimeo erhalten Sie in der \u003Ca href=\u0022https:\/\/vimeo.com\/legal\/privacy\/policy\u0022\u003EDatenschutzerkl\u00e4rung von Vimeo\u003C\/a\u003E. Dort erhalten Sie auch weitere Informationen zu Ihren Rechten und Einstellungsm\u00f6glichkeiten zum Schutze Ihrer Privatsph\u00e4re. Vimeo verarbeitet Ihre personenbezogenen Daten auch in den USA.\u003C\/p\u003E","format":"basic_html"},"consentRequired":true,"purpose":"","processor":"","processorContact":"","processorUrl":"","processorPrivacyPolicyUrl":"https:\/\/vimeo.com\/legal\/privacy\/policy","processorCookiePolicyUrl":"","placeholderMainText":"Dieser Inhalt ist blockiert, weil die Vimeo-Cookies nicht akzeptiert wurden.","placeholderAcceptText":"Nur Vimeo-Cookies akzeptieren."},"youtube":{"uuid":"4877c374-88ef-49b0-892c-67493b98abf8","langcode":"en","status":true,"dependencies":[],"id":"youtube","label":"Externe Videos von YouTube","group":"external_services","info":{"value":"\u003Cp\u003E\u003Cstrong\u003EZweck:\u003C\/strong\u003E Einbindung von Videos\u003C\/p\u003E\u003Cp\u003E\u003Cstrong\u003EEmpf\u00e4nger: \u003C\/strong\u003EYouTube, LLC, 901 Cherry Avenue, San Bruno, CA 94066, USA sowie Google Ireland Ltd., Gordon House, Barrow Street, Dublin 4, Irland und Google, LLC, 1600 Amphitheatre Parkway Mountain View, CA 94043, USA.\u003C\/p\u003E\u003Cp\u003E\u003Cstrong\u003EBeschreibung:\u003C\/strong\u003E \u00dcber auf unserer Webseite eingebundene Plugins der Streaming-Plattform \u201eyoutube.de\u201c bzw. \u201eyoutube.com\u201c k\u00f6nnen unmittelbar auf unserer Webseite Videos abgespielt werden. Zweck der Einbindung ist es, die auf YouTube ver\u00f6ffentlichten Videos auch direkt auf dieser Webseite einzubinden. Wir setzen YouTube nur mit Ihrer Einwilligung ein, die Sie jederzeit widerrufen k\u00f6nnen. Die entsprechende Datenverarbeitung beruht auf Art. 6 Abs. 1 lit. a) DS-GVO.\u003Cbr\u003E\u003Cbr\u003EDie Videos sind im \u201eerweiterten Datenschutz-Modus\u201c eingebunden, d.h. dass keine Daten an YouTube \u00fcbertragen werden, wenn keine Videos geladen werden. W\u00e4hrend des Ladens von Videos wird eine Verbindung zu den YouTube-Servern hergestellt. Hierdurch werden verschiedene auf Ihrem Endger\u00e4t gespeicherte Daten an den YouTube-Server \u00fcbermittelt, u.a. welche unserer Internetseiten Sie besucht haben. Zudem werden Zugriffsdaten, insbesondere die IP-Adresse, Browserinformationen sowie Datum und Uhrzeit der Serveranfrage an YouTube \u00fcbermittelt. Videos werden nur mit Ihrer Zustimmung geladen, die Sie durch das Akzeptieren aller Cookies oder die Aktivierung des Services \u201eYouTube\u201c in den Cookie-Einstellungen geben.\u003C\/p\u003E\u003Cp\u003EDie Daten\u00fcbertragung an YouTube erfolgt unabh\u00e4ngig davon, ob Sie bei YouTube ein Nutzerkonto haben oder nicht. YouTube speichert die Daten als Nutzungsprofile und verarbeitet sie unabh\u00e4ngig vom Vorhandensein eines Nutzerkontos bei Google f\u00fcr Zwecke der statistischen Analyse und der Werbung. Wenn Sie beim Laden des Videos als Mitglied bei YouTube eingeloggt sind, ordnet YouTube die erhaltenen Informationen Ihrem pers\u00f6nlichen Benutzerkonto zu. Sie k\u00f6nnen diese Zuordnung verhindern, indem Sie sich vor der Nutzung unserer Internetseite aus Ihrem YouTube-Benutzerkonto sowie anderen Benutzerkonten der Firma Google abmelden und die entsprechenden Cookies l\u00f6schen.\u003C\/p\u003E\u003Cp\u003EWeitere Informationen zu Zweck und Umfang der Datenerhebung und ihrer Verarbeitung durch YouTube erhalten Sie in der \u003Ca href=\u0022https:\/\/policies.google.com\/privacy?hl=de\u0026amp;gl=de\u0022\u003EDatenschutzerkl\u00e4rung von Google\u003C\/a\u003E. Dort erhalten Sie auch weitere Informationen zu Ihren Rechten und Einstellungsm\u00f6glichkeiten zum Schutze Ihrer Privatsph\u00e4re. Google verarbeitet Ihre personenbezogenen Daten auch in den USA.\u003C\/p\u003E","format":"basic_html"},"consentRequired":true,"purpose":"","processor":"","processorContact":"","processorUrl":"","processorPrivacyPolicyUrl":"https:\/\/policies.google.com\/privacy?hl=de\u0026gl=de","processorCookiePolicyUrl":"","placeholderMainText":"Dieser Inhalt ist blockiert, weil die YouTube-Cookies nicht akzeptiert wurden.","placeholderAcceptText":"Nur YouTube-Cookies akzeptieren."}},"groups":{"default":{"uuid":"58ad2cb9-b046-4b08-86ce-d60616996a28","langcode":"en","status":true,"dependencies":[],"_core":{"default_config_hash":"MWjA0PCPcQbODMR7UjJxq4hK8JzyYy4zZeQmmQVjC3M"},"id":"default","label":"Technisch notwendige Verarbeitung","weight":1,"title":"Was sind Cookies?","details":"Cookies sind kleine Textdateien, die von Ihrem Browser auf Ihrem Ger\u00e4t abgelegt werden. Anhand der gespeicherten Informationen kann eine Webseite erkennen, dass Sie diese zuvor mit dem Browser auf Ihrem Endger\u00e4t aufgerufen und besucht haben. Wir nutzen diese Informationen, um die Webseite optimal nach Ihren Pr\u00e4ferenzen zu gestalten und anzuzeigen. Dabei wird nur das Cookie selbst auf Ihrem Ger\u00e4t identifiziert. Personenbezogene Daten werden nur dann gespeichert, wenn Sie ausdr\u00fccklich eingewilligt haben oder wenn dies unbedingt erforderlich ist, um den von uns angebotenen und von Ihnen in Anspruch genommenen Dienst zu nutzen. Ihre Entscheidung k\u00f6nnen Sie jederzeit \u00fcber die Kategorien auf der linken Seite \u00e4ndern. Weitere Informationen zum Datenschutz und den einzelnen Funktionalit\u00e4ten unserer Webseite sowie zum Drittlandtransfer finden Sie in unseren allgemeinen Datenschutzhinweisen."},"external_services":{"uuid":"54fe05fa-abf7-48c7-8acc-edb3c85ce00a","langcode":"en","status":true,"dependencies":[],"id":"external_services","label":"Externe Dienste","weight":30,"title":"Externe Dienste","details":"In diese Webseite k\u00f6nnen Inhalte anderer Dienste eingebunden sein, darunter Videos von Videoportalen. Die externen Dienste werden nur mit Ihrer Zustimmung geladen und zur Verf\u00fcgung gestellt. Es werden keine Daten \u00fcber Sie als Nutzer an den jeweiligen Anbieter \u00fcbertragen, solange Sie den Service hier nicht aktivieren oder einzelne Cookies akzeptiert haben."},"social":{"uuid":"0ec453f8-d8b0-4117-956e-f15169f9f662","langcode":"en","status":true,"dependencies":[],"_core":{"default_config_hash":"vog2tbqqQHjVkue0anA0RwlzvOTPNTvP7_JjJxRMVAQ"},"id":"social","label":"Soziale Plugins","weight":20,"title":"Soziale Plugins","details":"Kommentarmanager erm\u00f6glichen das Speichern von Kommentaren und die Spam-Bek\u00e4mpfung."},"tracking":{"uuid":"edf71535-63cf-4c75-bd2f-a9bc5eff256f","langcode":"en","status":true,"dependencies":[],"_core":{"default_config_hash":"_gYDe3qoEc6L5uYR6zhu5V-3ARLlyis9gl1diq7Tnf4"},"id":"tracking","label":"Statistische Analyse","weight":10,"title":"Statistische Analyse","details":"Wir benutzen Matomo, um anonymisierte Daten \u00fcber die Besucher der Webseite zu sammeln und auszuwerten, z.B. verwendete Browser oder Betriebssysteme. Dies hilft uns, die Webseite benutzerfreundlicher zu gestalten. Die Daten werden nicht an Dritte weitergegeben und Ihr Besuch wird nur mit Ihrer Einwilligung ausgewertet."}}},"user":{"uid":0,"permissionsHash":"3046af1352c27d0d547dc1f062a6e58d816e1543446e3a53ae0e5b1e6959942c"}}</script>
+<script src="/sites/default/files/js/js_2JkdHimHfw3M_SQWTEyezJoPbx2yweF_u0TX_krHweY.js?scope=header&amp;delta=0&amp;language=de&amp;theme=dz&amp;include=eJx9UQmOgzAM_BAiT4oMMcFtYqPY0OP1m9CKdqVdpEgez4x8xHCBux8lZ2RT1wBw0G4UuRI2Yo8XLX9Qvdoj4WH2GUyyOGBID6PxI2wUUNxhw0DQhacbVjPh2j1J8RskCrVAaUo1JIkNxSQDJK-2TlPLZ4SAuyejKsTaPjz9AOPVm9S3uN9pU0fhm5TgPrDFieI_It4NS12iyTOmBYu6Og6xT8RXH1CNGIyEm4Nho7hndaES9-G-yQzE9XfXRmvdEYs7UDcJG9xQJaP7wr1usR_KfoozS8G4JjgvozPlc4PUWbr38V6hUxmpffsMBf3rTuoWWdblB7-C3lE"></script>
+<script src="/modules/contrib/cookies/js/cookiesjsr.conf.js?v=10.6.18" defer></script>
+<script src="/libraries/cookiesjsr/dist/cookiesjsr-preloader.min.js?v=10.6.18" defer></script>
+<script src="/libraries/fontawesome/js/fontawesome.min.js?v=6.4.2" defer></script>
+<script src="/libraries/fontawesome/js/brands.min.js?v=6.4.2" defer></script>
+<script src="/libraries/fontawesome/js/regular.min.js?v=6.4.2" defer></script>
+<script src="/libraries/fontawesome/js/v4-shims.min.js?v=6.4.2" defer></script>
+<script src="/libraries/fontawesome/js/solid.min.js?v=6.4.2" defer></script>
+
+  </head>
+  <body class="dz-conword-enabled dz-lang-de dz-path-feed feed p0 m0">
+        <a href="#main-content" class="skip-link">
+      <i class="fa-solid fa-angles-right" aria-hidden="true"></i>
+      Direkt zum Inhalt
+    </a>
+    
+      <div class="dialog-off-canvas-main-canvas" data-off-canvas-main-canvas>
+    <div class="layout-container p-rltv set-colors p0 m0">
+
+  <header role="banner" class="header p-stcky pos-t zndx10 algn-c w12 header-big">
+  <div class="d-f flx-wrp-m flx-ai-c flx-jc-sb-m page-max-width algn-c p1 p-rltv set-colors header-inside">
+          <div  id="block-dz-branding" class="d-f flx-ai-c flx-jc-fs w-a w8-s site-branding">
+  
+    
+
+            <div class="site-logo">
+        <a href="/" rel="home" class="no-brdr">
+        <img src="/sites/default/files/KOE_VM_Logo_RGB.svg" alt="Startseite" class="site-logo-img"/>
+      </a>
+    </div>
+      </div>
+
+  
+    <div class="menus d-f w6-s flx-jc-fe-s">
+            
+
+<div  id="block-conwordblock" >
+    <div class="block block-dz-conword block-dz-conword-block">
+      <div >
+      
+            
+              <div >
+          <div class="conword_wrapper cnw_skip_translation">
+  <a href="javascript:conwordIntegration.toggleConwordPopup()"
+     class="conword_integration_button d-b p0_5 no-brdr"
+     role="button"
+     title="Sprache wählen">
+    <i class="fa-solid fa-language" aria-hidden="true"></i>
+    <span class="languageName">Deutsch</span>
+  </a>
+
+  <div class="conword_popup">
+    <a href="javascript:conwordIntegration.closeConwordPopup();" role="button" title="Schließen" class="close-btn">
+      <i class="fas fa-xmark" aria-hidden="true"></i>
+    </a>
+
+    <i class="fas fa-spinner fa-spin"></i>
+  </div>
+</div>
+
+        </div>
+          </div>
+  </div>
+</div>
+<nav role="navigation" aria-labelledby="block-dz-main-menu-menu" id="block-dz-main-menu" class="dz-main-menu">
+            
+  <h2 class="visually-hidden" id="block-dz-main-menu-menu">Hauptnavigation</h2>
+  
+
+        
+              <ul class="menu d-f ls-n p0">
+                        <li  class="ws-nowrp">
+          
+        
+
+                          
+                
+        
+        
+                                          
+        
+      
+                    
+        <a href="/startseite" class="d-b p0_5 no-brdr active-trail" title="Start" data-drupal-link-system-path="node/2">Start</a>
+
+                                <ul>
+                          <li >
+            
+        
+
+                          
+                
+        
+        
+                                          
+        
+      
+      
+        <a href="/#aktuell_laufende_projekte" class="d-b p0_5 no-brdr is-active" title="Aktuell laufende Projekte" data-drupal-link-system-path="&lt;front&gt;" aria-current="page">Aktuell laufende Projekte</a>
+
+              </li>
+                      <li >
+            
+        
+
+                          
+                
+        
+        
+                                          
+        
+      
+      
+        <a href="/#naechste_veranstaltungen" class="d-b p0_5 no-brdr is-active" title="Veranstaltungen" data-drupal-link-system-path="&lt;front&gt;" aria-current="page">Veranstaltungen</a>
+
+              </li>
+                      <li >
+            
+        
+
+                          
+                
+        
+        
+                                          
+        
+      
+      
+        <a href="/#aktuelles" class="d-b p0_5 no-brdr is-active" title="Neuigkeiten" data-drupal-link-system-path="&lt;front&gt;" aria-current="page">Neuigkeiten</a>
+
+              </li>
+        </ul>
+  
+              </li>
+                    <li  class="ws-nowrp">
+          
+        
+
+                          
+                
+        
+        
+                                          
+        
+      
+      
+        <a href="/mitmachen" class="d-b p0_5 no-brdr" title="Mitmachen" data-drupal-link-system-path="node/12">Mitmachen</a>
+
+                                <ul>
+                          <li >
+            
+        
+
+                          
+                
+        
+        
+                                          
+        
+      
+      
+        <a href="/mitmachen#beteiligen_sie_sich" class="d-b p0_5 no-brdr" title="Projektübersicht" data-drupal-link-system-path="node/12">Projektübersicht</a>
+
+              </li>
+                      <li >
+            
+        
+
+                          
+                
+        
+        
+                                          
+        
+      
+      
+        <a href="/mitmachen#beteiligung_anregen" class="d-b p0_5 no-brdr" title="Beteiligung anregen" data-drupal-link-system-path="node/12">Beteiligung anregen</a>
+
+              </li>
+                      <li >
+            
+        
+
+                          
+                
+        
+        
+                                          
+        
+      
+      
+        <a href="/mitmachen#weitere_beteiligungsangebote" class="d-b p0_5 no-brdr" title="Weitere Beteiligungsangebote" data-drupal-link-system-path="node/12">Weitere Beteiligungsangebote</a>
+
+              </li>
+        </ul>
+  
+              </li>
+                    <li  class="ws-nowrp">
+          
+        
+
+                          
+                
+        
+        
+                                          
+        
+      
+      
+        <a href="/informationen" class="d-b p0_5 no-brdr" title="Informationen" data-drupal-link-system-path="node/6">Informationen</a>
+
+                                <ul>
+                          <li >
+            
+        
+
+                          
+                
+        
+        
+                                          
+        
+      
+      
+        <a href="/informationen#leitlinien" class="d-b p0_5 no-brdr" title="Leitlinien für Öffentlichkeitsbeteiligung" data-drupal-link-system-path="node/6">Leitlinien für Öffentlichkeitsbeteiligung</a>
+
+              </li>
+                      <li >
+            
+        
+
+                          
+                
+        
+        
+                                          
+        
+      
+      
+        <a href="/informationen#entstehungsgeschichte" class="d-b p0_5 no-brdr" title="Entstehungsgeschichte der Systematischen Öffentlichkeitsbeteiligung" data-drupal-link-system-path="node/6">Entstehungsgeschichte der Systematischen Öffentlichkeitsbeteiligung</a>
+
+              </li>
+                      <li >
+            
+        
+
+                          
+                
+        
+        
+                                          
+        
+      
+      
+        <a href="/informationen#lesenswertes" class="d-b p0_5 no-brdr" title="Lesenswertes" data-drupal-link-system-path="node/6">Lesenswertes</a>
+
+              </li>
+        </ul>
+  
+              </li>
+                    <li  class="ws-nowrp">
+          
+        
+
+                          
+                
+        
+        
+                                          
+                  
+        
+      
+      
+        <a href="/search" data-fa-type="fas" data-fa-icon="fas fa-search" class="d-b p0_5 no-brdr" title="Suche" data-drupal-link-system-path="search">            <i class=" fas fas fa-search"></i><span class="visually-hidden">Suche</span>
+          </a>
+
+              </li>
+        </ul>
+  
+
+
+  </nav>
+<nav role="navigation" aria-labelledby="block-dz-account-menu-menu" id="block-dz-account-menu">
+            
+  <h2 class="visually-hidden" id="block-dz-account-menu-menu">Benutzerkonto-Menü</h2>
+  
+
+        
+              <ul class="menu d-f flx-wrp ls-n">
+    
+    
+      <li>
+
+                          
+                          
+        
+                                  
+        <a href="/user/login" class="d-b p0_5 no-brdr" title="Anmelden" data-drupal-link-system-path="user/login">            <i class=" fas fa-sign-in-alt"></i><span class="visually-hidden">Anmelden</span>
+          </a>
+
+              </li>
+        </ul>
+  
+
+
+  </nav>
+
+  
+      
+      <div class="navigation-links mb0">
+        <a href="#navigation" class="focusable d-b p0_5 no-brdr" id="open-burger-navigation" role="button" title="Menü öffnen">
+          <i class="fas fa-bars" aria-hidden="true"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="highlighted">
+            <div data-drupal-messages-fallback class="hidden"></div>
+
+  
+    </div>
+  
+
+  
+  <main role="main" class="main-content p-rltv">
+
+    <a id="main-content" tabindex="-1" class="visually-hidden"></a>
+                <h1 class="visually-hidden">Startseite</h1>
+    
+    <div class="layout-content page-max-width algn-c">
+      <div class="p-rltv">
+        
+
+        <div class="d-f-s flx-wrp-s flx-jc-c-s ta-c">
+          <div>
+            <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+                  
+
+<div  id="block-dz-content" >
+    <div class="block block-system block-system-main-block">
+      <div >
+      
+            
+              <div >
+          <article data-history-node-id="2">
+
+    
+  
+    
+
+  
+  <div>
+      
+
+
+
+
+  
+
+    <div class="set-colors  layout outer-container" data-cd-selector="outer-container"  data-cd-instance-id="c5fa8093-d07c-47e0-b478-6e59dc9c4821">
+    <div  class="inner-container" data-cd-selector="inner-container">
+      <div  class="layout__region layout__region--content column-1" data-cd-selector="column-1">
+
+<div   data-cd-instance-id="4d4328c3-f727-4f72-aa41-8d567f08dc8c">
+  <div class="cc0 p2-l p1-m p0 block block-layout-builder block-inline-blockhero-widget" data-cd-selector="outer-container">
+    <div  class="p-rltv d-f flx-ai-c flx-d-clmn-s flx-ai-n-s" data-cd-selector="inner-container">
+      
+
+      
+      
+                <div  class="w8-m p-rltv" data-cd-selector="media-container">
+          
+
+
+
+
+
+  
+<div  class="field field--field_media field--entity_reference field--block_content" data-aspect-ratio="1_1" data-cd-selector="field_media">
+  
+      <div class="field-item field-item--entity_reference field-item--field_media field-item--block_content">
+<div class="p-rltv 1_1 h-100-prcnt media-">
+  
+  <div class="p-rltv h-100-prcnt">
+    
+
+
+
+
+
+
+<div  class="field field--field_media_image field--image field--media p-rltv h-100-prcnt">
+  
+      <div class="field-item field-item--image field-item--field_media_image field-item--media of-h p-rltv h-100-prcnt img-container">    <picture>
+                  <source srcset="/sites/default/files/styles/1_1_1920/public/images/rss_keyvisual_slider_platzierungkommunikationsflache_mit_bubble4.jpg.webp?itok=J2rtrDY5 1x" media="(min-width: 1690px)" type="image/webp" width="1920" height="1920"/>
+              <source srcset="/sites/default/files/styles/1_1_1600/public/images/rss_keyvisual_slider_platzierungkommunikationsflache_mit_bubble4.jpg.webp?itok=ofbe55_g 1x" media="(min-width: 1280px)" type="image/webp" width="1600" height="1600"/>
+              <source srcset="/sites/default/files/styles/1_1_1280/public/images/rss_keyvisual_slider_platzierungkommunikationsflache_mit_bubble4.jpg.webp?itok=lzu3ZA_s 1x" media="(min-width: 980px)" type="image/webp" width="1280" height="1280"/>
+              <source srcset="/sites/default/files/styles/1_1_980/public/images/rss_keyvisual_slider_platzierungkommunikationsflache_mit_bubble4.jpg.webp?itok=9Xi-fJy7 1x" media="(min-width: 736px)" type="image/webp" width="980" height="980"/>
+              <source srcset="/sites/default/files/styles/1_1_980/public/images/rss_keyvisual_slider_platzierungkommunikationsflache_mit_bubble4.jpg.webp?itok=9Xi-fJy7 1x" media="(max-width: 735px)" type="image/webp" width="980" height="980"/>
+              <source srcset="/sites/default/files/styles/blur_preview/public/images/rss_keyvisual_slider_platzierungkommunikationsflache_mit_bubble4.jpg.webp?itok=xRHEDb6h 1x" media="(min-width: 1px)" type="image/webp" width="100" height="100"/>
+                  
+  <img loading="lazy" width="1404" height="1404" src="/sites/default/files/images/rss_keyvisual_slider_platzierungkommunikationsflache_mit_bubble4.jpg" alt="Key Visual &quot;Meinung für Köln&quot; - abgebildet ist eine Personengruppe diverser Menschen" title="Key Visual &quot;Meinung für Köln&quot;"/>
+
+
+  </picture>
+
+</div>
+  </div>
+
+
+
+    
+
+
+
+
+
+<div  class="copyright p-abslt set-colors inverted">
+  
+      <p class="copyright-inside m0 p0">Stadt Köln</p>
+  </div>
+
+  </div>
+    
+</div>
+</div>
+  </div>
+
+        </div>
+        
+        <div  class="cc4 p1 p2-l p-rltv w8-m  bs ml-5-l ml-7-m ml1-s mr1-s mb1-s mt-3-s set-colors" style="--alpha-bg:0.9" data-cd-selector="content-container">
+                        <h2 class="fs6-l fs4-m fs3-s" data-cd-selector="title">Willkommen auf Meinung für Köln</h2>
+                    
+
+
+
+
+
+  
+<div  class="wysiwyg-txt field field--body field--text_with_summary field--block_content" data-cd-selector="body">
+  
+      <div class="field-item field-item--text_with_summary field-item--body field-item--block_content"><p>Auf dem Beteiligungsportal der Stadt Köln ist Ihre Meinung gefragt. Alle Kölner*innen sind eingeladen mitzumachen und sich zu beteiligen!</p>
+<p>Machen Sie mit und ermutigen Sie auch andere dazu. Einen kurzen Eindruck gibt unser Werbefilm.&nbsp;</p>
+</div>
+  </div>
+
+
+
+
+  
+<div  class="btn-cntnr mt1 field field--field_links field--link field--block_content" data-cd-selector="field_links">
+                  <a href="/informationen/zahlen-daten-fakten" class="field-item field-item--link field-item--field_links field-item--block_content" aria-label="Beteiligung in Köln in Zahlen" title="Beteiligung in Köln in Zahlen">Beteiligung in Köln in Zahlen</a>
+                    <a href="/mitmachen" class="field-item field-item--link field-item--field_links field-item--block_content" aria-label="Mitmachen" title="Mitmachen">Mitmachen</a>
+                    <a href="/informationen" class="field-item field-item--link field-item--field_links field-item--block_content" aria-label="Informationen" title="Informationen">Informationen</a>
+      </div>
+
+
+        </div>
+          </div>
+  </div>
+</div>
+</div>
+    </div>
+  </div>
+
+  
+
+
+
+
+  
+
+    <div class="p1 set-colors  layout outer-container" data-cd-selector="outer-container"  data-cd-instance-id="c60dc4bb-af4d-4861-8821-b2ade7dfc71a">
+    <div  class="inner-container" data-cd-selector="inner-container">
+      <div  class="layout__region layout__region--content column-1" data-cd-selector="column-1">
+
+<div   data-cd-instance-id="555edab9-0788-4bdb-89a6-6b87fd2520ca">
+  <div class="block block-layout-builder block-inline-blocktext-widget" data-cd-selector="outer-container">
+    <div  data-cd-selector="inner-container">
+      
+            
+              
+          </div>
+  </div>
+</div>
+
+
+<div  id="weitere_projekte"  data-cd-instance-id="e26329ce-0c44-44db-9159-c92d6928675a">
+    <div class="cc0 block block-layout-builder block-inline-blockunit-list" data-cd-selector="outer-container">
+      <div  data-cd-selector="inner-container">
+      
+                      <h2 class="fs2 fs4-m mb2 mb2-m ta-c " data-cd-selector="title">Aktuelle Projekte</h2>
+                    
+              <div >
+          
+
+
+
+  
+<div  class="cards cards2-m cards3-l field field--field_unit_reference field--entity_reference field--block_content" data-cd-selector="field_unit_reference">
+    <div class="view-content">
+    <div class="views-rows">
+            <div class="field-item field-item--entity_reference field-item--field_unit_reference field-item--block_content views-row">
+
+<article class="group group--teaser group--unit p-rltv d-f flx-grw1 teaser group-92">
+    
+
+  <p class="participation-countdown participation-countdown-ended">
+    Online-Beteiligung seit 10 Tagen geschlossen
+  </p>
+
+      <div class="media">
+      	    
+<div class="p-rltv 16_9_teaser h-100-prcnt media-">
+  
+  <div class="p-rltv h-100-prcnt">
+    
+
+
+
+
+
+
+<div  class="field field--field_media_image field--image field--media p-rltv h-100-prcnt">
+  
+      <div class="field-item field-item--image field-item--field_media_image field-item--media of-h p-rltv h-100-prcnt img-container">    <picture>
+                  <source srcset="/sites/default/files/styles/16_9_980/public/images/2026-07-02-gruenzug-flittard-stammheim-foto.jpg.webp?itok=0XVGV5TX 1x" media="(min-width: 736px)" type="image/webp" width="980" height="551"/>
+              <source srcset="/sites/default/files/styles/16_9_700/public/images/2026-07-02-gruenzug-flittard-stammheim-foto.jpg.webp?itok=JjLHDEUF 1x" media="(max-width: 735px)" type="image/webp" width="700" height="394"/>
+                  
+  <img loading="lazy" width="100" height="56" src="/sites/default/files/styles/16_9_100_nowebp/public/images/2026-07-02-gruenzug-flittard-stammheim-foto.jpg?itok=cDBt-yoC" alt="Foto eines Weizenfeldes, welches mit Bäumen umrandet ist. Der Himmel ist grau bewölkt." title="Grünzug Flittard"/>
+
+
+  </picture>
+
+</div>
+  </div>
+
+
+
+    
+
+
+
+
+
+<div  class="copyright p-abslt set-colors inverted">
+  
+      <p class="copyright-inside m0 p0">Stadt Köln</p>
+  </div>
+
+  </div>
+    
+</div>
+
+  
+    </div>
+  
+  <div class="content">
+    
+          <h3 class="title">
+        <a href="/gruenzug-flittard-stammheim" class="boxlink no-link-icon" rel="bookmark">GRÜNZUG Flittard-Stammheim</a>
+      </h3>
+    
+    
+    <footer class="meta-information">
+      <p>
+                  <i class="fas fa-lightbulb" aria-hidden="true"></i>
+          <span class="countValue">101</span> Beiträge        
+        
+        
+
+
+        
+      </p>
+    </footer>
+
+    
+
+
+
+
+
+
+<div  class="wysiwyg-txt field field--field_description field--text_long field--group">
+  
+      <div class="field-item field-item--text_long field-item--field_description field-item--group"><p>In den Stadtteilen Flittard und Stammheim soll ein neuer GRÜNZUG Flittard-Stammheim entstehen. In der Zeit vom 10. September bis 01. Oktober waren Sie gefragt: Wie stellen Sie sich den zukünftigen GRÜNZUG Flittard-Stammheim vor? <strong>Wir bedanken uns für Ihre Teilnahme!&nbsp;</strong></p>
+</div>
+  </div>
+
+    <ul class="links" role="presentation">
+      <li>
+        <a class="btn" href="/gruenzug-flittard-stammheim" tabindex="-1" rel="bookmark">Weiterlesen</a>
+      </li>
+    </ul>
+  </div>
+</article>
+</div>
+          <div class="field-item field-item--entity_reference field-item--field_unit_reference field-item--block_content views-row">
+
+<article class="group group--teaser group--unit p-rltv d-f flx-grw1 teaser group-89">
+  
+      <div class="media">
+      	    
+<div class="p-rltv 16_9_teaser h-100-prcnt media-">
+  
+  <div class="p-rltv h-100-prcnt">
+    
+
+
+
+
+
+
+<div  class="field field--field_media_image field--image field--media p-rltv h-100-prcnt">
+  
+      <div class="field-item field-item--image field-item--field_media_image field-item--media of-h p-rltv h-100-prcnt img-container">    <picture>
+                  <source srcset="/sites/default/files/styles/16_9_980/public/images/luftbild_0.jpg.webp?itok=M0cybpt9 1x" media="(min-width: 736px)" type="image/webp" width="980" height="551"/>
+              <source srcset="/sites/default/files/styles/16_9_700/public/images/luftbild_0.jpg.webp?itok=mARew96T 1x" media="(max-width: 735px)" type="image/webp" width="700" height="394"/>
+                  
+  <img loading="lazy" width="100" height="56" src="/sites/default/files/styles/16_9_100_nowebp/public/images/luftbild_0.jpg?itok=xzaUjC55" alt="Luftaufnahme des Neubrücker Rings mit weitläufigen Grünflächen, Feldern und dichtem Baumbestand im Vordergrund. Rechts sind mehrgeschossige Wohngebäude zu sehen, im Hintergrund erstreckt sich das Stadtgebiet unter einem teils stark bewölkten Himmel." title="Luftbild Neubrücker Ring "/>
+
+
+  </picture>
+
+</div>
+  </div>
+
+
+
+    
+
+
+
+
+
+<div  class="copyright p-abslt set-colors inverted">
+  
+      <p class="copyright-inside m0 p0">SEAD Vermessung</p>
+  </div>
+
+  </div>
+    
+</div>
+
+  
+    </div>
+  
+  <div class="content">
+    
+          <h3 class="title">
+        <a href="/qualifizierungsverfahren-neubruecker-ring" class="boxlink no-link-icon" rel="bookmark">Qualifizierungsverfahren Neubrücker Ring in Köln-Neubrück</a>
+      </h3>
+    
+    
+    <footer class="meta-information">
+      <p>
+        
+        
+        
+
+
+        
+      </p>
+    </footer>
+
+    
+
+
+
+
+
+
+<div  class="wysiwyg-txt field field--field_description field--text_long field--group">
+  
+      <div class="field-item field-item--text_long field-item--field_description field-item--group"><p>Vom<strong> 24. August bis 9. September 2026</strong> hatten Sie die<span> Möglichkeit, sich im Rahmen des Qualifizierungsverfahrens über das Vorhaben zu informieren und sich aktiv einzubringen.<strong> Vielen Dank für Ihr Engagement!</strong></span></p>
+</div>
+  </div>
+
+    <ul class="links" role="presentation">
+      <li>
+        <a class="btn" href="/qualifizierungsverfahren-neubruecker-ring" tabindex="-1" rel="bookmark">Weiterlesen</a>
+      </li>
+    </ul>
+  </div>
+</article>
+</div>
+          <div class="field-item field-item--entity_reference field-item--field_unit_reference field-item--block_content views-row">
+
+<article class="group group--teaser group--unit p-rltv d-f flx-grw1 teaser group-84">
+    
+
+  <p class="participation-countdown participation-countdown-ended">
+    Online-Beteiligung seit 63 Tagen geschlossen
+  </p>
+
+      <div class="media">
+      	    
+<div class="p-rltv 16_9_teaser h-100-prcnt media-">
+  
+  <div class="p-rltv h-100-prcnt">
+    
+
+
+
+
+
+
+<div  class="field field--field_media_image field--image field--media p-rltv h-100-prcnt">
+  
+      <div class="field-item field-item--image field-item--field_media_image field-item--media of-h p-rltv h-100-prcnt img-container">    <picture>
+                  <source srcset="/sites/default/files/styles/16_9_980/public/images/bild-drogenkonsumraum-stadt-koeln.jpg.webp?itok=c4TlGCMq 1x" media="(min-width: 736px)" type="image/webp" width="980" height="551"/>
+              <source srcset="/sites/default/files/styles/16_9_700/public/images/bild-drogenkonsumraum-stadt-koeln.jpg.webp?itok=dupLfzyR 1x" media="(max-width: 735px)" type="image/webp" width="700" height="394"/>
+                  
+  <img loading="lazy" width="100" height="56" src="/sites/default/files/styles/16_9_100_nowebp/public/images/bild-drogenkonsumraum-stadt-koeln.jpg?itok=jwUBUtrU" alt="Drogenkonsumraum in Köln - abgebildet sind sechs voneinander abgeschirmte Sitzplätze für den Drogenkonsum " title="Drogenkonsumraum"/>
+
+
+  </picture>
+
+</div>
+  </div>
+
+
+
+    
+
+
+
+
+
+<div  class="copyright p-abslt set-colors inverted">
+  
+      <p class="copyright-inside m0 p0">Stadt Köln</p>
+  </div>
+
+  </div>
+    
+</div>
+
+  
+    </div>
+  
+  <div class="content">
+    
+          <h3 class="title">
+        <a href="/suchthilfezentrum-am-perlengraben" class="boxlink no-link-icon" rel="bookmark">Suchthilfezentrum am Perlengraben</a>
+      </h3>
+    
+    
+    <footer class="meta-information">
+      <p>
+        
+        
+        
+
+
+        
+      </p>
+    </footer>
+
+    
+
+
+
+
+
+
+<div  class="wysiwyg-txt field field--field_description field--text_long field--group">
+  
+      <div class="field-item field-item--text_long field-item--field_description field-item--group"><p>Die Stadt Köln plant ein neues Suchthilfezentrum, um besser auf die wachsenden Herausforderungen in der Innenstadt zu reagieren. Hier erhalten Sie alle Informationen und die Möglichkeit sich zu beteiligen.</p>
+</div>
+  </div>
+
+    <ul class="links" role="presentation">
+      <li>
+        <a class="btn" href="/suchthilfezentrum-am-perlengraben" tabindex="-1" rel="bookmark">Weiterlesen</a>
+      </li>
+    </ul>
+  </div>
+</article>
+</div>
+          <div class="field-item field-item--entity_reference field-item--field_unit_reference field-item--block_content views-row">
+
+<article class="group group--teaser group--unit p-rltv d-f flx-grw1 teaser group-4">
+  
+      <div class="media">
+      	    
+<div class="p-rltv 16_9_teaser h-100-prcnt media-">
+  
+  <div class="p-rltv h-100-prcnt">
+    
+
+
+
+
+
+
+<div  class="field field--field_media_image field--image field--media p-rltv h-100-prcnt">
+  
+      <div class="field-item field-item--image field-item--field_media_image field-item--media of-h p-rltv h-100-prcnt img-container">    <picture>
+                  <source srcset="/sites/default/files/styles/16_9_980/public/images/logo_hey_koeln.jpeg.webp?itok=LYp9Jkwt 1x" media="(min-width: 736px)" type="image/webp" width="980" height="551"/>
+              <source srcset="/sites/default/files/styles/16_9_700/public/images/logo_hey_koeln.jpeg.webp?itok=kRO34q_R 1x" media="(max-width: 735px)" type="image/webp" width="700" height="394"/>
+                  
+  <img loading="lazy" width="100" height="56" src="/sites/default/files/styles/16_9_100_nowebp/public/images/logo_hey_koeln.jpeg?itok=yqBA_OPT" alt="Hey Köln!" title="Hey Köln!"/>
+
+
+  </picture>
+
+</div>
+  </div>
+
+
+
+    
+
+
+
+
+
+<div  class="copyright p-abslt set-colors inverted">
+  
+      <p class="copyright-inside m0 p0">Stadt Köln</p>
+  </div>
+
+  </div>
+    
+</div>
+
+  
+    </div>
+  
+  <div class="content">
+    
+          <h3 class="title">
+        <a href="/hey-koeln" class="boxlink no-link-icon" rel="bookmark">HEY Porz – check dein Veedel!</a>
+      </h3>
+    
+    
+    <footer class="meta-information">
+      <p>
+                  <i class="fas fa-lightbulb" aria-hidden="true"></i>
+          <span class="countValue">481</span> Beiträge        
+                  <span class="pl1 pr1">|</span>
+          <i class="fas fa-comment" aria-hidden="true"></i>
+          <span class="countValue">99</span> Kommentare        
+          <span class="vertical-text-separator" aria-hidden="true"></span>
+  <i class="fas fa-poll" aria-hidden="true"></i>
+  <span class="countValue">218</span> Bewertungen
+
+
+        
+      </p>
+    </footer>
+
+    
+
+
+
+
+
+
+<div  class="wysiwyg-txt field field--field_description field--text_long field--group">
+  
+      <div class="field-item field-item--text_long field-item--field_description field-item--group"><p><strong>Die 100-Tage-Challenge ist gestartet!</strong><br>Was passiert mit euren Ideen aus dem Veedels-Check? Wir prüfen, ob und wie sich eure Ideen, Wünsche und Hinweise umsetzen lassen und geben nach und nach Rückmeldung. Reinschauen lohnt sich – die Karte wird laufend aktualisiert.</p>
+</div>
+  </div>
+
+    <ul class="links" role="presentation">
+      <li>
+        <a class="btn" href="/hey-koeln" tabindex="-1" rel="bookmark">Weiterlesen</a>
+      </li>
+    </ul>
+  </div>
+</article>
+</div>
+          <div class="field-item field-item--entity_reference field-item--field_unit_reference field-item--block_content views-row">
+
+<article class="group group--teaser group--unit p-rltv d-f flx-grw1 teaser group-86">
+    
+
+  <p class="participation-countdown participation-countdown-ended">
+    Online-Beteiligung seit 77 Tagen geschlossen
+  </p>
+
+      <div class="media">
+      	    
+<div class="p-rltv 16_9_teaser h-100-prcnt media-">
+  
+  <div class="p-rltv h-100-prcnt">
+    
+
+
+
+
+
+
+<div  class="field field--field_media_image field--image field--media p-rltv h-100-prcnt">
+  
+      <div class="field-item field-item--image field-item--field_media_image field-item--media of-h p-rltv h-100-prcnt img-container">    <picture>
+                  <source srcset="/sites/default/files/styles/16_9_980/public/images/pendlerroute-2-dabringhauser-strasse.png.webp?h=837b125e&amp;itok=SN430Uod 1x" media="(min-width: 736px)" type="image/webp" width="980" height="551"/>
+              <source srcset="/sites/default/files/styles/16_9_700/public/images/pendlerroute-2-dabringhauser-strasse.png.webp?h=837b125e&amp;itok=ou3eLZrl 1x" media="(max-width: 735px)" type="image/webp" width="700" height="394"/>
+                  
+  <img loading="lazy" width="100" height="56" src="/sites/default/files/styles/16_9_100_nowebp/public/images/pendlerroute-2-dabringhauser-strasse.png?h=837b125e&amp;itok=kI-D5i68" alt="Ein Foto eines Teils der Dabringhauser Straße. Es sind drei Fahrradfahrende sowie auf der Straße ein Hinweisschild Fahrradstraße zu sehen. Es verdeutlicht wie es nach Änderung in eine Fahrradstraße aussehen könnte."/>
+
+
+  </picture>
+
+</div>
+  </div>
+
+
+
+    
+
+
+
+
+
+<div  class="copyright p-abslt set-colors inverted">
+  
+      <p class="copyright-inside m0 p0">Stadt Köln/pwc</p>
+  </div>
+
+  </div>
+    
+</div>
+
+  
+    </div>
+  
+  <div class="content">
+    
+          <h3 class="title">
+        <a href="/Radpendlerroute2" class="boxlink no-link-icon" rel="bookmark">RadPendlerRoute 2</a>
+      </h3>
+    
+    
+    <footer class="meta-information">
+      <p>
+                  <i class="fas fa-lightbulb" aria-hidden="true"></i>
+          <span class="countValue">3</span> Beiträge        
+        
+        
+
+
+        
+      </p>
+    </footer>
+
+    
+
+
+
+
+
+
+<div  class="wysiwyg-txt field field--field_description field--text_long field--group">
+  
+      <div class="field-item field-item--text_long field-item--field_description field-item--group"><p>Im rechtsrheinischen entstehen drei neue Fahrradstraßen in Köln-Holweide. Vom 6. bis 26. Juli 2026 konnten Sie uns Ihre Anregungen mitteilen.<strong> Vielen Dank für die zahlreichen Eingänge!</strong>&nbsp;</p>
+</div>
+  </div>
+
+    <ul class="links" role="presentation">
+      <li>
+        <a class="btn" href="/Radpendlerroute2" tabindex="-1" rel="bookmark">Weiterlesen</a>
+      </li>
+    </ul>
+  </div>
+</article>
+</div>
+          <div class="field-item field-item--entity_reference field-item--field_unit_reference field-item--block_content views-row">
+
+<article class="group group--teaser group--unit p-rltv d-f flx-grw1 teaser group-91">
+    
+
+  <p class="participation-countdown participation-countdown-ended">
+    Online-Beteiligung seit 84 Tagen geschlossen
+  </p>
+
+      <div class="media">
+      	    
+<div class="p-rltv 16_9_teaser h-100-prcnt media-">
+  
+  <div class="p-rltv h-100-prcnt">
+    
+
+
+
+
+
+
+<div  class="field field--field_media_image field--image field--media p-rltv h-100-prcnt">
+  
+      <div class="field-item field-item--image field-item--field_media_image field-item--media of-h p-rltv h-100-prcnt img-container">    <picture>
+                  <source srcset="/sites/default/files/styles/16_9_980/public/images/gremberger-waeldchen-003.jpg.webp?itok=9kYvAvFB 1x" media="(min-width: 736px)" type="image/webp" width="980" height="551"/>
+              <source srcset="/sites/default/files/styles/16_9_700/public/images/gremberger-waeldchen-003.jpg.webp?itok=E_QPFloQ 1x" media="(max-width: 735px)" type="image/webp" width="700" height="394"/>
+                  
+  <img loading="lazy" width="100" height="56" src="/sites/default/files/styles/16_9_100_nowebp/public/images/gremberger-waeldchen-003.jpg?itok=KjZ9HTKQ" alt="Wald mit Bäumen" title="Gremberger Wäldcehnb "/>
+
+
+  </picture>
+
+</div>
+  </div>
+
+
+
+    
+
+
+
+
+
+<div  class="copyright p-abslt set-colors inverted">
+  
+      <p class="copyright-inside m0 p0">Stadt Köln</p>
+  </div>
+
+  </div>
+    
+</div>
+
+  
+    </div>
+  
+  <div class="content">
+    
+          <h3 class="title">
+        <a href="/node/33126" class="boxlink no-link-icon" rel="bookmark">Forsteinrichtungswerk</a>
+      </h3>
+    
+    
+    <footer class="meta-information">
+      <p>
+        
+        
+        
+
+
+        
+      </p>
+    </footer>
+
+    
+
+
+
+
+
+
+<div  class="wysiwyg-txt field field--field_description field--text_long field--group">
+  
+      <div class="field-item field-item--text_long field-item--field_description field-item--group"><p>Die Öffentlichkeitsbeteiligung zum <strong>Forsteinrichtungswerk</strong> fand vom <strong>6. bis 19. Juli 2026</strong> statt. Vielen Dank für Ihre Hinweise und Anregungen! Diese werden derzeit ausgewertet. Über die Ergebnisse informieren wir Sie zu einem späteren Zeitpunkt.</p>
+</div>
+  </div>
+
+    <ul class="links" role="presentation">
+      <li>
+        <a class="btn" href="/node/33126" tabindex="-1" rel="bookmark">Weiterlesen</a>
+      </li>
+    </ul>
+  </div>
+</article>
+</div>
+          <div class="field-item field-item--entity_reference field-item--field_unit_reference field-item--block_content views-row">
+
+<article class="group group--teaser group--unit p-rltv d-f flx-grw1 teaser group-35">
+    
+
+  <p class="participation-countdown participation-countdown-ended">
+    Online-Beteiligung seit 98 Tagen geschlossen
+  </p>
+
+      <div class="media">
+      	    
+<div class="p-rltv 16_9_teaser h-100-prcnt media-">
+  
+  <div class="p-rltv h-100-prcnt">
+    
+
+
+
+
+
+
+<div  class="field field--field_media_image field--image field--media p-rltv h-100-prcnt">
+  
+      <div class="field-item field-item--image field-item--field_media_image field-item--media of-h p-rltv h-100-prcnt img-container">    <picture>
+                  <source srcset="/sites/default/files/styles/16_9_980/public/images/artenreich-ohne-colonius-.png.webp?itok=bhy2LNqB 1x" media="(min-width: 736px)" type="image/webp" width="980" height="551"/>
+              <source srcset="/sites/default/files/styles/16_9_700/public/images/artenreich-ohne-colonius-.png.webp?itok=Srwdl0Dz 1x" media="(max-width: 735px)" type="image/webp" width="700" height="394"/>
+                  
+  <img loading="lazy" width="100" height="56" src="/sites/default/files/styles/16_9_100_nowebp/public/images/artenreich-ohne-colonius-.png?itok=PPuVPQgV" alt="Blumenwiese" title="Masterplan Grün - Die Stadtprogramme"/>
+
+
+  </picture>
+
+</div>
+  </div>
+
+
+
+    
+
+
+
+
+
+<div  class="copyright p-abslt set-colors inverted">
+  
+      <p class="copyright-inside m0 p0">Stadt Köln</p>
+  </div>
+
+  </div>
+    
+</div>
+
+  
+    </div>
+  
+  <div class="content">
+    
+          <h3 class="title">
+        <a href="/masterplan-stadtgruen" class="boxlink no-link-icon" rel="bookmark">Masterplan Stadtgrün-Stadtprogramm Lindenthal</a>
+      </h3>
+    
+    
+    <footer class="meta-information">
+      <p>
+                  <i class="fas fa-lightbulb" aria-hidden="true"></i>
+          <span class="countValue">834</span> Beiträge        
+                  <span class="pl1 pr1">|</span>
+          <i class="fas fa-comment" aria-hidden="true"></i>
+          <span class="countValue">274</span> Kommentare        
+          <span class="vertical-text-separator" aria-hidden="true"></span>
+  <i class="fas fa-poll" aria-hidden="true"></i>
+  <span class="countValue">2961</span> Bewertungen
+
+
+        
+      </p>
+    </footer>
+
+    
+
+
+
+
+
+
+<div  class="wysiwyg-txt field field--field_description field--text_long field--group">
+  
+      <div class="field-item field-item--text_long field-item--field_description field-item--group"><p>Vielen Dank für Ihre Teilnahme! Die Öffentlichkeitsbeteiligung zum Masterplan Stadtgrün im Stadtbezirk Lindenthal fand vom 22. Juni bis 5. Juli 2026 statt und ist abgeschlossen. Die Hinweise werden derzeit ausgewertet. Über die Ergebnisse informieren wir Sie zu einem späteren Zeitpunkt.</p>
+</div>
+  </div>
+
+    <ul class="links" role="presentation">
+      <li>
+        <a class="btn" href="/masterplan-stadtgruen" tabindex="-1" rel="bookmark">Weiterlesen</a>
+      </li>
+    </ul>
+  </div>
+</article>
+</div>
+          <div class="field-item field-item--entity_reference field-item--field_unit_reference field-item--block_content views-row">
+
+<article class="group group--teaser group--unit p-rltv d-f flx-grw1 teaser group-74">
+    
+
+  <p class="participation-countdown participation-countdown-ended">
+    Online-Beteiligung seit 105 Tagen geschlossen
+  </p>
+
+      <div class="media">
+      	    
+<div class="p-rltv 16_9_teaser h-100-prcnt media-">
+  
+  <div class="p-rltv h-100-prcnt">
+    
+
+
+
+
+
+
+<div  class="field field--field_media_image field--image field--media p-rltv h-100-prcnt">
+  
+      <div class="field-item field-item--image field-item--field_media_image field-item--media of-h p-rltv h-100-prcnt img-container">    <picture>
+                  <source srcset="/sites/default/files/styles/16_9_980/public/images/foto-beteiligungsportal_0.jpg.webp?itok=FSFm3Srd 1x" media="(min-width: 736px)" type="image/webp" width="980" height="551"/>
+              <source srcset="/sites/default/files/styles/16_9_700/public/images/foto-beteiligungsportal_0.jpg.webp?itok=_RK5RE6l 1x" media="(max-width: 735px)" type="image/webp" width="700" height="394"/>
+                  
+  <img loading="lazy" width="100" height="56" src="/sites/default/files/styles/16_9_100_nowebp/public/images/foto-beteiligungsportal_0.jpg?itok=3_rz7Alg" alt="Straßenszene im Winzerveedel: Mehrstöckige Häuser in verschiedenen Farben säumen die Straße, am Fahrbahnrand stehen geparkte Autos und Fahrräder. Im Vordergrund befindet sich eine Kreuzung mit Fußgängerüberweg und Verkehrszeichen (30-Zone). Einzelne Personen bewegen sich auf dem Gehweg, im Hintergrund sind weitere Gebäude sowie ein modernes größeres Gebäude zu sehen." title="Straße im Winzerveedel "/>
+
+
+  </picture>
+
+</div>
+  </div>
+
+
+
+    
+
+
+
+
+
+<div  class="copyright p-abslt set-colors inverted">
+  
+      <p class="copyright-inside m0 p0">Stadt Köln</p>
+  </div>
+
+  </div>
+    
+</div>
+
+  
+    </div>
+  
+  <div class="content">
+    
+          <h3 class="title">
+        <a href="/winzerveedel" class="boxlink no-link-icon" rel="bookmark">Lebenswertes Winzerveedel - Gut unterwegs, gerne da!</a>
+      </h3>
+    
+    
+    <footer class="meta-information">
+      <p>
+                  <i class="fas fa-lightbulb" aria-hidden="true"></i>
+          <span class="countValue">334</span> Beiträge        
+                  <span class="pl1 pr1">|</span>
+          <i class="fas fa-comment" aria-hidden="true"></i>
+          <span class="countValue">166</span> Kommentare        
+          <span class="vertical-text-separator" aria-hidden="true"></span>
+  <i class="fas fa-poll" aria-hidden="true"></i>
+  <span class="countValue">2468</span> Bewertungen
+
+
+        
+      </p>
+    </footer>
+
+    
+
+
+
+
+
+
+<div  class="wysiwyg-txt field field--field_description field--text_long field--group">
+  
+      <div class="field-item field-item--text_long field-item--field_description field-item--group"><p><span>Wie schaffen wir ein ruhiges und grünes Veedel? Wie gestalten wir die Mobilität vor unserer Haustür? Zusammen mit Ihnen und Akteur*innen vor Ort möchten wir das im Winzerveedel herausfinden.&nbsp;</span></p>
+</div>
+  </div>
+
+    <ul class="links" role="presentation">
+      <li>
+        <a class="btn" href="/winzerveedel" tabindex="-1" rel="bookmark">Weiterlesen</a>
+      </li>
+    </ul>
+  </div>
+</article>
+</div>
+          <div class="field-item field-item--entity_reference field-item--field_unit_reference field-item--block_content views-row">
+
+<article class="group group--teaser group--unit p-rltv d-f flx-grw1 teaser group-5">
+    
+
+  <p class="participation-countdown participation-countdown-ended">
+    Online-Beteiligung seit 126 Tagen geschlossen
+  </p>
+
+      <div class="media">
+      	    
+<div class="p-rltv 16_9_teaser h-100-prcnt media-">
+  
+  <div class="p-rltv h-100-prcnt">
+    
+
+
+
+
+
+
+<div  class="field field--field_media_image field--image field--media p-rltv h-100-prcnt">
+  
+      <div class="field-item field-item--image field-item--field_media_image field-item--media of-h p-rltv h-100-prcnt img-container">    <picture>
+                  <source srcset="/sites/default/files/styles/16_9_980/public/images/2.1_Schra%CC%88gluftaufnahme%20neu.jpg.webp?itok=8JuQp36t 1x" media="(min-width: 736px)" type="image/webp" width="980" height="551"/>
+              <source srcset="/sites/default/files/styles/16_9_700/public/images/2.1_Schra%CC%88gluftaufnahme%20neu.jpg.webp?itok=Eeaxj4_y 1x" media="(max-width: 735px)" type="image/webp" width="700" height="394"/>
+                  
+  <img loading="lazy" width="100" height="56" src="/sites/default/files/styles/16_9_100_nowebp/public/images/2.1_Schra%CC%88gluftaufnahme%20neu.jpg?itok=Ys_EiLEQ" alt="Schrägluftbild von Köln mit Kennzeichnung von verschiedenen Orten" title="Schrägluftaunahme"/>
+
+
+  </picture>
+
+</div>
+  </div>
+
+
+
+    
+
+
+
+
+
+<div  class="copyright p-abslt set-colors inverted">
+  
+      <p class="copyright-inside m0 p0">© RMP Stephan Lenzen Landschaftsarchitekten</p>
+  </div>
+
+  </div>
+    
+</div>
+
+  
+    </div>
+  
+  <div class="content">
+    
+          <h3 class="title">
+        <a href="/grungurtel-parkstadt-sud" class="boxlink no-link-icon" rel="bookmark">GRÜNGÜRTEL Parkstadt Süd</a>
+      </h3>
+    
+    
+    <footer class="meta-information">
+      <p>
+        
+        
+        
+
+
+        
+      </p>
+    </footer>
+
+    
+
+
+
+
+
+
+<div  class="wysiwyg-txt field field--field_description field--text_long field--group">
+  
+      <div class="field-item field-item--text_long field-item--field_description field-item--group"><p><span>In der Zeit vom 18. Mai 2026 bis 03. Juli 2026 fand die Öffentlichkeitsbeteiligung digital und vor Ort statt. Im Feedback-Workshop am 01. Oktober 2026 wurde der Planungsstand vorgestellt und gezeigt, welchen Einfluss die Öffentlichkeitsbeteiligung auf die Planung hat.</span></p></div>
+  </div>
+
+    <ul class="links" role="presentation">
+      <li>
+        <a class="btn" href="/grungurtel-parkstadt-sud" tabindex="-1" rel="bookmark">Weiterlesen</a>
+      </li>
+    </ul>
+  </div>
+</article>
+</div>
+        </div>
+  </div>
+</div>
+
+        </div>
+          </div>
+  </div>
+</div>
+
+
+<div   data-cd-instance-id="7681cfcb-daee-4649-8126-aeb5694c15f6">
+  <div class="cc0 set-colors block block-layout-builder block-inline-blocktext-widget" data-cd-selector="outer-container">
+    <div  class="cc0 set-colors" data-cd-selector="inner-container">
+      
+            
+              
+
+
+
+
+
+  
+<div  class="wysiwyg-txt field field--body field--text_with_summary field--block_content" data-cd-selector="body">
+  
+      <div class="field-item field-item--text_with_summary field-item--body field-item--block_content"><p class="text-align-center"><a class="btn" href="/mitmachen/alle-projekte" title="Weitere Projekte" data-entity-type="node" data-entity-uuid="028b0d98-3613-4e76-895b-c46f40ba323c" data-entity-substitution="canonical" rel="nofollow">Alle Projekte</a></p>
+</div>
+  </div>
+
+          </div>
+  </div>
+</div>
+</div>
+    </div>
+  </div>
+
+  
+
+
+
+
+
+
+    <div class="cc0 set-colors p1  layout outer-container" data-cd-selector="outer-container"  data-cd-instance-id="a3a20fc9-3e5a-48a1-b269-3c25c9335153">
+    <div  class="inner-container" data-cd-selector="inner-container">
+      <div  class="layout__region layout__region--content column-1" data-cd-selector="column-1"></div>
+    </div>
+  </div>
+
+  
+
+
+
+
+  
+
+    <div class="cc1 p1 set-colors layout outer-container" data-cd-selector="outer-container"  data-cd-instance-id="cdb9e5eb-2df5-40de-9ba9-804089850530">
+    <div  class="algn-c maxw50-grd inner-container" data-cd-selector="inner-container">
+      <div  class="layout__region layout__region--content column-1" data-cd-selector="column-1">
+
+<div  id="naechste_veranstaltungen"  data-cd-instance-id="825fd27b-c85b-4b47-9910-fc246f5076c4">
+  <div class="block block-dz-event block-dz-event-list-block" data-cd-selector="outer-container">
+    <div  data-cd-selector="inner-container">
+      
+                <h2 class="fs2 fs4-m mb2 mb2-m ta-c" data-cd-selector="title">Die nächsten Termine</h2>
+            
+
+            <div  data-cd-selector="body">
+        <div data-cd-selector="body"></div>
+
+      </div>
+      
+              
+        <div  class="cc1 event-list-simple set-colors view" data-cd-selector="view">
+          <div>
+
+<article data-history-node-id="32411" class="node--teaser node--event--teaser p-rltv flx-grw1">
+
+      <div class="media img-obj-fit-cvr">
+      
+
+
+
+
+
+
+<div  class="field field--field_media field--entity_reference field--node">
+  
+      <div class="field-item field-item--entity_reference field-item--field_media field-item--node">
+<div class="p-rltv 16_9_teaser h-100-prcnt media-">
+  
+  <div class="p-rltv h-100-prcnt">
+    
+
+
+
+
+
+
+<div  class="field field--field_media_image field--image field--media p-rltv h-100-prcnt">
+  
+      <div class="field-item field-item--image field-item--field_media_image field-item--media of-h p-rltv h-100-prcnt img-container">    <picture>
+                  <source srcset="/sites/default/files/styles/16_9_980/public/images/kfa-logo2.jpg.webp?itok=Xk9JY8zn 1x" media="(min-width: 736px)" type="image/webp" width="980" height="551"/>
+              <source srcset="/sites/default/files/styles/16_9_700/public/images/kfa-logo2.jpg.webp?itok=84YvLWZx 1x" media="(max-width: 735px)" type="image/webp" width="700" height="394"/>
+                  
+  <img loading="lazy" width="100" height="56" src="/sites/default/files/styles/16_9_100_nowebp/public/images/kfa-logo2.jpg?itok=vQ55Y9a2" alt="Logo der Kölner Freiwilligen Agentur" title="Logo der Kölner Freiwilligen Agentur"/>
+
+
+  </picture>
+
+</div>
+  </div>
+
+
+
+    
+
+
+
+
+
+<div  class="copyright p-abslt set-colors inverted">
+  
+      <p class="copyright-inside m0 p0">Kölner Freiwilligen Agentur</p>
+  </div>
+
+  </div>
+    
+</div>
+</div>
+  </div>
+
+    </div>
+  
+  <div class="content">
+    
+    
+          <h3 class="title">
+        <a href="/veranstaltungen/sprechstunde-zu-allen-fragen-politischer-teilhabe-und-oeffentlichkeitsbeteiligung" class="boxlink" rel="bookmark">Sprechstunde zu allen Fragen politischer Teilhabe und Öffentlichkeitsbeteiligung </a>
+      </h3>
+        
+
+        <div class="event-dates has-end-date">
+      
+
+
+
+
+
+
+<div  class="field field--field_event_date field--datetime field--node event-date">
+      <div class="visually-hidden">Datum</div>
+  
+      <div class="field-item field-item--datetime field-item--field_event_date field-item--node">
+      
+      <time
+        datetime="2026-01-01">
+
+                
+        <span class="event-y-m-d">01.01.2026</span>
+        <div class="date-calendar-style">
+
+          
+          <span class="event-day d-n">01</span>
+          <span class="event-month d-n">01</span>
+          <span class="event-year d-n">2026</span>
+        </div>
+      </time>
+                </div>
+  </div>
+
+              
+
+
+
+
+
+
+<div  class="field field--field_event_end_date field--datetime field--node event-date">
+      <div class="visually-hidden">Veranstaltungsende</div>
+  
+      <div class="field-item field-item--datetime field-item--field_event_end_date field-item--node">
+    
+      <time
+        datetime="2030-12-31">
+        <span class="event-y-m-d">31.12.2030</span>
+        <span class="event-day d-n">31</span>
+        <span class="event-month d-n">12</span>
+        <span class="event-year d-n">2030</span>
+      </time>
+                </div>
+  </div>
+
+          </div>
+
+    
+
+
+
+
+
+
+<div  class="wysiwyg-txt field field--body field--text_with_summary field--node">
+  
+      <div class="field-item field-item--text_with_summary field-item--body field-item--node"><p>Das Team&nbsp;<a href="https://koeln-freiwillig.de/beteiligen" target="_blank" rel="nofollow"><u>“Politische Partizipation”</u></a> der Kölner Freiwilligen Agentur bietet allen Interessierten die Möglichkeit einer <strong>“Sprechstunde zu allen Fragen politischer Teilhabe und Öffentlichkeitsbeteiligung – online oder in Präsenz”</strong> an. Diese Sprechstunden finden nach Vereinbarung vor Ort in der Kölner Freiwilligen Agentur, Clemensstr. 7 (Nähe Neumarkt) oder online als Videogespräch statt.</p></div>
+  </div>
+
+
+          <ul class="links" role="presentation">
+        <li>
+          <a class="btn" href="/veranstaltungen/sprechstunde-zu-allen-fragen-politischer-teilhabe-und-oeffentlichkeitsbeteiligung" tabindex="-1" rel="bookmark">Weiterlesen</a>
+        </li>
+      </ul>
+      </div>
+</article>
+
+
+<article data-history-node-id="35365" class="node--teaser node--event--teaser p-rltv flx-grw1">
+
+      <div class="media img-obj-fit-cvr">
+      
+
+
+
+
+
+
+<div  class="field field--field_media field--entity_reference field--node">
+  
+      <div class="field-item field-item--entity_reference field-item--field_media field-item--node">
+<div class="p-rltv 16_9_teaser h-100-prcnt media-">
+  
+  <div class="p-rltv h-100-prcnt">
+    
+
+
+
+
+
+
+<div  class="field field--field_media_image field--image field--media p-rltv h-100-prcnt">
+  
+      <div class="field-item field-item--image field-item--field_media_image field-item--media of-h p-rltv h-100-prcnt img-container">    <picture>
+                  <source srcset="/sites/default/files/styles/16_9_980/public/images/unbenannt.jpg.webp?itok=ydzho_v_ 1x" media="(min-width: 736px)" type="image/webp" width="980" height="551"/>
+              <source srcset="/sites/default/files/styles/16_9_700/public/images/unbenannt.jpg.webp?itok=y3bePgEy 1x" media="(max-width: 735px)" type="image/webp" width="700" height="394"/>
+                  
+  <img loading="lazy" width="100" height="56" src="/sites/default/files/styles/16_9_100_nowebp/public/images/unbenannt.jpg?itok=Mx5cNovr" alt="Neues Quartier Bickendorf - ehemaliges Coty-Gewerbegrundstück" title="Neues Quartier Bickendorf - ehemaliges Coty-Gewerbegrundstück"/>
+
+
+  </picture>
+
+</div>
+  </div>
+
+
+
+    
+
+
+
+
+
+<div  class="copyright p-abslt set-colors inverted">
+  
+      <p class="copyright-inside m0 p0">© Instone Real Estate GmbH</p>
+  </div>
+
+  </div>
+    
+</div>
+</div>
+  </div>
+
+    </div>
+  
+  <div class="content">
+    
+    
+          <h3 class="title">
+        <a href="/veranstaltungen/neues-quartier-bickendorf-ausstellung-der-planungskonzepte" class="boxlink" rel="bookmark">Neues Quartier Bickendorf – Ausstellung der Planungskonzepte</a>
+      </h3>
+        
+
+        <div class="event-dates has-end-date">
+      
+
+
+
+
+
+
+<div  class="field field--field_event_date field--datetime field--node event-date">
+      <div class="visually-hidden">Datum</div>
+  
+      <div class="field-item field-item--datetime field-item--field_event_date field-item--node">
+      
+      <time
+        datetime="2026-10-05">
+
+                          <span class="event-y-m-d-short d-n">05-16.10.2026</span>
+        
+        <span class="event-y-m-d">05.10.2026</span>
+        <div class="date-calendar-style">
+
+                      <span class="event-day event-day-short d-n">05-16</span>
+          
+          <span class="event-day d-n">05</span>
+          <span class="event-month d-n">10</span>
+          <span class="event-year d-n">2026</span>
+        </div>
+      </time>
+                </div>
+  </div>
+
+              
+
+
+
+  
+
+
+<div  class="field field--field_event_end_date field--datetime field--node event-date represented-date">
+      <div class="visually-hidden">Veranstaltungsende</div>
+  
+      <div class="field-item field-item--datetime field-item--field_event_end_date field-item--node">
+    
+      <time
+        datetime="2026-10-16">
+        <span class="event-y-m-d">16.10.2026</span>
+        <span class="event-day d-n">16</span>
+        <span class="event-month d-n">10</span>
+        <span class="event-year d-n">2026</span>
+      </time>
+                </div>
+  </div>
+
+          </div>
+
+    
+
+
+
+
+
+
+<div  class="wysiwyg-txt field field--body field--text_with_summary field--node">
+  
+      <div class="field-item field-item--text_with_summary field-item--body field-item--node"><p><strong>Wir stellen die Planungskonzepte aus</strong></p>
+<p>Um die Planung für das bisher gewerblich genutzte Areal zu konkretisieren,&nbsp;haben wir gemeinsam mit der Investorin&nbsp;<span lang="en">Instone Real Estate</span>&nbsp;einen städtebaulichen Wettbewerb durchgeführt.&nbsp;</p></div>
+  </div>
+
+
+          <ul class="links" role="presentation">
+        <li>
+          <a class="btn" href="/veranstaltungen/neues-quartier-bickendorf-ausstellung-der-planungskonzepte" tabindex="-1" rel="bookmark">Weiterlesen</a>
+        </li>
+      </ul>
+      </div>
+</article>
+
+
+<article data-history-node-id="35304" class="node--teaser node--event--teaser p-rltv flx-grw1">
+
+      <div class="media img-obj-fit-cvr">
+      
+
+
+
+
+
+
+<div  class="field field--field_media field--entity_reference field--node">
+  
+      <div class="field-item field-item--entity_reference field-item--field_media field-item--node">
+<div class="p-rltv 16_9_teaser h-100-prcnt media-">
+  
+  <div class="p-rltv h-100-prcnt">
+    
+
+
+
+
+
+
+<div  class="field field--field_media_image field--image field--media p-rltv h-100-prcnt">
+  
+      <div class="field-item field-item--image field-item--field_media_image field-item--media of-h p-rltv h-100-prcnt img-container">    <picture>
+                  <source srcset="/sites/default/files/styles/16_9_980/public/images/25069_20251006_luftbild-plangebiet.jpg.webp?itok=ahBOnzXJ 1x" media="(min-width: 736px)" type="image/webp" width="980" height="551"/>
+              <source srcset="/sites/default/files/styles/16_9_700/public/images/25069_20251006_luftbild-plangebiet.jpg.webp?itok=efF4pUQ_ 1x" media="(max-width: 735px)" type="image/webp" width="700" height="394"/>
+                  
+  <img loading="lazy" width="100" height="56" src="/sites/default/files/styles/16_9_100_nowebp/public/images/25069_20251006_luftbild-plangebiet.jpg?itok=PilJ4lP2" alt="Luftbild des Plangebiets in Köln-Ehrenfeld/Braunsfeld. Ein langgestrecktes Areal südlich der Low Line an der Oskar-Jäger-Straße ist mit einer weißen Linie deutlich hervorgehoben" title="Luftbild des Plangebiets"/>
+
+
+  </picture>
+
+</div>
+  </div>
+
+
+
+    
+
+
+
+
+
+<div  class="copyright p-abslt set-colors inverted">
+  
+      <p class="copyright-inside m0 p0">Geoportal NRW, Bearbeitung ISR</p>
+  </div>
+
+  </div>
+    
+</div>
+</div>
+  </div>
+
+    </div>
+  
+  <div class="content">
+    
+    
+          <h3 class="title">
+        <a href="/veranstaltungen/vorstellung-des-siegerentwurfs-qualifizierungsverfahren-oskar-jaeger-strasse" class="boxlink" rel="bookmark">Vorstellung des Siegerentwurfs - Qualifizierungsverfahren Oskar-Jäger-Straße südlich Low Line</a>
+      </h3>
+        
+
+        <div class="event-dates ">
+      
+
+
+
+
+
+
+<div  class="field field--field_event_date field--datetime field--node event-date">
+      <div class="visually-hidden">Datum</div>
+  
+      <div class="field-item field-item--datetime field-item--field_event_date field-item--node">
+      
+      <time
+        datetime="2026-10-13">
+
+                
+        <span class="event-y-m-d">13.10.2026</span>
+        <div class="date-calendar-style">
+
+          
+          <span class="event-day d-n">13</span>
+          <span class="event-month d-n">10</span>
+          <span class="event-year d-n">2026</span>
+        </div>
+      </time>
+                    <time datetime="19:00">
+          <span class="event-time">19:00 <span class="visually-hidden">Uhr</span></span>
+        </time>
+          </div>
+  </div>
+
+          </div>
+
+    
+
+
+
+
+
+
+<div  class="wysiwyg-txt field field--body field--text_with_summary field--node">
+  
+      <div class="field-item field-item--text_with_summary field-item--body field-item--node"><p><strong><u>Frühzeitige Beteiligung der Öffentlichkeit an einem Bebauungsplan-Entwurf im beschleunigten Verfahren</u></strong></p></div>
+  </div>
+
+
+          <ul class="links" role="presentation">
+        <li>
+          <a class="btn" href="/veranstaltungen/vorstellung-des-siegerentwurfs-qualifizierungsverfahren-oskar-jaeger-strasse" tabindex="-1" rel="bookmark">Weiterlesen</a>
+        </li>
+      </ul>
+      </div>
+</article>
+</div>
+
+        </div>
+      
+          </div>
+  </div>
+</div>
+
+
+<div   data-cd-instance-id="5457e5c7-4b9f-4b71-b5c2-e0fb39c9d702">
+  <div class="block block-layout-builder block-inline-blocktext-widget" data-cd-selector="outer-container">
+    <div  data-cd-selector="inner-container">
+      
+            
+              
+
+
+
+
+
+  
+<div  class="wysiwyg-txt field field--body field--text_with_summary field--block_content" data-cd-selector="body">
+  
+      <div class="field-item field-item--text_with_summary field-item--body field-item--block_content"><p class="text-align-center"><a class="btn set-color" href="/veranstaltungen" title="Alle zukünftigen Veranstaltungen" rel="nofollow">Alle zukünftigen Termine</a></p>
+</div>
+  </div>
+
+          </div>
+  </div>
+</div>
+
+
+<div   data-cd-instance-id="38863148-2e1e-49b6-9c60-e84a7ca870eb">
+  <div class="block block-layout-builder block-inline-blocktext-widget" data-cd-selector="outer-container">
+    <div  data-cd-selector="inner-container">
+      
+            
+              
+
+
+
+
+
+  
+<div  class="wysiwyg-txt field field--body field--text_with_summary field--block_content" data-cd-selector="body">
+  
+      <div class="field-item field-item--text_with_summary field-item--body field-item--block_content"><p class="text-align-center"><a class="btn set-color" href="/node/794" title="Ihre Veranstaltung in unserem Kalender" rel="nofollow">Ihre Termine in unserem Kalender</a></p>
+</div>
+  </div>
+
+          </div>
+  </div>
+</div>
+</div>
+    </div>
+  </div>
+
+  
+
+
+
+
+  
+
+    <div class="set-colors p1   layout outer-container" data-cd-selector="outer-container"  data-cd-instance-id="41bb38e1-94f4-43f2-beaa-6648fda0d11f">
+    <div  class="maxw50-grd algn-c  inner-container" data-cd-selector="inner-container">
+      <div  class="layout__region layout__region--content column-1" data-cd-selector="column-1">
+
+
+<div  class="views-element-container" id="aktuelles"  data-cd-instance-id="3568000c-d572-4670-8f22-6783f1122329">
+  <div class="cc0 block block-views block-views-blocknews-teasers-block-1" data-cd-selector="outer-container">
+    <div  data-cd-selector="inner-container">
+      
+                <h2 class="fs2 fs4-m mb2 mb2-m ta-c" data-cd-selector="title">Neuigkeiten</h2>
+            
+              <div  class="list view" data-cd-selector="view">
+          <div><div class="view view-news-teasers view-id-news_teasers view-display-id-block_1 js-view-dom-id-f284a1a519bd8d931da9f035a395d20771066fe97e86764f3cde7e3596aa5cb3">
+  
+    
+      
+      <div class="view-content">
+      <div class="views-rows">
+    <div class="views-row">
+<article data-history-node-id="35347" class="node--teaser node--news--teaser p-rltv flx-grw1">
+      <div class="media img-obj-fit-cvr">
+      
+
+
+
+
+
+
+<div  class="field field--field_media field--entity_reference field--node">
+  
+      <div class="field-item field-item--entity_reference field-item--field_media field-item--node">
+<div class="p-rltv 16_9_teaser h-100-prcnt media-">
+  
+  <div class="p-rltv h-100-prcnt">
+    
+
+
+
+
+
+
+<div  class="field field--field_media_image field--image field--media p-rltv h-100-prcnt">
+  
+      <div class="field-item field-item--image field-item--field_media_image field-item--media of-h p-rltv h-100-prcnt img-container">    <picture>
+                  <source srcset="/sites/default/files/styles/16_9_980/public/images/copyright-unicef-2.jpg.webp?itok=YeZ5YrRy 1x" media="(min-width: 736px)" type="image/webp" width="980" height="551"/>
+              <source srcset="/sites/default/files/styles/16_9_700/public/images/copyright-unicef-2.jpg.webp?itok=UNFPBg0x 1x" media="(max-width: 735px)" type="image/webp" width="700" height="394"/>
+                  
+  <img loading="lazy" width="100" height="56" src="/sites/default/files/styles/16_9_100_nowebp/public/images/copyright-unicef-2.jpg?itok=tBdAsp-z" alt="Auf ein Hey Porz Schablone wird Sprühkreide aufgetragen"/>
+
+
+  </picture>
+
+</div>
+  </div>
+
+
+
+    
+
+
+
+
+
+<div  class="copyright p-abslt set-colors inverted">
+  
+      <p class="copyright-inside m0 p0">©UNICEF/Sachse-Grimm</p>
+  </div>
+
+  </div>
+    
+</div>
+</div>
+  </div>
+
+    </div>
+  
+  <div class="content">
+          <footer class="meta-information">
+        
+                <div>
+          <div class="meta-info-full">
+            Gespeichert von 
+<span><span>Moderation</span></span>
+ am 
+<span><time datetime="2026-10-01T14:43:38+02:00" title="Donnerstag, 1. Oktober 2026 - 14:43">Do., 01.10.2026 - 14:43</time>
+</span>
+
+            
+          </div>
+        </div>
+                <div>
+              <div class="date-calendar-style d-if">
+    <div class="day">
+      01
+    </div>
+    <div class="month">
+      10
+    </div>
+    <div class="year">
+      2026
+    </div>
+  </div>
+        </div>
+      </footer>
+    
+    
+          <h3 class="title">
+        <a href="/node/35347" class="boxlink" rel="bookmark">HEY Porz - jetzt geht’s weiter!</a>
+      </h3>
+        
+
+    
+
+
+
+
+
+
+<div  class="wysiwyg-txt field field--body field--text_with_summary field--node">
+  
+      <div class="field-item field-item--text_with_summary field-item--body field-item--node"><p>Beim Veedels-Check habt ihr uns gezeigt, was euch in Porz wichtig ist und wo ihr euch Veränderungen wünscht. Dabei sind viele Beiträge und Kommentare zusammengekommen und einige Themen haben euch besonders beschäftigt.</p></div>
+  </div>
+
+
+          <ul class="links" role="presentation">
+        <li>
+          <a href="/node/35347" tabindex="-1" rel="bookmark" class="btn">Weiterlesen</a>
+        </li>
+      </ul>
+      </div>
+</article>
+</div>
+    <div class="views-row">
+<article data-history-node-id="35242" class="node--teaser node--news--teaser p-rltv flx-grw1">
+      <div class="media img-obj-fit-cvr">
+      
+
+
+
+
+
+
+<div  class="field field--field_media field--entity_reference field--node">
+  
+      <div class="field-item field-item--entity_reference field-item--field_media field-item--node">
+<div class="p-rltv 16_9_teaser h-100-prcnt media-">
+  
+  <div class="p-rltv h-100-prcnt">
+    
+
+
+
+
+
+
+<div  class="field field--field_media_image field--image field--media p-rltv h-100-prcnt">
+  
+      <div class="field-item field-item--image field-item--field_media_image field-item--media of-h p-rltv h-100-prcnt img-container">    <picture>
+                  <source srcset="/sites/default/files/styles/16_9_980/public/images/istockvvoevale-.jpg.webp?itok=UkzoGtY2 1x" media="(min-width: 736px)" type="image/webp" width="980" height="551"/>
+              <source srcset="/sites/default/files/styles/16_9_700/public/images/istockvvoevale-.jpg.webp?itok=Y0eph-4D 1x" media="(max-width: 735px)" type="image/webp" width="700" height="394"/>
+                  
+  <img loading="lazy" width="100" height="56" src="/sites/default/files/styles/16_9_100_nowebp/public/images/istockvvoevale-.jpg?itok=6vHu8J6h" alt="Das Bild zeigt eine Straßenkreuzung inklusive einer Ampel und zwei unbeschrifteten Straßenschildern. " title="Straßenkreuzung mit unbeschrifteten Straßenschildern "/>
+
+
+  </picture>
+
+</div>
+  </div>
+
+
+
+    
+
+
+
+
+
+<div  class="copyright p-abslt set-colors inverted">
+  
+      <p class="copyright-inside m0 p0">iStock.com/ VvoeVale </p>
+  </div>
+
+  </div>
+    
+</div>
+</div>
+  </div>
+
+    </div>
+  
+  <div class="content">
+          <footer class="meta-information">
+        
+                <div>
+          <div class="meta-info-full">
+            Gespeichert von 
+<span><span>Moderation</span></span>
+ am 
+<span><time datetime="2026-08-28T12:52:58+02:00" title="Freitag, 28. August 2026 - 12:52">Fr., 28.08.2026 - 12:52</time>
+</span>
+
+            
+          </div>
+        </div>
+                <div>
+              <div class="date-calendar-style d-if">
+    <div class="day">
+      28
+    </div>
+    <div class="month">
+      08
+    </div>
+    <div class="year">
+      2026
+    </div>
+  </div>
+        </div>
+      </footer>
+    
+    
+          <h3 class="title">
+        <a href="/node/35242" class="boxlink" rel="bookmark">Gustav-Nachtigal-Straße wird in Manga-Bell-Straße umbenannt</a>
+      </h3>
+        
+
+    
+
+
+
+
+
+
+<div  class="wysiwyg-txt field field--body field--text_with_summary field--node">
+  
+      <div class="field-item field-item--text_with_summary field-item--body field-item--node"><p class="text-align-justify">Die Stadt Köln benennt die Gustav-Nachtigal-Straße im Nippeser Afrikaveedel offiziell in Manga-Bell-Straße um.</p></div>
+  </div>
+
+
+          <ul class="links" role="presentation">
+        <li>
+          <a href="/node/35242" tabindex="-1" rel="bookmark" class="btn">Weiterlesen</a>
+        </li>
+      </ul>
+      </div>
+</article>
+</div>
+    <div class="views-row">
+<article data-history-node-id="35158" class="node--teaser node--news--teaser p-rltv flx-grw1">
+      <div class="media img-obj-fit-cvr">
+      
+
+
+
+
+
+
+<div  class="field field--field_media field--entity_reference field--node">
+  
+      <div class="field-item field-item--entity_reference field-item--field_media field-item--node">
+<div class="p-rltv 16_9_teaser h-100-prcnt media-">
+  
+  <div class="p-rltv h-100-prcnt">
+    
+
+
+
+
+
+
+<div  class="field field--field_media_image field--image field--media p-rltv h-100-prcnt">
+  
+      <div class="field-item field-item--image field-item--field_media_image field-item--media of-h p-rltv h-100-prcnt img-container">    <picture>
+                  <source srcset="/sites/default/files/styles/16_9_980/public/images/bild-drogenkonsumraum-stadt-koeln.jpg.webp?itok=c4TlGCMq 1x" media="(min-width: 736px)" type="image/webp" width="980" height="551"/>
+              <source srcset="/sites/default/files/styles/16_9_700/public/images/bild-drogenkonsumraum-stadt-koeln.jpg.webp?itok=dupLfzyR 1x" media="(max-width: 735px)" type="image/webp" width="700" height="394"/>
+                  
+  <img loading="lazy" width="100" height="56" src="/sites/default/files/styles/16_9_100_nowebp/public/images/bild-drogenkonsumraum-stadt-koeln.jpg?itok=jwUBUtrU" alt="Drogenkonsumraum in Köln - abgebildet sind sechs voneinander abgeschirmte Sitzplätze für den Drogenkonsum " title="Drogenkonsumraum"/>
+
+
+  </picture>
+
+</div>
+  </div>
+
+
+
+    
+
+
+
+
+
+<div  class="copyright p-abslt set-colors inverted">
+  
+      <p class="copyright-inside m0 p0">Stadt Köln</p>
+  </div>
+
+  </div>
+    
+</div>
+</div>
+  </div>
+
+    </div>
+  
+  <div class="content">
+          <footer class="meta-information">
+        
+                <div>
+          <div class="meta-info-full">
+            Gespeichert von 
+<span><span>Moderation</span></span>
+ am 
+<span><time datetime="2026-07-17T16:43:38+02:00" title="Freitag, 17. Juli 2026 - 16:43">Fr., 17.07.2026 - 16:43</time>
+</span>
+
+            
+          </div>
+        </div>
+                <div>
+              <div class="date-calendar-style d-if">
+    <div class="day">
+      17
+    </div>
+    <div class="month">
+      07
+    </div>
+    <div class="year">
+      2026
+    </div>
+  </div>
+        </div>
+      </footer>
+    
+    
+          <h3 class="title">
+        <a href="/node/35158" class="boxlink" rel="bookmark">Erster Dialog-Tisch zum Suchthilfezentrum am Perlengraben: Auftakt für den gemeinsamen Austausch</a>
+      </h3>
+        
+
+    
+
+
+
+
+
+
+<div  class="wysiwyg-txt field field--body field--text_with_summary field--node">
+  
+      <div class="field-item field-item--text_with_summary field-item--body field-item--node"><p>Am 16. Juli 2026 fand der erste Dialog-Tisch statt.</p>
+</div>
+  </div>
+
+
+          <ul class="links" role="presentation">
+        <li>
+          <a href="/node/35158" tabindex="-1" rel="bookmark" class="btn">Weiterlesen</a>
+        </li>
+      </ul>
+      </div>
+</article>
+</div>
+</div>
+
+    </div>
+  
+          </div>
+</div>
+
+        </div>
+          </div>
+  </div>
+</div>
+
+
+<div   data-cd-instance-id="abaa6cae-8940-4f31-9ded-5af96abd0e8f">
+  <div class="block block-layout-builder block-inline-blocktext-widget" data-cd-selector="outer-container">
+    <div  data-cd-selector="inner-container">
+      
+            
+              
+
+
+
+
+
+  
+<div  class="wysiwyg-txt field field--body field--text_with_summary field--block_content" data-cd-selector="body">
+  
+      <div class="field-item field-item--text_with_summary field-item--body field-item--block_content"><p class="text-align-center"><a class="btn" data-entity-substitution="canonical" data-entity-type="node" data-entity-uuid="28a9b82f-14e7-4579-a862-86765b60029c" href="/aktuelles" title="Alle Meldungen" rel="nofollow">Alle Meldungen</a></p>
+</div>
+  </div>
+
+          </div>
+  </div>
+</div>
+</div>
+    </div>
+  </div>
+
+  
+
+
+
+
+  
+
+    <div class="p1 layout outer-container" data-cd-selector="outer-container" id="film"  data-cd-instance-id="f3ee8eac-a2e7-4a18-be72-61ff7ae68851">
+    <div  class="algn-c maxw50-grd inner-container" data-cd-selector="inner-container">
+      <div  class="layout__region layout__region--content column-1" data-cd-selector="column-1">
+
+<div  id="imagefilm"  data-cd-instance-id="7a3408ed-65c4-4eff-bdad-444dca675f44">
+  <div class="block block-layout-builder block-inline-blocktext-widget" data-cd-selector="outer-container">
+    <div  data-cd-selector="inner-container">
+      
+              <h2 class="fs2 fs4-m mb2 mb2-m ta-c" data-cd-selector="title">Meinung für Köln. Beteiligung für alle.</h2>
+            
+              
+
+
+
+
+
+  
+<div  class="wysiwyg-txt field field--body field--text_with_summary field--block_content" data-cd-selector="body">
+  
+      <div class="field-item field-item--text_with_summary field-item--body field-item--block_content"><div class="align-center">
+  
+  
+
+
+
+
+
+
+    <div class="layout outer-container">
+    <div>
+      <div>
+
+<div>
+    <div class="block block-layout-builder block-field-blockmediaremote-videofield-media-oembed-video">
+      <div>
+      
+            
+              <div>
+          
+
+
+
+
+
+
+<div class="field field--field_media_oembed_video field--string field--media">
+  
+      <div class="field-item field-item--string field-item--field_media_oembed_video field-item--media"><iframe src width="200" height="113" class="media-oembed-content cookies-video" loading="lazy" title="Meinung für Köln. Beteiligung für alle" data-src="https://meinungfuer.koeln/media/oembed?url=https%3A//www.youtube.com/watch%3Fv%3DNI8Tcb1OpaA&amp;max_width=0&amp;max_height=0&amp;hash=ni4bgjWjzXpoAOHD1ClDIp4CXjB3ZuPOoIf5M2a3v_Q"></iframe>
+</div>
+  </div>
+
+        </div>
+          </div>
+  </div>
+</div>
+</div>
+    </div>
+  </div>
+
+
+</div>
+</div>
+  </div>
+
+          </div>
+  </div>
+</div>
+</div>
+    </div>
+  </div>
+
+  
+
+
+
+
+  
+
+    <div class="cc3 set-colors p1   layout outer-container" data-cd-selector="outer-container"  data-cd-instance-id="92107aeb-f9e6-4cf6-a503-35d25ec02ca3">
+    <div  class="maxw50-grd algn-c  inner-container" data-cd-selector="inner-container">
+      <div  class="layout__region layout__region--content column-1" data-cd-selector="column-1">
+
+<div  id="lesenswertes"  data-cd-instance-id="593e439e-ddf7-4873-93d5-9bda4d9ab723">
+  <div class="cc0 block block-layout-builder block-inline-blocknode-list" data-cd-selector="outer-container">
+    <div  data-cd-selector="inner-container">
+      
+                <h2 class="fs2 fs4-m mb2 mb2-m ta-c" data-cd-selector="title">Lesenswertes</h2>
+            
+                
+
+
+
+  
+<div  class="list field field--field_node_reference field--entity_reference field--block_content" data-cd-selector="field_node_reference">
+  
+  <div class="view-content">
+    <div class="views-rows">
+              <div class="field-item field-item--entity_reference field-item--field_node_reference field-item--block_content views-row">
+<article data-history-node-id="13" class="node--teaser p-rltv flx-grw1" data-node-id="13">
+
+  
+    <div class="media img-obj-fit-cvr">
+      
+
+
+
+
+
+
+<div  class="field field--field_media field--entity_reference field--node">
+  
+      <div class="field-item field-item--entity_reference field-item--field_media field-item--node">
+<div class="p-rltv 3_2 h-100-prcnt media-">
+  
+  <div class="p-rltv h-100-prcnt">
+    
+
+
+
+
+
+
+<div  class="field field--field_media_image field--image field--media p-rltv h-100-prcnt">
+  
+      <div class="field-item field-item--image field-item--field_media_image field-item--media of-h p-rltv h-100-prcnt img-container">    <picture>
+                  <source srcset="/sites/default/files/styles/3_2_1920/public/images/teamfoto-08_25-3.jpg.webp?itok=oH0oA5as 1x" media="(min-width: 1690px)" type="image/webp" width="1920" height="1280"/>
+              <source srcset="/sites/default/files/styles/3_2_1600/public/images/teamfoto-08_25-3.jpg.webp?itok=szEy6G0g 1x" media="(min-width: 1280px)" type="image/webp" width="1600" height="1067"/>
+              <source srcset="/sites/default/files/styles/3_2_1280/public/images/teamfoto-08_25-3.jpg.webp?itok=c_nT8dv1 1x" media="(min-width: 980px)" type="image/webp" width="1280" height="853"/>
+              <source srcset="/sites/default/files/styles/3_2_980/public/images/teamfoto-08_25-3.jpg.webp?itok=CDvuW5KF 1x" media="(min-width: 736px)" type="image/webp" width="980" height="653"/>
+              <source srcset="/sites/default/files/styles/3_2_980/public/images/teamfoto-08_25-3.jpg.webp?itok=CDvuW5KF 1x" media="(max-width: 735px)" type="image/webp" width="980" height="653"/>
+              <source srcset="/sites/default/files/styles/blur_preview/public/images/teamfoto-08_25-3.jpg.webp?itok=dmMQJ1u5 1x" media="(min-width: 1px)" type="image/webp" width="100" height="80"/>
+                  
+  <img loading="lazy" width="4090" height="3258" src="/sites/default/files/images/teamfoto-08_25-3.jpg" alt="Abgebildet ist das Team vom Büro für Öffentlichkeitsbeteiligung" title="Büro für Öffentlichkeitsbeteiligung Stadt Köln "/>
+
+
+  </picture>
+
+</div>
+  </div>
+
+
+
+    
+
+
+
+
+
+<div  class="copyright p-abslt set-colors inverted">
+  
+      <p class="copyright-inside m0 p0">Stadt Köln</p>
+  </div>
+
+  </div>
+    
+</div>
+</div>
+  </div>
+
+    </div>
+  
+
+  <div class="content">
+
+    
+    
+          <h3 class="title">
+        <a href="/informationen/das-kooperative-buero-fuer-oeffentlichkeitsbeteiligung" class="boxlink" rel="bookmark">Das Büro für Öffentlichkeitsbeteiligung</a>
+      </h3>
+        
+
+    
+
+
+
+
+
+
+<div  class="wysiwyg-txt field field--body field--text_with_summary field--node">
+  
+      <div class="field-item field-item--text_with_summary field-item--body field-item--node"><p>Für die Umsetzung und Weiterentwicklung der Systematischen Öffentlichkeitsbeteiligung hat die Stadt Köln das kooperative Büro für Öffentlichkeitsbeteiligung eingerichtet.</p>
+</div>
+  </div>
+
+    
+
+          <ul class="links" role="presentation">
+        <li>
+          <a href="/informationen/das-kooperative-buero-fuer-oeffentlichkeitsbeteiligung" class="d-ib btn" tabindex="-1" rel="bookmark">Weiterlesen</a>
+        </li>
+      </ul>
+      </div>
+</article>
+</div>
+              <div class="field-item field-item--entity_reference field-item--field_node_reference field-item--block_content views-row">
+<article data-history-node-id="14" class="node--teaser p-rltv flx-grw1" data-node-id="14">
+
+  
+    <div class="media img-obj-fit-cvr">
+      
+
+
+
+
+
+
+<div  class="field field--field_media field--entity_reference field--node">
+  
+      <div class="field-item field-item--entity_reference field-item--field_media field-item--node">
+<div class="p-rltv 3_2 h-100-prcnt media-">
+  
+  <div class="p-rltv h-100-prcnt">
+    
+
+
+
+
+
+
+<div  class="field field--field_media_image field--image field--media p-rltv h-100-prcnt">
+  
+      <div class="field-item field-item--image field-item--field_media_image field-item--media of-h p-rltv h-100-prcnt img-container">    <picture>
+                  <source srcset="/sites/default/files/styles/3_2_1920/public/images/qualitatsstandards-fur-offentlichkeitsbeteiligung_small.jpg.webp?itok=PtZAx1HW 1x" media="(min-width: 1690px)" type="image/webp" width="1920" height="1280"/>
+              <source srcset="/sites/default/files/styles/3_2_1600/public/images/qualitatsstandards-fur-offentlichkeitsbeteiligung_small.jpg.webp?itok=ZA1RvhBN 1x" media="(min-width: 1280px)" type="image/webp" width="1600" height="1067"/>
+              <source srcset="/sites/default/files/styles/3_2_1280/public/images/qualitatsstandards-fur-offentlichkeitsbeteiligung_small.jpg.webp?itok=r7-B3IwI 1x" media="(min-width: 980px)" type="image/webp" width="1280" height="853"/>
+              <source srcset="/sites/default/files/styles/3_2_980/public/images/qualitatsstandards-fur-offentlichkeitsbeteiligung_small.jpg.webp?itok=HsH0OMjb 1x" media="(min-width: 736px)" type="image/webp" width="980" height="653"/>
+              <source srcset="/sites/default/files/styles/3_2_980/public/images/qualitatsstandards-fur-offentlichkeitsbeteiligung_small.jpg.webp?itok=HsH0OMjb 1x" media="(max-width: 735px)" type="image/webp" width="980" height="653"/>
+              <source srcset="/sites/default/files/styles/blur_preview/public/images/qualitatsstandards-fur-offentlichkeitsbeteiligung_small.jpg.webp?itok=qqwZJoaU 1x" media="(min-width: 1px)" type="image/webp" width="100" height="68"/>
+                  
+  <img loading="lazy" width="2169" height="1483" src="/sites/default/files/images/qualitatsstandards-fur-offentlichkeitsbeteiligung_small.jpg" alt="Qualitätsstandards für Öffentlichkeitsbeteiligung" title="Qualitätsstandards für Öffentlichkeitsbeteiligung"/>
+
+
+  </picture>
+
+</div>
+  </div>
+
+
+
+    
+
+
+
+
+
+<div  class="copyright p-abslt set-colors inverted">
+  
+      <p class="copyright-inside m0 p0">Stadt Köln</p>
+  </div>
+
+  </div>
+    
+</div>
+</div>
+  </div>
+
+    </div>
+  
+
+  <div class="content">
+
+    
+    
+          <h3 class="title">
+        <a href="/informationen/systematische-oeffentlichkeitsbeteiligung-erklaert" class="boxlink" rel="bookmark">Systematische Öffentlichkeitsbeteiligung erklärt</a>
+      </h3>
+        
+
+    
+
+
+
+
+
+
+<div  class="wysiwyg-txt field field--body field--text_with_summary field--node">
+  
+      <div class="field-item field-item--text_with_summary field-item--body field-item--node"><p>Köln zielt auf eine zukunftsfähige Beteiligungskultur, die auf Transparenz, Dialog und einem verlässlichen Miteinander von Stadtgesellschaft, Politik und Verwaltung fußt.</p>
+</div>
+  </div>
+
+    
+
+          <ul class="links" role="presentation">
+        <li>
+          <a href="/informationen/systematische-oeffentlichkeitsbeteiligung-erklaert" class="d-ib btn" tabindex="-1" rel="bookmark">Weiterlesen</a>
+        </li>
+      </ul>
+      </div>
+</article>
+</div>
+              <div class="field-item field-item--entity_reference field-item--field_node_reference field-item--block_content views-row">
+<article data-history-node-id="32154" class="node--teaser p-rltv flx-grw1" data-node-id="32154">
+
+  
+    <div class="media img-obj-fit-cvr">
+      
+
+
+
+
+
+
+<div  class="field field--field_media field--entity_reference field--node">
+  
+      <div class="field-item field-item--entity_reference field-item--field_media field-item--node">
+<div class="p-rltv 3_2 h-100-prcnt media-">
+  
+  <div class="p-rltv h-100-prcnt">
+    
+
+
+
+
+
+
+<div  class="field field--field_media_image field--image field--media p-rltv h-100-prcnt">
+  
+      <div class="field-item field-item--image field-item--field_media_image field-item--media of-h p-rltv h-100-prcnt img-container">    <picture>
+                  <source srcset="/sites/default/files/styles/3_2_1920/public/images/2025-05-10-constantinehrchen-buergerrat-20_1.jpg.webp?itok=glXmJyM8 1x" media="(min-width: 1690px)" type="image/webp" width="1920" height="1280"/>
+              <source srcset="/sites/default/files/styles/3_2_1600/public/images/2025-05-10-constantinehrchen-buergerrat-20_1.jpg.webp?itok=DEJYN_ZW 1x" media="(min-width: 1280px)" type="image/webp" width="1600" height="1067"/>
+              <source srcset="/sites/default/files/styles/3_2_1280/public/images/2025-05-10-constantinehrchen-buergerrat-20_1.jpg.webp?itok=nC0U8n2N 1x" media="(min-width: 980px)" type="image/webp" width="1280" height="853"/>
+              <source srcset="/sites/default/files/styles/3_2_980/public/images/2025-05-10-constantinehrchen-buergerrat-20_1.jpg.webp?itok=ril0ku2D 1x" media="(min-width: 736px)" type="image/webp" width="980" height="653"/>
+              <source srcset="/sites/default/files/styles/3_2_980/public/images/2025-05-10-constantinehrchen-buergerrat-20_1.jpg.webp?itok=ril0ku2D 1x" media="(max-width: 735px)" type="image/webp" width="980" height="653"/>
+              <source srcset="/sites/default/files/styles/blur_preview/public/images/2025-05-10-constantinehrchen-buergerrat-20_1.jpg.webp?itok=4proCUU4 1x" media="(min-width: 1px)" type="image/webp" width="100" height="67"/>
+                  
+  <img loading="lazy" width="2000" height="1335" src="/sites/default/files/images/2025-05-10-constantinehrchen-buergerrat-20_1.jpg" alt="Zusammenarbeit an einem tisch"/>
+
+
+  </picture>
+
+</div>
+  </div>
+
+
+
+    
+
+
+
+
+
+<div  class="copyright p-abslt set-colors inverted">
+  
+      <p class="copyright-inside m0 p0">Stadt Köln</p>
+  </div>
+
+  </div>
+    
+</div>
+</div>
+  </div>
+
+    </div>
+  
+
+  <div class="content">
+
+    
+    
+          <h3 class="title">
+        <a href="/Beratungsgremium_Oeffentlichkeitsbeteiligung" class="boxlink" rel="bookmark">Beratungsgremium Öffentlichkeitsbeteiligung </a>
+      </h3>
+        
+
+    
+
+
+
+
+
+
+<div  class="wysiwyg-txt field field--body field--text_with_summary field--node">
+  
+      <div class="field-item field-item--text_with_summary field-item--body field-item--node"><p>Das Stadtgesellschaftliche Beratungsgremium Öffentlichkeitsbeteiligung (Beratungsgremium&nbsp;<abbr title="Öffentlichkeitsbeteiligung" lang="%langAttr">ÖB</abbr>) berät den Ausschuss Bürgerbeteiligung, Anregungen und Beschwerden (kurz: Ausschuss BAB) unabhängig&nbsp;unter anderem zu Grundsatzfragen der Beteiligungskultur in Köln sowie der Umsetzung und Weiterentwicklung der Leitlinien für Öffentlichkeitsbeteiligung.</p>
+</div>
+  </div>
+
+    
+
+          <ul class="links" role="presentation">
+        <li>
+          <a href="/Beratungsgremium_Oeffentlichkeitsbeteiligung" class="d-ib btn" tabindex="-1" rel="bookmark">Weiterlesen</a>
+        </li>
+      </ul>
+      </div>
+</article>
+</div>
+              <div class="field-item field-item--entity_reference field-item--field_node_reference field-item--block_content views-row">
+<article data-history-node-id="20836" class="node--teaser p-rltv flx-grw1" data-node-id="20836">
+
+  
+    <div class="media img-obj-fit-cvr">
+      
+
+
+
+
+
+
+<div  class="field field--field_media field--entity_reference field--node">
+  
+      <div class="field-item field-item--entity_reference field-item--field_media field-item--node">
+<div class="p-rltv 3_2 h-100-prcnt media-">
+  
+  <div class="p-rltv h-100-prcnt">
+    
+
+
+
+
+
+
+<div  class="field field--field_media_image field--image field--media p-rltv h-100-prcnt">
+  
+      <div class="field-item field-item--image field-item--field_media_image field-item--media of-h p-rltv h-100-prcnt img-container">    <picture>
+                  <source srcset="/sites/default/files/styles/3_2_1920/public/images/foto.jpg.webp?itok=wzS7SxxT 1x" media="(min-width: 1690px)" type="image/webp" width="1920" height="1280"/>
+              <source srcset="/sites/default/files/styles/3_2_1600/public/images/foto.jpg.webp?itok=counnZm2 1x" media="(min-width: 1280px)" type="image/webp" width="1600" height="1067"/>
+              <source srcset="/sites/default/files/styles/3_2_1280/public/images/foto.jpg.webp?itok=ZMhgLmUu 1x" media="(min-width: 980px)" type="image/webp" width="1280" height="853"/>
+              <source srcset="/sites/default/files/styles/3_2_980/public/images/foto.jpg.webp?itok=lcWZvtVR 1x" media="(min-width: 736px)" type="image/webp" width="980" height="653"/>
+              <source srcset="/sites/default/files/styles/3_2_980/public/images/foto.jpg.webp?itok=lcWZvtVR 1x" media="(max-width: 735px)" type="image/webp" width="980" height="653"/>
+              <source srcset="/sites/default/files/styles/blur_preview/public/images/foto.jpg.webp?itok=Du7n9wiL 1x" media="(min-width: 1px)" type="image/webp" width="100" height="141"/>
+                  
+  <img loading="lazy" width="1240" height="1754" src="/sites/default/files/images/foto.jpg" alt="Windrad in einer Hand vor Häuserfassade" title="Bürgerrat"/>
+
+
+  </picture>
+
+</div>
+  </div>
+
+
+
+    
+
+
+
+
+
+<div  class="copyright p-abslt set-colors inverted">
+  
+      <p class="copyright-inside m0 p0">alle freiheit Werbeagentur GmbH</p>
+  </div>
+
+  </div>
+    
+</div>
+</div>
+  </div>
+
+    </div>
+  
+
+  <div class="content">
+
+    
+    
+          <h3 class="title">
+        <a href="/buergerraete-ein-pilot-fuer-koeln" class="boxlink" rel="bookmark">Bürgerräte - ein Pilot für Köln</a>
+      </h3>
+        
+
+    
+
+
+
+
+
+
+<div  class="wysiwyg-txt field field--body field--text_with_summary field--node">
+  
+      <div class="field-item field-item--text_with_summary field-item--body field-item--node"><p>Bürgerräte werden vielerorts als neues Verfahren der Öffentlichkeitsbeteiligung diskutiert. Auch in Köln wurde das neue Beteiligungsformat in 2025 erprobt.</p>
+<p>Erfahren Sie hier mehr dazu.</p>
+</div>
+  </div>
+
+    
+
+          <ul class="links" role="presentation">
+        <li>
+          <a href="/buergerraete-ein-pilot-fuer-koeln" class="d-ib btn" tabindex="-1" rel="bookmark">Weiterlesen</a>
+        </li>
+      </ul>
+      </div>
+</article>
+</div>
+          </div>
+  </div>
+</div>
+
+          </div>
+  </div>
+</div>
+</div>
+    </div>
+  </div>
+
+  
+
+
+
+
+  
+
+    <div class="mt2 mb2 layout outer-container" data-cd-selector="outer-container"  data-cd-instance-id="9da6eedf-43cf-4f91-b860-5cabcdb8b2f7">
+    <div  class="inner-container" data-cd-selector="inner-container">
+      <div  class="layout__region layout__region--content column-1" data-cd-selector="column-1">
+
+<div  id="social_media" class="d-n-s"  data-cd-instance-id="7f825f5e-88a2-4f7f-8754-1ea08c2c7de3">
+  <div class="ta-c  block block-social-share-buttons" data-cd-selector="outer-container">
+    <div  class="d-tbl algn-c" data-cd-selector="inner-container">
+      
+              <h2 class="fs2" data-cd-selector="title">Teile die Seite</h2>
+            
+      
+        <div  data-cd-selector="description">
+          
+        </div>
+        <div  class="cc7 fs2 ta-c " data-cd-selector="icons">
+          
+<div class="social-share d-f"><a title="Diese Seite auf Facebook teilen" href="https://www.facebook.com/sharer/sharer.php?u=https://meinungfuer.koeln/startseite" class="d-ib js-share-popup p0_5" rel="noopener">
+      <i class="fab fa-facebook-square" aria-hidden="true"></i>
+      <span class="visually-hidden">Diese Seite auf Facebook teilen</span>
+    </a><a title="Diese Seite auf Bluesky teilen" href="https://bsky.app/intent/compose?text=https://meinungfuer.koeln/startseite" class="d-ib js-share-popup p0_5" rel="noopener">
+      <i class="fab fa-square-bluesky" aria-hidden="true"></i>
+      <span class="visually-hidden">Diese Seite auf Bluesky teilen</span>
+    </a><a title="Diese Seite auf X teilen" href="https://x.com/share?url=https://meinungfuer.koeln/startseite" class="d-ib js-share-popup p0_5" rel="noopener">
+      <i class="fab fa-square-x-twitter" aria-hidden="true"></i>
+      <span class="visually-hidden">Diese Seite auf X teilen</span>
+    </a><a title="Diese Seite auf Whatsapp teilen" href="whatsapp://send?text=https://meinungfuer.koeln/startseite" class="d-ib p0_5" rel="noopener">
+      <i class="fab fa-whatsapp-square" aria-hidden="true"></i>
+      <span class="visually-hidden">Diese Seite auf Whatsapp teilen</span>
+    </a><a title="Diese Seite per E-Mail teilen" href="mailto:?Subject=Hallo%2C%20ich%20habe%20diese%20Website%20hier%20f%C3%BCr%20dich%20entdeckt&amp;Body=https://meinungfuer.koeln/startseite" class="d-ib p0_5" rel="noopener">
+      <i class="fas fa-envelope-square" aria-hidden="true"></i>
+      <span class="visually-hidden">Diese Seite per E-Mail teilen</span>
+    </a></div>
+
+        </div>
+          </div>
+  </div>
+</div>
+</div>
+    </div>
+  </div>
+
+
+          </div>
+
+</article>
+
+        </div>
+          </div>
+  </div>
+</div>
+
+  
+          </div>
+          <div class="mt0_5-s">
+            <a href="/">Bring mich auf die Startseite</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+          <aside class="sidebar-left" role="complementary">
+        
+      </aside>
+    
+    
+  </main>
+
+      <footer role="contentinfo">
+      
+
+  <div class="p1 set-colors footer page-footer algn-c">
+    <div class="footer-inside">
+      <nav role="navigation" aria-labelledby="block-dz-footer-menu" id="block-dz-footer">
+            
+  <h2 class="visually-hidden" id="block-dz-footer-menu">Fußzeile</h2>
+  
+
+        
+              <ul class="menu d-f flx-wrp ls-n">
+    
+    
+      <li>
+
+                          
+                                  
+                
+        <a href="/kontakt" class="d-b p0_5 no-brdr" title="Kontakt" data-drupal-link-system-path="node/29">Kontakt</a>
+
+              </li>
+    
+      <li>
+
+                          
+                                  
+                
+        <a href="/impressum" title="Impressum" class="d-b p0_5 no-brdr" data-drupal-link-system-path="node/23">Impressum</a>
+
+              </li>
+    
+      <li>
+
+                          
+                                  
+                
+        <a href="/barrierefreiheit" title="Barrierefreiheit" class="d-b p0_5 no-brdr" data-drupal-link-system-path="node/30">Barrierefreiheit</a>
+
+              </li>
+    
+      <li>
+
+                          
+                                  
+                
+        <a href="/datenschutz" title="Datenschutz" class="d-b p0_5 no-brdr" data-drupal-link-system-path="node/28">Datenschutz</a>
+
+              </li>
+    
+      <li>
+
+                          
+                                  
+                
+        <a href="/regeln" title="Regeln" class="d-b p0_5 no-brdr" data-drupal-link-system-path="node/31">Regeln</a>
+
+              </li>
+    
+      <li>
+
+                          
+                                  
+                
+        <a href="/newsletter" title="Newsletter" class="d-b p0_5 no-brdr" data-drupal-link-system-path="node/67">Newsletter</a>
+
+              </li>
+    
+      <li>
+
+                          
+                                  
+                
+        <a href="/faq" title="FAQ" class="d-b p0_5 no-brdr" data-drupal-link-system-path="node/34">FAQ</a>
+
+              </li>
+    
+      <li>
+
+                          
+                                  
+                
+        <a href="/informationen/zahlen-daten-fakten" class="d-b p0_5 no-brdr" title="Zahlen, Daten und Fakten" data-drupal-link-system-path="node/54">Zahlen, Daten und Fakten</a>
+
+              </li>
+    
+      <li>
+
+                          
+                                  
+                
+        <a href="/archiv/index.html" title="Archiv " class="d-b p0_5 no-brdr">Archiv </a>
+
+              </li>
+    
+      <li>
+
+                          
+                                  
+                
+        <a href="#editCookieSettings" title="Cookies bearbeiten" class="d-b p0_5 no-brdr">Cookies bearbeiten</a>
+
+              </li>
+    
+      <li>
+
+                          
+                                  
+                
+        <a href="https://meinungfuer.koeln/daten" class="d-b p0_5 no-brdr" title="Export von Dialoginhalten">Export von Dialoginhalten</a>
+
+              </li>
+        </ul>
+  
+
+
+  </nav>
+
+
+<div  id="block-htmlblock-2" >
+    <div class="block block-dz-html-block block-htmlblock">
+      <div >
+      
+            
+              <div >
+          <p class="fs-2">Die Dialogzentrale ist ein Angebot von <a href="https://www.zebralog.de" rel="nofollow">Zebralog</a>. Der technische Betrieb erfolgt durch die <a href="https://tetraeder.com" rel="nofollow">tetraeder.com gmbh</a>.</p>
+        </div>
+          </div>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+
+    </footer>
+  
+  
+            
+<div  id="block-cookiesui" class="block block-cookies block-cookies-ui-block cookies-ui-block">
+
+      
+              <h2 class="visually-hidden">Cookies UI</h2>
+            
+      
+            
+<div id="cookiesjsr"></div>
+
+
+      
+</div>
+
+  
+  
+</div>
+  </div>
+
+          <div id="block-dzburgermenunavigation" class="burger-menu-container p-fxd of-a transition-all" aria-hidden="true">
+  <div class="burger-menu hidden">
+    
+        
+          
+    
+
+
+            <ul class="burger-menu-list-root from__menu__burger__main">
+          <li class="burger-menu-list-item">
+        <a href="/startseite" data-drupal-link-system-path="node/2">Start</a>
+                              <ul class="burger-menu-list-root from__menu__burger__main">
+          <li class="burger-menu-list-item">
+        <a href="/#aktuell_laufende_projekte" data-drupal-link-system-path="&lt;front&gt;" class="is-active" aria-current="page">Aktuell laufende Projekte</a>
+              </li>
+          <li class="burger-menu-list-item">
+        <a href="/#naechste_veranstaltungen" data-drupal-link-system-path="&lt;front&gt;" class="is-active" aria-current="page">Veranstaltungen</a>
+              </li>
+          <li class="burger-menu-list-item">
+        <a href="/#aktuelles" data-drupal-link-system-path="&lt;front&gt;" class="is-active" aria-current="page">Neuigkeiten</a>
+              </li>
+        </ul>
+  
+              </li>
+          <li class="burger-menu-list-item">
+        <a href="/mitmachen" data-drupal-link-system-path="node/12">Mitmachen</a>
+                              <ul class="burger-menu-list-root from__menu__burger__main">
+          <li class="burger-menu-list-item">
+        <a href="/mitmachen#beteiligen_sie_sich" data-drupal-link-system-path="node/12">Projektübersicht</a>
+              </li>
+          <li class="burger-menu-list-item">
+        <a href="/mitmachen#beteiligung_anregen" data-drupal-link-system-path="node/12">Beteiligung anregen</a>
+              </li>
+          <li class="burger-menu-list-item">
+        <a href="/mitmachen#weitere_beteiligungsangebote" data-drupal-link-system-path="node/12">Weitere Beteiligungsangebote</a>
+              </li>
+        </ul>
+  
+              </li>
+          <li class="burger-menu-list-item">
+        <a href="/informationen" data-drupal-link-system-path="node/6">Informationen</a>
+                              <ul class="burger-menu-list-root from__menu__burger__main">
+          <li class="burger-menu-list-item">
+        <a href="/informationen#leitlinien" data-drupal-link-system-path="node/6">Leitlinien für Öffentlichkeitsbeteiligung</a>
+              </li>
+          <li class="burger-menu-list-item">
+        <a href="/informationen#entstehungsgeschichte" data-drupal-link-system-path="node/6">Entstehungsgeschichte der Systematischen Öffentlichkeitsbeteiligung</a>
+              </li>
+          <li class="burger-menu-list-item">
+        <a href="/informationen#lesenswertes" data-drupal-link-system-path="node/6">Lesenswertes</a>
+              </li>
+        </ul>
+  
+              </li>
+          <li class="burger-menu-list-item">
+        <a href="/search" data-fa-type="fas" data-fa-icon="fas fa-search" data-drupal-link-system-path="search">Suche</a>
+              </li>
+        </ul>
+  
+
+
+            <ul class="burger-menu-list-root from__menu__burger__account">
+          <li class="burger-menu-list-item">
+        <a href="/user/login" data-drupal-link-system-path="user/login">Anmelden</a>
+              </li>
+        </ul>
+  
+
+
+            <ul class="burger-menu-list-root from__menu__burger__footer">
+          <li class="burger-menu-list-item">
+        <a href="/kontakt" title="Kontakt" data-drupal-link-system-path="node/29">Kontakt</a>
+              </li>
+          <li class="burger-menu-list-item">
+        <a href="/impressum" title="Impressum" data-drupal-link-system-path="node/23">Impressum</a>
+              </li>
+          <li class="burger-menu-list-item">
+        <a href="/barrierefreiheit" title="Erklärung zur Barrierefreiheit" data-drupal-link-system-path="node/30">Barrierefreiheit</a>
+              </li>
+          <li class="burger-menu-list-item">
+        <a href="/datenschutz" title="Erklärung zum Datenschutz" data-drupal-link-system-path="node/28">Datenschutz</a>
+              </li>
+          <li class="burger-menu-list-item">
+        <a href="/regeln" title="Regeln für Online-Dialoge" data-drupal-link-system-path="node/31">Regeln</a>
+              </li>
+          <li class="burger-menu-list-item">
+        <a href="/newsletter" title="Newsletter" data-drupal-link-system-path="node/67">Newsletter</a>
+              </li>
+          <li class="burger-menu-list-item">
+        <a href="/faq" title="Häufige Fragen" data-drupal-link-system-path="node/34">FAQ</a>
+              </li>
+          <li class="burger-menu-list-item">
+        <a href="/informationen/zahlen-daten-fakten" title="Zahlen, Daten und Fakten zur Öffentlichkeitsbeteiligung" data-drupal-link-system-path="node/54">Zahlen, Daten und Fakten</a>
+              </li>
+          <li class="burger-menu-list-item">
+        <a href="/archiv/index.html" title="Archiv der Beteiligungsplattform bis Juli 2022">Archiv </a>
+              </li>
+          <li class="burger-menu-list-item">
+        <a href="#editCookieSettings" title="Zustimmung zu Cookies bearbeiten">Cookies bearbeiten</a>
+              </li>
+          <li class="burger-menu-list-item">
+        <a href="https://meinungfuer.koeln/daten">Export von Dialoginhalten</a>
+              </li>
+        </ul>
+  
+
+
+      </div>
+</div>
+
+  
+    
+    <script src="/sites/default/files/js/js_LngWy6ryyg3Miim6cbZhKSoxKEEBCn1s7NJ3UbDEnvQ.js?scope=footer&amp;delta=0&amp;language=de&amp;theme=dz&amp;include=eJx9UQmOgzAM_BAiT4oMMcFtYqPY0OP1m9CKdqVdpEgez4x8xHCBux8lZ2RT1wBw0G4UuRI2Yo8XLX9Qvdoj4WH2GUyyOGBID6PxI2wUUNxhw0DQhacbVjPh2j1J8RskCrVAaUo1JIkNxSQDJK-2TlPLZ4SAuyejKsTaPjz9AOPVm9S3uN9pU0fhm5TgPrDFieI_It4NS12iyTOmBYu6Og6xT8RXH1CNGIyEm4Nho7hndaES9-G-yQzE9XfXRmvdEYs7UDcJG9xQJaP7wr1usR_KfoozS8G4JjgvozPlc4PUWbr38V6hUxmpffsMBf3rTuoWWdblB7-C3lE"></script>
+<script src="https://static.conword.io/js/v2/zebralog/conword.js" id="conword-root"></script>
+<script src="/sites/default/files/js/js_vZc75neyGpeG8sfan7FF625pXG8y_nd3WKh7beoOq4I.js?scope=footer&amp;delta=2&amp;language=de&amp;theme=dz&amp;include=eJx9UQmOgzAM_BAiT4oMMcFtYqPY0OP1m9CKdqVdpEgez4x8xHCBux8lZ2RT1wBw0G4UuRI2Yo8XLX9Qvdoj4WH2GUyyOGBID6PxI2wUUNxhw0DQhacbVjPh2j1J8RskCrVAaUo1JIkNxSQDJK-2TlPLZ4SAuyejKsTaPjz9AOPVm9S3uN9pU0fhm5TgPrDFieI_It4NS12iyTOmBYu6Og6xT8RXH1CNGIyEm4Nho7hndaES9-G-yQzE9XfXRmvdEYs7UDcJG9xQJaP7wr1usR_KfoozS8G4JjgvozPlc4PUWbr38V6hUxmpffsMBf3rTuoWWdblB7-C3lE"></script>
+
+  </body>
+</html>

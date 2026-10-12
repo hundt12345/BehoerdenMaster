@@ -1,0 +1,11 @@
+robots-stadtkoeln|200|https://www.stadt-koeln.de/robots.txt
+robots-meinungfuer|200|https://meinungfuer.koeln/robots.txt
+robots-offenedaten|200|https://www.offenedaten-koeln.de/robots.txt
+bekanntmachungen-2026|200|https://www.stadt-koeln.de/politik-und-verwaltung/bekanntmachungen/oeffentliche-bekanntmachungen-2026
+bekanntmachungen-2025|200|https://www.stadt-koeln.de/politik-und-verwaltung/bekanntmachungen/oeffentliche-bekanntmachungen-2025
+bekanntmachungen-buchstabeU|200|https://www.stadt-koeln.de/politik-und-verwaltung/bekanntmachungen/oeffentliche-bekanntmachungen-2026?letter=U
+meinungfuer-projekte|200|https://meinungfuer.koeln/mitmachen/alle-projekte
+meinungfuer-rss|404|https://meinungfuer.koeln/rss
+meinungfuer-feed|404|https://meinungfuer.koeln/feed
+meinungfuer-sitemap|200|https://meinungfuer.koeln/sitemap.xml
+offenedaten-katalog|200|https://www.offenedaten-koeln.de/api/1/metastore/schemas/dataset/items?page-size=50

@@ -191,8 +191,8 @@ Die Kölner OParl-robots.txt enthält keine Gruppe für unbekannte Clients; für
 - **Freitextsuche nutzt Wortstämme, kein vollständiges Stemming.** Eine Frageform wie „Abendmärkten“ findet den Titel „Abendmärkte“, weil höchstens eine deutsche Endung entfernt wird und der Stamm mindestens fünf Zeichen behält – Kurzwörter wie „Rat“ oder „Bau“ werden deshalb nicht zu Wildcards. Umlaut-Plurale („Bebauungspläne“ zu „Bebauungsplan“) und Synonyme werden **nicht** erkannt.
 - Das Projekt [mandari](https://github.com/mandariOSS/mandari/issues/348) berichtete seit September 2026 über nicht erreichbare Kölner Hosts und vermutete eine IP-Sperre; **keine öffentlich bestätigte Aussage der Stadt**. Keine Ausweich-Hosts oder andere Umgehung.
 - **Ortsbezug ist eine Heuristik:** OParl aus Betreff/Gremiennamen, Bauleitplanung aus Titel/öffentlicher Beschreibung. Die Herkunft wird im API-Ergebnis angezeigt. Kein Polygonabgleich und keine garantierte Zuordnung zur tatsächlichen Planfläche; auch andere im Text genannte Orte können Treffer auslösen. Kontaktangaben aus Detailseiten werden nicht als Lage übernommen.
-- **PLZ-Zuordnung:** 9 Bezirke / 86 Stadtteile sind hinterlegt; alle 46 Kölner PLZ sind einer
-  oder mehreren Stadtteil-Optionen zugeordnet (nur 50923 bleibt ohne Stadtteile und nennt den Grund).
+- **PLZ-Zuordnung:** 9 Bezirke / 86 Stadtteile sind hinterlegt; 45 der 46 Kölner PLZ sind
+  Stadtteilen zugeordnet (nur **50923** bleibt ohne Zuordnung und nennt den Grund).
   Die Zuordnung stammt aus dem Straßenverzeichnis (siehe unten) und ist eine **Näherung**: PLZ- und
   Stadtteilgrenzen sind nicht identisch, eine PLZ kann zu mehreren Stadtteilen und Bezirken gehören.
   Wer es genauer braucht, gibt eine Straße ein – ein Straßenname schlägt jede PLZ-Zuordnung.

@@ -13,6 +13,9 @@ from datetime import date, datetime, timedelta
 
 from .auswertung import bestimme_status, datum_de, ergebnis_kategorie, zusammenfassung
 from .config import Quelle, Stadt
+from .meldungen import status_aus_zeile as meldung_status
+from .meldungen import verlauf as meldung_verlauf
+from .meldungen import zusammenfassung as meldung_zusammenfassung
 from .normalize import norm
 from .plan_auswertung import plan_status, plan_verlauf, plan_zusammenfassung, zeit_de
 from .speicher import Speicher
@@ -25,6 +28,7 @@ ROLLEN_TEXT = {
     "ergebnisprotokoll": "Ergebnisprotokoll",
     "wortprotokoll": "Wortprotokoll",
     "protokoll": "Protokoll",
+    "bekanntmachung": "Amtliche Bekanntmachung",
     "dokument": "Dokument",
 }
 ROLLEN_REIHENFOLGE = list(ROLLEN_TEXT)
@@ -215,7 +219,8 @@ def _bewerte(kand, orte_rows: list, auftrag: Suchauftrag, status: dict, heute: d
 
 def _dto(stadt: Stadt, kand, orte_rows: list, verlauf: list[dict], dokumente: list,
          status: dict, heute: date, quellen: dict[str, Quelle], quelle_meta: dict,
-         plan: dict | None = None, staende: list[dict] | None = None) -> dict:
+         plan: dict | None = None, staende: list[dict] | None = None,
+         meldung: dict | None = None) -> dict:
     cfg = _cfg_fuer(quellen, kand["quelle_id"])
     vid = kand["id"]
     orte, herkunft = _orte_anzeige(stadt, orte_rows)
@@ -238,6 +243,21 @@ def _dto(stadt: Stadt, kand, orte_rows: list, verlauf: list[dict], dokumente: li
     typ = "bauleitplanung" if plan is not None else (cfg.typ if cfg else meta.get("typ", "unbekannt"))
     original = kand["web"] or (cfg.web_vorlage.format(id=kurz_id(vid)) if cfg and cfg.web_vorlage else None)
     hinweise = []
+    if meldung is not None:
+        text = meldung_zusammenfassung(kand["titel"], kand["art"], meldung)
+        verlauf = meldung_verlauf(kand["datum"], meldung, original or vid, heute.isoformat())
+        hinweise.append("Übernommen wurden nur Titel, Statusangabe, Kurztext und Link der Quelle; "
+                        "Fristen, Inhalte und Unterlagen stehen im verlinkten Original.")
+        if meldung["art_quelle"] == "Öffentliche Bekanntmachung von Bauleitplänen" or kand["art"] == "Bekanntmachung":
+            hinweise.append("Der Inhalt der Bekanntmachung (PDF) wurde nicht geladen und nicht ausgewertet.")
+            hinweise.append("Aus der Liste lässt sich kein Beteiligungszeitraum ablesen; maßgeblich ist die "
+                            "Bekanntmachung selbst. Der Eintrag gilt deshalb nicht automatisch als offen.")
+        if meldung["gesehen"]:
+            hinweise.append("Statusangabe der Quelle, zuletzt abgerufen am "
+                            + datum_de(meldung["gesehen"]) + ".")
+        if not kand["datum"]:
+            hinweise.append("Die Liste nennt für diesen Eintrag kein Datum; die Statuszeile der Quelle "
+                            "steht oben, Einzelheiten auf der Projektseite.")
     if plan is not None:
         text = plan_zusammenfassung(kand["titel"], plan, status)
         verlauf = plan_verlauf(plan, staende or [], original or vid, heute)
@@ -272,10 +292,21 @@ def _dto(stadt: Stadt, kand, orte_rows: list, verlauf: list[dict], dokumente: li
                          "zuletzt_gesehen": plan["gesehen"], "gelistet": bool(plan["gelistet"])}
                         if plan is not None else None),
         "dokumente": dok_liste,
+        "meldung": ({
+            "art_quelle": meldung["art_quelle"],
+            "verfahrensschritt": meldung["verfahrensschritt"],
+            "status_text": meldung["status_text"],
+            "kurztext": meldung["kurztext"],
+            "zusatz": meldung["zusatz"],
+            "gesehen": meldung["gesehen"],
+            "gesehen_de": datum_de(meldung["gesehen"]),
+        } if meldung is not None else None),
         "links": {
             "original": original,
             "original_text": ("Verfahren in Bauleitplanung Online öffnen" if typ == "bauleitplanung"
                               else "Vorlage im Ratsinformationssystem öffnen" if typ == "oparl"
+                              else "Bekanntmachung im Original öffnen" if typ == "bekanntmachungen"
+                              else "Projektseite der Stadt öffnen" if typ == "beteiligung"
                               else "Originalverfahren öffnen"),
             "ratsinfo_vorlage": original if typ == "oparl" else None,
             "oparl": vid if typ == "oparl" else None,
@@ -379,8 +410,10 @@ def _suche(speicher: Speicher, auftrag: Suchauftrag, heute: date, freitext_oder:
     verlauf_map = _lade_verlauf(speicher, stadt, ids, heute)
     plan_map = {r["vorgang_id"]: dict(r) for r in _bulk(
         db, "SELECT * FROM planverfahren WHERE vorgang_id IN ({ph})", ids)}
+    meldung_map = speicher.meldungen(ids)
     status_map = {vid: (plan_status(plan_map[vid], heute, zeitpunkt) if vid in plan_map
-                        else bestimme_status(verlauf_map.get(vid, []))) for vid in ids}
+                        else (meldung_status(meldung_map[vid]) if vid in meldung_map
+                              else bestimme_status(verlauf_map.get(vid, [])))) for vid in ids}
 
     bewertet = [(
         _bewerte(k, orte_map.get(k["id"], []), auftrag, status_map[k["id"]], heute, begriffe),
@@ -400,7 +433,8 @@ def _suche(speicher: Speicher, auftrag: Suchauftrag, heute: date, freitext_oder:
     for punkte, k in seite:
         vid = k["id"]
         dto = _dto(stadt, k, orte_map.get(vid, []), verlauf_map.get(vid, []), dok_map.get(vid, []),
-                   status_map[vid], heute, quellen, meta, plan_map.get(vid), staende_map.get(vid, []))
+                   status_map[vid], heute, quellen, meta, plan_map.get(vid), staende_map.get(vid, []),
+                   meldung_map.get(vid))
         dto["punkte"] = punkte
         treffer.append(dto)
     return {"gesamt": gesamt_kandidaten, "treffer": treffer,
@@ -428,6 +462,9 @@ def vorgang_detail(speicher: Speicher, stadt: Stadt, vorgang_id: str, heute: dat
     plan = dict(plan_row) if plan_row else None
     staende = [dict(r) for r in speicher.db.execute(
         "SELECT * FROM planstand WHERE vorgang_id=? ORDER BY id", (vorgang_id,)).fetchall()]
-    status = plan_status(plan, heute, zeitpunkt) if plan else bestimme_status(verlauf)
+    meldung = speicher.meldungen([vorgang_id]).get(vorgang_id)
+    status = (plan_status(plan, heute, zeitpunkt) if plan
+              else meldung_status(meldung) if meldung
+              else bestimme_status(verlauf))
     return _dto(stadt, zeile, orte_rows, verlauf, dokumente, status, heute,
-                _quellen_cfg(stadt), _quelle_meta(speicher), plan, staende)
+                _quellen_cfg(stadt), _quelle_meta(speicher), plan, staende, meldung)

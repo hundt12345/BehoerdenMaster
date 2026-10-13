@@ -249,10 +249,26 @@ def crawle_rss(speicher, stadt, quelle, abrufer, optionen):
     return crawle(speicher, stadt, quelle, abrufer, optionen)
 
 
+def crawle_bekanntmachungen(speicher, stadt, quelle, abrufer, optionen):
+    # Verzögerter Import: der Listenadapter nutzt LaufBericht und die Abkühlprüfung.
+    from .bekanntmachungen import crawle_bekanntmachungen as crawle
+
+    return crawle(speicher, stadt, quelle, abrufer, optionen)
+
+
+def crawle_beteiligung(speicher, stadt, quelle, abrufer, optionen):
+    # Verzögerter Import: der Listenadapter nutzt LaufBericht und die Abkühlprüfung.
+    from .beteiligung import crawle_beteiligung as crawle
+
+    return crawle(speicher, stadt, quelle, abrufer, optionen)
+
+
 # Registry: Quelltyp aus config/cities -> Crawl-Funktion.
 CRAWLER = {
     "oparl": crawle_oparl,
     "bauleitplanung": crawle_bauleitplanung,
     "ris-rss": crawle_rss,
     "presse-rss": crawle_rss,
+    "bekanntmachungen": crawle_bekanntmachungen,
+    "beteiligung": crawle_beteiligung,
 }

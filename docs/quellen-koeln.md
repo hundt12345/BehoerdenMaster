@@ -4,7 +4,9 @@ Stand der Recherche: **12. Oktober 2026**. Alle genannten Adressen wurden an die
 geprüft (Erreichbarkeit, Format, Lizenzangabe). Geprüft heißt nicht abgestimmt: Für
 automatische Abrufe gilt weiter Abschnitt [„Regeln für jede neue Quelle“](#regeln-für-jede-neue-quelle).
 Das Dokument beschreibt **Vorschläge**, keine Zusagen: Umgesetzt sind derzeit
-Ratsinformation (OParl), Bauleitplanung Online NRW sowie die RSS-Feeds (Sitzungen, Presse); siehe [Umsetzungsstand](#umsetzungsstand).
+Ratsinformation (OParl), Bauleitplanung Online NRW, die öffentlichen Bekanntmachungen, die
+Bürgerbeteiligung „Meinung für Köln“ sowie die RSS-Feeds (Sitzungen, Presse); siehe
+[Umsetzungsstand](#umsetzungsstand).
 
 ## Umsetzungsstand
 
@@ -15,10 +17,23 @@ Stand 12.10.2026, nach der Umsetzung im Repository:
 | 1 SessionNet-RSS | **umgesetzt** (`typ = "ris-rss"`) | `robots.txt` ohne Sperre für unseren Client; ein Feed-Abruf je Lauf; Hinweise in eigener Tabelle, nicht in der Suche |
 | 9 Pressemeldungen (RSS) | **umgesetzt** (`typ = "presse-rss"`) | `robots.txt` ohne Sperre; nur Titel, Datum, Link, Kurztext |
 | 2, 3, 6 Geoportal (Bebauungsplan-Übersicht, Verkehr, Baustellen, Baumkataster) | **nicht angebunden** | `https://geoportal.stadt-koeln.de/robots.txt` enthält `User-agent: *` mit `Disallow: /`. Der Abrufer würde ohnehin mit `NichtErlaubt` abbrechen, wir bauen dazu keinen Umweg. Eine Freigabe durch die Stadt oder ein anderer, nicht gesperrter Zugang (z. B. offizieller Open-Data-Export) ist nötig. |
-| 4 Bekanntmachungen/Amtsblatt | offen | HTML-Liste auf `www.stadt-koeln.de` ist nicht gesperrt; Umsetzung steht noch aus (PDFs bleiben verlinkt) |
+| 4 Bekanntmachungen/Amtsblatt | **umgesetzt** (`typ = "bekanntmachungen"`) | HTML-Liste auf `www.stadt-koeln.de` ist nicht gesperrt; Jahreslisten mit Paginierung, bis zu drei Jahrgänge je Lauf. Übernommen werden Datum, Art, Arbeitstitel, Hinweisveröffentlichung und Link – **das PDF wird nicht geladen** |
 | 5 Offene Daten Köln (DKAN) | offen | `robots.txt` ohne Sperre für den Datenbereich; Datensatz-Auswahl und Lizenz je Datensatz noch offen |
-| 7 Meinungfuer | offen | keine offene Lizenz zugesichert; Beiträge Dritter ausgeschlossen |
+| 7 Meinungfuer | **umgesetzt, hart begrenzt** (`typ = "beteiligung"`) | robots.txt erlaubt unbekannte Clients mit `Crawl-delay: 5` (Konfiguration: 5 s). Ein Abruf je Lauf, nur Kopfdaten der Projektliste; keine offene Lizenz zugesichert, Beiträge Dritter ausgeschlossen |
 | 8 „Sag's uns“, 10 Statistik, 11 Wahlen | nicht umgesetzt | Lizenz- und Personenbezugsprüfung nach den Regeln unten steht aus |
+
+**Live-Probelauf der beiden Listenquellen bestätigt (12.10.2026).** Aus einem
+Rechenzentrums-Netz (GitHub-Actions-Runner) wurden beide neuen Quellen mit dem Projekt-User-Agent
+abgerufen: Die Bekanntmachungs-Jahresliste 2026 wurde seitenweise gelesen (`rel="next"`), der
+Probelauf endete nach dem Anfragenbudget von zehn Anfragen (robots.txt + neun Listenseiten) mit
+**135 erkannten Bekanntmachungen** in einer leeren Datenbank, Status `teilweise`, und **keiner
+doppelt gelesenen Seite**; der Cursor für die Fortsetzung stand danach auf `?page=10`. Die Beteiligungsliste lieferte mit zwei Anfragen (robots.txt + Liste)
+**56 Projekte, 0 verworfen**, Status `ok` (ein Abruf je Lauf). Die anschließende Suche fand zu „Köln-Niehl“ die
+Bekanntmachung „Feldgärtenstraße in Köln-Niehl“ (Ortsbezug Stadtteil **Niehl**) und zu „Flittard“
+das Projekt „GRÜNZUG Flittard-Stammheim“ mit den Stadtteilen **Flittard/Stammheim**; der
+Ladebericht wies für Bekanntmachungen „Originale: verlinkt; das PDF wird nicht geladen und nicht
+ausgewertet“ aus. Beide Stadt-Hosts antworteten also auch einer Rechenzentrums-IP. Ein Abruf aus
+dem Render-Netz steht weiterhin aus.
 
 **Bauleitplanung Online (bereits angebunden):** Der Listenabruf entspricht der beobachteten
 Live-Antwort (JSON:API mit `data`, `links`, `meta`). Ein Live-Lauf aus der Entwicklungsumgebung
@@ -141,6 +156,17 @@ Besonders anschlussfähig an die Suche nach kommunalen Vorgängen:
 - **Nutzen:** Das sind die **amtlichen Statuswechsel** (Aufstellung § 2 Abs. 1, Offenlage
   § 3 Abs. 2, Satzungsbeschluss/Inkrafttreten § 10). Bauleitplanung Online und die RIS-Vorlage
   zeigen den politischen Weg; hier steht, was rechtlich in Kraft ist.
+- **Umsetzung (`behoerdenmaster/bekanntmachungen.py`, `meldungen.py`):** Je Lauf werden die
+  Jahreslisten der **letzten drei Jahrgänge** gelesen (neueste zuerst, `start_jahr` in
+  `config/cities/koeln.toml`, harte Obergrenze `MAX_SEITEN = 40` Seiten je Jahrgang). Die
+  Folgeseite kommt aus dem Weiter-Link der Quelle (`rel="next"`); deren Seitennummerierung ist
+  **1-basiert** – ohne Parameter ist man auf Seite 1. Übernommen werden **Datum, Art,
+  Arbeitstitel, Hinweisveröffentlichung und der PDF-Link**; die **PDF-Datei wird weder geladen
+  noch ausgewertet**. Links werden nur akzeptiert, wenn sie auf `www.stadt-koeln.de` zeigen und
+  mit `https` beginnen. Die Art wird über eine Normalform auf Verfahrensschritte abgebildet;
+  das gespeicherte Feld heißt trotzdem „Art der Bekanntmachung laut Quelle“ – es wird **kein**
+  Verfahrensschritt behauptet, den die Quelle nicht nennt. Ein Eintrag, der später aus der Liste
+  verschwindet, bleibt im Bestand (kein Löschen von Amts wegen).
 - **Grenzen:** Die Bekanntmachung ist ein PDF. Wir würden **Metadaten und Link** übernehmen
   (Art, Datum, Arbeitstitel, PDF-Link), nicht den Fließtext der PDF-Konvertierung. Ein
   PDF-Volltextabruf ist eine eigene, separat zu bewertende Entscheidung (siehe Regeln). Auch
@@ -180,16 +206,28 @@ Gesamtkatalog DCAT  https://www.offenedaten-koeln.de/data.json
 - **Adresse:** `https://meinungfuer.koeln/mitmachen/alle-projekte` (Projekte seit Juli 2022),
   Archiv unter `https://meinungfuer.koeln/archiv/index.html`.
 - **Beobachtung:** Jede Projektkarte nennt Titel, Träger, Kurzbeschreibung, Statuszeile
-  („Online-Beteiligung seit 10 Tagen geschlossen“) und einen Detail-Link.
+  („Online-Beteiligung seit 10 Tagen geschlossen“) und einen Detail-Link. Von 56 Projektkarten
+  des geprüften Bestands trugen 37 die Formulierung „geschlossen“, 8 ein laufendes Angebot mit
+  Tagesangabe, der Rest keine Statuszeile.
 - **Keine offene Schnittstelle:** `https://meinungfuer.koeln/jsonapi` antwortet mit
-  **403** („The 'access jsonapi routes' permission is required.“). Ein RSS-Feed wurde nicht
-  geprüft; er wäre der erste Kandidat vor einem HTML-Parser.
+  **403** („The 'access jsonapi routes' permission is required.“). Ein RSS-Feed existiert nicht:
+  `/rss` und `/feed` antworten mit **404** und der Fehlerseite der Plattform. Es bleibt also beim
+  HTML-Parser, der auf die Listenstruktur beschränkt ist.
 - **Nutzen:** Ergänzt die Bauleitbeteiligung um Vorhaben, die (noch) kein Bauleitverfahren
   haben – im geprüften Bestand z. B. GRÜNZUG Flittard-Stammheim, Qualifizierungsverfahren
   Neubrücker Ring, Suchthilfezentrum am Perlengraben, Hybridpark.
-- **Aufwand:** mittel (HTML-Struktur, Statuszeilen sind Prosa und müssen in ein eigenes Feld,
-  nicht in „Phase“). Nur die Liste plus Detailseite lesen, keine Kommentare und keine Beiträge
-  Dritter – dort stehen personenbezogene Meinungen.
+- **Umsetzung (`behoerdenmaster/beteiligung.py`, `meldungen.py`):** **Ein** Abruf je Lauf liest
+  die öffentliche Projektliste (`article.group--teaser` je Projekt). Übernommen werden Titel,
+  Detail-Link, Statuszeile der Plattform (`p.participation-countdown …`), der Kurztext der
+  Projektbeschreibung und die Zahl der Beiträge **als Angabe der Plattform** („101 Beiträge laut
+  Plattform“). Die Statuszeile wird über eine Formulierungstabelle gedeutet (läuft / geschlossen /
+  Frist unbekannt); ein unbekannter Wortlaut wird **nicht** geraten, sondern als solcher
+  gespeichert. Detailseiten werden nicht verfolgt, weil die Liste die Statuszeile schon enthält.
+  Eine leere oder unbekannte Liste gilt als Fehler, **nicht** als „alles geschlossen“.
+- **Was ausdrücklich nicht übernommen wird:** Beiträge, Kommentare, Namen, Fotos und Anhänge
+  Dritter – dort stehen personenbezogene Meinungen. Es gibt keinen Volltext der Projektseite.
+- **Aufwand:** mittel (HTML-Struktur, Statuszeilen sind Prosa und gehören in ein eigenes Feld,
+  nicht in „Phase“).
 
 ## 8. „Sag's uns“ (Mängelmelder)
 

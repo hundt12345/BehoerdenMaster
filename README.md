@@ -6,7 +6,7 @@ Kommunale Vorgänge durchsuchen und nachvollziehbar zusammenfassen – zuerst f�
 
 - **Fragen in natürlicher Sprache**, etwa „Welche Bauvorhaben sind in Köln Ehrenfeld geplant?“: regelbasiertes Erkennen von Stadtteilen, Bezirken, Themen, Zeiträumen und „geplant/offen“.
 - **PLZ-Suche**, optional mit Themenfilter.
-- **Zwei Kölner Quellen in einer Suche:** Ratsinformation **OParl** und **Bauleitplanung Online NRW**.
+- **Vier durchsuchbare Kölner Quellen in einer Suche:** Ratsinformation **OParl**, **Bauleitplanung Online NRW**, die **öffentlichen Bekanntmachungen** der Stadt (amtliche Verfahrensschritte nach BauGB) und die **Bürgerbeteiligung „Meinung für Köln“**.
 - **Zwei RSS-Hinweisquellen (ohne Suche):** Sitzungstermine der Ratsinformation (SessionNet-RSS) und Pressemeldungen der Stadt. Sie landen als Hinweise mit Titel, Datum, Link und Kurztext in eigener Tabelle, nicht als Vorgänge.
 - **Datenquellen und Ladestand:** eingeklappter Bereich unten auf der Startseite mit einer Grafik (Dokumentverweise je Quelle und Rolle) und einer Zeile je Quelle (Zustand, letzter Erfolg, Bestand). Die Daten kommen rein aus der lokalen Datenbank, ohne Behördenabruf; der ausführliche Ladepfad bleibt im JSON-Endpunkt `/api/ladebericht`.
 - **Pro Vorgang:** Zusammenfassung, Status, Original-Link, Dokumentlinks und ein quellenabhängiges **Verlaufsprotokoll**:
@@ -20,7 +20,7 @@ Kommunale Vorgänge durchsuchen und nachvollziehbar zusammenfassen – zuerst f�
 
 Die [`render.yaml`](render.yaml) konfiguriert einen Python-3.13-Web-Service in Frankfurt im **kostenlosen Tarif (Render Free)**. Free hat keine persistente Disk: die SQLite-Datei liegt in `/tmp` und wird nach jedem Neustart vom Hintergrundabruf neu gefüllt. Damit dieser Erstabruf klein und höflich bleibt, begrenzt `BEHOERDEN_SYNC_SEIT` ihn auf ein **rollierendes 90-Tage-Fenster** statt auf den Wahlperiodenbeginn. Der Dienst schläft nach Inaktivität ein; der erste Aufruf danach dauert etwas länger. Für dauerhafte Daten siehe [docs/render.md](docs/render.md). Der Button verwendet den aktuellen PR-Branch; nach dessen Merge kann auch `main` ausgewählt werden.
 
-Der Blueprint ruft **das Ratsinformationssystem Köln (OParl) automatisch ab**. Abrufe sind **standardmäßig aktiv**; als Kontaktadresse dient `BEHOERDEN_KONTAKT` – und solange die fehlt, die im Repository hinterlegte, erreichbare **Projekt-Kontaktadresse** (`behoerdenmaster/config.py`: `PROJEKT_KONTAKT`). Ein Deployment füllt seinen Bestand also auch ohne eigene Umgebungswerte, statt wegen einer fehlenden Einstellung dauerhaft leer zu bleiben; `BEHOERDEN_SYNC_ENABLED=false` schaltet bewusst ab, ein leer gesetztes `BEHOERDEN_KONTAKT` verzichtet bewusst auf die Voreinstellung. Beispieldaten sind ausgeschaltet. Suchanfragen lösen weiterhin nie einen Behördenabruf aus. [Schritt-für-Schritt-Anleitung, Einstellungen, Live-Probe und Sicherung](docs/render.md); bei einer leeren Startseite der Abschnitt [Fehlerbehebung](docs/render.md#fehlerbehebung).
+Der Blueprint ruft **fünf Kölner Quellen automatisch ab**: Ratsinformation (OParl), öffentliche Bekanntmachungen, Bürgerbeteiligung „Meinung für Köln“ und die beiden RSS-Feeds – die kleinen Quellen zuerst, den großen OParl-Erstabruf zuletzt. Abrufe sind **standardmäßig aktiv**; als Kontaktadresse dient `BEHOERDEN_KONTAKT` – und solange die fehlt, die im Repository hinterlegte, erreichbare **Projekt-Kontaktadresse** (`behoerdenmaster/config.py`: `PROJEKT_KONTAKT`). Ein Deployment füllt seinen Bestand also auch ohne eigene Umgebungswerte, statt wegen einer fehlenden Einstellung dauerhaft leer zu bleiben; `BEHOERDEN_SYNC_ENABLED=false` schaltet bewusst ab, ein leer gesetztes `BEHOERDEN_KONTAKT` verzichtet bewusst auf die Voreinstellung. Beispieldaten sind ausgeschaltet. Suchanfragen lösen weiterhin nie einen Behördenabruf aus. [Schritt-für-Schritt-Anleitung, Einstellungen, Live-Probe und Sicherung](docs/render.md); bei einer leeren Startseite der Abschnitt [Fehlerbehebung](docs/render.md#fehlerbehebung).
 
 ## Schnellstart – auch ohne Netz
 
@@ -84,9 +84,48 @@ Diese Quelle bietet keinen geprüften Änderungsfilter. Ein **abgeschlossener Fo
 
 Nicht mehr gelistete Verfahren bleiben gespeichert und werden entsprechend markiert – **erst nach einer vollständig gelesenen Liste**. Das Verschwinden aus der Liste bedeutet weder Genehmigung noch Bauabschluss. Ein 404/410 der Detailseite entfernt keine zuletzt bekannten Dokumentlinks; Login- und unbekannte Detailseiten ersetzen den Dokumentbestand ebenfalls nicht.
 
+### Öffentliche Bekanntmachungen der Stadt Köln
+
+```bash
+python -m behoerdenmaster probe --quelle bekanntmachungen
+python -m behoerdenmaster crawl --quelle bekanntmachungen --max-anfragen 60
+python -m behoerdenmaster crawl --quelle bekanntmachungen --max-anfragen 60  # ggf. fortsetzen
+```
+
+Gelesen werden die **öffentlichen Jahreslisten** (`…/bekanntmachungen/oeffentliche-bekanntmachungen-<jahr>`,
+Paginierung der Quelle, bis zu drei Jahrgänge je Lauf, `MAX_SEITEN` = 40 als Notbremse). Übernommen werden
+**Datum, Art der Bekanntmachung, Arbeitstitel, Hinweisveröffentlichung und der Link auf das Original**.
+Die verlinkte **PDF-Datei wird nicht geladen und nicht ausgewertet**; ein PDF-Volltextabruf ist eine eigene,
+separat zu bewertende Entscheidung. Aus der Liste lässt sich **kein Beteiligungszeitraum** ablesen – steht
+einer in der Bekanntmachung, ist er dort nachzulesen, nicht hier erfunden.
+
+Der Wortlaut der Art ist zugleich der Status („Frühzeitige Beteiligung der Öffentlichkeit an einem
+Bebauungsplan-Entwurf“, „Inkrafttreten eines Bebauungsplans gemäß § 10 BauGB“, „Veröffentlichung eines
+Flächennutzungsplan-Entwurfs“). Die Suche zeigt ihn als „Verfahrensschritt laut Quelle“ und **behauptet
+keinen politischen Weg**: Ein Verbindungsglied zu einer Ratsvorlage oder einem Bauleitverfahren wird nicht
+erfunden. Ein Eintrag bleibt auch dann gespeichert, wenn er später aus der Liste verschwindet.
+
+### Bürgerbeteiligung „Meinung für Köln“
+
+```bash
+python -m behoerdenmaster probe --quelle beteiligung
+python -m behoerdenmaster crawl --quelle beteiligung --max-anfragen 5
+```
+
+Ein Abruf je Lauf liest die **öffentliche Projektliste** der städtischen Beteiligungsplattform
+(`meinungfuer.koeln/mitmachen/alle-projekte`, robots.txt erlaubt unbekannte Clients, `Crawl-delay: 5`).
+Übernommen werden **Projekttitel, Träger, Statuszeile der Plattform, Kurztext und Link**. Bewusst **nicht**
+übernommen werden Beiträge und Kommentare Dritter, Namen, Fotos und Anhänge; Detailseiten werden nicht
+verfolgt, weil die Liste die Statuszeile bereits enthält.
+
+Die Plattform nennt in der Liste keinen Zeitraum, sondern eine Statuszeile (z. B. „Online-Beteiligung seit
+10 Tagen geschlossen“). Sie steht deshalb als Auskunft der Plattform mit dem **Datum des letzten lokalen
+Abrufs** in der Oberfläche; Fristen und Unterlagen stehen auf der Projektseite. Eine leere oder unbekannte
+Liste wird als Fehler gewertet und **nicht** als „alles geschlossen“ gedeutet.
+
 ### Ratsinformationssystem / OParl
 
-**OParl ist die Standardquelle**, wenn `--quelle` fehlt, und die Quelle, die der Render-Blueprint automatisch abruft. Vor einem größeren Erstabruf die zulässigen Grenzen mit der Stadt abstimmen (Kontakt aus dem OParl-System: `12-session@stadt-koeln.de`).
+**OParl ist die Standardquelle**, wenn `--quelle` fehlt, und im Render-Blueprint die letzte Quelle der Etappe – die kleinen Quellen füllen den Bestand zuerst. Vor einem größeren Erstabruf die zulässigen Grenzen mit der Stadt abstimmen (Kontakt aus dem OParl-System: `12-session@stadt-koeln.de`).
 
 Der Abruf folgt der Reihenfolge **Gremien → Vorlagen → Sitzungen**. Die Vorlagen stehen bewusst vor den Sitzungen, denn nur sie sind die durchsuchbaren Vorgänge: Bei einem knappen Anfragebudget erzeugt ein Lauf sonst unter Umständen Sitzungsdaten, aber **keine einzigen Treffer** für die Startseite. Der Erstabruf lässt sich über `--seit` bzw. `BEHOERDEN_SYNC_SEIT` begrenzen; eine Tagesanzahl wie `90` ist ein rollierendes Fenster und veraltet nicht.
 
@@ -115,7 +154,7 @@ Bei OParl gilt `--seit` für den ersten Lauf; spätere Läufe nutzen den gespeic
 | Konsistenz | Bauleit-Listenseite, Detail-Aufgaben und Cursor werden atomar mit verschachtelbaren SQLite-Savepoints gespeichert |
 | Keine Such-Liveabrufe | Weboberfläche und API lesen nur lokale Daten |
 
-Die Kölner OParl-robots.txt enthält keine Gruppe für unbekannte Clients; für einige namentlich genannte Bots gelten 20 Sekunden Crawl-delay. Unsere eigene Kennung nutzt mindestens drei Sekunden, sofern keine strengere passende Regel gilt. Die geprüfte NRW-robots.txt enthielt keine Einschränkungen. Beides ersetzt **keine** Abstimmung mit dem Betreiber.
+Die Kölner OParl-robots.txt enthält keine Gruppe für unbekannte Clients; für einige namentlich genannte Bots gelten 20 Sekunden Crawl-delay. Unsere eigene Kennung nutzt mindestens drei Sekunden, sofern keine strengere passende Regel gilt. Die geprüfte NRW-robots.txt enthielt keine Einschränkungen; `meinungfuer.koeln` erlaubt unbekannten Clients die Projektliste und verlangt `Crawl-delay: 5` – die Stadtkonfiguration setzt für diese Quelle genau diese **5 Sekunden** an. Zusätzlich bekommt jede Quelle ein **Zeitfenster je Etappe** (`BEHOERDEN_SYNC_ZEITBUDGET`), damit ein großer Erstabruf die übrigen Quellen nicht blockiert. Alles zusammen ersetzt **keine** Abstimmung mit dem Betreiber.
 
 ## Grenzen und Datenqualität
 
@@ -127,7 +166,9 @@ Die Kölner OParl-robots.txt enthält keine Gruppe für unbekannte Clients; für
 - **„Geplant/offen“ priorisiert**, filtert aber nicht ausschließlich offene Vorgänge. Eine beendete Beteiligung bedeutet nicht, dass das Bauvorhaben abgeschlossen ist. Fristen werden einschließlich gelieferter Uhrzeiten/Zeitzonen geprüft und in Europe/Berlin dargestellt; maßgeblich bleibt die Originalseite.
 - **Zusammenfassungen sind regelbasiert.** Bei Bauleitplanung werden Original-Sätze zu Ziel, Umfang und Zeitplan ausgewählt. Keine unabhängige Bestätigung von Investorenankündigungen, kein LLM und kein PDF-Volltext.
 - RIS und Bauleitplanung können dasselbe Vorhaben als unterschiedliche Vorgänge führen. **Keine automatische Zusammenführung** und keine vollständige Historie vor dem ersten lokalen Abruf.
-- **Noch nicht umgesetzt:** Bürgerbeteiligung `meinungfuer.koeln`, Bekanntmachungen/Amtsblatt, Offene Daten Köln, Statistik, PDF-Volltext und optionale Sprachmodell-Zusammenfassungen. **Geoportal-Dienste (Bebauungsplan-Übersicht, Verkehr, Baustellen) sind laut `robots.txt` für alle Crawler gesperrt** und deshalb nicht angebunden. Stand und Begründung: [`docs/quellen-koeln.md`](docs/quellen-koeln.md#umsetzungsstand). Recherche: [`docs/recherche.md`](docs/recherche.md).
+- **Amtliche Bekanntmachungen sind kein Beschluss.** Die Liste nennt Datum, Art und Arbeitstitel; eine Verknüpfung zu einer Ratsvorlage oder einem Bauleitverfahren wird **nicht** behauptet und ein Beteiligungszeitraum **nicht** erfunden. Maßgeblich ist die verlinkte Bekanntmachung.
+- **Die Beteiligungsplattform wird nur mit Kopfdaten geführt:** Titel, Träger, Statuszeile, Kurztext und Link. Beiträge und Kommentare Dritter, Namen und Fotos bleiben außen vor. Die Statuszeile ist eine Momentaufnahme der Plattform und wird mit dem Datum des letzten lokalen Abrufs angezeigt.
+- **Noch nicht umgesetzt:** Offene Daten Köln (DKAN), Statistik, PDF-Volltext und optionale Sprachmodell-Zusammenfassungen. **Geoportal-Dienste (Bebauungsplan-Übersicht, Verkehr, Baustellen) sind laut `robots.txt` für alle Crawler gesperrt** und deshalb nicht angebunden. Stand und Begründung: [`docs/quellen-koeln.md`](docs/quellen-koeln.md#umsetzungsstand). Recherche: [`docs/recherche.md`](docs/recherche.md).
 
 ## Architektur
 
@@ -157,6 +198,7 @@ config/cities/*.toml
 | `auswertung.py`, `plan_auswertung.py` | Rats-Ergebnisse bzw. Beteiligungsstatus, Zusammenfassungen, Verlauf |
 | `ladebericht.py` | Ladeübersicht: Bestand je Quelle/Rolle, Ladepfad, Listenstand, Abrufprotokoll (nur lesend) |
 | `demo.py`, `fixtures/` | Offline-Demo mit getrennt gekennzeichneten Quellen |
+| `meldungen.py`, `bekanntmachungen.py`, `beteiligung.py` | Listenquellen: gemeinsamer Parser mit Statusableitung (Bekanntmachungen, Beteiligung) und ihre Abrufer |
 | `api.py`, `cli.py`, `web/` | API, CLI und responsive Weboberfläche |
 
 ### Datenmodell

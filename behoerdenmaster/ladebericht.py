@@ -26,6 +26,8 @@ from .suche import ROLLEN_TEXT
 TYP_TEXT = {
     "oparl": "Ratsinformationssystem (OParl)",
     "bauleitplanung": "Bauleitplanung",
+    "bekanntmachungen": "Öffentliche Bekanntmachungen (Amtsblatt)",
+    "beteiligung": "Bürgerbeteiligung (Meinung für Köln)",
     "ris-rss": "Sitzungstermine (RSS)",
     "presse-rss": "Pressemeldungen (RSS)",
     "demo": "Offline-Beispiele",
@@ -54,6 +56,13 @@ ZAEHLER_TEXT = {
     "details:gespeichert": "Detailseiten gelesen",
     "details:nicht_verfuegbar": "Detailseiten nicht verfügbar",
     "dokumente:neu": "Dokumentverweise neu",
+    "bekanntmachungen:neu": "Bekanntmachungen neu übernommen",
+    "bekanntmachungen:aktualisiert": "Bekanntmachungen aktualisiert",
+    "bekanntmachungen:ohne_datum": "Bekanntmachungen ohne erkanntes Datum",
+    "beteiligungen:neu": "Beteiligungsangebote neu übernommen",
+    "beteiligungen:aktualisiert": "Beteiligungsangebote aktualisiert",
+    "beteiligungen:verworfen": "Projektkarten ohne verwertbaren Link",
+    "listen:seiten": "Listenseiten gelesen",
 }
 
 ENTITAETEN_TEXT = {
@@ -65,6 +74,7 @@ ENTITAETEN_TEXT = {
 LEERE_ZAEHLER = {
     "vorgaenge": 0, "sitzungen": 0, "gremien": 0, "tagesordnungspunkte": 0,
     "beratungen": 0, "dokumente": 0, "planverfahren": 0, "planstaende": 0,
+    "hinweise": 0, "meldungen": 0, "bekanntmachungen": 0, "beteiligungen": 0,
 }
 
 # Reihenfolge der Balken im Diagramm „Dokumente je Quelle“.
@@ -187,6 +197,22 @@ def _abrufweg(zahlen: Mapping[str, int], staende: list[Mapping], aufgaben: int,
         schritt("Hinweise", f"{einheit(zahlen.get('hinweise', 0), 'Hinweis', 'Hinweise')} "
                 "(Titel, Datum, Link, Kurztext) – nicht Teil der Suche",
                 "ok" if zahlen.get("hinweise") else ("leer" if kurs else "wartet"))
+    elif typ == "bekanntmachungen":
+        schritt("Zugriff", "öffentliche Jahreslisten · Mindestabstand laut Stadtkonfiguration",
+                "ok" if kurs else "wartet")
+        schritt("Listen", f"{einheit(zahlen.get('bekanntmachungen', 0), 'Bekanntmachung', 'Bekanntmachungen')} gelistet"
+                + (" · Abrufreihe unterbrochen, wird fortgesetzt" if offen else ""),
+                "offen" if offen else ("ok" if kurs else "wartet"))
+        schritt("Originale", "verlinkt; das PDF wird nicht geladen und nicht ausgewertet",
+                "ok" if zahlen.get("dokumente") else "leer")
+    elif typ == "beteiligung":
+        schritt("Zugriff", "eine öffentliche Projektliste je Lauf · Mindestabstand laut Stadtkonfiguration",
+                "ok" if kurs else "wartet")
+        schritt("Projekte", f"{einheit(zahlen.get('beteiligungen', 0), 'Beteiligungsangebot', 'Beteiligungsangebote')} "
+                f"· {einheit(zahlen.get('dokumente', 0), 'Dokumentverweis', 'Dokumentverweise')}",
+                "ok" if zahlen.get("beteiligungen") else ("leer" if kurs else "wartet"))
+        schritt("Beiträge Dritter", "nicht übernommen (keine Kommentare, Namen oder Fotos)",
+                "ok" if kurs else "wartet")
     else:
         schritt("Zugriff", "Offline-Auszug, kein Netzabruf", "beispiel")
         schritt("Beispieldaten", f"{zahlen.get('vorgaenge', 0)} Vorgänge aus Fixtures", "beispiel")

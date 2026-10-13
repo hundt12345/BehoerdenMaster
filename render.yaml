@@ -30,14 +30,18 @@ services:
       # offen erklären, statt Offline-Auszüge als Treffer auszugeben.
       - key: BEHOERDEN_DEMO
         value: "false"
-      # Automatischer Abruf: OParl-Ratsinformation sowie die beiden RSS-Feeds (Sitzungstermine,
-      # Pressemeldungen). Je Feed nur eine Anfrage pro Lauf. Bauleitplanung bleibt bis zur
-      # Klärung ihres Fehlers ausgenommen (siehe docs/quellen-koeln.md).
-      # Ist standardmäßig aktiv; "false" schaltet den Hintergrundabruf bewusst ab.
+      # Automatischer Abruf. Die Reihenfolge ist die Abrufreihenfolge je Etappe und deshalb
+      # bewusst so gewählt: erst die kleinen, schnell vollständigen Quellen (Bekanntmachungen,
+      # Beteiligung, die beiden RSS-Feeds – je Quelle wenige Anfragen), zuletzt die
+      # Ratsinformation (OParl) mit ihrem großen Erstabruf. Quellen laufen nacheinander; ein
+      # knappes Zeitfenster trifft so zuerst die große Quelle, und die Startseite zeigt schon
+      # nach wenigen Minuten Inhalte statt einer leeren Liste.
+      # Bauleitplanung bleibt bis zur Klärung des dortigen Fehlers ausgenommen
+      # (siehe docs/quellen-koeln.md). "false" schaltet den Hintergrundabruf bewusst ab.
       - key: BEHOERDEN_SYNC_ENABLED
         value: "true"
       - key: BEHOERDEN_SYNC_QUELLEN
-        value: koeln:ris,koeln:ris-rss,koeln:presse-rss
+        value: koeln:bekanntmachungen,koeln:beteiligung,koeln:ris-rss,koeln:presse-rss,koeln:ris
       # Rollierendes Fenster für den Erstabruf: 90 Tage statt des in koeln.toml hinterlegten
       # Wahlperiodenbeginns. Hält den Abruf nach jedem Neustart klein und höflich.
       - key: BEHOERDEN_SYNC_SEIT
@@ -46,6 +50,11 @@ services:
         value: "21600"
       - key: BEHOERDEN_SYNC_MAX_ANFRAGEN
         value: "120"
+      # Zeitfenster je Quelle und Etappe: Quellen laufen nacheinander; ohne Fenster würde der
+      # große Erstabruf der Ratsinformation die übrigen Quellen bis zu Stunden blockieren.
+      # Danach wird die Quelle mit gespeichertem Cursor fortgesetzt.
+      - key: BEHOERDEN_SYNC_ZEITBUDGET
+        value: "240"
       - key: BEHOERDEN_SYNC_STARTVERZOEGERUNG
         value: "15"
       # Erreichbare Kontaktadresse für den identifizierbaren User-Agent. Sie steht bewusst

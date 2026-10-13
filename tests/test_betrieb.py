@@ -118,7 +118,8 @@ def test_factory_initialisiert_nicht_im_build_erst_im_lifespan(tmp_path):
         status = client.get("/api/status").json()
         assert status["zaehler"]["vorgang"] == 0
         assert {q["id"] for q in status["quellen"]} == {
-        "koeln:ris", "koeln:bauleitplanung", "koeln:ris-rss", "koeln:presse-rss"}
+            "koeln:ris", "koeln:bauleitplanung", "koeln:ris-rss", "koeln:presse-rss",
+            "koeln:bekanntmachungen", "koeln:beteiligung"}
         assert not status["betrieb"]["sync_dienst_laeuft"]
 
 

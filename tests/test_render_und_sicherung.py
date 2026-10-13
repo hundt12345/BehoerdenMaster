@@ -13,7 +13,7 @@ import pytest
 import yaml
 
 from behoerdenmaster.cli import baue_parser, main
-from behoerdenmaster.config import PROJEKT_KONTAKT, PROJEKTWURZEL
+from behoerdenmaster.config import PROJEKT_KONTAKT, PROJEKTWURZEL, lade_stadt
 from behoerdenmaster.crawl_sperre import CrawlLaeuft, crawl_sperre
 from behoerdenmaster.sicherung import sichere_datenbank
 from behoerdenmaster.speicher import Speicher
@@ -50,7 +50,12 @@ def test_render_blueprint_passt_zum_sqlite_betrieb():
     env = {e["key"]: e for e in service["envVars"]}
     assert Path(env["BEHOERDEN_DB"]["value"]).is_relative_to("/tmp")
     assert env["BEHOERDEN_SYNC_ENABLED"]["value"] == "true"
-    assert env["BEHOERDEN_SYNC_QUELLEN"]["value"] == "koeln:ris,koeln:ris-rss,koeln:presse-rss"
+    # Die Ratsinformation steht bewusst am Ende: Die kleinen Quellen füllen den Bestand
+    # zuerst, der große OParl-Erstabruf bekommt das restliche Zeitfenster der Etappe.
+    assert env["BEHOERDEN_SYNC_QUELLEN"]["value"] == (
+        "koeln:bekanntmachungen,koeln:beteiligung,koeln:ris-rss,koeln:presse-rss,koeln:ris")
+    assert env["BEHOERDEN_SYNC_QUELLEN"]["value"].split(",")[-1] == "koeln:ris"
+    assert env["BEHOERDEN_SYNC_ZEITBUDGET"]["value"].isdigit()
     # Ein rollierendes Fenster (Tage) statt eines festen Datums, das veralten würde.
     assert env["BEHOERDEN_SYNC_SEIT"]["value"].endswith("d") or env["BEHOERDEN_SYNC_SEIT"]["value"].isdigit()
     assert env["BEHOERDEN_DEMO"]["value"] == "false"
@@ -208,3 +213,23 @@ def test_cli_backup_erfolg_und_fehler_ohne_overwrite(tmp_path, capsys):
     assert "existiert bereits" in capsys.readouterr().err
     with Speicher(ziel) as sp:
         assert sp.betrieb_wert("stand") == "erhalten"
+
+
+def test_blueprint_quellen_existieren_und_haben_einen_abrufer():
+    """Ein Tippfehler im Blueprint darf nicht zu einem stummen Dienst führen.
+
+    Der Sync-Dienst bricht bei unbekannten IDs bewusst mit einem Fehler ab. Dieser Test
+    prüft dieselbe Zusage vorab: Jede im Blueprint aufgeführte Quelle existiert in der
+    Stadtkonfiguration und hat dort einen implementierten Abrufer.
+    """
+    from behoerdenmaster.crawler import CRAWLER
+
+    daten = yaml.safe_load((PROJEKTWURZEL / "render.yaml").read_text())
+    env = {e["key"]: e["value"] for e in daten["services"][0]["envVars"]}
+    stadt = lade_stadt("koeln")
+    vorhanden = {stadt.quell_id(q): q for q in stadt.quellen}
+    ids = env["BEHOERDEN_SYNC_QUELLEN"].split(",")
+    assert ids and len(ids) >= 5
+    for qid in ids:
+        assert qid in vorhanden, f"Unbekannte Quelle im Blueprint: {qid}"
+        assert vorhanden[qid].typ in CRAWLER, f"Kein Abrufer für {qid}"

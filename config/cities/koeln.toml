@@ -69,6 +69,32 @@ system_url = "https://www.stadt-koeln.de/externe-dienste/rss/pressemeldungen.xml
 min_intervall_sekunden = 3.0
 lizenz = "Datenlizenz Deutschland – Namensnennung – Version 2.0 (laut Datensatz \"Pressemeldungen\" auf offenedaten-koeln.de; der Feed selbst nennt keine Lizenz)"
 
+# Öffentliche Bekanntmachungen der Stadt (Amtsblatt-Struktur, keine offene Lizenz nötig/keine
+# zugesichert). Übernommen werden Titel, Datum, Hinweisveröffentlichung und der Link auf die
+# Bekanntmachung; die PDF-Datei wird NICHT geladen. Der Jahrgang der Liste wird je Lauf neu
+# gelesen (die Quelle bietet keinen Änderungsfilter), ältere Jahrgänge bleiben im Bestand.
+[[quellen]]
+schluessel = "bekanntmachungen"
+typ = "bekanntmachungen"
+name = "Öffentliche Bekanntmachungen Stadt Köln"
+system_url = "https://www.stadt-koeln.de/politik-und-verwaltung/bekanntmachungen/oeffentliche-bekanntmachungen-2026"
+listen_vorlage = "https://www.stadt-koeln.de/politik-und-verwaltung/bekanntmachungen/oeffentliche-bekanntmachungen-{jahr}"
+# Ältester zu prüfender Jahrgang; ein Lauf prüft höchstens drei Jahrgänge (neueste zuerst).
+start_jahr = 2025
+min_intervall_sekunden = 3.0
+lizenz = "Amtliche Bekanntmachung; keine offene Lizenz zugesichert – nur Titel, Datum und Link werden übernommen"
+
+# Bürgerbeteiligung „Meinung für Köln“: öffentliche Projektliste. Übernommen werden Titel,
+# Statuszeile der Plattform, Kurztext und Link. Keine Beiträge, Kommentare, Namen oder Fotos
+# Dritter, keine Detailseiten. robots.txt: für unbekannte Clients erlaubt, Crawl-delay 5 s.
+[[quellen]]
+schluessel = "beteiligung"
+typ = "beteiligung"
+name = "Bürgerbeteiligung Meinung für Köln"
+system_url = "https://meinungfuer.koeln/mitmachen/alle-projekte"
+min_intervall_sekunden = 5.0
+lizenz = "Keine offene Lizenz zugesichert; nur Titel, Statuszeile, Kurztext und Link der städtischen Projektseite"
+
 [bezirke]
 "1" = "Innenstadt"
 "2" = "Rodenkirchen"

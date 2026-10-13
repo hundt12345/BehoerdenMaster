@@ -14,6 +14,7 @@ from . import __version__
 from .abruf import Abrufer, BudgetErschoepft, NichtErlaubt, ObjektNichtVorhanden, QuelleGesperrt, QuelleNichtErreichbar
 from .auswertung import heute, jetzt
 from .bauleitplanung import BauleitplanungQuelle
+from .bekanntmachungen import listen_url
 from .betrieb import Betrieb
 from .config import PROJEKT_KONTAKT, Quelle, Stadt, config_verzeichnis, lade_staedte
 from .crawl_sperre import CrawlLaeuft, crawl_sperre
@@ -21,6 +22,7 @@ from .crawler import CRAWLER, ENTITAETEN, CrawlVerweigert, LaufOptionen
 from .demo import demo_quell_id, lade_demo, loesche_demo
 from .geo import Gazetteer
 from .ladebericht import einheit, entitaet_name, ladebericht
+from .meldungen import datum_anzeige, parse_bekanntmachungen, parse_beteiligungen
 from .nlq import verstehe
 from .oparl import OParlQuelle
 from .rss import ART_JE_TYP, parse_feed
@@ -119,6 +121,18 @@ def _probe(args) -> int:
             print(f"{quelle.name}: {len(treffer)} Einträge übernommen, {verworfen} verworfen")
             for h in treffer[:3]:
                 print(f"  - {h.datum} {h.titel[:90]}")
+        elif quelle.typ == "bekanntmachungen":
+            url = listen_url(quelle, heute().year)
+            eintraege, weiter, treffer_text = parse_bekanntmachungen(abrufer.get_text(url), url)
+            print(f"{quelle.name}: {len(eintraege)} Bekanntmachungen auf der ersten Seite "
+                  f"({'weitere Seiten vorhanden' if weiter else 'letzte Seite'}; {treffer_text or 'ohne Trefferangabe'})")
+            for e in eintraege[:3]:
+                print(f"  - {datum_anzeige(e.datum) or 'ohne Datum'} {e.titel[:90]}")
+        elif quelle.typ == "beteiligung":
+            projekte, verworfen = parse_beteiligungen(abrufer.get_text(quelle.system_url), quelle.system_url)
+            print(f"{quelle.name}: {len(projekte)} Beteiligungsangebote übernommen, {verworfen} verworfen")
+            for p in projekte[:3]:
+                print(f"  - {p.status_kurz}: {p.titel[:80]}")
         elif quelle.typ == "oparl":
             oparl = OParlQuelle(abrufer, quelle.system_url, quelle.body_id)
             body = oparl.body()
@@ -148,6 +162,9 @@ def cmd_crawl(args) -> int:
         raise SystemExit("Bauleitplanung prüft stets die ganze öffentliche Liste; --seit und --nur gelten nur für OParl.")
     if quelle.typ in ART_JE_TYP and (args.seit or args.nur):
         raise SystemExit("RSS-Feeds haben keinen Zeitfilter; --seit und --nur gelten nur für OParl.")
+    if quelle.typ in ("bekanntmachungen", "beteiligung") and (args.seit or args.nur):
+        raise SystemExit("Listenquellen haben keinen Zeit- oder Entitätsfilter; "
+                         "--seit und --nur gelten nur für OParl.")
     if args.max_anfragen is not None and args.max_anfragen < 1:
         raise SystemExit("--max-anfragen muss mindestens 1 sein.")
     entitaeten = tuple(e.strip() for e in args.nur.split(",")) if args.nur else ENTITAETEN

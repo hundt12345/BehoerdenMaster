@@ -6,7 +6,7 @@ Kommunale Vorgänge durchsuchen und nachvollziehbar zusammenfassen – zuerst f�
 
 - **Fragen in natürlicher Sprache**, etwa „Welche Bauvorhaben sind in Köln Ehrenfeld geplant?“: regelbasiertes Erkennen von Stadtteilen, Bezirken, Themen, Zeiträumen und „geplant/offen“.
 - **PLZ-Suche**, optional mit Themenfilter.
-- **Vier durchsuchbare Kölner Quellen in einer Suche:** Ratsinformation **OParl**, **Bauleitplanung Online NRW**, die **öffentlichen Bekanntmachungen** der Stadt (amtliche Verfahrensschritte nach BauGB) und die **Bürgerbeteiligung „Meinung für Köln“**.
+- **Fünf durchsuchbare Kölner Quellen in einer Suche:** Ratsinformation **OParl**, **Bauleitplanung Online NRW**, die **öffentlichen Bekanntmachungen** der Stadt (amtliche Verfahrensschritte nach BauGB), die **Bürgerbeteiligung „Meinung für Köln“** und ausgewählte **Tabellendatensätze des Offene-Daten-Portals** (DKAN 2, je Datensatz DL-DE-Zero-2.0 oder DL-DE-BY-2.0 mit Namensnennung).
 - **Zwei RSS-Hinweisquellen (ohne Suche):** Sitzungstermine der Ratsinformation (SessionNet-RSS) und Pressemeldungen der Stadt. Sie landen als Hinweise mit Titel, Datum, Link und Kurztext in eigener Tabelle, nicht als Vorgänge.
 - **Datenquellen und Ladestand:** eingeklappter Bereich unten auf der Startseite mit einer Grafik (Dokumentverweise je Quelle und Rolle) und einer Zeile je Quelle (Zustand, letzter Erfolg, Bestand). Die Daten kommen rein aus der lokalen Datenbank, ohne Behördenabruf; der ausführliche Ladepfad bleibt im JSON-Endpunkt `/api/ladebericht`.
 - **Pro Vorgang:** Zusammenfassung, Status, Original-Link, Dokumentlinks und ein quellenabhängiges **Verlaufsprotokoll**:
@@ -20,7 +20,7 @@ Kommunale Vorgänge durchsuchen und nachvollziehbar zusammenfassen – zuerst f�
 
 Die [`render.yaml`](render.yaml) konfiguriert einen Python-3.13-Web-Service in Frankfurt im **kostenlosen Tarif (Render Free)**. Free hat keine persistente Disk: die SQLite-Datei liegt in `/tmp` und wird nach jedem Neustart vom Hintergrundabruf neu gefüllt. Damit dieser Erstabruf klein und höflich bleibt, begrenzt `BEHOERDEN_SYNC_SEIT` ihn auf ein **rollierendes 90-Tage-Fenster** statt auf den Wahlperiodenbeginn. Der Dienst schläft nach Inaktivität ein; der erste Aufruf danach dauert etwas länger. Für dauerhafte Daten siehe [docs/render.md](docs/render.md). Der Button verwendet den aktuellen PR-Branch; nach dessen Merge kann auch `main` ausgewählt werden.
 
-Der Blueprint ruft **fünf Kölner Quellen automatisch ab**: Ratsinformation (OParl), öffentliche Bekanntmachungen, Bürgerbeteiligung „Meinung für Köln“ und die beiden RSS-Feeds – die kleinen Quellen zuerst, den großen OParl-Erstabruf zuletzt. Abrufe sind **standardmäßig aktiv**; als Kontaktadresse dient `BEHOERDEN_KONTAKT` – und solange die fehlt, die im Repository hinterlegte, erreichbare **Projekt-Kontaktadresse** (`behoerdenmaster/config.py`: `PROJEKT_KONTAKT`). Ein Deployment füllt seinen Bestand also auch ohne eigene Umgebungswerte, statt wegen einer fehlenden Einstellung dauerhaft leer zu bleiben; `BEHOERDEN_SYNC_ENABLED=false` schaltet bewusst ab, ein leer gesetztes `BEHOERDEN_KONTAKT` verzichtet bewusst auf die Voreinstellung. Beispieldaten sind ausgeschaltet. Suchanfragen lösen weiterhin nie einen Behördenabruf aus. [Schritt-für-Schritt-Anleitung, Einstellungen, Live-Probe und Sicherung](docs/render.md); bei einer leeren Startseite der Abschnitt [Fehlerbehebung](docs/render.md#fehlerbehebung).
+Der Blueprint ruft **sechs Kölner Quellen automatisch ab**: Ratsinformation (OParl), öffentliche Bekanntmachungen, Bürgerbeteiligung „Meinung für Köln“, ausgewählte Tabellendatensätze des Offene-Daten-Portals und die beiden RSS-Feeds – die kleinen Quellen zuerst, den großen OParl-Erstabruf zuletzt. Abrufe sind **standardmäßig aktiv**; als Kontaktadresse dient `BEHOERDEN_KONTAKT` – und solange die fehlt, die im Repository hinterlegte, erreichbare **Projekt-Kontaktadresse** (`behoerdenmaster/config.py`: `PROJEKT_KONTAKT`). Ein Deployment füllt seinen Bestand also auch ohne eigene Umgebungswerte, statt wegen einer fehlenden Einstellung dauerhaft leer zu bleiben; `BEHOERDEN_SYNC_ENABLED=false` schaltet bewusst ab, ein leer gesetztes `BEHOERDEN_KONTAKT` verzichtet bewusst auf die Voreinstellung. Beispieldaten sind ausgeschaltet. Suchanfragen lösen weiterhin nie einen Behördenabruf aus. [Schritt-für-Schritt-Anleitung, Einstellungen, Live-Probe und Sicherung](docs/render.md); bei einer leeren Startseite der Abschnitt [Fehlerbehebung](docs/render.md#fehlerbehebung).
 
 ## Schnellstart – auch ohne Netz
 
@@ -123,6 +123,35 @@ Die Plattform nennt in der Liste keinen Zeitraum, sondern eine Statuszeile (z. B
 Abrufs** in der Oberfläche; Fristen und Unterlagen stehen auf der Projektseite. Eine leere oder unbekannte
 Liste wird als Fehler gewertet und **nicht** als „alles geschlossen“ gedeutet.
 
+### Offene Daten Köln (Tabellendatensätze, DKAN 2)
+
+```bash
+python -m behoerdenmaster probe --quelle opendata
+python -m behoerdenmaster crawl --quelle opendata --max-anfragen 60
+```
+
+Die Quelle liest den **Katalog und Tabellenspeicher („Datastore“) des städtischen
+Offene-Daten-Portals** (`www.offenedaten-koeln.de`, DKAN 2). In der Stadtkonfiguration steht je
+Eintrag von `datensaetze` ein Katalogstichwort (oder direkt eine Datensatz-UUID); der Lauf sucht
+den Datensatz über die Katalogsuche und liest dann dessen Tabellenzeilen seitenweise
+(`/api/1/datastore/query/<uuid>/<index>?limit=&offset=`). **Jede Zeile wird ein durchsuchbarer
+Vorgang**: Titel, Datum, eine Feldübersicht, der Ortsbezug aus den Straßennamen der Zeile und der
+Link auf die Originaldatei. PDF-, WMS- und GIS-Ausgaben werden **nicht** geladen.
+
+Übernommen werden **nur Datensätze unter einer offenen Lizenz**: DL-DE-Zero-2.0 (ohne
+Namensnennung) und DL-DE-BY-2.0 (mit Namensnennung, ausgelesen und am Vorgang angezeigt).
+Datensätze mit anderer, fehlender oder fremder Lizenz werden **übersprungen und gezählt** – nichts
+wird umgedeutet, und es gibt keine stillen Annahmen. Ein Datensatz ist **kein Verfahren**: Die
+Zeilen sind Angaben der Quelle, aus fehlenden Feldern wird nichts ergänzt. Ist der Titel eines
+Datensatzes anders formuliert als das Stichwort, greift ein **unscharfer Treffer** (gleiches
+bedeutungstragendes Wort) – er wird als solcher gezählt und im Ladebericht ausgewiesen.
+
+> **Noch kein Live-Lauf bestätigt:** Der Adapter ist offline gegen den dokumentierten DKAN-2-Vertrag
+> getestet; aus der Entwicklungs-Sandbox sind die Stadt-Hosts nicht erreichbar. Der Probelauf nennt
+> die Titel, die der Katalog zu einem Stichwort führt – damit lassen sich die Einträge in
+> `config/cities/koeln.toml` nach dem ersten echten Abruf zügig nachziehen. Stand und Begründung:
+> [`docs/quellen-koeln.md`](docs/quellen-koeln.md#56-offene-daten-köln-dkan-2-und-einzelne-datensätze).
+
 ### Ratsinformationssystem / OParl
 
 **OParl ist die Standardquelle**, wenn `--quelle` fehlt, und im Render-Blueprint die letzte Quelle der Etappe – die kleinen Quellen füllen den Bestand zuerst. Vor einem größeren Erstabruf die zulässigen Grenzen mit der Stadt abstimmen (Kontakt aus dem OParl-System: `12-session@stadt-koeln.de`).
@@ -162,13 +191,33 @@ Die Kölner OParl-robots.txt enthält keine Gruppe für unbekannte Clients; für
 - **Freitextsuche nutzt Wortstämme, kein vollständiges Stemming.** Eine Frageform wie „Abendmärkten“ findet den Titel „Abendmärkte“, weil höchstens eine deutsche Endung entfernt wird und der Stamm mindestens fünf Zeichen behält – Kurzwörter wie „Rat“ oder „Bau“ werden deshalb nicht zu Wildcards. Umlaut-Plurale („Bebauungspläne“ zu „Bebauungsplan“) und Synonyme werden **nicht** erkannt.
 - Das Projekt [mandari](https://github.com/mandariOSS/mandari/issues/348) berichtete seit September 2026 über nicht erreichbare Kölner Hosts und vermutete eine IP-Sperre; **keine öffentlich bestätigte Aussage der Stadt**. Keine Ausweich-Hosts oder andere Umgehung.
 - **Ortsbezug ist eine Heuristik:** OParl aus Betreff/Gremiennamen, Bauleitplanung aus Titel/öffentlicher Beschreibung. Die Herkunft wird im API-Ergebnis angezeigt. Kein Polygonabgleich und keine garantierte Zuordnung zur tatsächlichen Planfläche; auch andere im Text genannte Orte können Treffer auslösen. Kontaktangaben aus Detailseiten werden nicht als Lage übernommen.
-- **PLZ-Zuordnung:** 9 Bezirke / 86 Stadtteile sind hinterlegt. Nur 5 der 46 Kölner PLZ haben eine ungefähre Stadtteil-Zuordnung; die übrigen suchen nur ausdrückliche PLZ-Nennungen. PLZ- und Stadtteilgrenzen sind nicht identisch.
+- **PLZ-Zuordnung:** 9 Bezirke / 86 Stadtteile sind hinterlegt; 45 der 46 Kölner PLZ sind
+  Stadtteilen zugeordnet (nur **50923** bleibt ohne Zuordnung und nennt den Grund).
+  Die Zuordnung stammt aus dem Straßenverzeichnis (siehe unten) und ist eine **Näherung**: PLZ- und
+  Stadtteilgrenzen sind nicht identisch, eine PLZ kann zu mehreren Stadtteilen und Bezirken gehören.
+  Wer es genauer braucht, gibt eine Straße ein – ein Straßenname schlägt jede PLZ-Zuordnung.
+- **Straßenverzeichnis statt Raten:** Aus einem Straßennamen in Titel oder Beschreibung leitet die
+  Suche den Stadtteil ab (`strasse("Feldgärtenstr.")` → Niehl), solange der Name eindeutig ist;
+  mehrdeutige Namen (z. B. „Erlenweg“) liefern **keinen** Ortsbezug und werden als mehrdeutig
+  gemeldet. Grundlage sind 4.981 Straßennamen für Köln aus einem **OpenStreetMap-Auszug**
+  (© OpenStreetMap-Mitwirkende, **ODbL 1.0**; Erzeugung: `tools/strassen_aus_osm.py`, Erläuterung im
+  Kopf von `config/cities/koeln.strassen.tsv`). Die Namensnennung steht in der Oberfläche und in
+  [`docs/quellen-koeln.md`](docs/quellen-koeln.md). Die Ableitung ist eine Näherung, kein
+  Polygonabgleich. Der Ortsbezug wird im Ergebnis mit seiner **Herkunft** angezeigt
+  (`betreff`, `beschreibung`, `gremium`, `oparl`, `strasse`).
+- **Ortsbezug ohne Neuabruf nachrechnen:** Verbessert sich die Auswertung oder kommt das
+  Straßenverzeichnis hinzu, aktualisiert `python -m behoerdenmaster ortsbezug [--quelle X]` den
+  Ortsbezug aus den **bereits gespeicherten** Texten. Standard ist ein Prüflauf; `--schreiben`
+  übernimmt. Ersetzt werden nur Herkünfte, die sich aus den gespeicherten Texten wiederherstellen
+  lassen (`betreff`, `beschreibung`, `strasse`) – Angaben der Schnittstelle (`oparl`) und
+  Gremiennamen (`gremium`) bleiben unangetastet. Kein Behördenabruf.
 - **„Geplant/offen“ priorisiert**, filtert aber nicht ausschließlich offene Vorgänge. Eine beendete Beteiligung bedeutet nicht, dass das Bauvorhaben abgeschlossen ist. Fristen werden einschließlich gelieferter Uhrzeiten/Zeitzonen geprüft und in Europe/Berlin dargestellt; maßgeblich bleibt die Originalseite.
 - **Zusammenfassungen sind regelbasiert.** Bei Bauleitplanung werden Original-Sätze zu Ziel, Umfang und Zeitplan ausgewählt. Keine unabhängige Bestätigung von Investorenankündigungen, kein LLM und kein PDF-Volltext.
 - RIS und Bauleitplanung können dasselbe Vorhaben als unterschiedliche Vorgänge führen. **Keine automatische Zusammenführung** und keine vollständige Historie vor dem ersten lokalen Abruf.
 - **Amtliche Bekanntmachungen sind kein Beschluss.** Die Liste nennt Datum, Art und Arbeitstitel; eine Verknüpfung zu einer Ratsvorlage oder einem Bauleitverfahren wird **nicht** behauptet und ein Beteiligungszeitraum **nicht** erfunden. Maßgeblich ist die verlinkte Bekanntmachung.
 - **Die Beteiligungsplattform wird nur mit Kopfdaten geführt:** Titel, Träger, Statuszeile, Kurztext und Link. Beiträge und Kommentare Dritter, Namen und Fotos bleiben außen vor. Die Statuszeile ist eine Momentaufnahme der Plattform und wird mit dem Datum des letzten lokalen Abrufs angezeigt.
-- **Noch nicht umgesetzt:** Offene Daten Köln (DKAN), Statistik, PDF-Volltext und optionale Sprachmodell-Zusammenfassungen. **Geoportal-Dienste (Bebauungsplan-Übersicht, Verkehr, Baustellen) sind laut `robots.txt` für alle Crawler gesperrt** und deshalb nicht angebunden. Stand und Begründung: [`docs/quellen-koeln.md`](docs/quellen-koeln.md#umsetzungsstand). Recherche: [`docs/recherche.md`](docs/recherche.md).
+- **Offene Daten sind kein Verfahren:** Zeilen des Offene-Daten-Portals stehen als Angaben der Quelle mit Datensatznamen, Lizenz und Link; es wird kein Verfahrensschritt und kein Beschluss daraus abgeleitet. Nur Tabellen (Datastore), kein PDF und keine Geodaten.
+- **Noch nicht umgesetzt:** Statistik, PDF-Volltext und optionale Sprachmodell-Zusammenfassungen. **Geoportal-Dienste (Bebauungsplan-Übersicht, Verkehr, Baustellen) sind laut `robots.txt` für alle Crawler gesperrt** und deshalb nicht angebunden. Stand und Begründung: [`docs/quellen-koeln.md`](docs/quellen-koeln.md#umsetzungsstand). Recherche: [`docs/recherche.md`](docs/recherche.md).
 
 ## Architektur
 
@@ -199,6 +248,8 @@ config/cities/*.toml
 | `ladebericht.py` | Ladeübersicht: Bestand je Quelle/Rolle, Ladepfad, Listenstand, Abrufprotokoll (nur lesend) |
 | `demo.py`, `fixtures/` | Offline-Demo mit getrennt gekennzeichneten Quellen |
 | `meldungen.py`, `bekanntmachungen.py`, `beteiligung.py` | Listenquellen: gemeinsamer Parser mit Statusableitung (Bekanntmachungen, Beteiligung) und ihre Abrufer |
+| `opendata.py` | Offene Daten Köln (DKAN 2): Katalogsuche, Lizenzprüfung, Tabellenspeicher → Vorgänge |
+| `ortsbezug.py`, `tools/strassen_aus_osm.py` | Ortsbezug aus dem Bestand nachrechnen (ohne Abruf); Straßenverzeichnis aus dem OSM-Auszug erzeugen |
 | `api.py`, `cli.py`, `web/` | API, CLI und responsive Weboberfläche |
 
 ### Datenmodell
@@ -248,7 +299,7 @@ pytest -q
 python -m pyflakes behoerdenmaster tests
 ```
 
-Offline getestet werden die Ladeübersicht (Dokumentverweise je Quelle und Rolle, Ladepfad, Listenstand, Abrufprotokoll, Abkühlzeit, leerer Bestand, API- und CLI-Ausgabe, kein Netzaufbau), Fragen/Orte, beide Quelladapter, JSON-/HTML-Schema, Organisationsfilter, sichere Links/Weiterleitungen, robots, Backoff/HTTP-Datum, Budget, Pagination/Fortsetzung, atomare Checkpoints, KeyboardInterrupt, Cooldown über Prozessgrenzen, Schema-Migration, fehlende Verfahren, Änderungs-Snapshots, Demo-/Echtdaten-Trennung, Suche, API und CLI sowie Render-Blueprint, Startup/Healthcheck, Einmal-Seeding, Neustart-Fälligkeit, Hintergrundabruf/Shutdown, Prozesssperre und WAL-Sicherung. Dazu die **Umgebungsvoreinstellung**: Abrufe sind ohne gesetzte Variablen aktiv, die Projekt-Kontaktadresse ersetzt ein fehlendes `BEHOERDEN_KONTAKT`, ein leer gesetzter Wert verzichtet bewusst darauf, und keine der Adressen verlässt den Server.
+Offline getestet werden die Ladeübersicht (Dokumentverweise je Quelle und Rolle, Ladepfad, Listenstand, Abrufprotokoll, Abkühlzeit, leerer Bestand, API- und CLI-Ausgabe, kein Netzaufbau), Fragen/Orte, PLZ- und Straßenauflösung samt Herkunft, alle Quelladapter (einschließlich Katalog/Lizenz/Abbruch und Fortsetzung bei den Offenen Daten), JSON-/HTML-Schema, Organisationsfilter, sichere Links/Weiterleitungen, robots, Backoff/HTTP-Datum, Budget, Pagination/Fortsetzung, atomare Checkpoints, KeyboardInterrupt, Cooldown über Prozessgrenzen, Schema-Migration, fehlende Verfahren, Änderungs-Snapshots, Demo-/Echtdaten-Trennung, Suche, API und CLI sowie Render-Blueprint, Startup/Healthcheck, Einmal-Seeding, Neustart-Fälligkeit, Hintergrundabruf/Shutdown, Prozesssperre und WAL-Sicherung. Dazu die **Umgebungsvoreinstellung**: Abrufe sind ohne gesetzte Variablen aktiv, die Projekt-Kontaktadresse ersetzt ein fehlendes `BEHOERDEN_KONTAKT`, ein leer gesetzter Wert verzichtet bewusst darauf, und keine der Adressen verlässt den Server.
 
 Hinzu kommen drei Prüfungen gegen die veröffentlichte Instanz: der **vollständige Abrufpfad gegen die Originalantworten vom 11.10.2026** (robots → System → Body → Listen mit echtem `links.next` → SQLite → Suche → API, einschließlich geschlossener Beratungsfolge mit überliefertem Ergebnis), die **Abrufreihenfolge bei knappem Budget** (Vorlagen vor Sitzungen, damit ein Teilabruf sichtbare Treffer hinterlässt) sowie **Diagnose und Robustheit eines leeren Bestands** (erklärter Leerstand in API und Oberfläche, warnende statt abstürzende Umgebungsauswertung, rollierendes Erstabruf-Fenster). GitHub Actions führt die Python-Tests und eine JavaScript-Syntaxprüfung aus; **keine Live-Behördenabfragen** in der CI.
 
@@ -261,7 +312,14 @@ Hinzu kommen drei Prüfungen gegen die veröffentlichte Instanz: der **vollstän
 ## Nächste Schritte
 
 1. Abrufgrenzen und Nutzungsbedingungen mit den Betreibern abstimmen; beide Quellen auf einem geeigneten Rechner in kleinen Etappen live prüfen.
-2. Weitere Kölner Quellen in der Reihenfolge aus [`docs/quellen-koeln.md`](docs/quellen-koeln.md) anbinden – vorgeschlagen zuerst der SessionNet-RSS-Feed und die öffentlichen Bekanntmachungen (kleiner Aufwand, amtlicher Statuswechsel), danach die Kölner Bebauungsplan-Übersicht (Geometrie statt Orts-Heuristik).
-3. Bürgerbeteiligung Köln (`meinungfuer.koeln`) ergänzen.
+2. **Die neue Open-Data-Quelle live prüfen:** `probe --quelle opendata` auf einem Rechner mit
+   Netzzugang; die genannten Katalogtitel mit `datensaetze` in `config/cities/koeln.toml`
+   abgleichen und die Datensatz-Auswahl danach schriftlich festhalten.
+3. Weitere Quellen in der Reihenfolge aus [`docs/quellen-koeln.md`](docs/quellen-koeln.md):
+   Statistik/Straßenverzeichnis der Stadt für belastbare Bezugsgrößen und – falls die Stadt den
+   Zugang freigibt – die Kölner Bebauungsplan-Übersicht (Geometrie statt Orts-Heuristik;
+   `robots.txt` sperrt sie derzeit für alle Crawler).
 4. PDF-Volltext mit Quellenbezug und optionalen Sprachmodell-Zusammenfassungen.
-5. PLZ-Zuordnung für die übrigen 41 Kölner PLZ ergänzen und mögliche Verknüpfungen zwischen RIS und Bauleitplanung prüfen. Eigenständig zusammengestellte Themenüberblicke mit Quellenangabe: [`docs/presse-koeln.md`](docs/presse-koeln.md).
+5. Mögliche Verknüpfungen zwischen RIS, Bauleitplanung und den Datensätzen prüfen (ohne
+   Zusammenführung zu behaupten). Eigenständig zusammengestellte Themenüberblicke mit
+   Quellenangabe: [`docs/presse-koeln.md`](docs/presse-koeln.md).

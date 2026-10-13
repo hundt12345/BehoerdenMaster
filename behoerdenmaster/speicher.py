@@ -429,6 +429,26 @@ class Speicher:
             for typ, schluessel, quelle in orte:
                 self.db.execute("INSERT OR IGNORE INTO ortsbezug VALUES (?,?,?,?)", (vid, typ, schluessel, quelle))
 
+    def ortsbezug_ersetzen(self, vorgang_id: str, orte: set[tuple[str, str, str]],
+                           quellen: tuple[str, ...]) -> None:
+        """Ortsbezüge bestimmter Herkünfte neu setzen – ohne das Objekt neu zu speichern.
+
+        Wird von der Pflege des Ortsbezugs gebraucht (``behoerdenmaster ortsbezug``): Nur die
+        angegebenen Herkünfte werden ersetzt, alles andere bleibt stehen. So kann ein
+        verbessertes Straßenverzeichnis wirken, ohne die Stadt erneut abzurufen.
+        """
+        if not quellen:
+            return
+        with self.transaktion():
+            self.db.execute(
+                f"DELETE FROM ortsbezug WHERE vorgang_id = ? AND quelle IN ({','.join('?' * len(quellen))})",
+                (vorgang_id, *quellen),
+            )
+            self.db.executemany(
+                "INSERT OR IGNORE INTO ortsbezug VALUES (?,?,?,?)",
+                [(vorgang_id, typ, schluessel, quelle) for typ, schluessel, quelle in orte],
+            )
+
     # --- RSS-Hinweise -------------------------------------------------------------
 
     def hinweise_speichern(self, quelle_id: str, zeilen: list[dict]) -> None:

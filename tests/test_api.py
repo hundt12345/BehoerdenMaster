@@ -54,9 +54,17 @@ def test_plz_ungueltig_und_bekannt(client):
     assert client.get("/api/plz/abcde").status_code == 422
     daten = client.get("/api/plz/50827").json()
     assert daten["plz"] == "50827"
-    assert any("Näherung" in h for h in daten["hinweise"])
+    assert any("Näherung" in h and "Straße im Suchfeld" in h for h in daten["hinweise"])
+    # Die Herkunft der Zuordnung und das Straßenverzeichnis stehen als eigene Hinweise dabei –
+    # samt Namensnennung, weil die Straßennamen unter ODbL stehen.
+    assert any(h.startswith("Straßenverzeichnis:") and "OpenStreetMap" in h and "ODbL" in h
+               for h in daten["hinweise"])
     fremd = client.get("/api/plz/10115").json()
     assert any("gehört nicht" in h for h in fremd["hinweise"])
+    # 50923 ist die einzige Kölner PLZ ohne belegte Stadtteile: Der Grund wird genannt.
+    ohne = client.get("/api/plz/50923").json()
+    assert any("kein Stadtteil ableiten" in h for h in ohne["hinweise"])
+    assert any(h.startswith("Grund:") for h in ohne["hinweise"])
 
 
 def test_plz_unbekanntes_thema(client):

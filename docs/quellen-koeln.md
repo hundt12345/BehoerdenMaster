@@ -5,7 +5,8 @@ geprüft (Erreichbarkeit, Format, Lizenzangabe). Geprüft heißt nicht abgestimm
 automatische Abrufe gilt weiter Abschnitt [„Regeln für jede neue Quelle“](#regeln-für-jede-neue-quelle).
 Das Dokument beschreibt **Vorschläge**, keine Zusagen: Umgesetzt sind derzeit
 Ratsinformation (OParl), Bauleitplanung Online NRW, die öffentlichen Bekanntmachungen, die
-Bürgerbeteiligung „Meinung für Köln“ sowie die RSS-Feeds (Sitzungen, Presse); siehe
+Bürgerbeteiligung „Meinung für Köln“, ausgewählte Tabellendatensätze des Offene-Daten-Portals
+(DKAN 2) sowie die RSS-Feeds (Sitzungen, Presse); siehe
 [Umsetzungsstand](#umsetzungsstand).
 
 ## Umsetzungsstand
@@ -18,9 +19,10 @@ Stand 12.10.2026, nach der Umsetzung im Repository:
 | 9 Pressemeldungen (RSS) | **umgesetzt** (`typ = "presse-rss"`) | `robots.txt` ohne Sperre; nur Titel, Datum, Link, Kurztext |
 | 2, 3, 6 Geoportal (Bebauungsplan-Übersicht, Verkehr, Baustellen, Baumkataster) | **nicht angebunden** | `https://geoportal.stadt-koeln.de/robots.txt` enthält `User-agent: *` mit `Disallow: /`. Der Abrufer würde ohnehin mit `NichtErlaubt` abbrechen, wir bauen dazu keinen Umweg. Eine Freigabe durch die Stadt oder ein anderer, nicht gesperrter Zugang (z. B. offizieller Open-Data-Export) ist nötig. |
 | 4 Bekanntmachungen/Amtsblatt | **umgesetzt** (`typ = "bekanntmachungen"`) | HTML-Liste auf `www.stadt-koeln.de` ist nicht gesperrt; Jahreslisten mit Paginierung, bis zu drei Jahrgänge je Lauf. Übernommen werden Datum, Art, Arbeitstitel, Hinweisveröffentlichung und Link – **das PDF wird nicht geladen** |
-| 5 Offene Daten Köln (DKAN) | offen | `robots.txt` ohne Sperre für den Datenbereich; Datensatz-Auswahl und Lizenz je Datensatz noch offen |
+| 5 Offene Daten Köln (DKAN) | **umgesetzt** (`typ = "opendata"`) | `robots.txt` ohne Sperre für den Datenbereich. Gelesen wird der Katalog und der Tabellenspeicher (Datastore); übernommen werden **nur** Datensätze unter DL-DE-Zero-2.0 oder DL-DE-BY-2.0 (BY mit Namensnennung), andere werden gezählt und übersprungen. Datensatz-Auswahl über Katalogstichworte in `config/cities/koeln.toml`; **ein Live-Lauf steht noch aus** (Stadt-Hosts aus der Entwicklungsumgebung nicht erreichbar) |
 | 7 Meinungfuer | **umgesetzt, hart begrenzt** (`typ = "beteiligung"`) | robots.txt erlaubt unbekannte Clients mit `Crawl-delay: 5` (Konfiguration: 5 s). Ein Abruf je Lauf, nur Kopfdaten der Projektliste; keine offene Lizenz zugesichert, Beiträge Dritter ausgeschlossen |
-| 8 „Sag's uns“, 10 Statistik, 11 Wahlen | nicht umgesetzt | Lizenz- und Personenbezugsprüfung nach den Regeln unten steht aus |
+| 8 „Sag's uns“, 11 Wahlen | nicht umgesetzt | Lizenz- und Personenbezugsprüfung nach den Regeln unten steht aus |
+| 10 Statistik (nur der Teil „Straße → Stadtteil“) | **umgesetzt, aber nicht als Stadtquelle** | Die amtlichen Straßenverzeichnisse sind CSV/PDF ohne zugesicherte offene Lizenz. Für die Ortsauflösung nutzt das Projekt deshalb einen **OpenStreetMap-Auszug** (© OpenStreetMap-Mitwirkende, ODbL 1.0) – siehe [Straßenverzeichnis](#straßenverzeichnis-openstreetmap-odbl-10). Kennzahlen je Stadtteil bleiben offen |
 
 **Live-Probelauf der beiden Listenquellen bestätigt (12.10.2026).** Aus einem
 Rechenzentrums-Netz (GitHub-Actions-Runner) wurden beide neuen Quellen mit dem Projekt-User-Agent
@@ -201,6 +203,60 @@ Gesamtkatalog DCAT  https://www.offenedaten-koeln.de/data.json
 - **Caveat:** Ein Teil der Datensätze verweist auf **andere Herausgeber** (z. B. Landesdatenbank
   NRW). Deren Nutzungsbedingungen gelten dann zusätzlich.
 
+### Umsetzung im Repository (`typ = "opendata"`)
+
+Gelesen werden genau die Aufrufe, die oben geprüft wurden – allerdings **ohne** PDFs, WMS und
+GIS-Ausgaben:
+
+```text
+Katalogsuche   /api/1/search?fulltext=<stichwort>&page-size=25
+Metadaten      /api/1/metastore/schemas/dataset/items/<uuid>
+Tabellenzeilen /api/1/datastore/query/<uuid>/<index>?limit=100&offset=<n>&keys=true
+```
+
+- **Auswahl:** `datensaetze` in `config/cities/koeln.toml` nennt je Eintrag ein Katalogstichwort
+  oder direkt eine Datensatz-UUID. Zwei Stichworte, die auf denselben Datensatz zeigen, werden
+  nur einmal gelesen. Passt kein Titel genau zum Stichwort, greift ein **unscharfer Treffer**
+  (gleiches bedeutungstragendes Wort im Titel) – er wird als „unscharf“ gezählt und im
+  Ladebericht ausgewiesen, nicht stillschweigend genommen.
+- **Lizenz vor Daten:** Ohne übernehmbare Lizenz (DL-DE-Zero-2.0 oder DL-DE-BY-2.0) wird der
+  Datensatz **übersprungen, ohne die Tabelle abzurufen** – kein stiller Import unter fremden
+  Bedingungen. Die BY-Namensnennung (Herausgeber aus den Metadaten) steht am Vorgang und im
+  Zusatztext.
+- **Eine Zeile = ein Vorgang:** Titel, Datum, Zeitraum, Feldübersicht im Kurztext, alle Feldwerte
+  als Suchtext, Originaldatei als Dokumentverweis (`rolle = "datensatz"`). Spaltennamen sind
+  Maschinennamen der Quelle; fehlt eine Kennungsspalte, wird eine stabile Kennung aus den Feldern
+  gebildet, damit ein erneuter Lauf aktualisiert statt zu verdoppeln. Aus fehlenden Feldern wird
+  **nichts** ergänzt.
+- **Höflichkeit und Fortsetzung:** Mindestabstand wie für alle Quellen, `robots.txt` zuerst,
+  Budget über `--max-anfragen`, höchstens 20 Seiten (2.000 Zeilen) je Datensatz und Lauf.
+  Der Fortsetzungspunkt steht je Verteilung in `crawl_stand`; ein unterbrochener Lauf macht an
+  derselben Seite weiter.
+- **Offen:** Ein Live-Lauf ist **nicht** bestätigt (die Stadt-Hosts sind aus der
+  Entwicklungsumgebung nicht erreichbar). `probe --quelle opendata` nennt die Katalogtitel zu
+  einem Stichwort, damit die Auswahl nach dem ersten echten Abruf zügig nachgezogen werden kann.
+  Ebenso offen: ob eine Verteilung eines Datensatzes im Datastore liegt (Antwort 404) – das wird
+  gezählt („Datensätze ohne Tabellenverteilung“) und ist kein Fehler des Laufs.
+
+### Straßenverzeichnis (OpenStreetMap, ODbL 1.0)
+
+Für die Ortsauflösung („Straße im Text → Stadtteil“) liegt kein amtliches Straßenverzeichnis unter
+einer offenen Lizenz vor. Genutzt wird deshalb ein **OpenStreetMap-Auszug**:
+
+- **Datei:** `config/cities/koeln.strassen.tsv` – 4.981 Straßennamen mit ihren Stadtteilen
+  (Stand 2026-10-13), erzeugt aus einem OSM-Auszug für den Regionalkey `05315000` (Köln).
+- **Werkzeug:** `tools/strassen_aus_osm.py <streets.csv> <ziel.tsv> --stand <datum>`; die Datei
+  nennt Quelle, Lizenz, Stand und die Ableitungsregel im Kopf.
+- **Namensnennung (ODbL 1.0):** © OpenStreetMap-Mitwirkende, Open Database License (ODbL) 1.0.
+  Die Nennung steht in der Oberfläche (Fußzeile und PLZ-Panel), in der CLI-Ausgabe
+  (`plz`) und in dieser Datei. Wer die Datei weiterverbreitet, muss die Nennung beibehalten.
+- **Grenzen:** Die Zuordnung ist eine **Näherung** (Hausnummern, PLZ-Grenzen und Stadtteilgrenzen
+  stimmen nicht überein). Mehrdeutige Namen (z. B. „Erlenweg“) liefern bewusst **keinen**
+  Ortsbezug und werden als mehrdeutig gemeldet. Ein Straßenname im Suchfeld ist genauer als eine
+  PLZ, eine PLZ genauer als nichts.
+- **Straßenkürzel:** `…str.`/`…str` und `…straße` werden auf dieselbe Form gebracht
+  (`strassen_kanonisch`), damit „Feldgärtenstr.“ und „Feldgärtenstraße“ denselben Eintrag treffen.
+
 ## 7. Beteiligungsportal „Meinung für Köln“
 
 - **Adresse:** `https://meinungfuer.koeln/mitmachen/alle-projekte` (Projekte seit Juli 2022),
@@ -256,8 +312,12 @@ Gesamtkatalog DCAT  https://www.offenedaten-koeln.de/data.json
 - **Statistik:** `stadt-koeln.de/politik-und-verwaltung/statistik/…` (Datenkatalog als offener
   Datensatz, Statistikatlas, kleinräumige Statistiken, Kölner Monatszahlen, Statistische
   Jahrbücher, Straßenverzeichnisse). Nutzen: (a) Kennzahlen je Stadtteil als Kontext,
-  (b) das **Straßenverzeichnis** als mögliche Grundlage, um Straßennamen aus Vorlagentexten
-  einem Stadtteil zuzuordnen – das wäre ein Qualitätssprung für den Ortsbezug.
+  (b) das **Straßenverzeichnis**, um Straßennamen aus Vorlagentexten einem Stadtteil zuzuordnen.
+  Teil (b) ist inzwischen gelöst – allerdings **nicht** mit den amtlichen Verzeichnissen (CSV/PDF
+  ohne zugesicherte offene Lizenz), sondern mit einem OpenStreetMap-Auszug unter ODbL 1.0
+  (Namensnennung, siehe Abschnitt „Straßenverzeichnis“). Offen bleiben die **Kennzahlen je
+  Stadtteil**: Dafür wäre ein offener, maschinenlesbarer Statistik-Datensatz mit
+  Stadtteilbezug nötig.
 - **Wahlen:** `wahlen.stadt-koeln.de` (z. B. Bürgerentscheid 2026 mit Ergebnisdarstellung).
   Eigene Domäne, eigenes Datenmodell. Als Quelle reizvoll, aber außerhalb des Themas
   „kommunale Vorgänge“ – erst nach den Kernthemen angehen.

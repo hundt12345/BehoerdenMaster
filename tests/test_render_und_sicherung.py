@@ -53,7 +53,7 @@ def test_render_blueprint_passt_zum_sqlite_betrieb():
     # Die Ratsinformation steht bewusst am Ende: Die kleinen Quellen füllen den Bestand
     # zuerst, der große OParl-Erstabruf bekommt das restliche Zeitfenster der Etappe.
     assert env["BEHOERDEN_SYNC_QUELLEN"]["value"] == (
-        "koeln:bekanntmachungen,koeln:beteiligung,koeln:ris-rss,koeln:presse-rss,koeln:ris")
+        "koeln:bekanntmachungen,koeln:beteiligung,koeln:opendata,koeln:ris-rss,koeln:presse-rss,koeln:ris")
     assert env["BEHOERDEN_SYNC_QUELLEN"]["value"].split(",")[-1] == "koeln:ris"
     assert env["BEHOERDEN_SYNC_ZEITBUDGET"]["value"].isdigit()
     # Ein rollierendes Fenster (Tage) statt eines festen Datums, das veralten würde.

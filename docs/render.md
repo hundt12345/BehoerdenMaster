@@ -57,7 +57,7 @@ Unter **Service → Environment** verwalten; Änderungen anschließend deployen.
 | `BEHOERDEN_DEMO` | **`false`**: kein Seeding mit Offline-Beispielen. `true` lädt die einmalige, klar markierte Demo nur bei leerem Bestand |
 | `BEHOERDEN_KONTAKT` | eigene erreichbare Adresse. **Voreinstellung:** die im Repository hinterlegte Projekt-Adresse; leer gesetzt = bewusster Verzicht (Abruf bleibt aus) |
 | `BEHOERDEN_SYNC_ENABLED` | **`true`** (Voreinstellung); `false` schaltet Hintergrundabrufe aus |
-| `BEHOERDEN_SYNC_QUELLEN` | **`koeln:bekanntmachungen,koeln:beteiligung,koeln:ris-rss,koeln:presse-rss,koeln:ris`** (Blueprint); kommagetrennte vollständige Quell-IDs **in Abrufreihenfolge**. Leer = alle konfigurierten Quellen. |
+| `BEHOERDEN_SYNC_QUELLEN` | **`koeln:bekanntmachungen,koeln:beteiligung,koeln:opendata,koeln:ris-rss,koeln:presse-rss,koeln:ris`** (Blueprint); kommagetrennte vollständige Quell-IDs **in Abrufreihenfolge**. Leer = alle konfigurierten Quellen. |
 | `BEHOERDEN_SYNC_SEIT` | **`90`** = rollierend die letzten 90 Tage; alternativ festes Datum `YYYY-MM-DD`. Leer = `seit` aus `config/cities/koeln.toml`. Gilt nur für den Erstabruf, Folgeläufe nutzen den gespeicherten Änderungsstand. |
 | `BEHOERDEN_SYNC_INTERVALL` | `21600` Sekunden = **6 Stunden pro Quelle**; mindestens 300 Sekunden |
 | `BEHOERDEN_SYNC_MAX_ANFRAGEN` | `120` **pro Quelle und Etappe**, einschließlich robots und Weiterleitungen; mindestens 1 |
@@ -90,9 +90,13 @@ python -m behoerdenmaster status
 python -m behoerdenmaster probe --quelle ris
 python -m behoerdenmaster crawl --quelle ris --max-anfragen 30
 python -m behoerdenmaster status
+
+# Offene Daten Köln: Probelauf nennt die Katalogtitel zum Stichwort aus koeln.toml.
+python -m behoerdenmaster probe --quelle opendata
+python -m behoerdenmaster crawl --quelle opendata --max-anfragen 20
 ```
 
-Bei Status `teilweise` wurde nur das Budget erreicht; ein neuer Aufruf setzt den gespeicherten Cursor bzw. die Detail-Warteschlange fort. Bei `gesperrt`, 401/403/429, robots-Verbot oder Netzfehler **nicht in einer Schleife wiederholen**. Server-Pause/`Retry-After` und Cooldown respektieren; kein `--trotz-sperre` im automatischen Betrieb. Vor einem größeren RIS-Erstabruf Abrufgrenzen mit der Stadt abstimmen. Siehe [README: echte Daten abrufen](../README.md#echte-daten-abrufen).
+Bei Status `teilweise` wurde nur das Budget erreicht; ein neuer Aufruf setzt den gespeicherten Cursor bzw. die Detail-Warteschlange fort. Bei der Quelle `opendata` bedeutet ein leeres Ergebnis zunächst nur, dass **kein Titel** zum Stichwort in `datensaetze` passte (Zähler „Stichworte ohne passenden Datensatz“) – der Probelauf zeigt die tatsächlichen Titel, damit die Konfiguration nachgezogen werden kann. Bei `gesperrt`, 401/403/429, robots-Verbot oder Netzfehler **nicht in einer Schleife wiederholen**. Server-Pause/`Retry-After` und Cooldown respektieren; kein `--trotz-sperre` im automatischen Betrieb. Vor einem größeren RIS-Erstabruf Abrufgrenzen mit der Stadt abstimmen. Siehe [README: echte Daten abrufen](../README.md#echte-daten-abrufen).
 
 **Stand der Prüfung (11.10.2026):** Die OParl-Schnittstelle der Stadt Köln antwortet wieder. Geprüft wurden `robots.txt`, `/oparl/system`, `/oparl/bodies`, die Gremien-, Vorlagen- und Sitzungslisten einschließlich `modified_since` und des realen `links.next`. Die robots.txt der Stadt enthält keine Gruppe für unbekannte Clients; `BehoerdenMaster` darf daher abrufen und unterliegt keinem `Crawl-delay` (zur Kontrolle: `GPTBot` ist vollständig ausgeschlossen, `Googlebot` hat 20 s Verzögerung). Der komplette Abrufpfad ist mit den dabei aufgezeichneten **Originalantworten** als End-to-End-Test hinterlegt ([`fixtures/oparl/koeln/live_2026-10-11`](../fixtures/oparl/koeln/live_2026-10-11/README.md)).
 
@@ -110,14 +114,14 @@ Der Blueprint schaltet sie für `koeln:bekanntmachungen`, `koeln:beteiligung`, `
 ```text
 BEHOERDEN_SYNC_ENABLED=true
 BEHOERDEN_KONTAKT=<deine eigene erreichbare Kontaktadresse>
-BEHOERDEN_SYNC_QUELLEN=koeln:bekanntmachungen,koeln:beteiligung,koeln:ris-rss,koeln:presse-rss,koeln:ris
+BEHOERDEN_SYNC_QUELLEN=koeln:bekanntmachungen,koeln:beteiligung,koeln:opendata,koeln:ris-rss,koeln:presse-rss,koeln:ris
 BEHOERDEN_SYNC_SEIT=90
 BEHOERDEN_SYNC_INTERVALL=21600
 BEHOERDEN_SYNC_MAX_ANFRAGEN=120
 BEHOERDEN_SYNC_ZEITBUDGET=240
 ```
 
-**Abrufreihenfolge zwischen den Quellen** ist die Reihenfolge in `BEHOERDEN_SYNC_QUELLEN`; die kleinen Quellen (Bekanntmachungen, Beteiligung, Feeds) stehen bewusst vor der großen Ratsinformation. **Innerhalb der Ratsinformation:** Gremien → **Vorlagen** → Sitzungen. Die Vorlagen stehen bewusst vor den Sitzungen, denn nur sie sind die durchsuchbaren Vorgänge. Bei einem knappen Budget erzeugt ein Lauf sonst im ungünstigsten Fall Sitzungsdaten und **keine einzigen Treffer** für die Startseite. Reicht das Budget nicht, wird der Lauf `teilweise` und setzt beim nächsten Mal fort.
+**Abrufreihenfolge zwischen den Quellen** ist die Reihenfolge in `BEHOERDEN_SYNC_QUELLEN`; die kleinen Quellen (Bekanntmachungen, Beteiligung, Datensätze des offenen Datenportals, Feeds) stehen bewusst vor der großen Ratsinformation. **Innerhalb der Ratsinformation:** Gremien → **Vorlagen** → Sitzungen. Die Vorlagen stehen bewusst vor den Sitzungen, denn nur sie sind die durchsuchbaren Vorgänge. Bei einem knappen Budget erzeugt ein Lauf sonst im ungünstigsten Fall Sitzungsdaten und **keine einzigen Treffer** für die Startseite. Reicht das Budget nicht, wird der Lauf `teilweise` und setzt beim nächsten Mal fort.
 
 Nach Deploy startet genau ein Hintergrund-Thread im Web-Service; Quellen laufen **nacheinander**, nie parallel. Jede Quelle erhält dabei höchstens `BEHOERDEN_SYNC_ZEITBUDGET` Sekunden, damit eine einzige Quelle die Etappe nicht blockiert. Bei mehreren Quellen die IDs kommagetrennt setzen. Fälligkeit basiert auf `letzter_versuch` in SQLite; ein Restart/Redeploy startet keine neue Abrufserie innerhalb des Intervalls. Längere persistierte Server-Pausen haben Vorrang. Ein budgetbegrenzter Teilabruf wird frühestens nach dem Intervall fortgesetzt, nicht sofort in einer Endlosschleife.
 

@@ -95,7 +95,7 @@ def test_status_kuendigt_den_noch_nicht_gestarteten_hintergrundabruf_an(tmp_path
     # in der Reihenfolge aus config/cities/koeln.toml.
     assert daten["betrieb"]["quellen_effektiv"] == [
             "koeln:ris", "koeln:bauleitplanung", "koeln:ris-rss", "koeln:presse-rss",
-            "koeln:bekanntmachungen", "koeln:beteiligung"]
+            "koeln:bekanntmachungen", "koeln:beteiligung", "koeln:opendata"]
 
 
 def test_hinweis_nennt_nur_die_eingerichteten_quellen(tmp_path):

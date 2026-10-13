@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import os
 import tomllib
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 from .normalize import norm
@@ -55,6 +55,34 @@ class PlzEintrag:
 
 
 @dataclass(frozen=True)
+class Strasse:
+    """Ein Straßenname aus dem Straßenverzeichnis der Stadt.
+
+    ``stadtteile`` zählt, wie viele Straßenobjekte des Verzeichnisses diesen Namen in
+    welchem Stadtteil tragen. Ein Name mit genau einem Stadtteil gilt als **eindeutig**
+    und darf einen Ortsbezug erzeugen; bei mehreren Stadtteilen wird nichts geraten
+    (die Kandidaten dienen nur dem Verständnis einer Suchanfrage).
+    """
+
+    name: str  # kanonisch normalisiert (siehe normalize.strassen_kanonisch)
+    stadtteile: tuple[tuple[str, int], ...]
+    plz: tuple[str, ...] = ()
+
+    @property
+    def stadtteil(self) -> str | None:
+        """Stadtteilnummer, wenn der Name nur in einem Stadtteil vorkommt."""
+        return self.stadtteile[0][0] if len(self.stadtteile) == 1 else None
+
+    @property
+    def kandidaten(self) -> tuple[str, ...]:
+        return tuple(nr for nr, _ in self.stadtteile)
+
+    @property
+    def mehrdeutig(self) -> bool:
+        return len(self.stadtteile) > 1
+
+
+@dataclass(frozen=True)
 class Quelle:
     schluessel: str
     typ: str
@@ -72,6 +100,10 @@ class Quelle:
     # enthält den Platzhalter `{jahr}`, `start_jahr` den ältesten zu prüfenden Jahrgang.
     listen_vorlage: str | None = None
     start_jahr: int = 0
+    # Open-Data-Portal (DKAN 2): gefragte Datensätze – Katalogstichworte (Titel des
+    # Datensatzes) oder eine direkte Datensatz-Kennung (UUID). Je Eintrag wird höchstens
+    # ein Datensatz übernommen, der zur Angabe passt.
+    datensaetze: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -85,6 +117,15 @@ class Stadt:
     themen: tuple[Thema, ...]
     quellen: tuple[Quelle, ...]
     hinweis: str = ""
+    # Straßenverzeichnis (optional, aus <stadt>.strassen.tsv neben der Konfiguration):
+    # Name → Strasse, dazu Herkunft und Lizenz für die Anzeige.
+    strassen: dict[str, Strasse] = field(default_factory=dict)
+    strassen_quelle: str = ""
+    strassen_lizenz: str = ""
+    strassen_stand: str = ""
+    strassen_max_gram: int = 1
+    # Umkehrschlüssel für die Suche: Stadtteil → PLZ, in denen er vorkommt.
+    plz_je_stadtteil: dict[str, tuple[str, ...]] = field(default_factory=dict)
 
     def quell_id(self, quelle: Quelle) -> str:
         return f"{self.schluessel}:{quelle.schluessel}"
@@ -95,6 +136,97 @@ class Stadt:
 
     def thema(self, schluessel: str) -> Thema | None:
         return next((t for t in self.themen if t.schluessel == schluessel), None)
+
+    def strasse(self, name: str) -> Strasse | None:
+        """Straßeneintrag zu einem (rohen) Namen; ``None``, wenn unbekannt."""
+        from .normalize import strassen_kanonisch
+
+        return self.strassen.get(strassen_kanonisch(name))
+
+    def plz_fuer_stadtteil(self, stadtteil_nr: str) -> tuple[str, ...]:
+        """PLZ, in denen der Stadtteil vorkommt (Näherung aus der PLZ-Zuordnung)."""
+        return self.plz_je_stadtteil.get(stadtteil_nr, ())
+
+    def ortsgebiet(self, stadtteile: list[str] | tuple[str, ...] = (), bezirke: list[str] | tuple[str, ...] = (),
+                   plz: str | None = None) -> dict[str, frozenset[str]]:
+        """Eine Ortsangabe auf die drei Ebenen Stadtteil, Bezirk und PLZ ausdehnen.
+
+        Warum das nötig ist: Ein Vorgang trägt seinen Ortsbezug je nach Quelle nur auf einer
+        Ebene – die eine Vorlage nennt einen Stadtteil, die nächste nur eine PLZ, eine
+        Bekanntmachung nur eine Straße. Die Suche darf daran nicht scheitern. Deshalb:
+
+        * PLZ → ihre Stadtteile,
+        * Bezirk → alle seine Stadtteile (und deren PLZ),
+        * Stadtteil → die PLZ, in denen er liegt.
+
+        Was bewusst **nicht** gilt:
+
+        * Stadtteil → dessen Stadtbezirk. Ein Bezirk umfasst bis zu 16 Stadtteile; wer
+          „Niehl“ sucht, meint nicht den ganzen Bezirk Nippes.
+        * Stadtteil → die übrigen Stadtteile seiner PLZ. Wer Bickendorf sucht, meint nicht
+          ganz 50827 samt Ossendorf.
+
+        Die Ausdehnung wirkt also nur so großzügig, dass Vorgänge mit bloßem PLZ-Ortsbezug
+        gefunden werden, und bleibt sonst eng.
+        """
+        st = {nr for nr in stadtteile if nr in self.stadtteile}
+        bz = {nr for nr in bezirke if nr in self.bezirke}
+        pz: set[str] = set()
+        if plz:
+            pz.add(plz)
+            eintrag = self.plz.get(plz)
+            if eintrag:
+                st.update(eintrag.stadtteile)
+        if bz:
+            st.update(nr for nr, teil in self.stadtteile.items() if teil.bezirk in bz)
+        for nr in st:
+            pz.update(self.plz_fuer_stadtteil(nr))
+        return {"stadtteile": frozenset(st), "bezirke": frozenset(bz), "plz": frozenset(pz)}
+
+
+def _zaehler_feld(text: str) -> tuple[tuple[str, int], ...]:
+    """``"403:60,406:44"`` → ``(("403", 60), ("406", 44))``."""
+    eintraege = []
+    for teil in text.split(","):
+        teil = teil.strip()
+        if not teil:
+            continue
+        nr, _, zahl = teil.partition(":")
+        eintraege.append((nr.strip(), int(zahl) if zahl.strip().isdigit() else 1))
+    return tuple(eintraege)
+
+
+def _lade_strassen(pfad: Path, stadtteile: dict[str, Stadtteil]) -> tuple[
+        dict[str, Strasse], dict[str, str]]:
+    """Straßenverzeichnis neben der Stadtkonfiguration lesen.
+
+    Fehlt die Datei, bleibt das Merkmal einfach aus (die Suche arbeitet dann ohne
+    Straßenauflösung). Ist sie vorhanden, wird sie streng geprüft: Eine Zeile, die auf
+    einen unbekannten Stadtteil verweist, ist ein Fehler und keine stille Lücke.
+    """
+    kopf: dict[str, str] = {}
+    strassen: dict[str, Strasse] = {}
+    for nummer, zeile in enumerate(pfad.read_text(encoding="utf-8").splitlines(), start=1):
+        if not zeile.strip():
+            continue
+        if zeile.startswith("#"):
+            for schluessel in ("Quelle", "Lizenz", "Stand"):
+                if zeile.startswith(f"# {schluessel}:"):
+                    kopf[schluessel] = zeile.split(":", 1)[1].strip()
+            continue
+        spalten = zeile.split("\t")
+        if len(spalten) < 2:
+            raise ValueError(f"{pfad.name}: Zeile {nummer} hat kein Tabellenformat")
+        name = spalten[0].strip()
+        stadtteile_des_namens = _zaehler_feld(spalten[1]) if len(spalten) > 1 else ()
+        if not name or not stadtteile_des_namens:
+            raise ValueError(f"{pfad.name}: Zeile {nummer} nennt keinen Stadtteil")
+        for nr, _ in stadtteile_des_namens:
+            if nr not in stadtteile:
+                raise ValueError(f"{pfad.name}: Straße „{name}“ verweist auf unbekannten Stadtteil {nr}")
+        plz = tuple(p for p in (spalten[2].split(",") if len(spalten) > 2 else []) if p.strip())
+        strassen[name] = Strasse(name=name, stadtteile=stadtteile_des_namens, plz=plz)
+    return strassen, kopf
 
 
 def _lade_datei(pfad: Path) -> Stadt:
@@ -151,9 +283,23 @@ def _lade_datei(pfad: Path) -> Stadt:
             organisation=q.get("organisation", ""),
             listen_vorlage=q.get("listen_vorlage"),
             start_jahr=int(q.get("start_jahr", 0) or 0),
+            datensaetze=tuple(str(d).strip() for d in q.get("datensaetze", ()) if str(d).strip()),
         )
         for q in daten.get("quellen", [])
     )
+
+    strassen: dict[str, Strasse] = {}
+    strassen_kopf: dict[str, str] = {}
+    strassen_pfad = pfad.parent / f"{pfad.stem}.strassen.tsv"
+    if strassen_pfad.is_file():
+        strassen, strassen_kopf = _lade_strassen(strassen_pfad, stadtteile)
+
+    # Umkehrschlüssel PLZ ↔ Stadtteil: Beide Richtungen werden gebraucht. Die Vorwärtsrichtung
+    # steht in der Konfiguration, die Rückrichtung wird hier einmal berechnet.
+    plz_je_stadtteil: dict[str, list[str]] = {}
+    for code, eintrag in plz.items():
+        for stadtteil_nr in eintrag.stadtteile:
+            plz_je_stadtteil.setdefault(stadtteil_nr, []).append(code)
 
     return Stadt(
         schluessel=s["schluessel"],
@@ -165,6 +311,12 @@ def _lade_datei(pfad: Path) -> Stadt:
         themen=themen,
         quellen=quellen,
         hinweis=s.get("hinweis", ""),
+        strassen=strassen,
+        strassen_quelle=strassen_kopf.get("Quelle", ""),
+        strassen_lizenz=strassen_kopf.get("Lizenz", ""),
+        strassen_stand=strassen_kopf.get("Stand", ""),
+        strassen_max_gram=max((len(name.split()) for name in strassen), default=1),
+        plz_je_stadtteil={nr: tuple(sorted(codes)) for nr, codes in plz_je_stadtteil.items()},
     )
 
 

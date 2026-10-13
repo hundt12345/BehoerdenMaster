@@ -29,6 +29,7 @@ ROLLEN_TEXT = {
     "wortprotokoll": "Wortprotokoll",
     "protokoll": "Protokoll",
     "bekanntmachung": "Amtliche Bekanntmachung",
+    "datensatz": "Originaldatei des Datensatzes",
     "dokument": "Dokument",
 }
 ROLLEN_REIHENFOLGE = list(ROLLEN_TEXT)
@@ -78,13 +79,31 @@ def stamm(wort: str) -> str:
     return wort
 
 
+_STRASSE_LANG = "strasse"
+_STRASSE_KURZ = "str"
+
+
 def _suchbegriffe(wort: str) -> list[str]:
-    """Vollform plus Stamm, ohne Doppelte. Leere oder zu kurze Eingaben fallen weg."""
+    """Vollform, Stamm und – bei Straßennamen – die abgekürzte Form, ohne Doppelte.
+
+    Quellen kürzen Straßen unterschiedlich ab: Der Bestand kann „Feldgärtenstr.“ enthalten,
+    während die Frage „Feldgärtenstraße“ schreibt. Beides ist dieselbe Straße, deshalb wird
+    zusätzlich die Kurzform gesucht („feldgaertenstr“). Sonst bleibt eine richtige Frage
+    ohne Treffer, obwohl der Vorgang gespeichert ist.
+    """
     n = norm(wort)
     if not n:
         return []
+    varianten = [n]
     s = stamm(n)
-    return [n] if s == n else [n, s]
+    if s != n:
+        varianten.append(s)
+    for v in list(varianten):
+        # Nur wenn vor dem Kürzel noch ein Name steht: „feldgaertenstrasse“ → „feldgaertenstr“.
+        # Ein bloßes „strasse“ wird nicht zu „str“ – das würde auf fast jeden Text passen.
+        if v.endswith(_STRASSE_LANG) and len(v) > len(_STRASSE_LANG):
+            varianten.append(v[: -len(_STRASSE_LANG)] + _STRASSE_KURZ)
+    return list(dict.fromkeys(varianten))
 
 
 def _bulk(db, vorlage: str, ids: list[str]) -> list:
@@ -173,33 +192,46 @@ def _orte_anzeige(stadt: Stadt, orte_rows: list) -> tuple[list[dict], list[str]]
     bezirke = sorted({r["schluessel"] for r in orte_rows if r["typ"] == "bezirk"})
     plz = sorted({r["schluessel"] for r in orte_rows if r["typ"] == "plz"})
     herkunft = sorted({r["quelle"] for r in orte_rows})
+    # Je Ort die Herkunft mitführen: „straße“ heißt, dass der Stadtteil aus einem
+    # Straßennamen des Verzeichnisses abgeleitet wurde – eine Näherung, keine Angabe der Quelle.
+    je_ort: dict[tuple[str, str], list[str]] = defaultdict(list)
+    for r in orte_rows:
+        if r["quelle"] not in je_ort[(r["typ"], r["schluessel"])]:
+            je_ort[(r["typ"], r["schluessel"])].append(r["quelle"])
+
+    def eintrag(typ: str, schluessel: str, name: str) -> dict:
+        return {"typ": typ, "schluessel": schluessel, "name": name,
+                "herkunft": sorted(je_ort.get((typ, schluessel), []))}
+
     anzeige = []
     for nr in stadtteile:
         if nr in stadt.stadtteile:
-            anzeige.append({"typ": "stadtteil", "schluessel": nr, "name": stadt.stadtteile[nr].name})
+            anzeige.append(eintrag("stadtteil", nr, stadt.stadtteile[nr].name))
     for nr in bezirke:
         bezirk_hat_stadtteil = any(stadt.stadtteile[s].bezirk == nr for s in stadtteile if s in stadt.stadtteile)
         if not bezirk_hat_stadtteil and nr in stadt.bezirke:
-            anzeige.append({"typ": "bezirk", "schluessel": nr, "name": f"Stadtbezirk {stadt.bezirke[nr]}"})
+            anzeige.append(eintrag("bezirk", nr, f"Stadtbezirk {stadt.bezirke[nr]}"))
     for p in plz:
-        anzeige.append({"typ": "plz", "schluessel": p, "name": f"PLZ {p}"})
+        anzeige.append(eintrag("plz", p, f"PLZ {p}"))
     return anzeige, herkunft
 
 
 def _bewerte(kand, orte_rows: list, auftrag: Suchauftrag, status: dict, heute: date,
-             begriffe: list[str]) -> int:
-    stadtteile = {o["schluessel"] for o in auftrag.orte if o["typ"] == "stadtteil"}
-    bezirke = {o["schluessel"] for o in auftrag.orte if o["typ"] == "bezirk"}
-    if auftrag.plz and auftrag.plz in auftrag.stadt.plz:
-        stadtteile |= set(auftrag.stadt.plz[auftrag.plz].stadtteile)
+             begriffe: list[str], gebiet: dict[str, frozenset[str]]) -> int:
+    """Punkte für die Reihenfolge der Treffer – kein Ausschluss, nur Gewichtung."""
+    stadtteile, bezirke, plz = gebiet["stadtteile"], gebiet["bezirke"], gebiet["plz"]
     punkte = 0
     for o in orte_rows:
         if o["typ"] == "stadtteil" and o["schluessel"] in stadtteile:
+            # Ein im Betreff genannter Stadtteil ist die genaueste Angabe; ein aus einer
+            # Straße abgeleiteter Stadtteil ist eine Näherung und zählt deshalb weniger.
             punkte += 5 if o["quelle"] == "betreff" else 3
         elif o["typ"] == "bezirk" and o["schluessel"] in bezirke:
             punkte += 2 if o["quelle"] == "betreff" else 1
-        elif o["typ"] == "plz" and o["schluessel"] == auftrag.plz:
-            punkte += 4
+        elif o["typ"] == "plz" and o["schluessel"] in plz:
+            # Ausdrücklich gesuchte PLZ zählt am höchsten, eine nur mitgedachte PLZ des
+            # Stadtteils darunter – sonst stünden PLZ-Nennungen vor Stadtteil-Treffern.
+            punkte += 4 if o["schluessel"] == auftrag.plz else 2
     suchtext = kand["suchtext"] or ""
     titel = norm(kand["titel"])
     if begriffe:
@@ -321,38 +353,55 @@ def _quelle_meta(speicher: Speicher) -> dict[str, dict]:
 
 
 def suche(speicher: Speicher, auftrag: Suchauftrag, heute: date, *, zeitpunkt: datetime | None = None) -> dict:
-    """Sucht Vorgänge. Ohne Ort- und Themenfilter müssen zunächst alle Stichworte vorkommen.
-    Findet das nichts, gelten mindestens ein Stichwort (Rückfall, ist im Ergebnis gekennzeichnet)."""
-    ergebnis = _suche(speicher, auftrag, heute, freitext_oder=False, zeitpunkt=zeitpunkt)
-    if (ergebnis["gesamt"] == 0 and len(auftrag.freitext) >= 2
-            and not (auftrag.orte or auftrag.plz or auftrag.themen)):
-        ergebnis = _suche(speicher, auftrag, heute, freitext_oder=True, zeitpunkt=zeitpunkt)
+    """Sucht Vorgänge – Stichworte verengen immer, und niemand bleibt ohne Antwort.
+
+    Die Stichworte gelten zunächst **zusätzlich** zu Ort und Thema (UND): Wer „Erlenweg
+    Bickendorf“ sucht, will nicht alle Vorgänge Bickendorfs sehen. Findet das nichts, wird
+    stufenweise erweitert – jede Stufe steht im Ergebnis:
+
+    1. alle Bedingungen,
+    2. ohne die Stichworte (nur sinnvoll, wenn Ort, Thema oder Zeitraum die Suche tragen),
+    3. mindestens ein Stichwort (statt aller).
+
+    Ohne diese Stufen war ein Tippfehler ein leeres Ergebnis, obwohl der Bestand den
+    Vorgang kennt; ohne die UND-Verknüpfung war ein zusätzliches Wort wirkungslos.
+    """
+    ergebnis = _suche(speicher, auftrag, heute, freitext_modus="und", zeitpunkt=zeitpunkt)
+    if ergebnis["gesamt"] == 0 and auftrag.freitext and (auftrag.orte or auftrag.plz or auftrag.themen):
+        ergebnis = _suche(speicher, auftrag, heute, freitext_modus="ohne", zeitpunkt=zeitpunkt)
+        ergebnis["freitext_verworfen"] = ergebnis["gesamt"] > 0
+    if ergebnis["gesamt"] == 0 and len(auftrag.freitext) >= 2:
+        ergebnis = _suche(speicher, auftrag, heute, freitext_modus="oder", zeitpunkt=zeitpunkt)
         ergebnis["freitext_oder"] = ergebnis["gesamt"] > 0
     return ergebnis
 
 
-def _suche(speicher: Speicher, auftrag: Suchauftrag, heute: date, freitext_oder: bool,
+def _suche(speicher: Speicher, auftrag: Suchauftrag, heute: date, freitext_modus: str,
            zeitpunkt: datetime | None = None) -> dict:
     stadt = auftrag.stadt
     db = speicher.db
     bedingungen = ["v.geloescht = 0", "v.quelle_id IN (SELECT id FROM quelle WHERE stadt = ?)"]
     params: list = [stadt.schluessel]
 
-    stadtteile = [o["schluessel"] for o in auftrag.orte if o["typ"] == "stadtteil"]
-    bezirke = [o["schluessel"] for o in auftrag.orte if o["typ"] == "bezirk"]
-    if auftrag.plz:
-        if auftrag.plz in stadt.plz:
-            stadtteile += list(stadt.plz[auftrag.plz].stadtteile)
+    # Ortsangabe auf Stadtteil, Bezirk und PLZ ausdehnen: Ein Vorgang trägt seinen Ortsbezug
+    # je Quelle nur auf einer Ebene (nur Stadtteil, nur Bezirk oder nur PLZ). Wird nicht
+    # ausgedehnt, findet eine Suche nach dem Stadtteil jeden Vorgang mit bloßem PLZ-Bezug
+    # nicht – genau das war der Grund, warum manche Treffer nur über die Straße zu finden waren.
+    gebiet = stadt.ortsgebiet(
+        stadtteile=[o["schluessel"] for o in auftrag.orte if o["typ"] == "stadtteil"],
+        bezirke=[o["schluessel"] for o in auftrag.orte if o["typ"] == "bezirk"],
+        plz=auftrag.plz,
+    )
     ortsklauseln, ortsparams = [], []
-    if auftrag.plz:
-        ortsklauseln.append("(o.typ = 'plz' AND o.schluessel = ?)")
-        ortsparams.append(auftrag.plz)
-    if stadtteile:
-        ortsklauseln.append(f"(o.typ = 'stadtteil' AND o.schluessel IN ({_platz(len(stadtteile))}))")
-        ortsparams += stadtteile
-    if bezirke:
-        ortsklauseln.append(f"(o.typ = 'bezirk' AND o.schluessel IN ({_platz(len(bezirke))}))")
-        ortsparams += bezirke
+    if gebiet["plz"]:
+        ortsklauseln.append(f"(o.typ = 'plz' AND o.schluessel IN ({_platz(len(gebiet['plz']))}))")
+        ortsparams += sorted(gebiet["plz"])
+    if gebiet["stadtteile"]:
+        ortsklauseln.append(f"(o.typ = 'stadtteil' AND o.schluessel IN ({_platz(len(gebiet['stadtteile']))}))")
+        ortsparams += sorted(gebiet["stadtteile"])
+    if gebiet["bezirke"]:
+        ortsklauseln.append(f"(o.typ = 'bezirk' AND o.schluessel IN ({_platz(len(gebiet['bezirke']))}))")
+        ortsparams += sorted(gebiet["bezirke"])
     if ortsklauseln:
         bedingungen.append(
             "EXISTS (SELECT 1 FROM ortsbezug o WHERE o.vorgang_id = v.id AND ("
@@ -369,8 +418,8 @@ def _suche(speicher: Speicher, auftrag: Suchauftrag, heute: date, freitext_oder:
         bedingungen.append("(" + " OR ".join("instr(v.suchtext, ?) > 0" for _ in begriffe) + ")")
         params += begriffe
 
-    if auftrag.freitext and not (ortsklauseln or begriffe):
-        if freitext_oder:
+    if auftrag.freitext and freitext_modus != "ohne":
+        if freitext_modus == "oder":
             woerter = [w for w in auftrag.freitext if len(norm(w)) >= 4] or list(auftrag.freitext)
             varianten = [b for w in woerter for b in _suchbegriffe(w)]
             if varianten:
@@ -398,7 +447,8 @@ def _suche(speicher: Speicher, auftrag: Suchauftrag, heute: date, freitext_oder:
     kandidaten = db.execute(sql, params).fetchall()
     gesamt_kandidaten = len(kandidaten)
     if not kandidaten:
-        return {"gesamt": 0, "treffer": [], "kandidaten_gekappt": False, "freitext_oder": False}
+        return {"gesamt": 0, "treffer": [], "kandidaten_gekappt": False,
+                "freitext_oder": False, "freitext_verworfen": False}
 
     ids = [k["id"] for k in kandidaten]
     orte_map: dict[str, list] = defaultdict(list)
@@ -416,7 +466,7 @@ def _suche(speicher: Speicher, auftrag: Suchauftrag, heute: date, freitext_oder:
                               else bestimme_status(verlauf_map.get(vid, [])))) for vid in ids}
 
     bewertet = [(
-        _bewerte(k, orte_map.get(k["id"], []), auftrag, status_map[k["id"]], heute, begriffe),
+        _bewerte(k, orte_map.get(k["id"], []), auftrag, status_map[k["id"]], heute, begriffe, gebiet),
         k,
     ) for k in kandidaten]
     bewertet.sort(key=lambda t: t[1]["datum"] or "", reverse=True)
@@ -438,7 +488,8 @@ def _suche(speicher: Speicher, auftrag: Suchauftrag, heute: date, freitext_oder:
         dto["punkte"] = punkte
         treffer.append(dto)
     return {"gesamt": gesamt_kandidaten, "treffer": treffer,
-            "kandidaten_gekappt": gesamt_kandidaten >= KANDIDATEN_MAX, "freitext_oder": False}
+            "kandidaten_gekappt": gesamt_kandidaten >= KANDIDATEN_MAX,
+            "freitext_oder": False, "freitext_verworfen": False}
 
 
 def vorgang_detail(speicher: Speicher, stadt: Stadt, vorgang_id: str, heute: date, *,

@@ -321,8 +321,13 @@ def test_frage_und_plz_finden_beide_quelltypen(db, stadt):
     ergebnis = suche(db, Suchauftrag(stadt=stadt, orte=[{"typ": "bezirk", "schluessel": "4"}], themen=["bauen"]), HEUTE)
     assert len(ergebnis["treffer"]) == 3
     assert all(t["quelle"]["typ"] == "bauleitplanung" for t in ergebnis["treffer"])
+    # PLZ 50827 liegt in Bickendorf/Ossendorf; die beiden Bickendorfer Verfahren erscheinen,
+    # die Ehrenfelder Verfahren (Bezirkstreffer) dagegen nicht mehr.
     plz = suche(db, Suchauftrag(stadt=stadt, plz="50827"), HEUTE)
-    assert plz["gesamt"] == 3
+    assert plz["gesamt"] == 2
+    assert all("Bickendorf" in t["titel"] for t in plz["treffer"])
+    oparl = suche(db, Suchauftrag(stadt=stadt, freitext=["oparl"]), HEUTE)
+    assert [t["quelle"]["typ"] for t in oparl["treffer"]] == ["oparl"]
     club = ergebnis["treffer"][0]
     assert club["links"]["original"].startswith("https://nw.bauleitplanung-online.de/verfahren/")
     assert club["links"]["oparl"] is None and club["links"]["ratsinfo_vorlage"] is None
@@ -356,9 +361,11 @@ def test_echter_abruf_uebernimmt_keine_demo_historie(db, stadt, quelle, uhr):
 def test_api_verfahren_hat_beteiligung_verlauf_und_keinen_ratslink(db, stadt):
     lade_demo(db, stadt)
     client = TestClient(create_app(db.pfad))
-    result = client.get("/api/plz/50827?thema=bauen").json()
-    assert result["gesamt"] == 3
+    result = client.get("/api/plz/50825?thema=bauen").json()
+    assert result["gesamt"] == 1
     club = result["treffer"][0]
+    assert "Clubkultur" in club["titel"], "die Lichtstraße liegt in Ehrenfeld (50825)"
+    assert "Straßenverzeichnis" in result["hinweise"][0], "Herkunft der PLZ-Zuordnung nennen"
     detail = client.get("/api/vorgang", params={"id": club["id"]}).json()
     assert detail["beteiligung"]["ende_de"] == "13.11.2026"
     assert len(detail["dokumente"]) == 3

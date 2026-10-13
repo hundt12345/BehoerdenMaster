@@ -207,6 +207,10 @@ def create_app(db_pfad: str | Path | None = None, config_dir: Path | None = None
         with Speicher(db) as sp:
             ergebnis = suche(sp, _auftrag(v, stadt, anfrage.limit, anfrage.offset), heute(), zeitpunkt=jetzt())
         hinweise = list(v.hinweise)
+        if ergebnis.get("freitext_verworfen"):
+            hinweise.append("Zu den Stichworten wurde im gefragten Ort bzw. Thema nichts gefunden. "
+                            "Angezeigt werden die Vorgänge des Orts und Themas ohne die Stichworte – "
+                            "bitte prüfen, ob das Gesuchte dabei ist.")
         if ergebnis.get("freitext_oder"):
             hinweise.append("Keine Vorgänge mit allen Stichworten gefunden. Angezeigt werden Vorgänge mit mindestens einem Stichwort.")
         return {
@@ -241,14 +245,21 @@ def create_app(db_pfad: str | Path | None = None, config_dir: Path | None = None
             hinweise.append(f"Die PLZ {plz} gehört nicht zum Gebiet von {st.name}. Es werden nur Vorgänge "
                             "mit ausdrücklicher PLZ-Nennung gefunden.")
         elif not eintrag.stadtteile:
-            hinweise.append(f"Für die PLZ {plz} ist noch keine Stadtteil-Zuordnung hinterlegt. Es werden nur "
-                            "Vorgänge mit ausdrücklicher PLZ-Nennung gefunden.")
+            hinweise.append(f"Für die PLZ {plz} ließ sich aus dem Straßenverzeichnis kein Stadtteil ableiten. "
+                            "Es werden nur Vorgänge mit ausdrücklicher PLZ-Nennung gefunden.")
+            if eintrag.quelle:
+                hinweise.append(f"Grund: {eintrag.quelle}")
         else:
             namen = ", ".join(st.stadtteile[s].name for s in eintrag.stadtteile)
             hinweis = f"Die PLZ {plz} wird den Stadtteilen {namen} zugeordnet."
             if eintrag.quelle:
-                hinweis += f" Quelle der Zuordnung: {eintrag.quelle}. Die Zuordnung ist eine Näherung."
+                hinweis += f" Quelle der Zuordnung: {eintrag.quelle}."
+            hinweis += " Die Zuordnung ist eine Näherung; eine Straße im Suchfeld ist genauer."
             hinweise.append(hinweis)
+            if st.strassen:
+                hinweise.append(f"Straßenverzeichnis: {len(st.strassen)} Straßennamen für {st.name} "
+                                f"(Stand {st.strassen_stand or 'unbekannt'}), Herkunft: {st.strassen_quelle} "
+                                f"– Lizenz {st.strassen_lizenz}.")
 
         auftrag = Suchauftrag(stadt=st, plz=plz, themen=themen, limit=limit, offset=offset)
         with Speicher(db) as sp:

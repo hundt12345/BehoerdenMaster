@@ -80,11 +80,32 @@ def test_status_anstehend_und_beschlossen(stadt, db, uhr):
 
 
 def test_plz_nutzt_zuordnung_und_ausdrueckliche_nennung(stadt, db, uhr):
+    """PLZ 50827 heißt Bickendorf und Ossendorf – und nicht der halbe Stadtbezirk.
+
+    Die frühere Zuordnung führte Ehrenfeld und Neuehrenfeld mit, obwohl dort nur ein
+    Bruchteil der Straßen dieser PLZ liegt. Wer 50827 eingab, bekam dadurch Vorgänge aus
+    dem Nachbarstadtteil, die mit seiner PLZ nichts zu tun haben.
+    """
     _aufbau(stadt, db, uhr)
     erg = suche(db, Suchauftrag(stadt=stadt, plz="50827"), HEUTE)
     ids = {t["id"] for t in erg["treffer"]}
-    assert _id(602) in ids and _id(605) in ids
-    assert _id(604) not in ids
+    assert _id(601) in ids, "Stadtteil Bickendorf gehört zu 50827"
+    assert _id(605) in ids, "ausdrückliche PLZ-Nennung wird immer gefunden"
+    assert _id(602) not in ids and _id(603) not in ids, "Ehrenfeld liegt in 50825"
+    assert _id(604) not in ids, "Lindenthal gehört zu anderen PLZ"
+
+
+def test_stadtteil_findet_auch_blossen_plz_bezug(stadt, db, uhr):
+    """Wer den Stadtteil sucht, soll Vorgänge mit bloßem PLZ-Bezug nicht verpassen."""
+    _aufbau(stadt, db, uhr)
+    db.vorgang_speichern(
+        {"id": "test:plzbezug", "quelle_id": "koeln:ris", "referenz": "", "titel": "Antrag 50829",
+         "art": "Antrag", "datum": "2026-05-01", "geaendert": "", "web": "", "suchtext": "antrag 50829",
+         "geloescht": 0},
+        [], [], [], [("plz", "50829", "betreff")],
+    )
+    erg = suche(db, Suchauftrag(stadt=stadt, orte=[{"typ": "stadtteil", "schluessel": "404"}]), HEUTE)
+    assert "test:plzbezug" in {t["id"] for t in erg["treffer"]}
 
 
 def test_zeitraum_filter(stadt, db, uhr):

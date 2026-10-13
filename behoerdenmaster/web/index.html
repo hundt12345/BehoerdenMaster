@@ -295,13 +295,24 @@
             " · ", d.rolle_text, d.datum_de ? " · " + d.datum_de : ""))))
       : null;
 
+    // Zeitungsverweise: nur Medium, Schlagzeile, Datum und Link – kein Artikeltext.
+    const presse = (t.presse || []).length
+      ? el("details", null,
+          el("summary", null, `Zeitungsartikel (${t.presse.length})`),
+          el("ul", { class: "dokumente" }, ...t.presse.map((p) => el("li", null,
+            el("a", { href: p.url, target: "_blank", rel: "noopener" }, p.titel),
+            " · ", p.medium, p.datum_de ? " · " + p.datum_de : ""))),
+          el("p", { class: "hinweis" }, "Nur verlinkt: Medium, Schlagzeile und Datum. "
+            + "Der Artikeltext wird nicht abgerufen und nicht gespeichert."))
+      : null;
+
     const links = el("div", { class: "links" },
       t.links.original ? el("a", { href: t.links.original, target: "_blank", rel: "noopener" }, t.links.original_text) : null,
       el("span", { class: "hinweis" }, t.quelle ? t.quelle.name : ""));
 
     const hinweise = (t.hinweise || []).map((h) => el("p", { class: "hinweis" }, h));
     return el("article", { class: "karte" }, kopf, meta, orte, beteiligung, meldung, zusammen,
-      el("div", { class: "verlauf-container" }, verlauf), dokumente, ...hinweise, links);
+      el("div", { class: "verlauf-container" }, verlauf), dokumente, presse, ...hinweise, links);
   }
 
   function ausgabeLeeren() { $("ausgabe").replaceChildren(); }
@@ -500,7 +511,9 @@
     const rollen = daten.dokumente_nach_rolle || [];
     const betrieb = daten.betrieb || {};
     const betriebText = betrieb.automatische_abrufe
-      ? `Automatische Abrufe aktiv (Intervall ${Math.round((betrieb.intervall_sekunden || 0) / 3600)} h).`
+      ? `Automatische Abrufe aktiv (Intervall ${Math.round((betrieb.intervall_sekunden || 0) / 3600)} h`
+        + (betrieb.parallel_quellen > 1 ? `, bis zu ${betrieb.parallel_quellen} Quellen parallel` : "")
+        + ")."
       : "Automatische Abrufe ausgeschaltet – der Bestand wächst nur über manuelle Läufe.";
     const quellen = (daten.quellen || []).filter((q) => !q.demo || (q.zaehler.dokumente || 0) > 0);
     const kopf = (text) => el("th", null, text);

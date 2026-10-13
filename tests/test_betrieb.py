@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import threading
+import time
 from dataclasses import replace
 from datetime import datetime, timedelta, timezone
 
@@ -11,11 +12,12 @@ import httpx
 import pytest
 from fastapi.testclient import TestClient
 
-from behoerdenmaster.abruf import Abrufer, BudgetErschoepft
+from behoerdenmaster.abruf import Abrufer, BudgetErschoepft, Drossel
 from behoerdenmaster.api import create_app
 from behoerdenmaster.betrieb import Betrieb, SyncDienst, initialisiere, naechster_abruf
 from behoerdenmaster.config import PROJEKT_KONTAKT
 from behoerdenmaster.crawl_sperre import crawl_sperre
+from behoerdenmaster.crawler import LaufBericht
 from behoerdenmaster.demo import loesche_demo
 from behoerdenmaster.speicher import Speicher
 
@@ -90,6 +92,7 @@ def test_boolesche_umgebungswerte(wert, erwartet):
     {"BEHOERDEN_KONTAKT": "test@example.test\nHeader: injected"},
     {"BEHOERDEN_SYNC_INTERVALL": "299"}, {"BEHOERDEN_SYNC_INTERVALL": "abc"},
     {"BEHOERDEN_SYNC_MAX_ANFRAGEN": "0"}, {"BEHOERDEN_SYNC_MAX_ANFRAGEN": "1.5"},
+    {"BEHOERDEN_SYNC_PARALLEL": "0"}, {"BEHOERDEN_SYNC_PARALLEL": "viel"},
     {"BEHOERDEN_SYNC_STARTVERZOEGERUNG": "-1"},
 ])
 def test_ungueltige_umgebung_scheitert_klar(env):
@@ -398,10 +401,108 @@ def test_unerwarteter_quellenfehler_blockiert_nicht_andere_quelle(tmp_path, stad
     berichte = dienst.etappe()
     assert len(berichte) == 1 and berichte[0].quelle_id == "koeln:ris" and berichte[0].status == "ok"
     assert all(a.client.is_closed for a in erzeugte)
-    assert reihenfolge[:2] == ["bauleitplanung"] * 2 and set(reihenfolge[2:]) == {"ris"}
+    # Beide Quellen wurden abgerufen; die Fehlerquelle bricht nach ihren ersten
+    # Anfragen (robots + Liste) ab. Bei parallelen Läufen ist die Verschachtelung
+    # beider Quellen bewusst beliebig – nur Beteiligung und Abbruch zählen.
+    assert set(reihenfolge) == {"bauleitplanung", "ris"}
+    assert reihenfolge.count("bauleitplanung") == 2
     with Speicher(dienst.db_pfad) as sp:
         zeilen = {q["id"]: dict(q) for q in sp.quellen()}
         assert zeilen["koeln:bauleitplanung"]["status"] == "fehler"
         assert zeilen["koeln:bauleitplanung"]["letzter_versuch"]
         assert {r["status"] for r in sp.letzte_laeufe()} == {"ok", "fehler"}
     assert dienst.etappe() == [] and len(erzeugte) == 2
+
+
+# --- parallele Etappen --------------------------------------------------------
+
+def _dummy_abrufer(**kw):
+    """Abrufer für Stub-Crawler, die keine HTTP-Anfrage stellen."""
+    return Abrufer(**(kw | {"client": httpx.Client(
+        transport=httpx.MockTransport(lambda req: httpx.Response(404)))}))
+
+
+def test_etappe_laeuft_faellige_quellen_parallel_und_gibt_reihenfolge_zurueck(tmp_path, stadt, monkeypatch):
+    """Quellen verschiedener Hosts laufen wirklich gleichzeitig.
+
+    Beide Stubs warten aufeinander (Rendezvous). Wären sie sequenziell, müsste
+    der erste bis zum Timeout warten – der Test fällt dann bewusst auf. Die
+    Rückgabe bleibt trotzdem in Konfigurationsreihenfolge, auch wenn die zweite
+    Quelle zuerst fertig wird.
+    """
+    pfad = tmp_path / "sync.sqlite"
+    betrieb = Betrieb(sync_aktiv=True, kontakt="t@example.test",
+                      sync_quellen=("koeln:ris", "koeln:bauleitplanung"), sync_parallel=2)
+    initialisiere(pfad, {"koeln": stadt}, Betrieb())
+    rendezvous = threading.Barrier(2)
+
+    def stub(sp, stadt_, quelle, abrufer, optionen):
+        bericht = LaufBericht(quelle_id=stadt_.quell_id(quelle))
+        try:
+            rendezvous.wait(timeout=5)
+        except threading.BrokenBarrierError:
+            pytest.fail(f"{quelle.schluessel} startete nicht parallel zur anderen Quelle")
+        if quelle.schluessel == "ris":
+            time.sleep(0.1)  # absichtlich zuletzt fertig – die Reihenfolge muss bleiben
+        bericht.status = "ok"
+        return bericht
+
+    monkeypatch.setattr("behoerdenmaster.betrieb.CRAWLER", {"oparl": stub, "bauleitplanung": stub})
+    dienst = SyncDienst(pfad, {"koeln": stadt}, betrieb, abrufer_factory=_dummy_abrufer)
+    berichte = dienst.etappe()
+    assert [b.quelle_id for b in berichte] == ["koeln:ris", "koeln:bauleitplanung"]
+    assert all(b.status == "ok" for b in berichte)
+
+
+def test_sync_parallel_1_bleibt_sequenziell(tmp_path, stadt, monkeypatch):
+    """1 schaltet bewusst auf die alte Reihenfolge: nie zwei Quellen gleichzeitig."""
+    pfad = tmp_path / "sync.sqlite"
+    betrieb = Betrieb(sync_aktiv=True, kontakt="t@example.test",
+                      sync_quellen=("koeln:ris", "koeln:bauleitplanung"), sync_parallel=1)
+    initialisiere(pfad, {"koeln": stadt}, Betrieb())
+    lock, zaehlung = threading.Lock(), {"aktiv": 0, "maximum": 0}
+
+    def stub(sp, stadt_, quelle, abrufer, optionen):
+        with lock:
+            zaehlung["aktiv"] += 1
+            zaehlung["maximum"] = max(zaehlung["maximum"], zaehlung["aktiv"])
+        time.sleep(0.05)
+        with lock:
+            zaehlung["aktiv"] -= 1
+        return LaufBericht(quelle_id=stadt_.quell_id(quelle), status="ok")
+
+    monkeypatch.setattr("behoerdenmaster.betrieb.CRAWLER", {"oparl": stub, "bauleitplanung": stub})
+    dienst = SyncDienst(pfad, {"koeln": stadt}, betrieb, abrufer_factory=_dummy_abrufer)
+    assert len(dienst.etappe()) == 2
+    assert zaehlung["maximum"] == 1
+
+
+def test_host_drossel_wird_zwischen_quellen_desselben_hosts_geteilt(tmp_path, stadt, monkeypatch):
+    """Ratsinformation und ihr RSS-Feed liegen auf demselben Host und teilen eine
+    Drossel; die Bauleitplanung auf einem anderen Host bekommt eine eigene."""
+    pfad = tmp_path / "sync.sqlite"
+    betrieb = Betrieb(sync_aktiv=True, kontakt="t@example.test", sync_parallel=3,
+                      sync_quellen=("koeln:ris", "koeln:ris-rss", "koeln:bauleitplanung"))
+    initialisiere(pfad, {"koeln": stadt}, Betrieb())
+    gesehen: dict[str, object] = {}
+
+    def stub(sp, stadt_, quelle, abrufer, optionen):
+        gesehen[stadt_.quell_id(quelle)] = abrufer.drossel
+        return LaufBericht(quelle_id=stadt_.quell_id(quelle), status="ok")
+
+    monkeypatch.setattr("behoerdenmaster.betrieb.CRAWLER",
+                        {"oparl": stub, "ris-rss": stub, "bauleitplanung": stub})
+    dienst = SyncDienst(pfad, {"koeln": stadt}, betrieb, abrufer_factory=_dummy_abrufer)
+    assert len(dienst.etappe()) == 3
+    assert set(gesehen) == {"koeln:ris", "koeln:ris-rss", "koeln:bauleitplanung"}
+    assert gesehen["koeln:ris"] is gesehen["koeln:ris-rss"]
+    assert gesehen["koeln:ris"] is not gesehen["koeln:bauleitplanung"]
+    assert all(isinstance(d, Drossel) for d in gesehen.values())
+
+
+def test_sync_parallel_ist_ueber_die_umgebung_setzbar():
+    assert Betrieb.aus_umgebung({"BEHOERDEN_KONTAKT": "x@y.test"}).sync_parallel == 3
+    betrieb = Betrieb.aus_umgebung({"BEHOERDEN_KONTAKT": "x@y.test", "BEHOERDEN_SYNC_PARALLEL": "5"})
+    assert betrieb.sync_parallel == 5
+    status = betrieb.oeffentlicher_status()
+    assert status["parallel_quellen"] == 5 and "sync_parallel" not in status

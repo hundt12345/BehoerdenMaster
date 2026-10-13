@@ -11,6 +11,13 @@ Bezahlschranken. Dieses Projekt ruft sie **nicht** ab und speichert sie **nicht*
 Journalismus über die Amtsebene: amtliche Zeitangaben, Beschlüsse, Fristen und Links – ergänzt um
 eine eigene, als solche gekennzeichnete Zusammenfassung.
 
+> **Nachtrag 13. Oktober 2026:** Die hier verlinkten Zeitungsartikel (u. a. Kölner Stadt-Anzeiger)
+> werden den jeweiligen Vorgängen in der Anwendung als **Verweise** angezeigt – Medium,
+> Schlagzeile, Datum und URL, gepflegt unter `[[presse]]` in
+> [`config/cities/koeln.toml`](../config/cities/koeln.toml). Die Zuordnung läuft über
+> redaktionell gesetzte Stichworte und Referenzen (siehe `behoerdenmaster/presse.py`);
+> auch hier gilt: Es wird nur verlinkt, kein Artikeltext abgerufen oder gespeichert.
+
 Die Themen sind so gewählt, dass sie **im Bestand der Anwendung auffindbar** sind oder es nach
 Anbindung der vorgeschlagenen Quellen wären. Zu jedem Text steht, was BehoerdenMaster heute dazu
 zeigt.

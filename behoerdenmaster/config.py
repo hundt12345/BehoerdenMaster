@@ -10,9 +10,11 @@ from __future__ import annotations
 import os
 import tomllib
 from dataclasses import dataclass, field
+from datetime import date
 from pathlib import Path
 
 from .normalize import norm
+from .presse import PresseVerweis
 
 PROJEKTWURZEL = Path(__file__).resolve().parent.parent
 
@@ -124,6 +126,9 @@ class Stadt:
     strassen_lizenz: str = ""
     strassen_stand: str = ""
     strassen_max_gram: int = 1
+    # Redaktionell gepflegte Zeitungsverweise (optional, aus `[[presse]]`): werden
+    # passenden Vorgängen als bloße Verweise zugeordnet (siehe presse.py).
+    presse: tuple[PresseVerweis, ...] = ()
     # Umkehrschlüssel für die Suche: Stadtteil → PLZ, in denen er vorkommt.
     plz_je_stadtteil: dict[str, tuple[str, ...]] = field(default_factory=dict)
 
@@ -229,6 +234,40 @@ def _lade_strassen(pfad: Path, stadtteile: dict[str, Stadtteil]) -> tuple[
     return strassen, kopf
 
 
+def _lade_presse(eintraege: list, dateiname: str) -> tuple[PresseVerweis, ...]:
+    """`[[presse]]` streng prüfen: Jeder Verweis braucht Medium, Titel, URL und ein Kriterium.
+
+    Wie beim Straßenverzeichnis ist eine fehlerhafte Zeile ein Fehler und keine
+    stille Lücke – sonst fehlt einem Vorgang unbemerkt sein Zeitungsverweis.
+    """
+    presse: list[PresseVerweis] = []
+    for nr, eintrag in enumerate(eintraege, start=1):
+        medium = str(eintrag.get("medium", "")).strip()
+        titel = str(eintrag.get("titel", "")).strip()
+        url = str(eintrag.get("url", "")).strip()
+        if not medium or not titel or not url:
+            raise ValueError(f"{dateiname}: Presse-Eintrag {nr} braucht medium, titel und url")
+        if not url.startswith(("http://", "https://")):
+            raise ValueError(f"{dateiname}: Presse-Eintrag {nr} braucht eine http(s)-URL")
+        datum = str(eintrag.get("datum", "")).strip()
+        if datum:
+            try:
+                date.fromisoformat(datum)
+            except ValueError as exc:
+                raise ValueError(
+                    f"{dateiname}: Presse-Eintrag {nr} hat kein Datum im Format YYYY-MM-DD"
+                ) from exc
+        stichworte = tuple(sorted({norm(s) for s in eintrag.get("stichworte", []) if norm(s)}))
+        referenzen = tuple(sorted({norm(r) for r in eintrag.get("referenzen", []) if norm(r)}))
+        if not stichworte and not referenzen:
+            raise ValueError(
+                f"{dateiname}: Presse-Eintrag {nr} braucht stichworte oder referenzen zur Zuordnung"
+            )
+        presse.append(PresseVerweis(medium=medium, titel=titel, url=url, datum=datum,
+                                    stichworte=stichworte, referenzen=referenzen))
+    return tuple(presse)
+
+
 def _lade_datei(pfad: Path) -> Stadt:
     with pfad.open("rb") as fh:
         daten = tomllib.load(fh)
@@ -288,6 +327,8 @@ def _lade_datei(pfad: Path) -> Stadt:
         for q in daten.get("quellen", [])
     )
 
+    presse = _lade_presse(daten.get("presse", []), pfad.name)
+
     strassen: dict[str, Strasse] = {}
     strassen_kopf: dict[str, str] = {}
     strassen_pfad = pfad.parent / f"{pfad.stem}.strassen.tsv"
@@ -316,6 +357,7 @@ def _lade_datei(pfad: Path) -> Stadt:
         strassen_lizenz=strassen_kopf.get("Lizenz", ""),
         strassen_stand=strassen_kopf.get("Stand", ""),
         strassen_max_gram=max((len(name.split()) for name in strassen), default=1),
+        presse=presse,
         plz_je_stadtteil={nr: tuple(sorted(codes)) for nr, codes in plz_je_stadtteil.items()},
     )
 

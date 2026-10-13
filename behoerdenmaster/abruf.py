@@ -5,7 +5,9 @@ Anfragen sperren können):
 
 * identifizierbarer User-Agent mit Kontaktadresse,
 * robots.txt nach RFC 9309 wird vor dem Abruf geprüft (inkl. Crawl-delay),
-* Mindestabstand zwischen Anfragen an dieselbe Quelle (Standard 3 s),
+* Mindestabstand zwischen Anfragen an dieselbe Quelle (Standard 3 s) – bei parallelen
+  Läufen geteilt je Host (siehe `Drossel`), damit zwei Quellen denselben Server nicht
+  gemeinsam schneller befragen,
 * bei 429/5xx: wachsende Wartezeiten, Retry-After wird beachtet,
 * bei 401/403 sofort Abbruch – es wird nicht versucht, die Sperre zu umgehen,
 * ein Anfragebudget pro Lauf, damit große Abrufe in kleinen Schritten erfolgen.
@@ -13,6 +15,7 @@ Anfragen sperren können):
 
 from __future__ import annotations
 
+import threading
 import time
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
@@ -53,6 +56,20 @@ class ObjektNichtVorhanden(Exception):
 PRODUKT_TOKEN = "BehoerdenMaster"
 
 
+@dataclass
+class Drossel:
+    """Gemeinsamer Mindestabstand für **alle** Abrufe an denselben Host in einem Lauf.
+
+    Parallele Quellen-Läufe dürfen verschiedene Hosts gleichzeitig ansprechen. Quellen
+    auf demselben Host teilen sich diese Instanz, sodass ihr Mindestabstand auch dann
+    gilt, wenn beide gleichzeitig laufen: Die Wartefenster reihen sich aneinander.
+    Die Instanz lebt pro Lauf/Etappe und wird von allen beteiligten Abrufern geteilt.
+    """
+
+    lock: threading.Lock = field(default_factory=threading.Lock)
+    letzte: float = field(default=-1e9)
+
+
 def user_agent(kontakt: str) -> str:
     return f"{PRODUKT_TOKEN}/0.1 (+https://github.com/hundt12345/BehoerdenMaster; Kontakt: {kontakt})"
 
@@ -84,6 +101,8 @@ class Abrufer:
     sleep: Callable[[float], None] = time.sleep
     clock: Callable[[], float] = time.monotonic
     soll_abbrechen: Callable[[], bool] | None = None
+    # Optional geteilt: eine Drossel je Host für parallele Quellen-Läufe (siehe Drossel).
+    drossel: Drossel | None = None
     anfragen: int = 0
     _letzte: float = field(default=-1e9, init=False)
     _robots: dict[str, Protego] = field(default_factory=dict, init=False)
@@ -102,6 +121,17 @@ class Abrufer:
     # --- Drosselung -------------------------------------------------------
 
     def _warte(self, mindestens: float) -> None:
+        if self.drossel is not None:
+            # Warten unter dem Lock: Anfragen an denselben Host starten nacheinander,
+            # auch wenn mehrere Quellen parallel laufen. Ein abbrechender sleep hebt
+            # das Lock über den `with`-Block auf.
+            with self.drossel.lock:
+                frist = self.drossel.letzte + max(self.min_intervall, mindestens)
+                jetzt = self.clock()
+                if jetzt < frist:
+                    self.sleep(frist - jetzt)
+                self.drossel.letzte = self.clock()
+            return
         frist = self._letzte + max(self.min_intervall, mindestens)
         jetzt = self.clock()
         if jetzt < frist:

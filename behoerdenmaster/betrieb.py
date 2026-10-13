@@ -2,7 +2,9 @@
 
 Ein Render-Service mit SQLite-Disk kann die Disk nicht mit einem Cron-Service
 teilen. Daher läuft genau ein stoppbarer Hintergrund-Thread neben der API.
-Alle Quellen laufen sequenziell; der Zeitpunkt des letzten Versuchs bleibt in
+Die fälligen Quellen einer Etappe laufen **parallel** (bis `sync_parallel`,
+Voreinstellung 3); pro Host sorgt eine gemeinsame Drossel weiterhin für den
+Mindestabstand zwischen Anfragen. Der Zeitpunkt des letzten Versuchs bleibt in
 SQLite erhalten, sodass ein Redeploy keine erneute Abrufserie auslöst.
 """
 
@@ -13,12 +15,14 @@ import os
 import threading
 import time
 from collections.abc import Mapping
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Callable
+from urllib.parse import urlsplit
 
-from .abruf import Abrufer, BudgetErschoepft
+from .abruf import Abrufer, BudgetErschoepft, Drossel
 from .config import PROJEKT_KONTAKT, Quelle, Stadt
 from .crawl_sperre import CrawlLaeuft, crawl_sperre
 from .crawler import CRAWLER, CrawlVerweigert, LaufBericht, LaufOptionen
@@ -78,6 +82,10 @@ class Betrieb:
     sync_quellen: tuple[str, ...] = ()  # vollständige IDs, z. B. koeln:bauleitplanung
     sync_intervall: int = 21600  # sechs Stunden pro Quelle; auch nach Neustarts
     sync_budget: int = 100  # pro Quelle und Etappe, einschließlich robots.txt
+    # Gleichzeitige Quellen je Etappe. Unterschiedliche Hosts laufen parallel; Quellen
+    # auf demselben Host teilen sich weiterhin ihre Drossel und starten Anfragen
+    # nacheinander. 1 schaltet bewusst auf die alte, strikt sequenzielle Reihenfolge.
+    sync_parallel: int = 3
     # Zeitfenster je Quelle und Etappe. Quellen laufen nacheinander; ohne Fenster kann eine
     # einzige große Quelle (Erstabruf der Ratsinformation) alle anderen so lange blockieren,
     # dass deren Daten erst Stunden später erscheinen. Nach dem Fenster wird die Quelle
@@ -160,6 +168,7 @@ class Betrieb:
             sync_quellen=quellen,
             sync_intervall=zahl("BEHOERDEN_SYNC_INTERVALL", 21600, 300),
             sync_budget=zahl("BEHOERDEN_SYNC_MAX_ANFRAGEN", 100, 1),
+            sync_parallel=zahl("BEHOERDEN_SYNC_PARALLEL", 3, 1),
             sync_zeitbudget=zahl("BEHOERDEN_SYNC_ZEITBUDGET", 240, 30),
             sync_startverzoegerung=zahl("BEHOERDEN_SYNC_STARTVERZOEGERUNG", 30, 0),
             sync_seit=seit(),
@@ -183,6 +192,7 @@ class Betrieb:
             "kontakt_hinterlegt": bool(self.kontakt),
             "intervall_sekunden": self.sync_intervall,
             "max_anfragen_pro_quelle": self.sync_budget,
+            "parallel_quellen": self.sync_parallel,
             "zeitbudget_pro_quelle_sekunden": self.sync_zeitbudget,
             "startverzoegerung_sekunden": self.sync_startverzoegerung,
             "erstabruf_seit": self.sync_seit,
@@ -311,12 +321,21 @@ class SyncDienst:
                 return
 
     def etappe(self) -> list[LaufBericht]:
-        """Nur fällige Quellen, sequenziell und begrenzt. Auch direkt offline testbar."""
+        """Nur fällige Quellen, begrenzt und – bis `sync_parallel` – gleichzeitig.
+
+        Parallele Quellen bedienen in der Regel verschiedene Hosts und dürfen
+        gemeinsam laufen; für jeden Host sorgt eine geteilte Drossel weiterhin für
+        den Mindestabstand zwischen Anfragen. Jede Quelle schreibt über eine eigene
+        SQLite-Verbindung (WAL), die Rückgabe bleibt in Konfigurationsreihenfolge.
+        Auch direkt offline testbar.
+        """
         if not self.betrieb.sync_aktiv or self._stop.is_set():
             return []
-        berichte = []
+        berichte: dict[str, LaufBericht] = {}
+        reihenfolge: list[str] = []
         try:
             with crawl_sperre(self.db_pfad), Speicher(self.db_pfad) as sp:
+                faellig = []
                 for qid, (stadt, quelle) in self.quellen.items():
                     if self._stop.is_set():
                         break
@@ -324,27 +343,67 @@ class SyncDienst:
                     fruehestens = naechster_abruf(zeile, self.betrieb.sync_intervall)
                     if fruehestens and self.clock() < fruehestens:
                         continue
-                    frist = time.monotonic() + self.betrieb.sync_zeitbudget
-                    abrufer = self.abrufer_factory(
-                        kontakt=self.betrieb.kontakt, min_intervall=quelle.min_intervall_sekunden,
-                        max_anfragen=self.betrieb.sync_budget, sleep=self._pause,
-                        soll_abbrechen=lambda frist=frist: self._stop.is_set() or time.monotonic() >= frist,
-                    )
-                    try:
-                        log.info("Automatischer Abruf %s, Budget %d Anfragen, Zeitfenster %d s",
-                                 qid, self.betrieb.sync_budget, self.betrieb.sync_zeitbudget)
-                        bericht = CRAWLER[quelle.typ](sp, stadt, quelle, abrufer, LaufOptionen(
-                            seit=self.betrieb.seit_datum(), max_anfragen=self.betrieb.sync_budget))
-                        berichte.append(bericht)
-                        log.info("Abruf %s: %s (%d Anfragen)", qid, bericht.status, bericht.anfragen)
-                    except CrawlVerweigert as exc:
-                        log.info("Abruf %s pausiert: %s", qid, exc)
-                    except Exception:
-                        # Quellen getrennt behandeln: ein Schema-/Netzfehler blockiert nicht die andere Quelle.
-                        log.exception("Unerwarteter Fehler beim Abruf %s", qid)
-                        sp.quelle_status(qid, "fehler", "Unerwarteter Abruffehler; siehe Service-Logs")
-                    finally:
-                        abrufer.schliessen()
+                    faellig.append((qid, stadt, quelle))
+                reihenfolge = [qid for qid, _, _ in faellig]
+                if not faellig:
+                    return []
+                # Drosseln und Verbindungen vor dem Start nacheinander aufbauen: eine
+                # Drossel je Host (geteilt), eine SQLite-Verbindung je Quelle (pro Thread).
+                drosseln: dict[str, Drossel] = {}
+                verbindungen: dict[str, Speicher] = {}
+                for qid, _, quelle in faellig:
+                    host = urlsplit(quelle.system_url).netloc.lower()
+                    if host not in drosseln:
+                        drosseln[host] = Drossel()
+                    verbindungen[qid] = Speicher(self.db_pfad)
+                try:
+                    def job(qid: str, stadt: Stadt, quelle: Quelle) -> LaufBericht | None:
+                        try:
+                            return self._quelle_laden(verbindungen[qid], stadt, quelle,
+                                                      drosseln[urlsplit(quelle.system_url).netloc.lower()])
+                        finally:
+                            verbindungen[qid].schliessen()
+
+                    with ThreadPoolExecutor(max_workers=min(self.betrieb.sync_parallel, len(faellig))) as pool:
+                        zukuenfte = {qid: pool.submit(job, qid, stadt, quelle)
+                                     for qid, stadt, quelle in faellig}
+                        # Ergebnisse in Konfigurationsreihenfolge einsammeln, nicht in
+                        # Zufallsreihenfolge der Fertigstellung.
+                        for qid in reihenfolge:
+                            bericht = zukuenfte[qid].result()
+                            if bericht is not None:
+                                berichte[qid] = bericht
+                finally:
+                    for verbindung in verbindungen.values():
+                        verbindung.schliessen()
         except CrawlLaeuft:
             log.info("Automatischer Abruf übersprungen: Ein anderer Crawl/Import läuft")
-        return berichte
+        return [berichte[qid] for qid in reihenfolge if qid in berichte]
+
+    def _quelle_laden(self, sp: Speicher, stadt: Stadt, quelle: Quelle,
+                      drossel: Drossel) -> LaufBericht | None:
+        """Eine Quelle einer Etappe; Fehler bleiben auf diese Quelle begrenzt."""
+        qid = stadt.quell_id(quelle)
+        frist = time.monotonic() + self.betrieb.sync_zeitbudget
+        abrufer = self.abrufer_factory(
+            kontakt=self.betrieb.kontakt, min_intervall=quelle.min_intervall_sekunden,
+            max_anfragen=self.betrieb.sync_budget, sleep=self._pause,
+            soll_abbrechen=lambda frist=frist: self._stop.is_set() or time.monotonic() >= frist,
+            drossel=drossel,
+        )
+        try:
+            log.info("Automatischer Abruf %s, Budget %d Anfragen, Zeitfenster %d s",
+                     qid, self.betrieb.sync_budget, self.betrieb.sync_zeitbudget)
+            bericht = CRAWLER[quelle.typ](sp, stadt, quelle, abrufer, LaufOptionen(
+                seit=self.betrieb.seit_datum(), max_anfragen=self.betrieb.sync_budget))
+            log.info("Abruf %s: %s (%d Anfragen)", qid, bericht.status, bericht.anfragen)
+            return bericht
+        except CrawlVerweigert as exc:
+            log.info("Abruf %s pausiert: %s", qid, exc)
+        except Exception:
+            # Quellen getrennt behandeln: ein Schema-/Netzfehler blockiert nicht die andere Quelle.
+            log.exception("Unerwarteter Fehler beim Abruf %s", qid)
+            sp.quelle_status(qid, "fehler", "Unerwarteter Abruffehler; siehe Service-Logs")
+        finally:
+            abrufer.schliessen()
+        return None

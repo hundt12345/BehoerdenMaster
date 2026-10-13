@@ -2,7 +2,7 @@ import httpx
 import pytest
 
 from behoerdenmaster.abruf import (
-    Abrufer, BudgetErschoepft, NichtErlaubt, ObjektNichtVorhanden, QuelleGesperrt,
+    Abrufer, BudgetErschoepft, Drossel, NichtErlaubt, ObjektNichtVorhanden, QuelleGesperrt,
     QuelleNichtErreichbar, user_agent,
 )
 
@@ -32,6 +32,36 @@ def test_mindestabstand_zwischen_anfragen(uhr):
     assert uhr.schlaefe, "es muss gewartet worden sein"
     assert all(s >= 0 for s in uhr.schlaefe)
     assert max(uhr.schlaefe) <= 3.0 + 1e-9
+
+
+def test_gemeinsame_drossel_haelt_mindestabstand_ueber_zwei_abrufer(uhr):
+    """Zwei Quellen auf demselben Host teilen eine Drossel: kein schnelleres
+    Wechselspiel zwischen ihren Abrufern, jeder Host-Abruf startet mit Abstand.
+
+    Ohne geteilte Drossel würde der zweite Abrufer bei seinem robots-Abruf ohne
+    Wartezeit starten – genau das soll die parallele Etappe nicht zulassen.
+    """
+    def handler(req):
+        return httpx.Response(200, json={"data": []})
+    drossel = Drossel()
+    a = _abrufer(uhr, handler, drossel=drossel)
+    b = _abrufer(uhr, handler, drossel=drossel)
+    a.get_json(URL)  # robots + Liste
+    b.get_json(URL)  # eigener robots-Abruf + Liste – beide mit Abstand
+    a.get_json(URL)  # nur Liste (robots im Cache)
+    # Vier Anfragen nach der ersten: jede wartet den vollen Mindestabstand von 3 s.
+    assert uhr.schlaefe == [3.0, 3.0, 3.0, 3.0]
+
+
+def test_ohne_gemeinsame_drossel_bleibt_es_beim_instanzinternen_abstand(uhr):
+    """Die Einzelinstanz bleibt unverändert: eigener Takt, kein Fremdabstand."""
+    def handler(req):
+        return httpx.Response(200, json={"data": []})
+    a = _abrufer(uhr, handler)
+    b = _abrufer(uhr, handler)
+    a.get_json(URL)
+    b.get_json(URL)  # zweite Instanz startet ohne Wartezeit (eigener Takt)
+    assert uhr.schlaefe == [3.0, 3.0]
 
 
 def test_retry_after_wird_beachtet(uhr):

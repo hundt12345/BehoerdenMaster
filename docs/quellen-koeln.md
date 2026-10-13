@@ -361,7 +361,9 @@ Für jede neue Quelle gilt, was schon für OParl und Bauleitplanung gilt – ohn
 - **Volltext von Zeitungsartikeln:** Presseartikel (z. B. Kölner Stadt-Anzeiger, Rundschau,
   Express) werden **nicht** abgerufen oder gespeichert. Sie sind urheberrechtlich geschützt und
   stehen teils hinter Bezahlschranken. Zulässig und nützlich ist der Weg über **eigene Texte
-  mit Quellenangabe** – siehe [presse-koeln.md](presse-koeln.md).
+  mit Quellenangabe** – siehe [presse-koeln.md](presse-koeln.md). Zu den Vorgängen angezeigt
+  werden lediglich redaktionell gepflegte **Verweise** (Medium, Schlagzeile, Datum, URL aus
+  `[[presse]]` in `config/cities/koeln.toml`), nie ein Artikeltext.
 - **Umgehung von Sperren:** Hosts, die den Abruf verweigern (siehe mandari-Issues), bleiben
   verweigert. Keine Ausweichadressen, keine Proxys, keine schnelleren Wiederholungen.
 - **Fremde Kommunen:** Weitere Städte auf derselben demosPlan- oder OParl-Technik können später

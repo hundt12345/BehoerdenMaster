@@ -195,6 +195,7 @@ def create_app(db_pfad: str | Path | None = None, config_dir: Path | None = None
             "automatische_abrufe": einstellungen.sync_aktiv,
             "intervall_sekunden": einstellungen.sync_intervall,
             "max_anfragen_pro_quelle": einstellungen.sync_budget,
+            "parallel_quellen": einstellungen.sync_parallel,
             "sync_dienst_laeuft": bool(app.state.sync_dienst and app.state.sync_dienst.laeuft),
             "warnungen": list(einstellungen.warnungen),
         }

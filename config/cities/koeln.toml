@@ -118,6 +118,90 @@ datensaetze = [
   "Bebauungspläne Köln Aufstellungsbeschlüsse",
 ]
 
+# Redaktionell gepflegte Zeitungsverweise zu Vorgängen (Stand 12.10.2026, Übernahme aus
+# docs/presse-koeln.md). Es werden NUR Medium, Schlagzeile, Datum und URL verlinkt –
+# Zeitungsartikel werden nicht abgerufen und nicht gespeichert (docs/quellen-koeln.md,
+# „Was hier bewusst fehlt“). Zuordnung zu Vorgängen: `stichworte` müssen ALLE im
+# gespeicherten Suchtext des Vorgangs vorkommen (normalisierter Teilwortvergleich),
+# oder `referenzen` trifft die Vorgangsreferenz. Stichworte bewusst distinktiv wählen.
+[[presse]]
+medium = "Kölner Stadt-Anzeiger"
+titel = "Wohnungsbau Ehrenfeld: Politik fordert mehr bezahlbaren Wohnraum"
+datum = "2026-02-05"
+url = "https://www.ksta.de/koeln/ehrenfeld/bickendorf/wohnungsbau-ehrenfeld-politik-fordert-mehr-bezahlbaren-wohnraum-1208313"
+stichworte = ["bickendorf"]
+
+[[presse]]
+medium = "Kölner Stadt-Anzeiger"
+titel = "NQB Bickendorf: Anwohner fordern mehr Cafés und organische Formen"
+datum = "2026-07-01"
+url = "https://www.ksta.de/koeln/ehrenfeld/bickendorf/nqb-bickendorf-anwohner-fordern-mehr-caf-s-und-organische-formen-1314005"
+stichworte = ["bickendorf"]
+
+[[presse]]
+medium = "Kölner Stadt-Anzeiger"
+titel = "Wohnen oder Feiern: Bauprojekte in Ehrenfeld gefährden Kölner Clubkultur – das sagen die Betreiber"
+datum = "2026-03-31"
+url = "https://www.ksta.de/koeln/ehrenfeld/wohnen-oder-feiern-bauprojekte-in-ehrenfeld-gefaehrden-koelner-clubkultur-das-sagen-die-betreiber-1-1248120"
+stichworte = ["clubkultur"]
+
+[[presse]]
+medium = "Rheinische Anzeigenblätter"
+titel = "Stadt will Clubs vor Verdrängung schützen"
+url = "https://www.rheinische-anzeigenblaetter.de/ehrenfeld/c-nachrichten/stadt-will-clubs-vor-verdraengung-schuetzen_a366204"
+stichworte = ["clubkultur"]
+
+[[presse]]
+medium = "Rheinische Anzeigenblätter"
+titel = "Jetzt sind die Bürger gefragt"
+datum = "2023-04-21"
+url = "https://www.rheinische-anzeigenblaetter.de/nippes/c-nachrichten/jetzt-sind-die-buerger-gefragt_a276634"
+stichworte = ["longericher"]
+
+[[presse]]
+medium = "Radio Köln"
+titel = "Stadtrat fordert Lösung für Feierabendmärkte in Köln"
+datum = "2026-10-09"
+url = "https://www.radiokoeln.de/artikel/stadtrat-fordert-loesung-fuer-feierabendmaerkte-in-koeln-2776740"
+referenzen = ["AN/1614/2026"]
+stichworte = ["feierabend", "abendmarkt"]
+
+[[presse]]
+medium = "Express"
+titel = "Kölner Feierabendmarkt: Rat verlangt transparentes Auswahlverfahren"
+datum = "2026-10-09"
+url = "https://www.express.de/koeln/feierabendmarkt-koeln-ein-ort-an-dem-unsere-stadt-lebendig-wird-1392372"
+referenzen = ["AN/1614/2026"]
+stichworte = ["feierabend"]
+
+[[presse]]
+medium = "Kölner Stadt-Anzeiger"
+titel = "Studie sieht Risiken beim Standort des Suchthilfezentrums"
+datum = "2026-05-07"
+url = "https://www.ksta.de/koeln/koeln-studie-sieht-risiken-beim-standort-des-suchthilfezentrums-1276851"
+stichworte = ["suchthilfezentrum"]
+
+[[presse]]
+medium = "Kölner Stadt-Anzeiger"
+titel = "Neues Kölner Suchthilfezentrum spaltet Nachbarschaft"
+datum = "2026-01-14"
+url = "https://www.ksta.de/koeln/koelner-innenstadt/koeln-neues-suchthilfezentrum-spaltet-nachbarschaft-im-pantaleonsviertel-1209571"
+stichworte = ["suchthilfezentrum"]
+
+[[presse]]
+medium = "Rheinische Anzeigenblätter"
+titel = "Hilfe, Halt und Hoffnung – der Rat berät über ein neues Suchthilfezentrum am Perlengraben"
+datum = "2026-04-27"
+url = "https://www.rheinische-anzeigenblaetter.de/koeln/c-nachrichten/koelner-rat-beraet-ueber-neues-suchthilfezentrum-am-perlengraben_a369388"
+stichworte = ["suchthilfezentrum"]
+
+[[presse]]
+medium = "t-online"
+titel = "Suchthilfezentrum in Köln: Betreiber steht fest, dann soll es öffnen"
+datum = "2026-09-05"
+url = "https://koeln.t-online.de/region/koeln/id_101420786/suchthilfezentrum-in-koeln-betreiber-steht-fest-dann-soll-es-oeffnen.html"
+stichworte = ["suchthilfezentrum"]
+
 [bezirke]
 "1" = "Innenstadt"
 "2" = "Rodenkirchen"

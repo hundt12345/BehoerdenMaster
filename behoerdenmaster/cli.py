@@ -236,6 +236,10 @@ def _drucke_treffer(ergebnis: dict, v=None) -> None:
             top = f" · TOP {e['top']['nummer']}" if e["top"]["nummer"] else ""
             ergebnis_txt = f" → {e['top']['ergebnis']}" if e["top"]["ergebnis"] else ""
             print(f"     · {e['datum_de'] or 'ohne Termin'} {e['gremium']}{top}{ergebnis_txt}")
+        for p in t.get("presse", []):
+            datum_txt = f" ({p['datum_de']})" if p["datum_de"] else ""
+            print(f"   Presse: {p['medium']}{datum_txt} – {p['titel']}")
+            print(f"     {p['url']}")
         if t["links"]["original"]:
             print(f"   Link: {t['links']['original']}")
         for hinweis in t.get("hinweise", []):

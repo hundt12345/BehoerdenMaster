@@ -18,6 +18,7 @@ from .meldungen import verlauf as meldung_verlauf
 from .meldungen import zusammenfassung as meldung_zusammenfassung
 from .normalize import norm
 from .plan_auswertung import plan_status, plan_verlauf, plan_zusammenfassung, zeit_de
+from .presse import finde_presse
 from .speicher import Speicher
 
 ROLLEN_TEXT = {
@@ -300,6 +301,16 @@ def _dto(stadt: Stadt, kand, orte_rows: list, verlauf: list[dict], dokumente: li
         if meta.get("demo"):
             hinweise.append("Offline-Demo: Beschreibung und Dokumentlinks sind ausgewählte Auszüge, kein vollständiger Bestand.")
         hinweise.append("Beteiligungsfristen aus der Quelle übernommen; für verbindliche Fristen die Originalseite prüfen.")
+    # Zeitungsverweise: redaktionell gepflegt, nur als Link mit Medium, Schlagzeile und
+    # Datum. Der Artikeltext wird nie abgerufen und nie gespeichert.
+    presse = finde_presse(
+        stadt.presse,
+        f"{kand['suchtext']} {kand['titel']} {kand['referenz']} {kand['art']}",
+        kand["referenz"],
+    )
+    if presse:
+        hinweise.append("Zeitungsartikel sind nur verlinkt (Medium, Schlagzeile, Datum); "
+                        "der Artikeltext wird nicht abgerufen und nicht gespeichert.")
     return {
         "id": vid,
         "titel": kand["titel"],
@@ -324,6 +335,7 @@ def _dto(stadt: Stadt, kand, orte_rows: list, verlauf: list[dict], dokumente: li
                          "zuletzt_gesehen": plan["gesehen"], "gelistet": bool(plan["gelistet"])}
                         if plan is not None else None),
         "dokumente": dok_liste,
+        "presse": presse,
         "meldung": ({
             "art_quelle": meldung["art_quelle"],
             "verfahrensschritt": meldung["verfahrensschritt"],

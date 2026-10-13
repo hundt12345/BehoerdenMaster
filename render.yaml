@@ -30,12 +30,12 @@ services:
       # offen erklären, statt Offline-Auszüge als Treffer auszugeben.
       - key: BEHOERDEN_DEMO
         value: "false"
-      # Automatischer Abruf. Die Reihenfolge ist die Abrufreihenfolge je Etappe und deshalb
-      # bewusst so gewählt: erst die kleinen, schnell vollständigen Quellen (Bekanntmachungen,
+      # Automatischer Abruf. Die Reihenfolge legt die Start- und Rückgabereihenfolge der
+      # Etappe fest: erst die kleinen, schnell vollständigen Quellen (Bekanntmachungen,
       # Beteiligung, die beiden RSS-Feeds – je Quelle wenige Anfragen), zuletzt die
-      # Ratsinformation (OParl) mit ihrem großen Erstabruf. Quellen laufen nacheinander; ein
-      # knappes Zeitfenster trifft so zuerst die große Quelle, und die Startseite zeigt schon
-      # nach wenigen Minuten Inhalte statt einer leeren Liste.
+      # Ratsinformation (OParl) mit ihrem großen Erstabruf. Die fälligen Quellen laufen
+      # parallel (siehe BEHOERDEN_SYNC_PARALLEL); pro Host bleibt der Mindestabstand
+      # zwischen Anfragen erhalten, sodass die Last je Behörden-Server unverändert ist.
       # Bauleitplanung bleibt bis zur Klärung des dortigen Fehlers ausgenommen
       # (siehe docs/quellen-koeln.md). "false" schaltet den Hintergrundabruf bewusst ab.
       - key: BEHOERDEN_SYNC_ENABLED
@@ -50,9 +50,14 @@ services:
         value: "21600"
       - key: BEHOERDEN_SYNC_MAX_ANFRAGEN
         value: "120"
-      # Zeitfenster je Quelle und Etappe: Quellen laufen nacheinander; ohne Fenster würde der
-      # große Erstabruf der Ratsinformation die übrigen Quellen bis zu Stunden blockieren.
-      # Danach wird die Quelle mit gespeichertem Cursor fortgesetzt.
+      # Gleichzeitige Quellen je Etappe. Verschiedene Hosts laufen parallel; Quellen auf
+      # demselben Host (z. B. Ratsinformation und ihr RSS-Feed) teilen sich weiterhin
+      # ihre Drossel. 1 schaltet bewusst auf strikt sequenzielle Abrufe.
+      - key: BEHOERDEN_SYNC_PARALLEL
+        value: "3"
+      # Zeitfenster je Quelle und Etappe: Nach Ablauf wird die Quelle unterbrochen und
+      # beim nächsten Mal an ihrem gespeicherten Cursor fortgesetzt; ein knappes Fenster
+      # hält auch den großen Erstabruf der Ratsinformation in Etappen.
       - key: BEHOERDEN_SYNC_ZEITBUDGET
         value: "240"
       - key: BEHOERDEN_SYNC_STARTVERZOEGERUNG

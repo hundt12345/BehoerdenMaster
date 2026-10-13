@@ -24,6 +24,8 @@ from .geo import Gazetteer
 from .ladebericht import einheit, entitaet_name, ladebericht
 from .meldungen import datum_anzeige, parse_bekanntmachungen, parse_beteiligungen
 from .nlq import verstehe
+from .ortsbezug import aktualisiere as ortsbezug_aktualisieren
+from .opendata import daten_verteilungen, katalog_treffer, lizenz_text, passende_datensaetze
 from .oparl import OParlQuelle
 from .rss import ART_JE_TYP, parse_feed
 from .sicherung import sichere_datenbank
@@ -128,6 +130,17 @@ def _probe(args) -> int:
                   f"({'weitere Seiten vorhanden' if weiter else 'letzte Seite'}; {treffer_text or 'ohne Trefferangabe'})")
             for e in eintraege[:3]:
                 print(f"  - {datum_anzeige(e.datum) or 'ohne Datum'} {e.titel[:90]}")
+        elif quelle.typ == "opendata":
+            stichwort = quelle.datensaetze[0] if quelle.datensaetze else ""
+            treffer = katalog_treffer(abrufer, quelle, stichwort) if stichwort else []
+            passend = passende_datensaetze(treffer, stichwort)
+            print(f"{quelle.name}: {len(treffer)} Katalogtreffer zu „{stichwort}“, davon passend: {len(passend)}")
+            for d in passend[:3]:
+                _, text = lizenz_text(d)
+                print(f"  - {d.get('title', '?')[:80]} · Lizenz: {text or 'keine übernehmbare Lizenz'} · "
+                      f"Tabellen: {len(daten_verteilungen(d))}")
+            if not quelle.datensaetze:
+                print("  Keine Datensätze in der Stadtkonfiguration hinterlegt (datensaetze = [...]).")
         elif quelle.typ == "beteiligung":
             projekte, verworfen = parse_beteiligungen(abrufer.get_text(quelle.system_url), quelle.system_url)
             print(f"{quelle.name}: {len(projekte)} Beteiligungsangebote übernommen, {verworfen} verworfen")
@@ -162,7 +175,7 @@ def cmd_crawl(args) -> int:
         raise SystemExit("Bauleitplanung prüft stets die ganze öffentliche Liste; --seit und --nur gelten nur für OParl.")
     if quelle.typ in ART_JE_TYP and (args.seit or args.nur):
         raise SystemExit("RSS-Feeds haben keinen Zeitfilter; --seit und --nur gelten nur für OParl.")
-    if quelle.typ in ("bekanntmachungen", "beteiligung") and (args.seit or args.nur):
+    if quelle.typ in ("bekanntmachungen", "beteiligung", "opendata") and (args.seit or args.nur):
         raise SystemExit("Listenquellen haben keinen Zeit- oder Entitätsfilter; "
                          "--seit und --nur gelten nur für OParl.")
     if args.max_anfragen is not None and args.max_anfragen < 1:
@@ -238,6 +251,9 @@ def cmd_frage(args) -> int:
         ergebnis = suche(sp, Suchauftrag(stadt=stadt, orte=v.orte, plz=v.plz, themen=v.themen,
                                          freitext=v.freitext, von=v.von, bis=v.bis, offen=v.offen,
                                          limit=args.limit), heute(), zeitpunkt=jetzt())
+    if ergebnis.get("freitext_verworfen"):
+        print("Hinweis: Zu den Stichworten wurde im gefragten Ort bzw. Thema nichts gefunden. Angezeigt werden "
+              "die Vorgänge des Orts und Themas ohne die Stichworte.")
     if ergebnis.get("freitext_oder"):
         print("Hinweis: Keine Vorgänge mit allen Stichworten gefunden. Angezeigt werden Vorgänge mit mindestens einem Stichwort.")
     _drucke_treffer(ergebnis, v)
@@ -253,10 +269,14 @@ def cmd_plz(args) -> int:
     if eintrag is None:
         print(f"Die PLZ {args.plz} gehört nicht zu {stadt.name}.")
     elif not eintrag.stadtteile:
-        print(f"Für PLZ {args.plz} ist noch keine Stadtteil-Zuordnung hinterlegt (nur ausdrückliche PLZ-Nennungen).")
+        print(f"Für PLZ {args.plz} ließ sich aus dem Straßenverzeichnis kein Stadtteil ableiten "
+              f"({eintrag.quelle or 'kein Grund hinterlegt'}); gesucht wird nur über ausdrückliche PLZ-Nennungen.")
     else:
         namen = ", ".join(stadt.stadtteile[s].name for s in eintrag.stadtteile)
         print(f"PLZ {args.plz} → Stadtteile: {namen} (Näherung, Quelle: {eintrag.quelle})")
+        if stadt.strassen:
+            print(f"Ergänzend: {len(stadt.strassen)} Straßennamen (Stand {stadt.strassen_stand}) lösen einen "
+                  f"Stadtteil auf – {stadt.strassen_lizenz}")
     themen = [t.strip() for t in (args.thema or "").split(",") if t.strip()]
     with Speicher(_db_pfad(args)) as sp:
         ergebnis = suche(sp, Suchauftrag(stadt=stadt, plz=args.plz, themen=themen, limit=args.limit), heute(), zeitpunkt=jetzt())
@@ -327,6 +347,33 @@ def cmd_demo(args) -> int:
     return 0
 
 
+def cmd_ortsbezug(args) -> int:
+    """Ortsbezug aus den gespeicherten Texten neu berechnen – ohne Abruf, ohne Datenverlust.
+
+    Nötig, wenn sich die Auswertung verbessert (z. B. neues Straßenverzeichnis): Der Bestand
+    wurde beim Abruf ausgewertet, nicht bei der Anfrage. Standard ist der Prüflauf; mit
+    ``--schreiben`` wird gespeichert.
+    """
+    stadt = _stadt(args.stadt)
+    quelle_id = None
+    if args.quelle:
+        passende = [q for q in stadt.quellen if q.schluessel == args.quelle]
+        if not passende:
+            raise SystemExit(f"Unbekannte Quelle '{args.quelle}' für {stadt.name}.")
+        quelle_id = stadt.quell_id(passende[0])
+    with Speicher(_db_pfad(args)) as sp:
+        zaehler = ortsbezug_aktualisieren(sp, stadt, quelle_id=quelle_id, schreiben=args.schreiben)
+    if not args.schreiben:
+        print(f"Prüflauf (nichts geändert): {zaehler['geprueft']} Vorgänge geprüft, "
+              f"{zaehler['aktualisiert']} würden sich ändern ({zaehler['hinzugefuegt']} Ortsbezüge, "
+              f"davon {zaehler['strasse']} aus Straßennamen). Mit --schreiben übernehmen.")
+        return 0
+    print(f"Ortsbezug aktualisiert: {zaehler['geprueft']} Vorgänge geprüft, {zaehler['aktualisiert']} geändert "
+          f"({zaehler['hinzugefuegt']} Ortsbezüge, davon {zaehler['strasse']} aus Straßennamen). "
+          "Kein Behördenabruf nötig.")
+    return 0
+
+
 def cmd_backup(args) -> int:
     try:
         pfad = sichere_datenbank(_db_pfad(args), args.ziel)
@@ -386,6 +433,11 @@ def baue_parser() -> argparse.ArgumentParser:
     pl.add_argument("--laeufe", type=int, default=8, help="Berücksichtigte Abrufläufe je Quelle (Standard 8)")
     pl.add_argument("--json", action="store_true", help="Maschinenlesbare Ausgabe (dieselbe Struktur wie /api/ladebericht)")
 
+    po = sub.add_parser("ortsbezug",
+                        help="Ortsbezug aus gespeicherten Texten neu berechnen (Straßenverzeichnis, kein Abruf)")
+    po.add_argument("--quelle", help="Nur diese Quelle berücksichtigen")
+    po.add_argument("--schreiben", action="store_true", help="Ergebnis speichern (Standard: Prüflauf)")
+
     pd = sub.add_parser("demo", help="Beispieldaten laden (offline ausprobieren)")
     pd.add_argument("--loeschen", action="store_true", help="Beispieldaten wieder entfernen")
 
@@ -403,6 +455,7 @@ def main(argv: list[str] | None = None) -> int:
     befehle = {
         "status": cmd_status, "probe": cmd_probe, "crawl": cmd_crawl, "frage": cmd_frage,
         "plz": cmd_plz, "demo": cmd_demo, "backup": cmd_backup, "serve": cmd_serve,
+        "ortsbezug": cmd_ortsbezug,
         "ladebericht": cmd_ladebericht,
     }
     try:

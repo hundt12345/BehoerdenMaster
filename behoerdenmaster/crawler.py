@@ -263,6 +263,13 @@ def crawle_beteiligung(speicher, stadt, quelle, abrufer, optionen):
     return crawle(speicher, stadt, quelle, abrufer, optionen)
 
 
+def crawle_opendata(speicher, stadt, quelle, abrufer, optionen):
+    # Verzögerter Import: der Open-Data-Adapter nutzt LaufBericht und die Abkühlprüfung.
+    from .opendata import crawle_opendata as crawle
+
+    return crawle(speicher, stadt, quelle, abrufer, optionen)
+
+
 # Registry: Quelltyp aus config/cities -> Crawl-Funktion.
 CRAWLER = {
     "oparl": crawle_oparl,
@@ -271,4 +278,5 @@ CRAWLER = {
     "presse-rss": crawle_rss,
     "bekanntmachungen": crawle_bekanntmachungen,
     "beteiligung": crawle_beteiligung,
+    "opendata": crawle_opendata,
 }

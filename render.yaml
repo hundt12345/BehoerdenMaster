@@ -41,7 +41,7 @@ services:
       - key: BEHOERDEN_SYNC_ENABLED
         value: "true"
       - key: BEHOERDEN_SYNC_QUELLEN
-        value: koeln:bekanntmachungen,koeln:beteiligung,koeln:ris-rss,koeln:presse-rss,koeln:ris
+        value: koeln:bekanntmachungen,koeln:beteiligung,koeln:opendata,koeln:ris-rss,koeln:presse-rss,koeln:ris
       # Rollierendes Fenster für den Erstabruf: 90 Tage statt des in koeln.toml hinterlegten
       # Wahlperiodenbeginns. Hält den Abruf nach jedem Neustart klein und höflich.
       - key: BEHOERDEN_SYNC_SEIT

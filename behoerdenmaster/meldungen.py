@@ -149,10 +149,15 @@ class MeldungEintrag:
     kurztext: str
     zusatz: str
     frist: str
+    # Zusätzlicher Suchtext, der **nicht** angezeigt wird: bei Tabellenquellen die
+    # übrigen Feldwerte einer Zeile, damit auch sie gefunden werden (z. B. eine Straße,
+    # die nur in einer Nebenspalte steht). Angezeigt bleibt der Kurztext.
+    suchtext_zusatz: str = ""
 
     def suchtext(self) -> str:
         return norm(" ".join(x for x in (self.titel, self.referenz, self.art,
-                                         self.kategorie, self.schritt, self.kurztext) if x))
+                                         self.kategorie, self.schritt, self.kurztext,
+                                         self.suchtext_zusatz) if x))
 
     def vorgang_zeile(self, quelle_id: str) -> dict:
         return {

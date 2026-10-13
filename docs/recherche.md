@@ -80,9 +80,12 @@ Es wurde **kein Anbieter-Code übernommen**; Adapter und HTMLParser sind eigene 
 ## 4. PLZ- und Stadtteil-Daten
 
 - **Stadtbezirke und Stadtteile:** 9 Bezirke und 86 Stadtteile (Wikipedia „Liste der Stadtbezirke und Stadtteile Kölns“, Nummern nach der Stadt Köln). Diese Angaben sind in `config/cities/koeln.toml` vollständig übernommen.
-- **PLZ → Stadtteil:** Quelle onlinestreet.de („Ortsteile im PLZ-Gebiet“, Datenbasis Destatis/BZSt CC0 und OpenStreetMap ODbL). Für 50823, 50825, 50827, 50829 und 50858 wurde die Zuordnung übernommen. Die Zuordnung ist eine Näherung.
-- **Nicht verwendbar:** Wikidata liefert für Köln vor allem Straßen mit PLZ, keine Stadtteil-Zuordnung. Die Stadtteilkarte koelner-stadtteile.de war nicht erreichbar.
-- **Offen:** 41 der 46 Kölner PLZ. Die offizielle Quelle wäre die Stadt selbst oder eine amtliche PLZ-Stadtteil-Zuordnung. Im Ergebnis sind PLZ-Suchen daher heute vor allem Treffer mit ausdrücklicher PLZ-Nennung.
+- **PLZ → Stadtteil:** Quelle onlinestreet.de („Ortsteile im PLZ-Gebiet“, Datenbasis Destatis/BZSt CC0 und OpenStreetMap ODbL) für die erste Zuordnung. **Inzwischen aus dem Straßenverzeichnis abgeleitet und vollständig:**
+  Für alle 46 Kölner PLZ nennen die Straßen des Verzeichnisses ihre Stadtteile; die Zuordnung wird aus diesen Zählungen gebildet (Schwellen wie in `tools/strassen_aus_osm.py`). Nur **50923** bleibt ohne Stadtteile – dort ist keine Zuordnung belegt, der Grund steht in der Konfiguration.
+- **Straßenverzeichnis (neu):** Kein amtliches Straßenverzeichnis unter offener Lizenz gefunden; deshalb 4.981 Straßennamen aus einem **OpenStreetMap-Auszug** (Köln, Regionalkey 05315000), © OpenStreetMap-Mitwirkende, **ODbL 1.0**. Datei `config/cities/koeln.strassen.tsv`, Erzeugung `tools/strassen_aus_osm.py`. Damit löst die Suche „Straße im Text → Stadtteil“ auf, solange der Name eindeutig ist; mehrdeutige Namen liefern bewusst keinen Ortsbezug.
+- **PLZ-Grenzen sind keine Stadtteilgrenzen:** Eine PLZ kann zu mehreren Stadtteilen und zu zwei Bezirken gehören (belegt: 51105 → Poll (Bezirk 7) und Humboldt/Gremberg (Bezirk 8)). Die Zuordnung bleibt eine Näherung; die Straße im Suchfeld ist genauer.
+- **Nicht verwendbar:** Wikidata liefert für Köln vor allem Straßen mit PLZ, keine Stadtteil-Zuordnung. Die Stadtteilkarte koelner-stadtteile.de war nicht erreichbar. `openpotato/openplzapi.data` (PLZ-/Gemeindeteil-Rohdaten) wurde angesehen, aber nicht übernommen – der OSM-Auszug deckt den Bedarf mit klarer Lizenz ab.
+- **Offen:** Die amtliche Zuordnung der Stadt (Statistikstelle) für belastbare Grenzen sowie ein amtliches Straßenverzeichnis unter offener Lizenz.
 
 ## 5. Prior Art
 

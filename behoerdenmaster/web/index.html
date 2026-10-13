@@ -153,7 +153,7 @@
       </select>
       <button class="primaer" type="submit">Suchen</button>
     </form>
-    <p class="hinweis">Die Zuordnung PLZ → Stadtteil ist eine Näherung. Vorgänge mit ausdrücklicher PLZ-Nennung werden immer gefunden.</p>
+    <p class="hinweis">Die Zuordnung PLZ → Stadtteil ist eine Näherung und stammt aus dem Straßenverzeichnis der Stadt. Vorgänge mit ausdrücklicher PLZ-Nennung werden immer gefunden; wer eine Straße eingibt, erhält die genaueste Zuordnung.</p>
   </section>
 
 
@@ -175,10 +175,14 @@
     <div id="stand"></div>
     <p>Quellen: Ratsinformationssystem Köln (OParl, Datenlizenz Deutschland – Zero – 2.0),
        Bauleitplanung Online NRW (öffentliche Verfahrensinformationen; gesonderte Nutzungsbedingungen),
-       öffentliche Bekanntmachungen der Stadt Köln und die Beteiligungsplattform „Meinung für Köln“
-       (jeweils nur Titel, Datum, Statusangabe und Link). Auszüge und automatisch abgeleiteter Status
-       ohne Gewähr. Maßgeblich sind die amtlichen Originale. Eine beendete Beteiligungsfrist bedeutet
-       keinen Bauabschluss, und eine Bekanntmachung ist kein Beschluss des Rates.</p>
+       öffentliche Bekanntmachungen der Stadt Köln, die Beteiligungsplattform „Meinung für Köln“
+       (jeweils nur Titel, Datum, Statusangabe und Link) sowie ausgewählte Tabellendatensätze des
+       Offene-Daten-Portals der Stadt Köln (je Datensatz DL-DE-Zero-2.0 oder DL-DE-BY-2.0 mit
+       Namensnennung; nur einzelne Feldwerte, Originaldatei verlinkt). Ortsbezüge können zusätzlich
+       über das Straßenverzeichnis abgeleitet werden (© OpenStreetMap-Mitwirkende, ODbL 1.0) – das ist
+       eine Näherung. Auszüge und automatisch abgeleiteter Status ohne Gewähr. Maßgeblich sind die
+       amtlichen Originale. Eine beendete Beteiligungsfrist bedeutet keinen Bauabschluss, und eine
+       Bekanntmachung ist kein Beschluss des Rates.</p>
   </footer>
 </main>
 
@@ -186,6 +190,15 @@
 (function () {
   "use strict";
   const $ = (id) => document.getElementById(id);
+
+  // Woher ein Ortsbezug stammt (Kürzel der Datenbank → Anzeigetext).
+  const HERKUNFT = {
+    betreff: "aus dem Betreff/Titel",
+    beschreibung: "aus der Beschreibung des Vorgangs",
+    gremium: "aus dem Gremiennamen",
+    oparl: "strukturierte Angabe der Schnittstelle",
+    strasse: "aus einem Straßennamen abgeleitet (Näherung)",
+  };
   let aktuelleSuche = null;
 
   function el(tag, attrs, ...kinder) {
@@ -230,8 +243,12 @@
       el("span", { class: statusKlasse(t.status) }, t.status.kurz),
       t.quelle && t.quelle.demo ? el("span", { class: "chip demo" }, "Beispieldaten") : null,
     );
+    // Herkunft des Ortsbezugs sichtbar machen: „Straße“ ist eine Ableitung aus dem
+    // Straßenverzeichnis (Näherung), „Betreff“/„Gremium“/„Schnittstelle“ nennt die Quelle selbst.
+    const herkunftText = (liste) => (liste || []).map((h) => HERKUNFT[h] || h).join(", ");
     const orte = el("div", { class: "meta" },
-      ...t.orte.map((o) => el("span", { class: "chip", title: "Ortsbezug" }, o.name)));
+      ...t.orte.map((o) => el("span", { class: "chip", title: "Ortsbezug: " + (herkunftText(o.herkunft) || "unbekannt") },
+        o.name)));
     const zusammen = el("p", { class: "zusammenfassung" }, t.zusammenfassung);
     const meldung = t.meldung ? el("div", { class: "beteiligung" },
       el("strong", null, t.meldung.verfahrensschritt || t.meldung.art_quelle || t.status.kurz),

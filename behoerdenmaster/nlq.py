@@ -30,6 +30,9 @@ STOPWORTE = {
     "hier", "koennen", "kann", "soll", "sollen", "geben", "liste", "uebersicht",
     "neue", "neuen", "neues", "neu", "letzte", "letzten", "wichtige", "wichtig", "geht", "bitte",
     "damit", "gibt's",
+    # Straßenkürzel sind für sich genommen keine Suchworte: „Str.“ träfe in fast jedem Text.
+    # Den Namen der Straße liefert das Straßenverzeichnis (siehe geo.strassen_im_text).
+    "str", "strasse", "strassen",
 }
 OFFEN_WOERTER = {
     "geplant", "plant", "planen", "vorhaben", "vorhabens", "anstehend", "kommende", "kommenden",
@@ -122,6 +125,36 @@ def verstehe(frage: str, stadt: Stadt, gaz: Gazetteer) -> Verstaendnis:
                     f"„{name}“ wird als Stadtteil und als Stadtbezirk gesucht "
                     f"(der Stadtbezirk {name} umfasst {anzahl} Stadtteile)."
                 )
+
+    # 4b) Straßen: „Feldgärtenstraße“ oder „Venloer Straße“ in der Frage.
+    #
+    # Straßen konnten bisher nur gefunden werden, wenn sie im Titel eines Vorgangs standen –
+    # wer den Stadtteil nannte, sah den Vorgang dagegen nicht. Umgekehrt ließ sich eine Frage
+    # mit Straße gar nicht nach Stadtteilen einordnen. Deshalb wird hier der Straßenname über
+    # das Verzeichnis der Stadt aufgelöst. Die Straßenwörter bleiben zusätzlich Suchwörter,
+    # damit die Suche eng bleibt; nur wenn dazu nichts gefunden wird, erweitert sie sich.
+    # Auf der **Originalfrage** gesucht, damit der Hinweis die Schreibweise der Nutzerin oder
+    # des Nutzers zeigt („Feldgärtenstraße“) und nicht die Vergleichsform.
+    for strasse, genannt in gaz.strassen_im_text(frage):
+        nr = strasse.stadtteil
+        if nr is not None:
+            if all(o.get("schluessel") != nr or o["typ"] != "stadtteil" for o in v.orte):
+                bezirk = stadt.bezirk_fuer(nr)
+                v.orte.append({"typ": "stadtteil", "schluessel": nr, "name": stadt.stadtteile[nr].name,
+                               "bezirk": bezirk, "bezirk_name": stadt.bezirke.get(bezirk or "", ""),
+                               "herkunft": "strasse"})
+            v.hinweise.append(f"„{genannt}“ ist laut Straßenverzeichnis dem Stadtteil "
+                              f"{stadt.stadtteile[nr].name} zugeordnet (Näherung).")
+        else:
+            namen = ", ".join(stadt.stadtteile[k].name for k in strasse.kandidaten if k in stadt.stadtteile)
+            for k in strasse.kandidaten:
+                if k in stadt.stadtteile and all(o.get("schluessel") != k or o["typ"] != "stadtteil" for o in v.orte):
+                    v.orte.append({"typ": "stadtteil", "schluessel": k, "name": stadt.stadtteile[k].name,
+                                   "bezirk": stadt.bezirk_fuer(k),
+                                   "bezirk_name": stadt.bezirke.get(stadt.bezirk_fuer(k) or "", ""),
+                                   "herkunft": "strasse"})
+            v.hinweise.append(f"„{genannt}“ kommt in mehreren Stadtteilen vor ({namen}); "
+                              "gesucht wird in allen, das Straßenwort bleibt Teil der Suche.")
 
     # 5) Themen
     tokens = s.split()

@@ -1,4 +1,4 @@
-from collections import Counter
+from collections import Counter, defaultdict
 
 from behoerdenmaster.auswertung import bestimme_status, datum_de, ergebnis_kategorie, zusammenfassung
 from behoerdenmaster.config import lade_stadt
@@ -19,8 +19,61 @@ def test_plz_zuordnung_verweist_auf_bekannte_stadtteile(stadt):
     for code, eintrag in stadt.plz.items():
         for nr in eintrag.stadtteile:
             assert nr in stadt.stadtteile, (code, nr)
-    assert stadt.plz["50827"].stadtteile == ("401", "402", "403", "406")
+    assert stadt.plz["50827"].stadtteile == ("403", "406")
     assert stadt.plz["50858"].stadtteile == ("306", "307")
+
+
+def test_jede_plz_ist_geklaert(stadt):
+    """Alle Kölner PLZ sind in der Konfiguration – mit oder ohne Zuordnung, aber begründet."""
+    assert len(stadt.plz) == 46
+    ohne = {code for code, eintrag in stadt.plz.items() if not eintrag.stadtteile}
+    assert ohne == {"50923"}, "die übrigen PLZ haben eine abgeleitete Zuordnung"
+    for code in ohne:
+        assert stadt.plz[code].quelle, f"PLZ {code} muss begründen, warum nichts zugeordnet ist"
+    for code, eintrag in stadt.plz.items():
+        assert eintrag.quelle, f"PLZ {code} nennt keine Herkunft der Zuordnung"
+
+    # Ein PLZ-Gebiet kann zwei Stadtbezirke berühren – belegt ist das für 51105
+    # (Poll im Bezirk 7 und Humboldt/Gremberg im Bezirk 8). Mehr als zwei wären ein Hinweis
+    # auf eine fehlerhafte Ableitung.
+    for code, eintrag in stadt.plz.items():
+        bezirke = {stadt.stadtteile[nr].bezirk for nr in eintrag.stadtteile}
+        assert len(bezirke) <= 2, (code, bezirke)
+    assert {stadt.stadtteile[nr].bezirk for nr in stadt.plz["51105"].stadtteile} == {"7", "8"}
+
+
+def test_plz_zuordnung_passt_zum_strassenverzeichnis(stadt):
+    """Die Zuordnung wird aus dem Straßenverzeichnis abgeleitet – beides muss zusammenpassen.
+
+    Schwellen wie im Werkzeug ``tools/strassen_aus_osm.py``: Ein Stadtteil gehört zur PLZ,
+    wenn mindestens 10 % und mindestens drei Straßen der PLZ darin liegen. Wer das Verzeichnis
+    erneuert, muss die Ausgabe des Werkzeugs in die Konfiguration übernehmen.
+    """
+    assert stadt.strassen, "Straßenverzeichnis erwartet"
+    zaehler: dict[str, Counter] = defaultdict(Counter)
+    for strasse in stadt.strassen.values():
+        for code in strasse.plz:
+            for nr, anzahl in strasse.stadtteile:
+                zaehler[code][nr] += anzahl
+    for code, verteilung in zaehler.items():
+        gesamt = sum(verteilung.values())
+        erwartet = {nr for nr, anzahl in verteilung.items()
+                    if anzahl >= 3 and anzahl / gesamt >= 0.10}
+        assert set(stadt.plz[code].stadtteile) == erwartet, (
+            f"PLZ {code}: Konfiguration {stadt.plz[code].stadtteile} ≠ Ableitung {sorted(erwartet)} – "
+            "tools/strassen_aus_osm.py erneut ausführen und die Ausgabe übernehmen"
+        )
+
+
+def test_strassenverzeichnis_ist_vollstaendig_und_benannt(stadt):
+    """Herkunft und Lizenz des Verzeichnisses müssen in der Anwendung ankommen (ODbL)."""
+    assert len(stadt.strassen) > 3000
+    assert stadt.strassen_quelle and stadt.strassen_lizenz and stadt.strassen_stand
+    assert "OpenStreetMap" in stadt.strassen_lizenz or "ODbL" in stadt.strassen_lizenz
+    eindeutig = [s for s in stadt.strassen.values() if s.stadtteil]
+    assert len(eindeutig) > 3000, "die meisten Straßennamen sind eindeutig"
+    assert stadt.strasse("Feldgärtenstraße") == stadt.strasse("Feldgärtenstr.")
+    assert stadt.strasse("Feldgärtenstraße").stadtteil == "504"
 
 
 def test_ehrenfeld_hat_sechs_stadtteile(stadt):

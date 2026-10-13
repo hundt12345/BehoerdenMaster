@@ -3,14 +3,17 @@
 # Quellen:
 #   * Stadtbezirke und Stadtteile: Wikipedia „Liste der Stadtbezirke und Stadtteile Kölns“
 #     (9 Stadtbezirke, 86 Stadtteile; Nummerierung der Stadt Köln).
-#   * PLZ-Zuordnung: onlinestreet.de („Ortsteile im PLZ-Gebiet“, Datenbasis Destatis/BZSt
-#     CC0 und OpenStreetMap ODbL). Das ist eine NÄHERUNG: PLZ-Gebiete und Stadtteile
-#     schneiden sich nicht immer sauber. Einträge mit `stadtteile = []` sind noch offen.
+#   * PLZ-Zuordnung und Straßennamen: Straßenverzeichnis in koeln.strassen.tsv, abgeleitet aus
+#     einem OpenStreetMap-Auszug der OpenPLZ API (ODbL 1.0, © OpenStreetMap-Mitwirkende,
+#     Stand 13.10.2026). Werkzeug: tools/strassen_aus_osm.py. Beides ist eine NÄHERUNG:
+#     PLZ-Gebiete und Stadtteilgrenzen decken sich nicht immer sauber, und Straßennamen
+#     können in mehreren Stadtteilen vorkommen.
 #   * Quelle: Ratsinformationssystem Köln, OParl 1.1 (Lizenz: Datenlizenz Deutschland – Zero – 2.0).
 #   * Quelle: Bauleitplanung Online NRW, öffentliche Köln-Suche (keine pauschale offene Lizenz verifiziert).
 #
 # Hinweis: Ortsbezug aus Betreff/Gremiennamen bzw. öffentlicher Planbeschreibung ist eine Heuristik.
 # Die OParl-Schnittstelle der Stadt liefert dafür derzeit keine verlässlichen Ortsangaben.
+# Zusätzlich lösen eindeutige Straßennamen aus dem Straßenverzeichnis einen Stadtteil auf.
 
 [stadt]
 schluessel = "koeln"
@@ -94,6 +97,26 @@ name = "Bürgerbeteiligung Meinung für Köln"
 system_url = "https://meinungfuer.koeln/mitmachen/alle-projekte"
 min_intervall_sekunden = 5.0
 lizenz = "Keine offene Lizenz zugesichert; nur Titel, Statuszeile, Kurztext und Link der städtischen Projektseite"
+
+# Offene Daten Köln (DKAN 2): Katalog und Tabellenspeicher („Datastore“) des
+# städtischen Open-Data-Portals. Je Eintrag in `datensaetze` wird der Katalog nach dem
+# Titel durchsucht (ein Eintrag darf auch eine Datensatz-UUID sein). Übernommen wird je
+# Datensatz eine Tabellenzeile als Vorgang – nur unter DL-DE-Zero-2.0 (ohne) oder
+# DL-DE-BY-2.0 (mit Namensnennung); alles andere wird gezählt und übersprungen.
+# PDF-, WMS- und GIS-Ausgaben werden nicht geladen. Der Probelauf zeigt, welche Titel
+# der Katalog zu einem Stichwort führt:
+#   python -m behoerdenmaster probe --quelle opendata
+[[quellen]]
+schluessel = "opendata"
+typ = "opendata"
+name = "Offene Daten Köln (Datensätze)"
+system_url = "https://www.offenedaten-koeln.de"
+min_intervall_sekunden = 3.0
+lizenz = "Je Datensatz DL-DE-Zero-2.0 (ohne Namensnennung) oder DL-DE-BY-2.0 (mit Namensnennung); andere Lizenzen werden übersprungen"
+datensaetze = [
+  "Baustellen Köln",
+  "Bebauungspläne Köln Aufstellungsbeschlüsse",
+]
 
 [bezirke]
 "1" = "Innenstadt"
@@ -203,109 +226,198 @@ lizenz = "Keine offene Lizenz zugesichert; nur Titel, Statuszeile, Kurztext und 
 "908" = { name = "Stammheim", bezirk = "9" }
 "909" = { name = "Flittard", bezirk = "9" }
 
-# PLZ → Stadtteile (NÄHERUNG, siehe Kopfkommentar). Leere Liste = noch nicht zugeordnet.
+# PLZ → Stadtteile. Grundlage: Straßenverzeichnis der Stadt (config/cities/koeln.strassen.tsv),
+# das aus einem OpenStreetMap-Auszug der OpenPLZ API abgeleitet ist (ODbL 1.0,
+# © OpenStreetMap-Mitwirkende, Stand 13.10.2026; Werkzeug: tools/strassen_aus_osm.py).
+# Aufgenommen ist ein Stadtteil, wenn mindestens 10 % und mindestens drei Straßen dieser PLZ
+# darin liegen; die Bruchzahl in `quelle` nennt Straßen dieses Stadtteils zu Straßen der PLZ.
+# Das ist eine NÄHERUNG: PLZ-Gebiete und Stadtteilgrenzen decken sich nicht, und einzelne
+# kleine Stadtteile können unter der Schwelle liegen (dann hilft die Straßensuche im
+# Verzeichnis, die Stadtteile exakt auflöst). `stadtteile = []` heißt: nicht ableitbar.
+
+[plz."50667"]
+stadtteile = ["101", "103"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Altstadt-Süd (40/256); Altstadt-Nord (189/256)"
+
+[plz."50668"]
+stadtteile = ["103", "104"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Altstadt-Nord (72/145); Neustadt-Nord (48/145)"
+
+[plz."50670"]
+stadtteile = ["103", "104"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Altstadt-Nord (39/133); Neustadt-Nord (62/133)"
+
+[plz."50672"]
+stadtteile = ["103", "104"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Altstadt-Nord (24/112); Neustadt-Nord (49/112)"
+
+[plz."50674"]
+stadtteile = ["102", "104"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Neustadt-Süd (54/142); Neustadt-Nord (21/142)"
+
+[plz."50676"]
+stadtteile = ["101"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Altstadt-Süd (136/180)"
+
+[plz."50677"]
+stadtteile = ["101", "102"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Altstadt-Süd (7/67); Neustadt-Süd (47/67)"
+
+[plz."50678"]
+stadtteile = ["101", "102"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Altstadt-Süd (68/124); Neustadt-Süd (39/124)"
+
+[plz."50679"]
+stadtteile = ["105"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Deutz (120/154)"
+
+[plz."50733"]
+stadtteile = ["501"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Nippes (121/165)"
+
+[plz."50735"]
+stadtteile = ["503", "504"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Riehl (43/185); Niehl (82/185)"
+
+[plz."50737"]
+stadtteile = ["505", "506"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Weidenpesch (49/142); Longerich (61/142)"
+
+[plz."50739"]
+stadtteile = ["502", "506", "507"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Mauenheim (29/248); Longerich (50/248); Bilderstöckchen (82/248)"
+
+[plz."50765"]
+stadtteile = ["607", "608", "609"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Esch/Auweiler (63/243); Volkhoven/Weiler (40/243); Chorweiler (42/243)"
+
+[plz."50767"]
+stadtteile = ["604", "605", "606"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Heimersdorf (58/239); Lindweiler (25/239); Pesch (55/239)"
+
+[plz."50769"]
+stadtteile = ["601", "603", "611", "612"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Merkenich (54/279); Seeberg (47/279); Roggendorf/Thenhoven (31/279); Worringen (84/279)"
+
 [plz."50823"]
 stadtteile = ["401", "402"]
-quelle = "onlinestreet.de: Ortsteile Ehrenfeld, Neuehrenfeld"
+quelle = "Straßenverzeichnis (OSM-Auszug): Ehrenfeld (60/137); Neuehrenfeld (39/137)"
 
 [plz."50825"]
-stadtteile = ["401", "402", "403", "406"]
-quelle = "onlinestreet.de: Ortsteile Bickendorf, Ehrenfeld, Neuehrenfeld, Ossendorf"
+stadtteile = ["401", "402"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Ehrenfeld (57/190); Neuehrenfeld (76/190)"
 
 [plz."50827"]
-stadtteile = ["401", "402", "403", "406"]
-quelle = "onlinestreet.de: Ortsteile Bickendorf, Ehrenfeld, Neuehrenfeld, Ossendorf"
+stadtteile = ["403", "406"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Bickendorf (61/187); Ossendorf (47/187)"
 
 [plz."50829"]
-stadtteile = ["404", "405", "406", "309"]
-quelle = "onlinestreet.de: Ortsteile Bocklemünd, Bocklemünd/Mengenich, Ossendorf, Vogelsang, Widdersdorf"
+stadtteile = ["404", "405", "406"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Vogelsang (60/244); Bocklemünd/Mengenich (59/244); Ossendorf (32/244)"
 
 [plz."50858"]
 stadtteile = ["306", "307"]
-quelle = "onlinestreet.de: Ortsteile Junkersdorf, Marsdorf, Weiden (Marsdorf ist kein eigener Stadtteil in der Liste)"
+quelle = "Straßenverzeichnis (OSM-Auszug): Junkersdorf (123/306); Weiden (54/306)"
 
-[plz."50667"]
-stadtteile = []
-[plz."50668"]
-stadtteile = []
-[plz."50670"]
-stadtteile = []
-[plz."50672"]
-stadtteile = []
-[plz."50674"]
-stadtteile = []
-[plz."50676"]
-stadtteile = []
-[plz."50677"]
-stadtteile = []
-[plz."50678"]
-stadtteile = []
-[plz."50679"]
-stadtteile = []
-[plz."50733"]
-stadtteile = []
-[plz."50735"]
-stadtteile = []
-[plz."50737"]
-stadtteile = []
-[plz."50739"]
-stadtteile = []
-[plz."50765"]
-stadtteile = []
-[plz."50767"]
-stadtteile = []
-[plz."50769"]
-stadtteile = []
 [plz."50859"]
-stadtteile = []
+stadtteile = ["307", "308", "309"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Weiden (35/309); Lövenich (75/309); Widdersdorf (77/309)"
+
+[plz."50931"]
+stadtteile = ["303"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Lindenthal (89/125)"
+
+[plz."50933"]
+stadtteile = ["304", "305"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Braunsfeld (47/188); Müngersdorf (94/188)"
+
+[plz."50935"]
+stadtteile = ["302", "303"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Sülz (40/176); Lindenthal (101/176)"
+
+[plz."50937"]
+stadtteile = ["302", "303"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Sülz (100/214); Lindenthal (31/214)"
+
+[plz."50939"]
+stadtteile = ["301", "302"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Klettenberg (73/204); Sülz (33/204)"
+
+[plz."50968"]
+stadtteile = ["201", "202", "203", "204"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Bayenthal (28/180); Marienburg (48/180); Raderberg (18/180); Raderthal (41/180)"
+
+[plz."50969"]
+stadtteile = ["205"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Zollstock (102/155)"
+
+[plz."50996"]
+stadtteile = ["207", "208"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Hahnwald (31/251); Rodenkirchen (101/251)"
+
+[plz."50997"]
+stadtteile = ["206", "213"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Rondorf (82/323); Meschenich (48/323)"
+
+[plz."50999"]
+stadtteile = ["208", "209", "210"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Rodenkirchen (55/278); Weiß (47/278); Sürth (77/278)"
+
+[plz."51061"]
+stadtteile = ["906", "908", "909"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Höhenhaus (111/263); Stammheim (45/263); Flittard (49/263)"
+
+[plz."51063"]
+stadtteile = ["901"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Mülheim (135/176)"
+
+[plz."51065"]
+stadtteile = ["901", "902", "903"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Mülheim (43/141); Buchforst (34/141); Buchheim (32/141)"
+
+[plz."51067"]
+stadtteile = ["903", "904", "905"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Buchheim (29/154); Holweide (92/154); Dellbrück (16/154)"
+
+[plz."51069"]
+stadtteile = ["905", "907"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Dellbrück (126/243); Dünnwald (70/243)"
+
+[plz."51103"]
+stadtteile = ["802", "804"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Kalk (72/189); Höhenberg (56/189)"
+
+[plz."51105"]
+stadtteile = ["701", "801"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Poll (107/239); Humboldt/Gremberg (57/239)"
+
+[plz."51107"]
+stadtteile = ["803", "805", "808"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Vingst (30/260); Ostheim (54/260); Rath/Heumar (95/260)"
+
+[plz."51109"]
+stadtteile = ["806", "807", "809"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Merheim (58/206); Brück (78/206); Neubrück (46/206)"
+
+[plz."51143"]
+stadtteile = ["706", "714", "715"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Porz (45/227); Zündorf (84/227); Langel (30/227)"
+
+[plz."51145"]
+stadtteile = ["705", "706", "707"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Eil (54/299); Porz (31/299); Urbach (67/299)"
+
+[plz."51147"]
+stadtteile = ["709", "710", "711"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Grengel (43/308); Wahnheide (43/308); Wahn (63/308)"
+
+[plz."51149"]
+stadtteile = ["702", "703", "704"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Westhoven (40/292); Ensen (47/292); Gremberghoven (38/292)"
+
 [plz."50923"]
 stadtteile = []
-[plz."50931"]
-stadtteile = []
-[plz."50933"]
-stadtteile = []
-[plz."50935"]
-stadtteile = []
-[plz."50937"]
-stadtteile = []
-[plz."50939"]
-stadtteile = []
-[plz."50968"]
-stadtteile = []
-[plz."50969"]
-stadtteile = []
-[plz."50996"]
-stadtteile = []
-[plz."50997"]
-stadtteile = []
-[plz."50999"]
-stadtteile = []
-[plz."51061"]
-stadtteile = []
-[plz."51063"]
-stadtteile = []
-[plz."51065"]
-stadtteile = []
-[plz."51067"]
-stadtteile = []
-[plz."51069"]
-stadtteile = []
-[plz."51103"]
-stadtteile = []
-[plz."51105"]
-stadtteile = []
-[plz."51107"]
-stadtteile = []
-[plz."51109"]
-stadtteile = []
-[plz."51143"]
-stadtteile = []
-[plz."51145"]
-stadtteile = []
-[plz."51147"]
-stadtteile = []
-[plz."51149"]
-stadtteile = []
+quelle = "Keine Straße im Auszug gefunden (Stand des Straßenverzeichnisses prüfen)"
 
 # Themen für Fragen. Begriffe werden normalisiert (Umlaute ausgeschrieben) und per
 # Teilwortvergleich gesucht. Die Liste ist bewusst erweiterbar.

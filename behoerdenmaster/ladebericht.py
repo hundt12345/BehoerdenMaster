@@ -28,6 +28,7 @@ TYP_TEXT = {
     "bauleitplanung": "Bauleitplanung",
     "bekanntmachungen": "Öffentliche Bekanntmachungen (Amtsblatt)",
     "beteiligung": "Bürgerbeteiligung (Meinung für Köln)",
+    "opendata": "Offene Daten Köln (Datensätze)",
     "ris-rss": "Sitzungstermine (RSS)",
     "presse-rss": "Pressemeldungen (RSS)",
     "demo": "Offline-Beispiele",
@@ -63,6 +64,18 @@ ZAEHLER_TEXT = {
     "beteiligungen:aktualisiert": "Beteiligungsangebote aktualisiert",
     "beteiligungen:verworfen": "Projektkarten ohne verwertbaren Link",
     "listen:seiten": "Listenseiten gelesen",
+    "opendata:katalog": "Katalogabfragen",
+    "opendata:datensaetze": "Datensätze übernommen",
+    "opendata:nicht_gefunden": "Stichworte ohne passenden Datensatz",
+    "opendata:unscharf": "Datensätze nur unscharf zum Stichwort gefunden",
+    "opendata:uebersprungen_lizenz": "Datensätze ohne offene Lizenz übersprungen",
+    "opendata:ohne_tabelle": "Verteilungen ohne (gefüllten) Tabellenspeicher",
+    "opendata:leere_seite": "Tabellen mit leerer Seite",
+    "opendata:namensnennung": "Datensätze mit Namensnennung (DL-DE-BY)",
+    "opendata:neu": "Datenzeilen neu übernommen",
+    "opendata:aktualisiert": "Datenzeilen aktualisiert",
+    "opendata:ohne_datum": "Datenzeilen ohne Datum",
+    "opendata:ohne_ort": "Datenzeilen ohne Ortsbezug",
 }
 
 ENTITAETEN_TEXT = {
@@ -80,7 +93,7 @@ LEERE_ZAEHLER = {
 # Reihenfolge der Balken im Diagramm „Dokumente je Quelle“.
 ROLLEN_DARSTELLUNG = [
     "vorlage", "plandokument", "tagesordnung", "einladung",
-    "ergebnisprotokoll", "wortprotokoll", "protokoll", "dokument",
+    "ergebnisprotokoll", "wortprotokoll", "protokoll", "datensatz", "dokument",
 ]
 
 
@@ -205,6 +218,20 @@ def _abrufweg(zahlen: Mapping[str, int], staende: list[Mapping], aufgaben: int,
                 "offen" if offen else ("ok" if kurs else "wartet"))
         schritt("Originale", "verlinkt; das PDF wird nicht geladen und nicht ausgewertet",
                 "ok" if zahlen.get("dokumente") else "leer")
+    elif typ == "opendata":
+        schritt("Zugriff", "Katalog und Tabellenspeicher des offenen Datenportals · "
+                "Mindestabstand laut Stadtkonfiguration", "ok" if kurs else "wartet")
+        schritt("Datensätze", f"{einheit(zahlen.get('opendata:datensaetze', 0), 'Datensatz', 'Datensätze')} übernommen"
+                + (f" · {zahlen.get('opendata:uebersprungen_lizenz', 0)} ohne offene Lizenz übersprungen"
+                   if zahlen.get("opendata:uebersprungen_lizenz") else "")
+                + (" · Abrufreihe unterbrochen, wird fortgesetzt" if offen else ""),
+                "offen" if offen else ("ok" if kurs else "wartet"))
+        schritt("Lizenz", "nur DL-DE-Zero-2.0 und DL-DE-BY-2.0 je Datensatz; BY mit Namensnennung",
+                "ok" if kurs else "wartet")
+        schritt("Tabellenzeilen", f"{einheit(zahlen.get('opendata:neu', 0), 'Zeile', 'Zeilen')} neu · "
+                f"{einheit(zahlen.get('opendata:aktualisiert', 0), 'Zeile', 'Zeilen')} aktualisiert · "
+                "Originaldatei verlinkt, nicht geladen",
+                "ok" if (zahlen.get("opendata:neu") or zahlen.get("opendata:aktualisiert")) else "leer")
     elif typ == "beteiligung":
         schritt("Zugriff", "eine öffentliche Projektliste je Lauf · Mindestabstand laut Stadtkonfiguration",
                 "ok" if kurs else "wartet")

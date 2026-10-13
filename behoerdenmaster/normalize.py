@@ -28,3 +28,22 @@ def norm(text: str | None) -> str:
     t = "".join(c for c in t if not unicodedata.combining(c))
     t = _NICHT_ALNUM.sub(" ", t.lower())
     return " ".join(t.split())
+
+
+def strassen_kanonisch(text: str | None) -> str:
+    """Wie :func:`norm`, löst aber Straßenkürzel auf („…str“ → „…strasse“).
+
+    Wird auf **beide Seiten** angewendet: auf die Namen im Straßenverzeichnis und auf den
+    Text, in dem eine Straße gesucht wird. So trifft „Feldgärtenstr.“ im Betreff einer
+    Vorlage den Eintrag „feldgaertenstrasse“ im Verzeichnis. Nur echte Kürzel werden
+    ersetzt: „str“ allein oder als Wortende mit genug Rumpf davor („adlerstr“ →
+    „adlerstrasse“); kurze Wörter wie „Rat“ bleiben unberührt.
+    """
+    teile = []
+    for wort in norm(text).split():
+        if wort == "str":
+            wort = "strasse"
+        elif len(wort) >= 5 and wort.endswith("str"):
+            wort = wort[:-3] + "strasse"
+        teile.append(wort)
+    return " ".join(teile)

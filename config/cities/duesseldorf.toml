@@ -1,0 +1,304 @@
+# Stadt Düsseldorf – Konfiguration für BehoerdenMaster
+#
+# Angebunden nach demselben System wie Köln: Ratsinformation über OParl (gleicher Adapter,
+# gleiche Drossel, robots.txt, Budgets und Abkühlzeiten). Die zehn Stadtbezirke tragen amtlich nur Nummern („Stadtbezirk 1“ … „Stadtbezirk 10“). Das OParl-System wird von ITK Rheinland betrieben und kann mehrere Kommunen führen; die Körperschaft wird deshalb über ihren Namen gewählt.
+#
+# Quellen:
+#   * OParl-Endpunkt: offizielle OParl-Endpunktliste (github.com/OParl/resources, endpoints.yml,
+#     abgerufen am 14.10.2026). Der Endpunkt ist von hier aus NICHT live geprüft (die
+#     Entwicklungsumgebung erreicht keine Behörden-Hosts) – vor dem ersten Lauf:
+#       python -m behoerdenmaster --stadt duesseldorf probe --quelle ris
+#   * Ortsgliederung, PLZ und Straßen: OpenStreetMap-Auszug der OpenPLZ API (ODbL 1.0,
+#     © OpenStreetMap-Mitwirkende), erzeugt mit tools/stadt_aus_osm.py. Eine NÄHERUNG.
+#
+# Abruf auf Anforderung: Die Stadt wird erst geladen, wenn jemand sie in der Oberfläche
+# auswählt oder in ihr sucht (siehe README, „Weitere Städte – Laden auf Abruf“).
+
+[stadt]
+schluessel = "duesseldorf"
+name = "Düsseldorf"
+aliase = ["duesseldorf", "landeshauptstadt düsseldorf", "stadt düsseldorf"]
+ags = "05111000"
+bundesland = "Nordrhein-Westfalen"
+abruf = "auf_abruf"
+gliederung_quelle = "Stadtbezirke und Stadtteile aus dem OSM-Auszug der OpenPLZ API (ODbL 1.0), erzeugt mit tools/stadt_aus_osm.py"
+hinweis = "Ortsbezug aus Betreff und Gremium abgeleitet; Ortsgliederung und PLZ aus einem OpenStreetMap-Auszug (Näherung)."
+
+[[quellen]]
+schluessel = "ris"
+typ = "oparl"
+name = "Ratsinformation Düsseldorf (OParl)"
+system_url = "https://ris-oparl.itk-rheinland.de/Oparl/system"
+# Körperschaft über den Namen wählen; passen mehrere, bricht der Lauf ab statt zu raten.
+koerperschaft = "Düsseldorf"
+# Rollierendes Fenster für den Erstabruf (90 Tage), damit eine neu angeforderte Stadt
+# klein und höflich startet. Folgeläufe holen nur Änderungen.
+seit = "90d"
+min_intervall_sekunden = 3.0
+lizenz = "Nicht geprüft – vor einer Veröffentlichung die Lizenzangabe des OParl-Systems bzw. der Stadt prüfen"
+pruefstand = "Endpunkt aus der OParl-Endpunktliste (Stand 14.10.2026); noch kein Abruf – vor dem ersten Lauf probe ausführen"
+
+[[themen]]
+schluessel = "bauen"
+bezeichnung = "Bauvorhaben & Bauleitplanung"
+begriffe = ["Bauvorhaben", "Bauprojekt", "Bauleitplan", "Bebauungsplan", "Bebauung", "Flächennutzungsplan", "Aufstellungsbeschluss", "Satzungsbeschluss", "Offenlage", "Arbeitstitel", "Städtebau", "Baugebiet", "Bauantrag", "Baugenehmigung", "Neubau", "Wohnungsbau", "Wohnbebauung", "Nachverdichtung", "vorhabenbezogen", "Hochhaus", "Quartier", "Abriss", "Umbau"]
+
+[[themen]]
+schluessel = "verkehr"
+bezeichnung = "Verkehr & Mobilität"
+begriffe = ["Verkehr", "Radweg", "Radverkehr", "Fahrradstraße", "Fahrrad", "Parkraum", "Parken", "Ampel", "Stadtbahn", "Buslinie", "Haltestelle", "Mobilität", "Fußverkehr", "Kreuzung", "Straßenbahn", "Tempo"]
+
+[[themen]]
+schluessel = "schulen"
+bezeichnung = "Schulen & Kitas"
+begriffe = ["Schule", "Kita", "Kindergarten", "Kindertagesstätte", "Jugendamt"]
+
+[[themen]]
+schluessel = "gruen"
+bezeichnung = "Grün & Klima"
+begriffe = ["Grün", "Grünzug", "Park", "Spielplatz", "Baum", "Bäume", "Klima", "Stadtgrün"]
+
+[erzeugung]
+# Steuerung für tools/stadt_aus_osm.py – von der Anwendung ignoriert.
+stadtteile = true
+bezirke = [
+  { osm = "Stadtbezirk 1", nr = "1", name = "Stadtbezirk 1" },
+  { osm = "Stadtbezirk 2", nr = "2", name = "Stadtbezirk 2" },
+  { osm = "Stadtbezirk 3", nr = "3", name = "Stadtbezirk 3" },
+  { osm = "Stadtbezirk 4", nr = "4", name = "Stadtbezirk 4" },
+  { osm = "Stadtbezirk 5", nr = "5", name = "Stadtbezirk 5" },
+  { osm = "Stadtbezirk 6", nr = "6", name = "Stadtbezirk 6" },
+  { osm = "Stadtbezirk 7", nr = "7", name = "Stadtbezirk 7" },
+  { osm = "Stadtbezirk 8", nr = "8", name = "Stadtbezirk 8" },
+  { osm = "Stadtbezirk 9", nr = "9", name = "Stadtbezirk 9" },
+  { osm = "Stadtbezirk 10", nr = "10", name = "Stadtbezirk 10" },
+]
+
+# >>> ortsgliederung
+# Erzeugt von tools/stadt_aus_osm.py am 2026-10-14 – nicht von Hand ändern, sondern neu erzeugen.
+# Quelle: OpenStreetMap-Auszug der OpenPLZ API (github.com/openpotato/openplzapi.data),
+# Lizenz ODbL 1.0, © OpenStreetMap-Mitwirkende. Bezirks-/Stadtteilgrenzen und PLZ-Zuordnung
+# sind eine NÄHERUNG; Stadtteil-Schlüssel sind projektinterne Nummern.
+
+[bezirke]
+"1" = "Stadtbezirk 1"
+"2" = "Stadtbezirk 2"
+"3" = "Stadtbezirk 3"
+"4" = "Stadtbezirk 4"
+"5" = "Stadtbezirk 5"
+"6" = "Stadtbezirk 6"
+"7" = "Stadtbezirk 7"
+"8" = "Stadtbezirk 8"
+"9" = "Stadtbezirk 9"
+"10" = "Stadtbezirk 10"
+
+[stadtteile]
+# Stadtbezirk 1
+"101" = { name = "Altstadt", bezirk = "1" }
+"102" = { name = "Carlstadt", bezirk = "1" }
+"103" = { name = "Derendorf", bezirk = "1" }
+"104" = { name = "Golzheim", bezirk = "1" }
+"105" = { name = "Pempelfort", bezirk = "1" }
+"106" = { name = "Stadtmitte", bezirk = "1" }
+# Stadtbezirk 2
+"201" = { name = "Düsseltal", bezirk = "2" }
+"202" = { name = "Flingern Nord", bezirk = "2" }
+"203" = { name = "Flingern Süd", bezirk = "2" }
+# Stadtbezirk 3
+"301" = { name = "Bilk", bezirk = "3" }
+"302" = { name = "Flehe", bezirk = "3" }
+"303" = { name = "Friedrichstadt", bezirk = "3" }
+"304" = { name = "Hafen", bezirk = "3" }
+"305" = { name = "Hamm", bezirk = "3" }
+"306" = { name = "Oberbilk", bezirk = "3" }
+"307" = { name = "Unterbilk", bezirk = "3" }
+"308" = { name = "Volmerswerth", bezirk = "3" }
+# Stadtbezirk 4
+"401" = { name = "Heerdt", bezirk = "4" }
+"402" = { name = "Lörick", bezirk = "4" }
+"403" = { name = "Niederkassel", bezirk = "4" }
+"404" = { name = "Oberkassel", bezirk = "4" }
+# Stadtbezirk 5
+"501" = { name = "Angermund", bezirk = "5" }
+"502" = { name = "Kaiserswerth", bezirk = "5" }
+"503" = { name = "Kalkum", bezirk = "5" }
+"504" = { name = "Lohausen", bezirk = "5" }
+"505" = { name = "Stockum", bezirk = "5" }
+"506" = { name = "Wittlaer", bezirk = "5" }
+# Stadtbezirk 6
+"601" = { name = "Lichtenbroich", bezirk = "6" }
+"602" = { name = "Mörsenbroich", bezirk = "6" }
+"603" = { name = "Rath", bezirk = "6" }
+"604" = { name = "Unterrath", bezirk = "6" }
+# Stadtbezirk 7
+"701" = { name = "Gerresheim", bezirk = "7" }
+"702" = { name = "Grafenberg", bezirk = "7" }
+"703" = { name = "Hubbelrath", bezirk = "7" }
+"704" = { name = "Knittkuhl", bezirk = "7" }
+"705" = { name = "Ludenberg", bezirk = "7" }
+# Stadtbezirk 8
+"801" = { name = "Eller", bezirk = "8" }
+"802" = { name = "Lierenfeld", bezirk = "8" }
+"803" = { name = "Unterbach", bezirk = "8" }
+"804" = { name = "Vennhausen", bezirk = "8" }
+# Stadtbezirk 9
+"901" = { name = "Benrath", bezirk = "9" }
+"902" = { name = "Hassels", bezirk = "9" }
+"903" = { name = "Himmelgeist", bezirk = "9" }
+"904" = { name = "Holthausen", bezirk = "9" }
+"905" = { name = "Itter", bezirk = "9" }
+"906" = { name = "Reisholz", bezirk = "9" }
+"907" = { name = "Urdenbach", bezirk = "9" }
+"908" = { name = "Wersten", bezirk = "9" }
+# Stadtbezirk 10
+"1001" = { name = "Garath", bezirk = "10" }
+"1002" = { name = "Hellerhof", bezirk = "10" }
+
+[plz."40210"]
+stadtteile = ["106", "303"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Stadtmitte (46/65); Friedrichstadt (12/65)"
+
+[plz."40211"]
+stadtteile = ["105", "106"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Pempelfort (26/75); Stadtmitte (41/75)"
+
+[plz."40212"]
+stadtteile = ["106", "303"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Stadtmitte (55/65); Friedrichstadt (7/65)"
+
+[plz."40213"]
+stadtteile = ["101", "102", "106"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Altstadt (55/137); Carlstadt (32/137); Stadtmitte (27/137)"
+
+[plz."40215"]
+stadtteile = ["106", "303", "307"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Stadtmitte (8/64); Friedrichstadt (44/64); Unterbilk (7/64)"
+
+[plz."40217"]
+stadtteile = ["303", "307"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Friedrichstadt (12/39); Unterbilk (24/39)"
+
+[plz."40219"]
+stadtteile = ["304", "307"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Hafen (7/58); Unterbilk (42/58)"
+
+[plz."40221"]
+stadtteile = ["301", "304", "305", "307"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Bilk (23/108); Hafen (26/108); Hamm (35/108); Unterbilk (11/108)"
+
+[plz."40223"]
+stadtteile = ["301", "302", "303"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Bilk (64/101); Flehe (14/101); Friedrichstadt (12/101)"
+
+[plz."40225"]
+stadtteile = ["301"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Bilk (53/71)"
+
+[plz."40227"]
+stadtteile = ["306"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Oberbilk (75/98)"
+
+[plz."40229"]
+stadtteile = ["801"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Eller (87/97)"
+
+[plz."40231"]
+stadtteile = ["801", "802"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Eller (36/99); Lierenfeld (51/99)"
+
+[plz."40233"]
+stadtteile = ["106", "202", "203", "306", "802"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Stadtmitte (8/76); Flingern Nord (22/76); Flingern Süd (27/76); Oberbilk (8/76); Lierenfeld (8/76)"
+
+[plz."40235"]
+stadtteile = ["202", "702"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Flingern Nord (71/108); Grafenberg (25/108)"
+
+[plz."40237"]
+stadtteile = ["201", "202", "702"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Düsseltal (50/87); Flingern Nord (23/87); Grafenberg (9/87)"
+
+[plz."40239"]
+stadtteile = ["201", "602"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Düsseltal (49/72); Mörsenbroich (12/72)"
+
+[plz."40468"]
+stadtteile = ["103", "505", "604"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Derendorf (23/180); Stockum (18/180); Unterrath (126/180)"
+
+[plz."40470"]
+stadtteile = ["201", "602", "603"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Düsseltal (11/104); Mörsenbroich (69/104); Rath (14/104)"
+
+[plz."40472"]
+stadtteile = ["601", "603", "604"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Lichtenbroich (34/167); Rath (92/167); Unterrath (19/167)"
+
+[plz."40474"]
+stadtteile = ["104", "504", "505"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Golzheim (62/210); Lohausen (44/210); Stockum (62/210)"
+
+[plz."40476"]
+stadtteile = ["103", "104", "105"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Derendorf (66/114); Golzheim (23/114); Pempelfort (15/114)"
+
+[plz."40477"]
+stadtteile = ["103", "105"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Derendorf (15/92); Pempelfort (61/92)"
+
+[plz."40479"]
+stadtteile = ["105"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Pempelfort (63/68)"
+
+[plz."40489"]
+stadtteile = ["501", "502", "503", "506"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Angermund (90/245); Kaiserswerth (51/245); Kalkum (28/245); Wittlaer (61/245)"
+
+[plz."40545"]
+stadtteile = ["404"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Oberkassel (59/71)"
+
+[plz."40547"]
+stadtteile = ["402", "403", "404"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Lörick (44/110); Niederkassel (41/110); Oberkassel (21/110)"
+
+[plz."40549"]
+stadtteile = ["401", "404"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Heerdt (71/104); Oberkassel (26/104)"
+
+[plz."40589"]
+stadtteile = ["903", "904", "905", "908"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Himmelgeist (15/112); Holthausen (48/112); Itter (15/112); Wersten (20/112)"
+
+[plz."40591"]
+stadtteile = ["908"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Wersten (105/123)"
+
+[plz."40593"]
+stadtteile = ["901", "907"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Benrath (34/121); Urdenbach (77/121)"
+
+[plz."40595"]
+stadtteile = ["1001", "1002"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Garath (63/109); Hellerhof (37/109)"
+
+[plz."40597"]
+stadtteile = ["901"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Benrath (96/112)"
+
+[plz."40599"]
+stadtteile = ["901", "902", "906"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Benrath (16/107); Hassels (60/107); Reisholz (24/107)"
+
+[plz."40625"]
+stadtteile = ["701"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Gerresheim (180/210)"
+
+[plz."40627"]
+stadtteile = ["701", "803", "804"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Gerresheim (22/162); Unterbach (57/162); Vennhausen (80/162)"
+
+[plz."40629"]
+stadtteile = ["702", "703", "705"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Grafenberg (17/132); Hubbelrath (32/132); Ludenberg (48/132)"
+# <<< ortsgliederung

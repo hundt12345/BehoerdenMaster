@@ -14,7 +14,8 @@ from dataclasses import dataclass
 from .config import Stadt, Strasse
 from .normalize import norm, strassen_kanonisch
 
-_BEZIRK_NUMMER = re.compile(r"\bbezirk(?:svertretung)?\s*(\d)\b", re.IGNORECASE)
+# Ein- oder zweistellig: Düsseldorf hat zehn Stadtbezirke („Bezirksvertretung 10“).
+_BEZIRK_NUMMER = re.compile(r"\bbezirk(?:svertretung)?\s*(\d{1,2})\b", re.IGNORECASE)
 _PLZ = re.compile(r"(?<!\d)(\d{5})(?!\d)")
 _WORT = re.compile(r"\w+")
 _WORT_ZEICHEN = re.compile(r"\S+")
@@ -50,6 +51,8 @@ class Gazetteer:
         self.phrasen: dict[str, list[tuple[str, str]]] = {}
         for nr, name in stadt.bezirke.items():
             self._ergaenze(name, "bezirk", nr)
+            for alias in stadt.bezirk_aliase.get(nr, ()):
+                self._ergaenze(alias, "bezirk", nr)
         for nr, st in stadt.stadtteile.items():
             self._ergaenze(st.name, "stadtteil", nr)
             for alias in st.aliase:

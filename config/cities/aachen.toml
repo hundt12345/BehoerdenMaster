@@ -1,0 +1,138 @@
+# Stadt Aachen – Konfiguration für BehoerdenMaster
+#
+# Angebunden nach demselben System wie Köln: Ratsinformation über OParl (gleicher Adapter,
+# gleiche Drossel, robots.txt, Budgets und Abkühlzeiten). Der OSM-Auszug führt für Aachen nur Stadtbezirke; Stadtteile, Straßenverzeichnis und PLZ→Stadtteil-Zuordnung fehlen deshalb. Die Stadt nutzt SessionNet wie Köln.
+#
+# Quellen:
+#   * OParl-Endpunkt: offizielle OParl-Endpunktliste (github.com/OParl/resources, endpoints.yml,
+#     abgerufen am 14.10.2026). Der Endpunkt ist von hier aus NICHT live geprüft (die
+#     Entwicklungsumgebung erreicht keine Behörden-Hosts) – vor dem ersten Lauf:
+#       python -m behoerdenmaster --stadt aachen probe --quelle ris
+#   * Ortsgliederung, PLZ: OpenStreetMap-Auszug der OpenPLZ API (ODbL 1.0,
+#     © OpenStreetMap-Mitwirkende), erzeugt mit tools/stadt_aus_osm.py. Eine NÄHERUNG.
+#
+# Abruf auf Anforderung: Die Stadt wird erst geladen, wenn jemand sie in der Oberfläche
+# auswählt oder in ihr sucht (siehe README, „Weitere Städte – Laden auf Abruf“).
+
+[stadt]
+schluessel = "aachen"
+name = "Aachen"
+aliase = ["stadt aachen"]
+ags = "05334002"
+bundesland = "Nordrhein-Westfalen"
+abruf = "auf_abruf"
+gliederung_quelle = "Stadtbezirke aus dem OSM-Auszug der OpenPLZ API (ODbL 1.0), erzeugt mit tools/stadt_aus_osm.py"
+hinweis = "Ortsbezug aus Betreff und Gremium abgeleitet; Ortsgliederung und PLZ aus einem OpenStreetMap-Auszug (Näherung)."
+
+[[quellen]]
+schluessel = "ris"
+typ = "oparl"
+name = "Ratsinformation Aachen (OParl)"
+system_url = "https://ratsinfo.aachen.de/bi/oparl/1.0/system.asp"
+# Körperschaft über den Namen wählen; passen mehrere, bricht der Lauf ab statt zu raten.
+koerperschaft = "Aachen"
+# Rollierendes Fenster für den Erstabruf (90 Tage), damit eine neu angeforderte Stadt
+# klein und höflich startet. Folgeläufe holen nur Änderungen.
+seit = "90d"
+min_intervall_sekunden = 3.0
+lizenz = "Nicht geprüft – vor einer Veröffentlichung die Lizenzangabe des OParl-Systems bzw. der Stadt prüfen"
+pruefstand = "Endpunkt aus der OParl-Endpunktliste (Stand 14.10.2026); noch kein Abruf – vor dem ersten Lauf probe ausführen"
+
+[[themen]]
+schluessel = "bauen"
+bezeichnung = "Bauvorhaben & Bauleitplanung"
+begriffe = ["Bauvorhaben", "Bauprojekt", "Bauleitplan", "Bebauungsplan", "Bebauung", "Flächennutzungsplan", "Aufstellungsbeschluss", "Satzungsbeschluss", "Offenlage", "Arbeitstitel", "Städtebau", "Baugebiet", "Bauantrag", "Baugenehmigung", "Neubau", "Wohnungsbau", "Wohnbebauung", "Nachverdichtung", "vorhabenbezogen", "Hochhaus", "Quartier", "Abriss", "Umbau"]
+
+[[themen]]
+schluessel = "verkehr"
+bezeichnung = "Verkehr & Mobilität"
+begriffe = ["Verkehr", "Radweg", "Radverkehr", "Fahrradstraße", "Fahrrad", "Parkraum", "Parken", "Ampel", "Stadtbahn", "Buslinie", "Haltestelle", "Mobilität", "Fußverkehr", "Kreuzung", "Straßenbahn", "Tempo"]
+
+[[themen]]
+schluessel = "schulen"
+bezeichnung = "Schulen & Kitas"
+begriffe = ["Schule", "Kita", "Kindergarten", "Kindertagesstätte", "Jugendamt"]
+
+[[themen]]
+schluessel = "gruen"
+bezeichnung = "Grün & Klima"
+begriffe = ["Grün", "Grünzug", "Park", "Spielplatz", "Baum", "Bäume", "Klima", "Stadtgrün"]
+
+[erzeugung]
+# Steuerung für tools/stadt_aus_osm.py – von der Anwendung ignoriert.
+stadtteile = false
+bezirke = [
+  { osm = "Aachen-Mitte", nr = "1", name = "Aachen-Mitte" },
+  # „Brand“ und „Haaren“ sind auch Alltagswörter (Feuer, Haare) und deshalb nur in der
+  # amtlichen Form „Aachen-Brand“/„Aachen-Haaren“ hinterlegt; die übrigen zusätzlich kurz.
+  { osm = "Brand", nr = "2", name = "Aachen-Brand" },
+  { osm = "Eilendorf", nr = "3", name = "Aachen-Eilendorf", aliase = ["Eilendorf"] },
+  { osm = "Haaren", nr = "4", name = "Aachen-Haaren" },
+  { osm = "Kornelimünster/Walheim", nr = "5", name = "Aachen-Kornelimünster/Walheim", aliase = ["Kornelimünster/Walheim", "Kornelimünster", "Walheim"] },
+  { osm = "Laurensberg", nr = "6", name = "Aachen-Laurensberg", aliase = ["Laurensberg"] },
+  { osm = "Richterich", nr = "7", name = "Aachen-Richterich", aliase = ["Richterich"] },
+]
+
+# >>> ortsgliederung
+# Erzeugt von tools/stadt_aus_osm.py am 2026-10-14 – nicht von Hand ändern, sondern neu erzeugen.
+# Quelle: OpenStreetMap-Auszug der OpenPLZ API (github.com/openpotato/openplzapi.data),
+# Lizenz ODbL 1.0, © OpenStreetMap-Mitwirkende. Bezirks-/Stadtteilgrenzen und PLZ-Zuordnung
+# sind eine NÄHERUNG; Stadtteil-Schlüssel sind projektinterne Nummern.
+
+[bezirke]
+"1" = "Aachen-Mitte"
+"2" = "Aachen-Brand"
+"3" = "Aachen-Eilendorf"
+"4" = "Aachen-Haaren"
+"5" = "Aachen-Kornelimünster/Walheim"
+"6" = "Aachen-Laurensberg"
+"7" = "Aachen-Richterich"
+
+[bezirk_aliase]
+"3" = ["Eilendorf"]
+"5" = ["Kornelimünster/Walheim", "Kornelimünster", "Walheim"]
+"6" = ["Laurensberg"]
+"7" = ["Richterich"]
+
+[stadtteile]
+
+[plz."52062"]
+stadtteile = []
+quelle = "Für diese Stadt ist nur die Bezirksgliederung hinterlegt (der OSM-Auszug führt keine Stadtteile); die PLZ gehört laut Auszug zur Stadt"
+
+[plz."52064"]
+stadtteile = []
+quelle = "Für diese Stadt ist nur die Bezirksgliederung hinterlegt (der OSM-Auszug führt keine Stadtteile); die PLZ gehört laut Auszug zur Stadt"
+
+[plz."52066"]
+stadtteile = []
+quelle = "Für diese Stadt ist nur die Bezirksgliederung hinterlegt (der OSM-Auszug führt keine Stadtteile); die PLZ gehört laut Auszug zur Stadt"
+
+[plz."52068"]
+stadtteile = []
+quelle = "Für diese Stadt ist nur die Bezirksgliederung hinterlegt (der OSM-Auszug führt keine Stadtteile); die PLZ gehört laut Auszug zur Stadt"
+
+[plz."52070"]
+stadtteile = []
+quelle = "Für diese Stadt ist nur die Bezirksgliederung hinterlegt (der OSM-Auszug führt keine Stadtteile); die PLZ gehört laut Auszug zur Stadt"
+
+[plz."52072"]
+stadtteile = []
+quelle = "Für diese Stadt ist nur die Bezirksgliederung hinterlegt (der OSM-Auszug führt keine Stadtteile); die PLZ gehört laut Auszug zur Stadt"
+
+[plz."52074"]
+stadtteile = []
+quelle = "Für diese Stadt ist nur die Bezirksgliederung hinterlegt (der OSM-Auszug führt keine Stadtteile); die PLZ gehört laut Auszug zur Stadt"
+
+[plz."52076"]
+stadtteile = []
+quelle = "Für diese Stadt ist nur die Bezirksgliederung hinterlegt (der OSM-Auszug führt keine Stadtteile); die PLZ gehört laut Auszug zur Stadt"
+
+[plz."52078"]
+stadtteile = []
+quelle = "Für diese Stadt ist nur die Bezirksgliederung hinterlegt (der OSM-Auszug führt keine Stadtteile); die PLZ gehört laut Auszug zur Stadt"
+
+[plz."52080"]
+stadtteile = []
+quelle = "Für diese Stadt ist nur die Bezirksgliederung hinterlegt (der OSM-Auszug führt keine Stadtteile); die PLZ gehört laut Auszug zur Stadt"
+# <<< ortsgliederung

@@ -113,15 +113,37 @@
     details.datenquellen > summary { cursor: pointer; font-weight: 600; color: var(--muted); }
     ul.dokumentliste { margin:6px 0 0; padding-left:18px; font-size:13px; color:var(--muted); }
     ul.dokumentliste li { margin:2px 0; }
+
+    /* --- Stadtwahl und Städteübersicht -------------------------------------- */
+    .kopfzeile { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+    .stadtwahl { display:flex; align-items:center; gap:8px; font-size:14px; color:var(--muted); }
+    .stadtwahl select { padding:7px 10px; border:1px solid #c5ccd9; border-radius:8px; background:#fff; font-size:15px; color:var(--fg); }
+    .banner.abruf { background:#e8f0fd; border-color:#c3d6f5; color:#1d3f73; }
+    .zustand.aktiv { background:#e6f5ec; border-color:#b8e0c6; color:var(--ok); }
+    .zustand.laedt { background:#e8f0fd; border-color:#c3d6f5; color:var(--accent); }
+    .zustand.ruht, .zustand.aus { background:#f1f3f7; border-color:#dfe4ee; color:var(--muted); }
+    table.staedte td { font-size:13px; }
+    table.staedte td.name { font-weight:600; font-size:14px; }
+    table.staedte button { font-size:12px; padding:3px 9px; }
+    footer nav { margin-top:8px; display:flex; gap:14px; }
+    footer nav a { color:var(--muted); }
   </style>
 </head>
 <body>
 <header>
-  <h1>BehoerdenMaster</h1>
-  <p>Ratsvorgänge und Bauleitplanung in Köln – mit Zusammenfassungen, Beteiligungsfristen und Quellenverlauf.</p>
+  <div class="kopfzeile">
+    <h1>BehoerdenMaster</h1>
+    <label class="stadtwahl">Stadt
+      <select id="stadt-wahl" aria-label="Stadt wählen">
+        <option value="">Köln</option>
+      </select>
+    </label>
+  </div>
+  <p id="untertitel">Ratsvorgänge und Bauleitplanung in Köln – mit Zusammenfassungen, Beteiligungsfristen und Quellenverlauf.</p>
 </header>
 <main>
   <div id="banner" class="banner versteckt"></div>
+  <div id="abruf-banner" class="banner abruf versteckt" aria-live="polite"></div>
 
   <div class="tabs" role="tablist">
     <button id="tab-frage" class="aktiv" role="tab" aria-selected="true">Frage stellen</button>
@@ -133,7 +155,7 @@
       <input id="frage" type="text" maxlength="500" placeholder="z. B. Welche Bauvorhaben sind in Köln Ehrenfeld geplant?" aria-label="Frage">
       <button class="primaer" type="submit">Suchen</button>
     </form>
-    <div class="beispiele">
+    <div class="beispiele" id="beispiele">
       <button type="button" data-frage="Welche Bauvorhaben sind in Köln Ehrenfeld geplant?">Bauvorhaben in Ehrenfeld</button>
       <button type="button" data-frage="Was gibt es zu Verkehr in Lindenthal seit 2024?">Verkehr in Lindenthal seit 2024</button>
       <button type="button" data-frage="Welche Vorlagen betreffen Wohnungsbau in Köln?">Wohnungsbau in Köln</button>
@@ -171,9 +193,20 @@
     <div id="lade-ausgabe" aria-live="polite"></div>
   </details>
 
+  <details id="staedte-bereich" class="datenquellen">
+    <summary>Angebundene Städte (zum Ausklappen)</summary>
+    <p class="hinweis">
+      Alle Städte nutzen dasselbe System. <strong>Dauerhaft</strong> abgerufene Städte werden laufend
+      aktualisiert; Städte <strong>auf Abruf</strong> werden erst geladen, wenn sie jemand auswählt –
+      gedrosselt im Hintergrund, nie während einer Suche.
+    </p>
+    <div id="staedte-ausgabe" aria-live="polite"></div>
+  </details>
+
   <footer>
     <div id="stand"></div>
-    <p>Quellen: Ratsinformationssystem Köln (OParl, Datenlizenz Deutschland – Zero – 2.0),
+    <p id="quellen-andere" class="versteckt"></p>
+    <p id="quellen-koeln">Quellen: Ratsinformationssystem Köln (OParl, Datenlizenz Deutschland – Zero – 2.0),
        Bauleitplanung Online NRW (öffentliche Verfahrensinformationen; gesonderte Nutzungsbedingungen),
        öffentliche Bekanntmachungen der Stadt Köln, die Beteiligungsplattform „Meinung für Köln“
        (jeweils nur Titel, Datum, Statusangabe und Link) sowie ausgewählte Tabellendatensätze des
@@ -183,6 +216,7 @@
        eine Näherung. Auszüge und automatisch abgeleiteter Status ohne Gewähr. Maßgeblich sind die
        amtlichen Originale. Eine beendete Beteiligungsfrist bedeutet keinen Bauabschluss, und eine
        Bekanntmachung ist kein Beschluss des Rates.</p>
+    <nav><a href="/impressum">Impressum</a><a href="/datenschutz">Datenschutz</a><a href="/api/staedte" target="_blank" rel="noopener">Städte als JSON</a></nav>
   </footer>
 </main>
 
@@ -200,6 +234,10 @@
     strasse: "aus einem Straßennamen abgeleitet (Näherung)",
   };
   let aktuelleSuche = null;
+  // Gewählte Stadt (Schlüssel) und die Städteübersicht aus /api/staedte.
+  let stadt = "";
+  let staedte = [];
+  const stadtInfo = () => staedte.find((s) => s.schluessel === stadt) || null;
 
   function el(tag, attrs, ...kinder) {
     const e = document.createElement(tag);
@@ -328,7 +366,7 @@
       ausgabe.replaceChildren();
       if (daten.verstanden) {
         const v = daten.verstanden;
-        const orte = (v.orte || []).map((o) => o.typ === "bezirk" ? `Stadtbezirk ${o.name}` : `${o.name} (Stadtteil)`).join(", ") || "alle Orte";
+        const orte = (v.orte || []).map((o) => o.typ === "bezirk" ? (o.anzeige || `Stadtbezirk ${o.name}`) : `${o.name} (Stadtteil)`).join(", ") || "alle Orte";
         const themen = (v.themen || []).join(", ") || "alle Themen";
         const teile = [el("strong", null, "Verstanden:"), ` Ort: ${orte} · Thema: ${themen}`];
         if (v.plz) teile.push(` · PLZ ${v.plz}`);
@@ -338,6 +376,12 @@
         ausgabe.append(el("div", { class: "verstanden" }, ...teile));
       }
       for (const h of daten.hinweise || []) ausgabe.append(el("p", { class: "hinweis" }, h));
+      if (daten.stadt_vorschlag) {
+        const v = daten.stadt_vorschlag;
+        const knopf = el("button", { class: "sekundaer", type: "button" }, `In ${v.name} suchen`);
+        knopf.addEventListener("click", () => { stadtWechseln(v.schluessel); $("form-frage").requestSubmit(); });
+        ausgabe.append(el("p", { class: "hinweis" }, `Die Frage nennt ${v.name}, gesucht wurde in ${daten.stadt.name}. `, knopf));
+      }
       ausgabe.append(el("div", { class: "anzahl", id: "anzahl" }));
       ausgabe.append(el("div", { id: "trefferliste" }));
     }
@@ -364,7 +408,7 @@
   async function sucheFrage(text, offset, knopf) {
     const daten = await api("/api/frage", {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ frage: text, limit: 10, offset }),
+      body: JSON.stringify({ frage: text, limit: 10, offset, stadt: stadt || null }),
     });
     if (knopf) knopf.remove();
     zeigeErgebnis(daten, offset > 0);
@@ -373,6 +417,7 @@
   async function suchePlz(plz, thema, offset, knopf) {
     const parameter = new URLSearchParams({ limit: "10", offset: String(offset) });
     if (thema) parameter.set("thema", thema);
+    if (stadt) parameter.set("stadt", stadt);
     const daten = await api(`/api/plz/${encodeURIComponent(plz)}?${parameter}`);
     if (knopf) knopf.remove();
     zeigeErgebnis(daten, offset > 0);
@@ -532,7 +577,7 @@
   let ladeUebersichtGeladen = false;
   async function ladeUebersichtLaden() {
     try {
-      ladeUebersicht(await api("/api/ladebericht?laeufe=8"));
+      ladeUebersicht(await api("/api/ladebericht?laeufe=8" + (stadt ? "&stadt=" + encodeURIComponent(stadt) : "")));
       ladeUebersichtGeladen = true;
     } catch (e) {
       $("lade-ausgabe").replaceChildren(el("div", { class: "fehler" }, "Ladeübersicht nicht verfügbar: " + e.message));
@@ -572,15 +617,151 @@
     finally { knopf.disabled = false; }
   });
 
-  for (const b of document.querySelectorAll(".beispiele button")) {
-    b.addEventListener("click", () => { $("frage").value = b.dataset.frage; $("form-frage").requestSubmit(); });
+  function beispielKnoepfe(fragen) {
+    const ziel = $("beispiele");
+    if (fragen) {
+      ziel.replaceChildren(...fragen.map((f) => el("button", { type: "button", "data-frage": f },
+        f.replace(/^Welche Bauvorhaben sind in (.+) geplant\?$/, "Bauvorhaben in $1")
+          .replace(/^Was gibt es zu |^Welche Vorlagen betreffen /, "").replace(/\?$/, ""))));
+    }
+    for (const b of ziel.querySelectorAll("button")) {
+      b.addEventListener("click", () => { $("frage").value = b.dataset.frage; $("form-frage").requestSubmit(); });
+    }
+  }
+  beispielKnoepfe(null);
+
+  // --- Stadtwahl, Laden auf Abruf und Städteübersicht -------------------------
+
+  function abrufBanner(info, hinweise) {
+    const b = $("abruf-banner");
+    if (!info || info.abruf !== "auf_abruf" || (info.zustand === "aktiv" && !(hinweise || []).length)) {
+      b.className = "banner abruf versteckt";
+      return;
+    }
+    const titel = info.zustand === "laedt" ? `${info.name} wird geladen`
+      : info.zustand === "aktiv" ? `${info.name} ist geladen` : `${info.name} – Laden auf Abruf`;
+    b.replaceChildren(
+      el("strong", null, titel),
+      el("div", null, info.zustand_text + ` · Bestand: ${einheit(info.bestand_vorgaenge, "Vorgang", "Vorgänge")}.`),
+      ...(hinweise || []).map((h) => el("div", { class: "hinweis" }, h)),
+      el("div", { class: "banner-aktion" },
+        el("button", { class: "sekundaer", type: "button", id: "abruf-neu" }, "Ladezustand neu prüfen")));
+    b.className = "banner abruf";
+    $("abruf-neu").addEventListener("click", async (ev) => {
+      ev.currentTarget.disabled = true;
+      await staedteLaden();
+      abrufBanner(stadtInfo(), []);
+    });
+  }
+
+  async function stadtAnfordern(info) {
+    if (!info || info.abruf !== "auf_abruf") { abrufBanner(null); return; }
+    try {
+      const antwort = await api(`/api/staedte/${encodeURIComponent(info.schluessel)}/anfordern`, { method: "POST" });
+      const i = staedte.findIndex((s) => s.schluessel === info.schluessel);
+      if (i >= 0) staedte[i] = antwort.stadt;
+      abrufBanner(antwort.stadt, antwort.hinweise);
+      staedteTabelle();
+    } catch (e) { abrufBanner(info, ["Anforderung nicht möglich: " + e.message]); }
+  }
+
+  function stadtAnwenden() {
+    const info = stadtInfo();
+    if (!info) return;
+    $("stadt-wahl").value = info.schluessel;
+    $("untertitel").textContent = info.schluessel === "koeln"
+      ? "Ratsvorgänge und Bauleitplanung in Köln – mit Zusammenfassungen, Beteiligungsfristen und Quellenverlauf."
+      : `Ratsvorgänge in ${info.name} – mit Zusammenfassungen und Beratungsverlauf.`;
+    $("frage").placeholder = "z. B. " + info.beispiele[0];
+    $("plz").placeholder = info.beispiel_plz ? `PLZ, z. B. ${info.beispiel_plz}` : "PLZ";
+    beispielKnoepfe(info.beispiele);
+    const koeln = info.schluessel === "koeln";
+    $("quellen-koeln").classList.toggle("versteckt", !koeln);
+    $("quellen-andere").classList.toggle("versteckt", koeln);
+    if (!koeln) {
+      $("quellen-andere").textContent = `Quellen für ${info.name}: ` + info.quellen.map((q) => `${q.name} (${q.lizenz})`).join("; ")
+        + ". Ortsbezüge über © OpenStreetMap-Mitwirkende (ODbL 1.0) – eine Näherung. Auszüge und automatisch "
+        + "abgeleiteter Status ohne Gewähr; maßgeblich sind die amtlichen Originale.";
+    }
+    ladeUebersichtGeladen = false;
+    if ($("datenquellen").open) ladeUebersichtLaden();
+  }
+
+  function staedteTabelle() {
+    const kopf = (text) => el("th", null, text);
+    const zeilen = staedte.map((s) => {
+      const g = s.gliederung;
+      const geo = g.stufe === "voll" ? `${g.bezirke} Bezirke · ${g.stadtteile} Stadtteile · ${g.plz} PLZ · ${zahl(g.strassen)} Straßen`
+        : g.stufe === "bezirke" ? `${g.bezirke} Bezirke · ${g.plz} PLZ (keine Stadtteile)` : "–";
+      const pruef = s.quellen.map((q) => q.pruefstand).filter(Boolean)[0] || "";
+      const waehlen = el("button", { class: "sekundaer", type: "button" }, s.schluessel === stadt ? "gewählt" : "auswählen");
+      if (s.schluessel === stadt) waehlen.disabled = true;
+      waehlen.addEventListener("click", () => stadtWechseln(s.schluessel));
+      return el("tr", null,
+        el("td", { class: "name" }, s.name, s.standard ? el("div", { class: "klein" }, "Standard") : null),
+        el("td", null, s.abruf === "dauerhaft" ? "dauerhaft" : "auf Abruf"),
+        el("td", null, el("span", { class: "zustand " + s.zustand }, s.zustand_text)),
+        el("td", null, einheit(s.bestand_vorgaenge, "Vorgang", "Vorgänge")),
+        el("td", { class: "klein" }, `${s.quellen.length} ${s.quellen.length === 1 ? "Quelle" : "Quellen"}: `
+          + s.quellen.map((q) => q.typ_text).join(", ")),
+        el("td", { class: "klein" }, geo),
+        el("td", { class: "klein" }, pruef),
+        el("td", null, waehlen));
+    });
+    $("staedte-ausgabe").replaceChildren(el("div", { class: "tabellen-umschlag" }, el("table", { class: "verlauf staedte" },
+      el("thead", null, el("tr", null, kopf("Stadt"), kopf("Abruf"), kopf("Zustand"), kopf("Bestand"),
+        kopf("Quellen"), kopf("Ortsgliederung"), kopf("Prüfstand"), kopf(""))),
+      el("tbody", null, ...zeilen))));
+  }
+
+  async function staedteLaden() {
+    try {
+      const daten = await api("/api/staedte");
+      staedte = daten.staedte || [];
+      const wahl = $("stadt-wahl");
+      wahl.replaceChildren(...staedte.map((s) => el("option", { value: s.schluessel },
+        s.name + (s.abruf === "auf_abruf" ? " (auf Abruf)" : ""))));
+      if (!stadtInfo()) stadt = daten.standard;
+      wahl.value = stadt;
+      staedteTabelle();
+    } catch (e) {
+      $("staedte-ausgabe").replaceChildren(el("div", { class: "fehler" }, "Städteübersicht nicht verfügbar: " + e.message));
+    }
+  }
+
+  function stadtWechseln(schluessel) {
+    stadt = schluessel;
+    try { localStorage.setItem("behoerdenmaster.stadt", schluessel); } catch (e) { /* privat */ }
+    const url = new URL(window.location.href);
+    url.searchParams.set("stadt", schluessel);
+    history.replaceState(null, "", url);
+    ausgabeLeeren();
+    stadtAnwenden();
+    staedteTabelle();
+    stadtAnfordern(stadtInfo());
+    status();
+  }
+
+  $("stadt-wahl").addEventListener("change", (ev) => stadtWechseln(ev.target.value));
+
+  async function start() {
+    let gemerkt = new URLSearchParams(window.location.search).get("stadt");
+    if (!gemerkt) { try { gemerkt = localStorage.getItem("behoerdenmaster.stadt"); } catch (e) { gemerkt = null; } }
+    stadt = gemerkt || "";
+    await staedteLaden();
+    if (!stadtInfo() && staedte.length) stadt = staedte[0].schluessel;
+    stadtAnwenden();
+    stadtAnfordern(stadtInfo());
+    status();
   }
 
   async function status() {
     try {
       const s = await api("/api/status");
-      const demo = (s.quellen || []).filter((q) => q.demo);
-      const echte = (s.quellen || []).filter((q) => !q.demo);
+      const zurStadt = (q) => !stadt || q.id.startsWith(stadt + ":");
+      const demo = (s.quellen || []).filter((q) => q.demo && zurStadt(q));
+      // Datenstand nur für die gewählte Stadt; andere Städte stehen in der Städteübersicht.
+      const echte = (s.quellen || []).filter((q) => !q.demo && zurStadt(q));
       const b = $("banner");
 
       if (s.bestand_leer) {
@@ -610,8 +791,11 @@
         return text;
       });
       $("stand").textContent = abrufe.length ? "Datenstand · " + abrufe.join(" · ") : "Datenstand: Offline-Beispiele vom 09.10.2026; noch kein Live-Abruf.";
-      const anzahl = (s.zaehler && s.zaehler.vorgang) || 0;
-      $("stand").textContent += ` · Bestand: ${anzahl} ${anzahl === 1 ? "Vorgang" : "Vorgänge"}`;
+      const gesamt = (s.zaehler && s.zaehler.vorgang) || 0;
+      const info = stadtInfo();
+      $("stand").textContent += info && staedte.length > 1
+        ? ` · Bestand ${info.name}: ${einheit(info.bestand_vorgaenge, "Vorgang", "Vorgänge")} (alle Städte: ${zahl(gesamt)})`
+        : ` · Bestand: ${einheit(gesamt, "Vorgang", "Vorgänge")}`;
       if (s.betrieb) {
         $("stand").textContent += s.betrieb.automatische_abrufe
           ? (s.betrieb.sync_dienst_laeuft ? " · Automatische Aktualisierung im Hintergrund aktiv." : " · Automatische Aktualisierung konfiguriert, Dienst derzeit nicht aktiv.")
@@ -622,7 +806,7 @@
       }
     } catch (e) { $("stand").textContent = "Status nicht verfügbar."; }
   }
-  status();
+  start();
 })();
 </script>
 </body>

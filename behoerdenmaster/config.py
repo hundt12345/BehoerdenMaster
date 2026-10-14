@@ -34,6 +34,34 @@ def config_verzeichnis() -> Path:
     return Path(os.environ.get("BEHOERDEN_CONFIG_DIR", PROJEKTWURZEL / "config" / "cities"))
 
 
+# Abrufmodus einer Stadt (``[stadt] abruf`` in der Konfiguration):
+#
+# * ``dauerhaft``  – der Hintergrunddienst hält die Quellen der Stadt laufend aktuell
+#   (Voreinstellung, so wie Köln seit Beginn).
+# * ``auf_abruf`` – die Stadt ist angebunden, wird aber erst abgerufen, wenn jemand sie
+#   anfordert (Auswahl in der Oberfläche oder eine Suche in dieser Stadt). Die Anforderung
+#   ist nur ein Vermerk in der lokalen Datenbank; abgerufen wird ausschließlich im
+#   gedrosselten Hintergrundplan, nie während einer Suchanfrage (siehe bedarf.py).
+ABRUF_MODI = ("dauerhaft", "auf_abruf")
+STANDARD_STADT = "koeln"
+
+
+def seit_aufloesen(wert: str | None, heute: date | None = None) -> str | None:
+    """``seit`` aus Konfiguration/CLI: ``YYYY-MM-DD`` bleibt, ``90d`` wird ein rollierendes Datum.
+
+    Ein rollierendes Fenster hält den Erstabruf einer neu angebundenen Stadt klein,
+    ohne dass ein Datum nachgepflegt werden muss.
+    """
+    roh = (wert or "").strip()
+    if not roh:
+        return None
+    if roh[-1] in "dD" and roh[:-1].isdigit():
+        from datetime import timedelta
+
+        return ((heute or date.today()) - timedelta(days=int(roh[:-1]))).isoformat()
+    return roh
+
+
 @dataclass(frozen=True)
 class Stadtteil:
     nr: str
@@ -106,6 +134,13 @@ class Quelle:
     # Datensatzes) oder eine direkte Datensatz-Kennung (UUID). Je Eintrag wird höchstens
     # ein Datensatz übernommen, der zur Angabe passt.
     datensaetze: tuple[str, ...] = ()
+    # OParl: Körperschaft über ihren Namen wählen, wenn die ID nicht bekannt ist
+    # (Teilwortvergleich, normalisiert). Mehrere Treffer sind ein Fehler, nicht „der erste“.
+    koerperschaft: str = ""
+    # False nimmt die Quelle aus dem automatischen Hintergrundabruf (manuell bleibt sie nutzbar).
+    automatisch: bool = True
+    # Was über die Quelle tatsächlich geprüft ist – erscheint in der Städteübersicht.
+    pruefstand: str = ""
 
 
 @dataclass(frozen=True)
@@ -131,6 +166,23 @@ class Stadt:
     presse: tuple[PresseVerweis, ...] = ()
     # Umkehrschlüssel für die Suche: Stadtteil → PLZ, in denen er vorkommt.
     plz_je_stadtteil: dict[str, tuple[str, ...]] = field(default_factory=dict)
+    # dauerhaft | auf_abruf (siehe ABRUF_MODI)
+    abruf: str = "dauerhaft"
+    ags: str = ""
+    bundesland: str = ""
+    # Weitere Schreibweisen eines Bezirks (z. B. „Bezirksvertretung Bonn“).
+    bezirk_aliase: dict[str, tuple[str, ...]] = field(default_factory=dict)
+    # Woher Bezirke/Stadtteile stammen (Anzeige in der Städteübersicht).
+    gliederung_quelle: str = ""
+
+    @property
+    def auf_abruf(self) -> bool:
+        return self.abruf == "auf_abruf"
+
+    def bezirk_anzeige(self, nr: str) -> str:
+        """„Stadtbezirk Ehrenfeld“ – ohne Doppelung, wenn der Name das Wort schon enthält."""
+        name = self.bezirke.get(nr, nr)
+        return name if name.lower().startswith(("stadtbezirk", "bezirk")) else f"Stadtbezirk {name}"
 
     def quell_id(self, quelle: Quelle) -> str:
         return f"{self.schluessel}:{quelle.schluessel}"
@@ -268,12 +320,26 @@ def _lade_presse(eintraege: list, dateiname: str) -> tuple[PresseVerweis, ...]:
     return tuple(presse)
 
 
+def _wahrheitswert(wert, wo: str) -> bool:
+    if not isinstance(wert, bool):
+        raise ValueError(f"{wo} muss true oder false sein (ohne Anführungszeichen)")
+    return wert
+
+
 def _lade_datei(pfad: Path) -> Stadt:
     with pfad.open("rb") as fh:
         daten = tomllib.load(fh)
 
     s = daten["stadt"]
+    abruf = str(s.get("abruf", "dauerhaft")).strip()
+    if abruf not in ABRUF_MODI:
+        raise ValueError(f"{pfad.name}: [stadt] abruf muss {' oder '.join(ABRUF_MODI)} sein, nicht „{abruf}“")
     bezirke = {str(k): str(v) for k, v in daten.get("bezirke", {}).items()}
+    bezirk_aliase: dict[str, tuple[str, ...]] = {}
+    for nr, aliase in daten.get("bezirk_aliase", {}).items():
+        if str(nr) not in bezirke:
+            raise ValueError(f"{pfad.name}: Bezirks-Alias verweist auf unbekannten Bezirk {nr}")
+        bezirk_aliase[str(nr)] = tuple(str(a) for a in aliase)
 
     stadtteile: dict[str, Stadtteil] = {}
     for nr, eintrag in daten.get("stadtteile", {}).items():
@@ -323,6 +389,9 @@ def _lade_datei(pfad: Path) -> Stadt:
             listen_vorlage=q.get("listen_vorlage"),
             start_jahr=int(q.get("start_jahr", 0) or 0),
             datensaetze=tuple(str(d).strip() for d in q.get("datensaetze", ()) if str(d).strip()),
+            koerperschaft=str(q.get("koerperschaft", "")).strip(),
+            automatisch=_wahrheitswert(q.get("automatisch", True), f"{pfad.name}: Quelle {q.get('schluessel')}: automatisch"),
+            pruefstand=str(q.get("pruefstand", "")).strip(),
         )
         for q in daten.get("quellen", [])
     )
@@ -359,6 +428,11 @@ def _lade_datei(pfad: Path) -> Stadt:
         strassen_max_gram=max((len(name.split()) for name in strassen), default=1),
         presse=presse,
         plz_je_stadtteil={nr: tuple(sorted(codes)) for nr, codes in plz_je_stadtteil.items()},
+        abruf=abruf,
+        ags=str(s.get("ags", "")),
+        bundesland=str(s.get("bundesland", "")),
+        bezirk_aliase=bezirk_aliase,
+        gliederung_quelle=str(s.get("gliederung_quelle", "")),
     )
 
 
@@ -374,10 +448,31 @@ def lade_staedte(verzeichnis: Path | None = None) -> dict[str, Stadt]:
     return staedte
 
 
+def standard_stadt(staedte: dict[str, Stadt], env: dict | None = None) -> Stadt:
+    """Die Stadt, die ohne ausdrückliche Wahl gilt.
+
+    Nicht einfach „die erste Datei“: Mit weiteren Städten stünde sonst alphabetisch Bonn
+    vor Köln, und jede Suche ohne `stadt` landete unbemerkt in einer anderen Stadt.
+    Reihenfolge: `BEHOERDEN_STANDARD_STADT`, sonst Köln, sonst die erste dauerhaft
+    abgerufene Stadt, sonst die erste überhaupt.
+    """
+    env = os.environ if env is None else env
+    wunsch = (env.get("BEHOERDEN_STANDARD_STADT") or "").strip()
+    if wunsch:
+        if wunsch not in staedte:
+            raise KeyError(f"BEHOERDEN_STANDARD_STADT '{wunsch}' ist nicht konfiguriert. "
+                           f"Verfügbar: {', '.join(staedte)}")
+        return staedte[wunsch]
+    if STANDARD_STADT in staedte:
+        return staedte[STANDARD_STADT]
+    dauerhaft = [s for s in staedte.values() if not s.auf_abruf]
+    return (dauerhaft or list(staedte.values()))[0]
+
+
 def lade_stadt(schluessel: str | None = None, verzeichnis: Path | None = None) -> Stadt:
     staedte = lade_staedte(verzeichnis)
     if schluessel is None:
-        return next(iter(staedte.values()))
+        return standard_stadt(staedte)
     if schluessel not in staedte:
         raise KeyError(f"Unbekannte Stadt '{schluessel}'. Verfügbar: {', '.join(staedte)}")
     return staedte[schluessel]

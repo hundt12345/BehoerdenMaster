@@ -21,6 +21,13 @@ CREATE TABLE IF NOT EXISTS betrieb_meta (
     schluessel TEXT PRIMARY KEY,
     wert TEXT NOT NULL
 );
+-- Laden auf Abruf (bedarf.py): je Stadt nur Zeitpunkte und eine Zahl, keine Personendaten.
+CREATE TABLE IF NOT EXISTS stadt_bedarf (
+    stadt TEXT PRIMARY KEY,
+    erstmals TEXT NOT NULL DEFAULT '',
+    zuletzt TEXT NOT NULL DEFAULT '',
+    anforderungen INTEGER NOT NULL DEFAULT 0
+);
 CREATE TABLE IF NOT EXISTS quelle (
     id TEXT PRIMARY KEY,
     stadt TEXT NOT NULL,

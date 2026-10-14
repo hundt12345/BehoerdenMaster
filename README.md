@@ -6,6 +6,7 @@ Kommunale Vorgänge durchsuchen und nachvollziehbar zusammenfassen – zuerst f�
 
 - **Fragen in natürlicher Sprache**, etwa „Welche Bauvorhaben sind in Köln Ehrenfeld geplant?“: regelbasiertes Erkennen von Stadtteilen, Bezirken, Themen, Zeiträumen und „geplant/offen“.
 - **PLZ-Suche**, optional mit Themenfilter.
+- **Sechs Städte mit demselben System:** Köln (dauerhaft aktuell) sowie Aachen, Bonn, Düsseldorf, Münster und Wuppertal **auf Abruf** – geladen erst, wenn jemand die Stadt auswählt. Stadtauswahl in der Oberfläche, Übersicht in [docs/staedte.md](docs/staedte.md) und unter `GET /api/staedte`.
 - **Fünf durchsuchbare Kölner Quellen in einer Suche:** Ratsinformation **OParl**, **Bauleitplanung Online NRW**, die **öffentlichen Bekanntmachungen** der Stadt (amtliche Verfahrensschritte nach BauGB), die **Bürgerbeteiligung „Meinung für Köln“** und ausgewählte **Tabellendatensätze des Offene-Daten-Portals** (DKAN 2, je Datensatz DL-DE-Zero-2.0 oder DL-DE-BY-2.0 mit Namensnennung).
 - **Zwei RSS-Hinweisquellen (ohne Suche):** Sitzungstermine der Ratsinformation (SessionNet-RSS) und Pressemeldungen der Stadt. Sie landen als Hinweise mit Titel, Datum, Link und Kurztext in eigener Tabelle, nicht als Vorgänge.
 - **Datenquellen und Ladestand:** eingeklappter Bereich unten auf der Startseite mit einer Grafik (Dokumentverweise je Quelle und Rolle) und einer Zeile je Quelle (Zustand, letzter Erfolg, Bestand). Die Daten kommen rein aus der lokalen Datenbank, ohne Behördenabruf; der ausführliche Ladepfad bleibt im JSON-Endpunkt `/api/ladebericht`.
@@ -267,7 +268,13 @@ Bestehende SQLite-Dateien werden beim Öffnen additiv erweitert; vorhandene Rats
 
 ## Weitere Städte und Quellen
 
-1. **Stadt mit OParl:** `config/cities/<stadt>.toml` nach dem Vorbild Kölns anlegen; Bezirke, Stadtteile, PLZ, Themen und `[[quellen]]` ergänzen. `python -m behoerdenmaster --stadt <stadt> probe --quelle <quelle>`.
+**Angebunden sind derzeit Köln (dauerhaft) sowie Aachen, Bonn, Düsseldorf, Münster und Wuppertal (auf Abruf)** – alle mit demselben System. Die vollständige, aus der Konfiguration erzeugte Übersicht steht in [`docs/staedte.md`](docs/staedte.md); den aktuellen Ladezustand zeigen `python -m behoerdenmaster staedte [--json]`, `GET /api/staedte` und in der Oberfläche der Bereich „Angebundene Städte“ samt Stadtauswahl.
+
+**Laden auf Abruf.** Eine Stadt mit `abruf = "auf_abruf"` ist vollständig konfiguriert, wird aber erst abgerufen, wenn jemand sie anfordert (Auswahl in der Oberfläche, `POST /api/staedte/<stadt>/anfordern` oder eine Suche in dieser Stadt). Die Anforderung schreibt nur einen Vermerk (Stadt + Zeitpunkt, keine IP, keine Suchbegriffe); der Hintergrunddienst nimmt die Quellen der Stadt dann in seinen normalen, gedrosselten Plan auf. Eine Suche löst weiterhin **keinen** Behördenabruf aus, und die Zahl der Abrufe wächst nicht mit der Zahl der Anfragen. Ohne neue Anforderung ruht die Stadt nach `BEHOERDEN_AUF_ABRUF_TAGE` (14) wieder; höchstens `BEHOERDEN_AUF_ABRUF_MAX` (3) Städte werden gleichzeitig auf Abruf aktuell gehalten. `BEHOERDEN_AUF_ABRUF=false` schaltet das Verfahren ab. Auf einer Instanz ohne persistente Disk geht der Vermerk mit der Datenbank verloren; die Stadt wird dann beim nächsten Aufruf erneut angefordert.
+
+**Hinweis zur Prüfung:** Die neuen Städte sind aus der öffentlichen OParl-Endpunktliste (`OParl/resources`) und dem OSM-Auszug der OpenPLZ API (ODbL 1.0) erzeugt, aber **noch nicht live geprüft** (`pruefstand` in der jeweiligen TOML). Vor einer Veröffentlichung je Stadt `python -m behoerdenmaster --stadt <stadt> probe --quelle ris` ausführen und die Lizenzangabe des OParl-Systems übernehmen.
+
+1. **Stadt mit OParl:** `config/cities/<stadt>.toml` mit Kopf (`[stadt]`, `abruf`, `[erzeugung]`, `[[quellen]]`) anlegen, dann die Ortsgliederung erzeugen: `python tools/stadt_aus_osm.py config/cities/<stadt>.toml` (Bezirke, Stadtteile, PLZ und – wo der OSM-Auszug Stadtteile führt – das Straßenverzeichnis). Danach `python -m behoerdenmaster staedte --markdown > docs/staedte.md` (ein Test prüft, dass die Übersicht aktuell ist) und `python -m behoerdenmaster --stadt <stadt> probe --quelle ris`.
 2. **Weitere Kommune auf derselben demosPlan-Plattform:** Quelle mit `typ="bauleitplanung"`, öffentlicher Such-URL samt `orgaSlug`, erwarteter `organisation` und `web_vorlage` konfigurieren. Öffentliches Schema und Detail-HTML müssen vorher geprüft werden – kein pauschales Versprechen für alle Installationen.
 3. **Anderer Quelltyp:** Adapter/Crawl-Funktion in `CRAWLER` registrieren, Daten in das gemeinsame Modell abbilden und gegebenenfalls eigene Auswertung/DTO ergänzen. Keine fremde Quelle erhält automatisch OParl-Links oder dessen Lizenz.
 
@@ -277,7 +284,10 @@ Bestehende SQLite-Dateien werden beim Öffnen additiv erweitert; vorhandene Rats
 |---|---|---|
 | GET / HEAD | `/healthz` | Lokaler Datenbank-Healthcheck (200/503), keine Behördenabfrage |
 | GET | `/api/status` | Quellen, Bestand, letzte Läufe, Server-Pausen und Hintergrundabruf-Status. Zusätzlich `bestand_leer` und `hinweise`: Bei einem leeren Bestand wird der Grund samt zuständiger Einstellung erklärt, statt nur null Treffer zu liefern. `betrieb.warnungen` meldet Konfigurationsprobleme, die den Dienst bewusst nicht stoppen, `betrieb.kontakt_hinterlegt` ob eine Kontaktadresse vorliegt – die Adresse selbst wird nie ausgegeben. |
-| POST | `/api/frage` | `{"frage":"…","stadt":"koeln","limit":10,"offset":0}` |
+| POST | `/api/frage` | `{"frage":"…","stadt":"koeln","limit":10,"offset":0}`. Ohne `stadt` folgt die Suche einer in der Frage genannten Stadt („Was plant Düsseldorf in Bilk?“); mit `stadt` bleibt es bei der Wahl, eine genannte andere Stadt kommt als `stadt_vorschlag` zurück. |
+| GET | `/api/staedte` | Angebundene Städte mit Abrufmodus, Ladezustand (`aktiv`, `laedt`, `ruht`, `aus`), Bestand, Quellen, Ortsgliederung und Beispielfragen. Nur lokale Daten. |
+| POST | `/api/staedte/{stadt}/anfordern` | Auf-Abruf-Stadt anfordern: vermerkt nur den Bedarf und weckt den Hintergrunddienst; kein direkter Behördenabruf. |
+| GET | `/impressum`, `/datenschutz` | Rechtstexte; Betreiberangaben aus `BEHOERDEN_BETREIBER_*` (siehe unten) |
 | GET | `/api/ladebericht?stadt=koeln&laeufe=8` | Ladeübersicht: Bestand, Dokumentverweise je Quelle und Rolle, Ladepfad, Listenstand, nächster Abruf, Abrufprotokoll. Nur lokale Daten, kein Behördenabruf. Dieselben Zahlen liefert `python -m behoerdenmaster ladebericht [--json]`. |
 | GET | `/api/plz/{plz}?thema=bauen,verkehr&stadt=koeln` | PLZ-Suche |
 | GET | `/api/vorgang?id=<URL-kodierte-Quell-ID>&stadt=koeln` | Detail mit Verlauf/Dokumenten; auf die gewählte Stadt beschränkt |
@@ -291,6 +301,8 @@ Für Netzwerk-/Preview-Zugriff: `python -m behoerdenmaster serve --host 0.0.0.0 
 ```bash
 python -m behoerdenmaster backup data/backups/behoerdenmaster-sicherung.sqlite
 ```
+
+**Automatisch:** Mit `BEHOERDEN_BACKUP_VERZEICHNIS` (z. B. ein Ordner auf der persistenten Disk) legt der Hintergrunddienst alle `BEHOERDEN_BACKUP_INTERVALL` Sekunden (Standard 86400) eine Sicherung `behoerdenmaster-<Zeitpunkt>.sqlite` an und behält die letzten `BEHOERDEN_BACKUP_BEHALTEN` (7). Gelöscht werden nur Dateien nach diesem Namensmuster; Zeitpunkt und letzter Fehler stehen in `/api/status` unter `betrieb.sicherung` (ohne Pfad).
 
 Die SQLite-Backup-API erzeugt eine geprüfte, eigenständige Sicherung einschließlich WAL. Vorhandene Zieldateien werden nicht überschrieben. Eine Kopie auf derselben Disk allein ist noch kein Backup gegen Disk-Verlust; unabhängig aufbewahren. Keine aktive SQLite-Datei allein mit `cp` sichern und keine Wiederherstellung bei laufendem Web-/Sync-Prozess durchführen. Weitere Hinweise: [Render-Anleitung](docs/render.md#5-demo-entfernen-daten-sichern-redeploys).
 
@@ -306,6 +318,8 @@ Offline getestet werden die Ladeübersicht (Dokumentverweise je Quelle und Rolle
 Hinzu kommen drei Prüfungen gegen die veröffentlichte Instanz: der **vollständige Abrufpfad gegen die Originalantworten vom 11.10.2026** (robots → System → Body → Listen mit echtem `links.next` → SQLite → Suche → API, einschließlich geschlossener Beratungsfolge mit überliefertem Ergebnis), die **Abrufreihenfolge bei knappem Budget** (Vorlagen vor Sitzungen, damit ein Teilabruf sichtbare Treffer hinterlässt) sowie **Diagnose und Robustheit eines leeren Bestands** (erklärter Leerstand in API und Oberfläche, warnende statt abstürzende Umgebungsauswertung, rollierendes Erstabruf-Fenster). GitHub Actions führt die Python-Tests und eine JavaScript-Syntaxprüfung aus; **keine Live-Behördenabfragen** in der CI.
 
 ## Lizenz und Datenschutz
+
+**Impressum und Datenschutz** liefert die Anwendung unter `/impressum` und `/datenschutz` (verlinkt im Seitenfuß). Die Betreiberangaben stehen nie im Repository, sondern kommen aus der Umgebung: `BEHOERDEN_BETREIBER_NAME`, `BEHOERDEN_BETREIBER_ANSCHRIFT` (Zeilen mit `|` trennen), `BEHOERDEN_BETREIBER_EMAIL` (Pflicht) sowie optional `BEHOERDEN_BETREIBER_TELEFON` und `BEHOERDEN_BETREIBER_VERANTWORTLICH`. Fehlen Pflichtangaben, sagt die Seite das offen, und `/api/status` meldet `rechtliches.impressum_vollstaendig = false`. Die Texte sind Vorlagen und ersetzen keine Rechtsberatung. Zum Weg in einen bezahlten Betrieb siehe [`docs/monetarisierung.md`](docs/monetarisierung.md).
 
 - Im Repository ist derzeit **keine separate Code-Lizenz festgelegt**. Vor einer Weiterverteilung eine passende Lizenzentscheidung treffen. mandari (AGPL-3.0) und demosPlan (EUPL-1.2) wurden nur recherchiert; kein Code übernommen.
 - OParl-Köln-Daten: Datenlizenz Deutschland – Zero – Version 2.0. **Diese Lizenz gilt nicht automatisch für Bauleitplanung Online.** Deren öffentliche Informationen und Dokumente können eigenen Nutzungsbedingungen unterliegen; keine pauschale offene Datenlizenz verifiziert.

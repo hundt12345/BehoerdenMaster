@@ -1,0 +1,2009 @@
+# BehoerdenMaster – Straßenverzeichnis (abgeleitet, Näherung)
+# Quelle: OpenStreetMap-Auszug aus dem OpenPLZ-API-Datenexport (github.com/openpotato/openplzapi.data, src/de/osm/streets.updated.csv)
+# Lizenz: Open Database License (ODbL) 1.0 – © OpenStreetMap-Mitwirkende
+# Stand: 2026-10-14
+# Filter: Regionalschlüssel 05515000 (Stadt aus der gleichnamigen .toml)
+# Aufbau: name<TAB>Stadtteile<TAB>PLZ  (Stadtteile als Nummer:Anzahl der Straßenobjekte)
+# PLZ-Ableitung: Stadtteil ab 10 % und mindestens drei Straßen der PLZ (Werkzeug-Ausgabe)
+# Mehrere Stadtteile = mehrdeutiger Name; die Anwendung ordnet dann keinen Stadtteil zu,
+# sondern nutzt die Kandidaten nur, um eine Suchanfrage zu verstehen.
+# Erzeugt von tools/strassen_aus_osm.py
+aa seitenweg	101:2,102:1	48143,48147
+aakamp	102:1	48147
+aasee rondell	102:1	48149
+aasee wiesen	102:1,406:1	48149
+achatiusweg	503:1	48167
+achtermannstrasse	102:1	48143
+adalbert stifter strasse	303:1	48155
+adelword	404:1	48161
+adenauerallee	102:2	48143,48149
+adlerhorst	303:1	48155
+admiral scheer strasse	103:1	48145
+admiral spee strasse	103:1	48145
+adolf reichwein strasse	202:1	48159
+adolf risse weg	404:1	48161
+adolf wentrup weg	603:1	48165
+adolfstrasse	102:1	48145
+adolph kolping platz	101:1	48143
+aechterhoek	203:1	48159
+aegidiikirchplatz	101:1	48143
+aegidiimarkt	101:1	48143
+aegidiistrasse	101:1	48143
+agathastrasse	502:1	48167
+agnes miegel strasse	303:1	48155
+ahausweg	402:1	48161
+ahlertweg	203:1	48157
+ahornallee	303:1	48155
+akazienallee	303:1	48155
+akeleiweg	302:1	48157
+albachtener strasse	401:1	48163
+alberdingweg	404:1	48161
+albersloher weg	103:1,501:1,502:2,603:1	48155,48165,48167
+albert schweitzer campus	406:1	48149
+albert schweitzer strasse	406:1	48149
+albertsheide	603:1	48165
+albertstrasse	103:1	48145
+albrecht thaer strasse	103:1	48147
+albsmeierweg	104:1	48153
+aldruper strasse	203:2	48157,48159
+alerdinckstrasse	103:1	48145
+alexander hammer weg	404:1	48161
+alexianerweg	601:1	48163
+alfersheide	301:1	48157
+alfred flechtheim platz	101:1	48143
+alfred krupp weg	104:1	48153
+alhardstrasse	404:1	48161
+alkuinstrasse	103:1	48155
+allensteiner strasse	201:1	48157
+aloysia delsen weg	405:1	48161
+alsenstrasse	102:1	48147
+alt angelmodde	501:1	48167
+alte baumschule	301:1	48157
+alte bleiche	405:1	48161
+alte dorfstrasse	405:1	48161
+alte furt	601:1	48163
+alte heroldstrasse	403:1	48163
+alte landstrasse	405:1	48161
+alte reitbahn	602:1	48153
+alte schanze	202:1	48159
+alte schiffahrt	301:1	48157
+alte schifffahrt	301:1	48157
+alte schulstrasse	405:1	48161
+alte viehstrasse	401:1	48163
+alte weide	402:1	48161
+altehof	502:1	48167
+altenberger strasse	404:1	48161
+altenroxeler strasse	401:1,405:1	48161,48163
+alter fischmarkt	101:1	48143
+alter friesenweg	202:1	48159
+alter gemeindeplatz	405:1	48161
+alter heidkamp	202:1	48159
+alter kirchplatz	603:1	48165
+alter milchhof	103:1	48145
+alter muehlenweg	302:1,503:2	48155,48157,48167
+alter postweg	501:1,503:1	48155,48167
+alter steinweg	101:1	48143
+alter zoo	102:1	48149
+althausweg	202:1	48159
+althoffstrasse	104:1	48151
+altumstrasse	102:1	48149
+alverskirchener strasse	503:1	48167
+am alten schuetzenhof	104:1	48153
+am angelkamp	501:1	48167
+am baumberger hof	404:1	48161
+am berg fidel	602:1	48153
+am berler kamp	501:1,503:1	48167
+am blaukreuzwaeldchen	501:1	48167
+am bluetenhain	401:1	48163
+am borggarten	503:1	48167
+am braaken	404:1	48161
+am breilbusch	402:1	48161
+am brook	602:1	48165
+am burloh	202:1	48159
+am dicken weib	603:1	48165
+am diekamp	302:1	48157
+am dill	403:1	48163
+am dornbusch	601:1,603:1	48163,48165
+am emmerbach	603:1	48165
+am eschkamp	302:1	48157
+am filk	501:1,503:1	48155
+am getterbach	401:1,403:1	48163
+am gievenbach	402:1	48161
+am graelbach	303:1	48155
+am hagen	603:1	48165
+am handorfer bahnhof	302:1	48157
+am hangkamp	203:1	48157
+am haselhof	401:1	48163
+am haus nienberge	404:1	48161
+am hawerkamp	103:1	48155
+am herzkamp	603:1	48165
+am hoersterfriedhof	102:1	48147
+am hof schultmann	403:1	48163
+am hof zur linde	302:1	48157
+am hohen ufer	502:1	48167
+am hornbach	302:1	48157
+am inkmanns holz	601:1	48163
+am juffernbach	302:1	48157
+am kaempken	401:1	48163
+am kalthof	404:1	48161
+am kalvarienberg	603:1	48165
+am kanonengraben	102:1	48151
+am kattwinkel	601:1	48163
+am kerkamp	302:1	48157
+am kleibach	104:1	48153
+am klosterwald	603:1	48165
+am knapp	203:1	48159
+am kolk	501:1	48167
+am kreuztor	101:1,102:1	48143,48147
+am krug	104:1	48151
+am kuechenbusch	402:1	48161
+am lindenkamp	401:1	48163
+am linnenkamp	603:1	48165
+am loddenbach	502:1	48167
+am lohausbach	303:1	48155
+am luetkebach	502:1	48155
+am max klemens kanal	203:1	48159
+am meckelbach	405:1	48161
+am mittelhafen	103:1	48155
+am mooresch	302:1	48157
+am muehlenkamp	405:1	48161
+am nubbenberg	202:1	48159
+am oedingteich	603:1	48165
+am pastorenbusch	404:1	48161
+am pulverschuppen	303:1	48155
+am roggenkamp	603:1	48165
+am rohrbusch	405:1	48161
+am rueschhaus	404:1	48161
+am sandbach	503:1	48167
+am sandruper baum	203:1	48159
+am schild	203:1	48159
+am schlagkamp	302:1	48157
+am schlossgarten	102:1	48149
+am schuetthook	501:1	48167
+am spieker	404:1	48161
+am stadtgraben	101:1,102:1	48143
+am steintor	503:1	48167
+am tengen	601:1	48163
+am tiergarten	503:1	48167
+am tinnenbusch	401:1	48163
+am umspannwerk	403:1	48163
+am waeldchen	401:1	48163
+am waldfriedhof	603:1	48165
+am wall	404:1	48161
+am wasserturm	104:1	48151
+am waterbrei	404:1	48161
+am wigbold	503:1	48167
+amelsbuerener strasse	601:1,603:1	48163,48165
+amelunxenstrasse	503:1	48167
+amselweg	502:1	48167
+an den bleichen	102:1	48151
+an den eichen	302:1	48157
+an den loddenbueschen	502:1,602:1	48153,48155
+an den muehlen	102:1	48151
+an der alten kirche	603:1	48165
+an der alten ziegelei	301:1	48157
+an der antoniuskapelle	203:1	48159
+an der apostelkirche	101:1	48143
+an der beeke	401:1	48163
+an der clemenskirche	101:1	48143
+an der germania brauerei	103:1	48159
+an der hansalinie	403:1	48163
+an der hiltruper baumschule	603:1	48165
+an der kleikuhle	405:1	48161
+an der kleimannbruecke	301:1	48157
+an der konradkirche	303:1	48155
+an der meerwiese	201:1	48157
+an der moerd	302:1	48157
+an der schlueppe	203:1	48157
+an der vogelrute	503:1	48167
+an der wallhecke	501:1	48167
+andreas hofer strasse	103:1	48145
+anemonenweg	603:1	48165
+angelmodder weg	501:1,502:1	48167
+angelsachsenweg	502:1	48167
+angelstrasse	501:1	48167
+anna krueckmann weg	103:1	48147
+anna peuler weg	405:1	48161
+anna schweppe weg	301:1	48157
+anne henscheid weg	103:1	48147
+annenstrasse	104:1	48153
+annette allee	102:1	48149
+annette von droste huelshoff strasse	405:1	48161
+anni buschkoetter weg	202:1	48159
+anton aulke strasse	503:1	48167
+anton bruchausen strasse	103:1	48147
+anton knubel weg	502:1	48167
+antoniuskirchplatz	102:1	48151
+antoniusstrasse	102:1	48151
+antwerpener strasse	601:1	48163
+apenrader strasse	103:1	48147
+arena	202:1	48159
+arndtstrasse	103:1	48147
+arnethstrasse	202:1	48159
+arnheimweg	402:1	48161
+arnikaweg	601:1	48163
+arztkarrengasse	101:1	48143
+asbeckweg	402:1	48161
+asche	101:1	48143
+ascheberger strasse	104:1	48163
+ashoelterweg	203:1	48157
+asternweg	603:1	48165
+auf dem dorn	405:1	48161
+auf dem draun	406:1	48149
+auf dem kley	401:1	48163
+auf der breie	601:1	48163
+auf der geist	602:1	48165
+auf der horst	102:1	48147
+auf der laer	302:1	48157
+auf der woort	601:1	48163
+august horch strasse	301:1	48157
+august macke weg	603:1	48165
+august schepers strasse	303:1	48155
+august veltmann weg	403:1	48163
+augustastrasse	104:1	48153
+auguste bispinck weg	103:1	48147
+ausstellungsraum alter fussgaengertunnel	102:1	48143
+austermannstrasse	402:2,406:1	48149,48159
+avendruper strasse	302:1	48157
+averkampstrasse	102:1	48151
+bachstrasse	501:1	48167
+backenkamp	402:1	48161
+badestrasse	102:1	48149
+baeckergasse	101:1	48143
+bahlmannstrasse	103:1	48147
+bahlmannwiese	103:1	48147
+bahnhofstrasse	102:1	48143
+bahnweg	401:1	48163
+bainingstrasse	603:1	48165
+baltrumweg	202:1	48159
+barfusspark	103:1	48147
+barfusspfad	601:1	48163
+barlachstrasse	603:1	48165
+baumgartenweg	503:1	48167
+baumschulenweg	203:1	48159
+beckhofstrasse	103:1	48145
+beckstrasse	104:1	48151
+beelertstiege	101:1	48143
+beermanns esch	302:1	48157
+beerwiede	404:1	48161
+beethovenstrasse	603:1	48165
+beginengasse	101:1	48143
+beldensnyderweg	102:1	48147
+belholtweg	104:1	48151
+bennostrasse	103:1	48155
+bentelerstrasse	406:1	48149
+bentheimweg	402:1	48161
+berdel	503:1	48167
+berdelheide	503:1	48167
+bergiusstrasse	603:1	48165
+bergstrasse	101:1	48143
+berkenkamp	302:1	48157
+berliner platz	102:1	48143
+bermestrasse	503:1	48167
+bernhard ernst strasse	103:1	48155
+bernhard poether strasse	603:1	48165
+bernhardstrasse	102:1	48153
+bernings kotten	402:1	48161
+bernsmeyerstiege	103:1	48145
+bertha von suttner weg	502:1	48155
+bertolt brecht strasse	405:1	48161
+besselweg	402:1	48149
+betriebsweg wsa	603:1	48165
+bewinkel	502:1	48167
+biberweg	201:1	48157
+biederlackweg	502:1	48167
+bielesch	602:1	48165
+billerbeckweg	402:1	48161
+birkenheide	501:1	48167
+birkenweg	303:1	48155
+birkhahnweg	303:1	48155
+bisamgang	201:1	48157
+bischopinkstrasse	104:1	48151
+bismarckallee	102:1	48151
+bispinghof	101:1	48143
+bleisterhoek	301:1	48155
+blomenkamp	401:1	48163
+bluecherstrasse	104:1	48153
+blumenstrasse	102:1	48151
+bockhorststrasse	603:1	48165
+bodelschwinghstrasse	603:1	48165
+boeckenhorst	601:1	48163
+boeckmannplatz	203:1	48159
+boeckmannstiege	102:2	48151,48153
+boeddingheideweg	502:1	48167
+boekenkamp	404:1	48161
+boelckeweg	502:1	48155
+boelestrasse	501:1	48167
+boenneweg	601:1	48163
+boeselagerstrasse	104:1,403:1	48151,48163
+boesenseller strasse	401:1,405:1	48161,48163
+boettcherstrasse	603:1	48165
+bogenstrasse	101:1	48143
+bohlweg	102:2	48145,48147
+bolandsgasse	101:1	48143
+bolzplatz mecklenbeck	403:1	48163
+bonhoefferstrasse	104:1	48151
+boniburg	301:1	48155
+bonifatiusweg	502:1	48155
+bonnenkamp	501:1	48167
+borggreveweg	302:1	48157
+borghorstweg	402:1	48161
+borkenfeld	402:1	48161
+borkstrasse	104:1	48163
+borkumweg	202:1	48159
+borsigweg	104:1	48153
+boverste meer	402:1	48161
+bowenkamp	603:1	48165
+brahmsstrasse	603:1	48165
+brandhoveweg	501:1,503:1	48167
+braseweg	103:1	48147
+braunsbergstrasse	303:1	48155
+bredeheide	405:1	48161
+bredekamp	602:1	48165
+bredewieske	503:1	48167
+breisacher weg	104:1	48151
+breite gasse	101:1	48143
+breitenkamp	601:1	48163
+bremer platz	102:1	48155
+bremer strasse	102:1	48155
+brentanoweg	303:1	48155
+breslauer strasse	201:1	48157
+breul	101:1	48143
+brinkmannstiege	404:1	48161
+brock	405:1	48161
+brockhoffstrasse	102:1	48143
+brockkamp	405:1	48161
+brockmannstrasse	403:1	48163
+broederichweg	202:1	48159
+brookweg	405:1	48161
+bruchfeldweg	402:1	48161
+brucknerstrasse	603:1	48165
+bruederstrasse	102:1	48145
+brueggefeldweg	402:1	48161
+brueggemannweg	103:1	48147
+brueggstiege	404:1	48161
+brueninghagen	202:1	48159
+brueningheide	202:1	48159
+brunnenplatz	104:1	48153
+brunnenstrasse	102:1	48151
+brunnenweg	104:2	48151,48153
+brunostrasse	103:1	48145
+buchenweg	405:1	48161
+buckbrede	401:1	48163
+buckstrasse	104:1	48151
+buddenbrink	601:1	48163
+buddenholz	603:1	48165
+buddenstrasse	101:1	48143
+buechnerstrasse	103:1	48147
+buelt	101:1	48143
+buenkamp	302:1	48157
+buerenstrasse	503:1	48167
+buldernweg	104:1	48163
+burchardstrasse	102:1,103:1	48145
+burgstrasse	102:2	48151,48153
+burgwall	603:1	48165
+buschkamp	405:1	48161
+buschstrasse	501:1	48167
+bussardweg	303:1	48155
+busso peus strasse	402:1,406:1	48149
+buxtrup	503:1	48167
+caldeloerweg	603:1	48165
+carl neuendorff weg	404:1	48161
+carossastrasse	405:1	48161
+castelleweg	303:1	48155
+catharina mueller strasse	102:2	48149,48159
+cheruskerring	102:1,103:1	48147
+christoph bernhard graben	403:1	48163
+clara ratzka weg	303:1	48155
+clemens august platz	501:1	48167
+clemenspark	101:1	48143
+clevornstrasse	104:1	48153
+cloppenburgstrasse	103:1	48145
+coerdeplatz	102:1	48147
+coerder liekweg	201:1	48157
+coerdestiege	201:1	48157
+coerdestrasse	102:1	48147
+coerheide	201:1,203:1	48157
+coermuehle	201:1,203:1,301:1	48157
+coesfeldweg	402:1	48161
+concordenstrasse	401:1	48163
+conradusweg	503:1	48167
+coppenrathsweg	303:1	48155
+corrensstrasse	406:1	48149
+culmer strasse	201:1	48157
+dabeckskamp	503:1	48167
+dachsleite	201:1	48157
+daengsel	601:1	48163
+dag hammarskjoeld weg	502:1	48155
+dahlienweg	603:1	48165
+dahlweg	104:1	48153
+daimlerweg	104:1,403:1	48163
+dalkamp	405:1	48161
+damaschkeweg	303:1	48145
+dammeweg	103:1	48145
+dammstrasse	102:1	48153
+danziger strasse	405:1	48161
+darfeldweg	402:1	48161
+dauvemuehle	202:1	48159
+davensberger strasse	104:1	48163
+davertstrasse	601:1	48163
+dechanei park	103:1	48145
+dechaneischanze	103:1	48145
+dechaneistrasse	103:1	48145
+deermannskamp	405:1	48161
+deermannstrasse	601:1	48163
+deipenfohr	402:1	48161
+deitersweg	202:1	48159
+delpstrasse	104:1	48151
+delstrup	502:1	48167
+dennenkamp	402:1	48161
+derkskamp	601:1	48163
+derssenbrockstiege	404:1	48161
+dettenstrasse	102:1	48147
+deventerstrasse	601:1	48163
+dieckhoffweg	202:1	48159
+dieckmannstrasse	402:1	48161
+dieckstrasse	103:1	48145
+diekbree	302:1	48157
+dieninckstrasse	503:1	48167
+diepenbrockstrasse	102:2	48145,48155
+diesterwegstrasse	202:1	48159
+dingbaengerweg	403:1,405:1	48161,48163
+dingstiege	301:1,303:1	48155
+dinkelweg	601:1	48163
+dinklagestrasse	103:1	48145
+dirk von merveldt strasse	503:1	48167
+disselbrede	302:1	48157
+dodostrasse	102:1	48145
+domagkstrasse	406:1	48149
+domgasse	101:1	48143
+dommelstrasse	405:1	48161
+domplatz	101:1	48143
+donders ring	102:1,104:1	48151
+donnerbusch	404:1	48161
+doornbeckeweg	402:1	48161
+dorbaumstrasse	302:1	48157
+dorffeldstrasse	405:1	48161
+doris wortmann stiege	202:1	48159
+dornierweg	502:1	48155
+dorothea petersmann weg	103:1	48147
+dorotheenstrasse	102:1	48145
+dorpatweg	103:1	48159
+dortmunder strasse	102:1,103:1	48155
+drachterstrasse	602:1	48153
+drechslerweg	405:1	48161
+drei eichen	302:1	48157
+dreilinden	203:1	48159
+dreischkamp	405:1	48161
+dreizehnerstrasse	103:1	48159
+drensteinfurtweg	104:1	48163
+drolshagenweg	502:1	48155
+drosselweg	405:1	48161
+drostenhofstrasse	503:1	48167
+drostestrasse	302:1	48157
+drubbel	101:1	48143
+duddeyheide	403:1	48163
+dueesbergpark	104:1	48153
+dueesbergweg	104:1	48153
+duelmener strasse	401:1	48163
+duererstrasse	102:1	48147
+dunantstrasse	104:1	48151
+dyckburgheide	301:1	48157
+dyckburgstrasse	301:2,303:1	48155,48157
+echelmeyerstrasse	403:1	48163
+eckenerstrasse	102:1	48147
+eckernstiege	401:1	48163
+edelbach	103:1,201:1	48147,48157
+edith miltenberg weg	402:1	48161
+edith stein strasse	102:1	48149
+egbert snoek strasse	502:1	48155
+egbertstrasse	103:1	48145
+egelshove	403:1	48163
+egerweg	104:1	48151
+eibenweg	603:1	48165
+eichelhaeherweg	303:1	48155
+eichenaue	302:1	48157
+eichenbusch	302:1	48157
+eichendorffstrasse	501:1	48167
+eichengrund	302:1	48157
+eichenhain	303:1	48155
+eichenweg	405:1	48161
+eichhornweg	201:1	48157
+eichsfelderstrasse	104:1	48153
+eifelstrasse	104:1	48151
+eimermacherweg	202:1	48159
+einingweg	404:1	48161
+einkornweg	601:1	48163
+einsteinstrasse	102:1,406:1	48149
+eisenbahnstrasse	102:2	48143,48147
+elbestrasse	103:1	48145
+elbinger strasse	201:1	48157
+eli marcus weg	202:1	48159
+elisabet ney strasse	102:1	48147
+elisabeth huerten weg	403:1	48163
+elisabeth kirchplatz	102:1	48155
+elisabeth selbert weg	103:1	48147
+elise ruediger weg	103:1	48147
+ellen scheuner weg	103:1	48147
+elsa braendstroem weg	602:1	48165
+elsaesser strasse	104:1	48151
+elsterweg	502:1	48167
+eltingstrasse	405:1	48161
+eltropweg	303:1	48155
+elvenstueck	303:1	48155
+emdener strasse	102:1	48155
+emil nolde weg	603:1	48165
+emmerweg	601:1	48163
+emmy herzog platz	103:1	48147
+emslaender weg	102:1	48145
+emsstrasse	103:1	48145
+engelenschanze	102:1	48143
+engelstrasse	102:2	48143,48153
+enkingweg	102:1	48147
+enschedeweg	402:1	48149
+erbdrostenweg	502:2	48155,48167
+erich greffin weg	502:1	48167
+erikaplatz	303:1	48155
+erikaweg	303:1	48155
+erlebnispfad duft und riechgarten	102:1	48149
+erlenallee	303:1	48155
+erlengrund	401:1	48163
+erlenkamp	202:1	48159
+ermlandweg	202:1	48159
+ernst schenke strasse	302:1	48157
+ernst wiechert strasse	404:1	48161
+erphokirchplatz	103:1	48145
+erphostrasse	102:1,103:1	48145
+eschenweg	603:1	48165
+eschstrasse	501:1,503:1	48167
+essexweg	502:1	48167
+essmannstrasse	203:1	48159
+eugen mueller strasse	103:1	48145
+eulerstrasse	502:1	48155
+eupener weg	406:1	48149
+everswinkeler strasse	503:1	48167
+ewaldistrasse	103:1	48155
+falgerstrasse	103:1	48147
+falkenhorst	303:1	48155
+falkenweg	502:1	48167
+farwicksheide	601:1	48163
+fasanenweg	303:1	48155
+fehrbellinweg	104:1	48151
+feldkamp	603:1	48165
+feldstiege	404:1	48161
+feldstiegenkamp	202:1	48159
+ferdinand freiligrath strasse	103:1	48147
+ferdinandstrasse	102:1	48147
+fernholzstrasse	202:1	48159
+feuerstiege	601:1	48163
+fichtenweg	603:1	48165
+finkenstrasse	102:1	48147
+fitzmauriceweg	502:1	48155
+flamenstrasse	404:1	48161
+flandernstrasse	103:1	48147
+flasskamp	403:1	48163
+flasskuhl	501:1	48167
+fleigestrasse	603:1	48165
+flensburger strasse	103:1	48147
+fliederweg	303:1	48155
+fliednerstrasse	406:1	48149
+flothbach	203:1	48159
+flothfeld	203:1,404:1	48159,48161
+flugplatz	302:1	48157
+foehrenweg	603:1	48165
+foersterstrasse	102:1	48149
+forstweg	203:1	48159
+frankenweg	502:1	48167
+franz beiske weg	502:1	48167
+franz berding weg	603:1	48165
+franz dahlkamp weg	603:1	48165
+franz essink strasse	103:1	48147
+franz grillparzer weg	303:1	48155
+franz hitze strasse	104:1	48151
+franz marc weg	603:1	48165
+franz meis strasse	403:1	48163
+franz von waldeck strasse	503:1	48167
+frauenburgstrasse	303:1	48155
+frauenstrasse	101:1	48143
+fraunhoferstrasse	405:1	48161
+freckenhorster strasse	503:2	48155,48167
+freiburger weg	104:1	48151
+freie flur	401:1	48163
+freiherr vom stein platz	102:2	48145,48147
+fresnostrasse	103:1	48159
+fridericusstrasse	404:1	48161
+fridtjof nansen weg	502:1	48155
+frie vendt strasse	102:1	48153
+friedenspark	502:1	48155
+friedensstrasse	102:1	48145
+friedhofstrasse	603:1	48165
+friedlandstrasse	601:1	48163
+friedrich ebert platz	102:1	48153
+friedrich ebert strasse	102:1,104:1	48153
+friedrich wilhelm weber strasse	103:1	48147
+friedrichstrasse	102:2	48143,48145
+friesenring	102:1,103:2	48147,48159
+fritz puetter strasse	104:1	48153
+fritz reuter strasse	203:1	48159
+fritz stricker strasse	403:1	48163
+froebelstrasse	202:1	48159
+fuchsweg	201:1	48157
+fuerstenbergstrasse	102:1	48147
+fuggerstrasse	603:1	48165
+fussgaengerzugang parkhaus	406:1	48149
+gad strasse	403:1	48163
+gaitlingweg	502:1	48167
+galgenheide	104:1,403:1	48163
+galileistrasse	404:1	48161
+gallenkamp	303:1	48145
+gallitzinstrasse	501:1	48167
+gartenbreie	402:1	48161
+gartenstiege	404:1	48161
+gartenstrasse	102:1,103:1	48147
+gasselstiege	102:2,103:2,202:1,404:1	48149,48159,48161
+geibelstrasse	405:1	48161
+geierhorst	603:1	48165
+geisbergweg	101:1	48143
+geister landweg	602:1	48153
+geistkamp	603:1	48165
+geiststrasse	102:1,104:2	48151,48153
+gelmerheide	301:1	48157
+gemenweg	402:1	48149
+georgskommende	101:1	48143
+georgstrasse	102:1	48153
+gerbertweg	203:1	48159
+gereonstrasse	102:1	48145
+gerhardstrasse	103:1	48145
+gerhart hauptmann strasse	303:1	48155
+gerichtsstrasse	102:1	48149
+geringhoffstrasse	104:2	48151,48163
+gerstkamp	104:1	48153
+gertrudenstrasse	102:1	48149
+gescherweg	402:2	48149,48161
+geschwister scholl strasse	104:1	48151
+gieselbertweg	404:1	48161
+gievenbecker reihe	402:1	48161
+gievenbecker weg	402:1	48149
+gigasstrasse	602:1	48153
+gildenstrasse	302:1	48157
+gimbter strasse	203:1	48157
+ginsterweg	303:1	48155
+gittruper strasse	301:1	48157
+glasuritstrasse	603:1	48165
+glatzer weg	104:1	48151
+gleiwitzer strasse	201:1	48157
+glockenblumenweg	302:1	48157
+gluckweg	103:1	48147
+goebenstrasse	102:1	48151
+goerdelerstrasse	104:1	48151
+goerlitzer strasse	201:1	48157
+goerresstrasse	102:1	48147
+goethestrasse	405:1	48161
+goldaper strasse	405:1	48161
+goldbrink	503:1	48167
+goldenbergstrasse	403:1	48163
+goldstrasse	102:1	48147
+gorch fock strasse	103:1	48145
+gorenkamp	602:1	48165
+gottfriedstrasse	102:1	48151
+graelstrasse	102:1	48153
+grafschaft	601:1,602:2	48163,48165
+grawertstrasse	103:1	48147
+greifswaldweg	103:1	48147
+gremmendorf ehrenmal	502:1	48167
+gremmendorfer weg	502:1	48167
+grenkuhlenweg	503:1	48167
+greta buenichmann strasse	103:1	48155
+grevener strasse	102:3,103:1,202:1,203:1	48147,48149,48159
+grevingstrasse	104:2	48151,48153
+griegweg	103:1	48147
+grienkenswell	404:1	48161
+grimmstrasse	102:1	48149
+groeningerstrasse	404:1	48161
+grollheide	602:1	48165
+gronauweg	402:1	48161
+gronewegskamp	202:1	48159
+gronowskistrasse	402:1	48161
+gropiusstrasse	601:1	48163
+grosse helkamp	405:1	48161
+grosse wiese	202:1	48159
+grotemeyerstrasse	202:1	48159
+gruene gasse	101:1	48143
+gruener grund	104:1	48151
+gruener hang	104:1	48151
+gruener weg	503:1	48167
+gruener winkel	104:1	48151
+gruetgasse	101:1	48143
+guerickeweg	202:1	48159
+gumprichstrasse	402:1	48161
+gustav freytag strasse	404:1	48161
+gustav mahler weg	103:1	48147
+gustav stresemann weg	502:1	48155
+gustav tweer weg	502:1	48167
+gustav wentker weg	202:1	48159
+gut insel	104:1	48151
+gut pfad	403:1	48163
+gutenbergstrasse	102:1	48145
+habichtshoehe	104:1	48151
+habichtsweg	303:1	48155
+hacklenburg	103:1	48147
+haegerfeld	404:1	48161
+haegerstrasse	404:1	48161
+haendelstrasse	603:1	48165
+hafengrenzweg	103:1	48155
+hafenmarkt	103:1	48155
+hafenplatz	103:1	48155
+hafenstrasse	102:2,103:1	48151,48153
+hafenweg	103:1	48155
+haferlandweg	502:1	48155
+hafkhorst	403:1	48163
+hagebuttenweg	203:1	48159
+hagelbachstiege	404:1	48161
+hagemanns kaempken	405:1	48161
+hagenauer weg	104:1	48151
+hagenschneiderweg	102:1	48153
+hakenesheide	301:1	48157
+hamburger strasse	102:1	48155
+hammer strasse	102:2,104:1,602:1	48151,48153
+hamsens busch	503:1	48167
+handorfer strasse	302:1	48157
+hanemannstrasse	401:1	48163
+hannaschweg	404:1	48161
+hanns rott weg	502:1	48167
+hans bredow weg	303:1	48155
+hansaplatz	102:1	48155
+hansaring	102:1,103:1	48155
+hanseller strasse	404:1	48161
+hanses ketteler strasse	603:1	48165
+hansestrasse	603:1	48165
+harkortstrasse	403:1	48163
+harsewinkelgasse	101:1	48143
+harsewinkelplatz	101:1	48143
+hartmannsbrook	601:1	48163
+haselstiege	203:2	48157,48159
+hasenbusch	202:1	48159
+hatzfeldweg	303:1	48155
+haubrockweg	202:1	48159
+haugenkamp	503:1	48167
+haurottheide	301:1	48157
+haus angelmodde	501:1	48167
+haus getter	601:1	48163
+haus heidhorn	601:1	48165
+haus herding	603:1	48165
+haus kappenberg	601:1	48163
+haus kleve weg	302:1,303:1	48155,48157
+haus sentmaring	104:1	48151
+haus tinnen	601:1	48163
+haus uhlenkotten	402:1	48159
+haus wiek	401:1	48163
+havichhorster muehle	301:1	48157
+havichhorststrasse	102:1	48145
+havixbecker strasse	405:1	48161
+havixburgweg	103:1	48147
+haxthausenweg	603:1	48165
+hebbelweg	603:1	48165
+heckenweg	603:1	48165
+hedwig feibes weg	403:1	48163
+hedwigstrasse	102:1	48149
+heekweg	402:1	48161
+heerdestrasse	102:1	48149
+heeremansweg	502:1	48167
+hegerskamp	303:1	48155
+heideggerstrasse	603:1	48165
+heidegrund	202:1,203:1	48159
+heidestrasse	501:1	48167
+heidhornweg	601:1	48163
+heidkoettersweg	202:1	48159
+heilbronnweg	503:1	48167
+heimatfrieden	203:1	48159
+heimkehrerweg	104:1	48153
+heimstaettenweg	104:1	48151
+heinrich bruening strasse	101:1	48143
+heinrich ebel strasse	402:1	48161
+heinrich hemsath weg	102:1	48149
+heinrich lersch weg	303:1	48155
+heinrich loewe weg	502:1	48167
+heinrich von kleist strasse	404:1	48161
+heinrich von stephan ring	501:1	48167
+heinrich wichtrup weg	502:1	48167
+heinrichstrasse	601:1	48163
+heisenbergstrasse	406:1	48149
+heisstrasse	102:1	48145
+heitbusch	403:1	48163
+helen vita weg	603:1	48165
+helene weigel weg	603:1	48165
+helgolandweg	202:1	48159
+helma sjuts weg	603:1	48165
+helmut pins weg	503:1	48167
+helweger esch	302:1	48157
+henny waldeck weg	403:1	48163
+henriette hertz weg	402:1	48161
+henriette son strasse	406:1	48149
+hensenstrasse	402:2	48149,48161
+herbernweg	104:1	48163
+herdingstrasse	104:1	48153
+heriburgstrasse	302:1	48157
+herlenbusch	302:1	48157
+herma kramm weg	103:1	48147
+hermann eimann weg	403:1	48163
+hermann hesse strasse	404:1	48161
+hermann josef neuhaus weg	406:1	48149
+hermann sudermann strasse	303:1	48155
+hermann treff weg	502:1	48167
+hermannstadtweg	104:1	48151
+hermannstrasse	102:1	48151
+hermelinweg	201:1	48157
+heroldstrasse	403:1	48163
+herrenburgallee	603:1	48165
+herrenstrasse	503:1	48167
+hertelstrasse	405:1	48161
+herwarthstrasse	102:1	48143
+herz jesu kirchplatz	103:1	48155
+hessenbusch	301:1	48157
+hessenweg	203:1,301:1	48157
+heuenkamp	403:1	48163
+heumannsweg	502:1	48155
+hilgeland	302:1	48157
+hilleweg	303:1	48155
+hiltruper strasse	501:1,503:1	48167
+himmelreichallee	102:1	48149
+hirseweg	601:1	48163
+hittorfstrasse	102:1	48149
+hobbeltstrasse	302:1	48157
+hochherzweg	404:1	48161
+hochstrasse	102:1	48151
+hochzeitswald	404:1	48161
+hoefflingerweg	104:1	48153
+hoeftestrasse	501:1	48167
+hoelderlinweg	603:1	48165
+hoelkenbusch	404:1	48161
+hoeltene schluse	203:1	48159
+hoeltenweg	502:1	48155
+hoerdemannstrasse	601:1	48163
+hoerster friedhof	102:1	48147
+hoersterplatz	102:1	48147
+hoersterstrasse	101:1,102:1	48143,48147
+hoetteweg	101:1	48143
+hoffmann von fallersleben weg	603:1	48165
+hoffmannweg	503:1	48167
+hoffschultestrasse	103:1	48155
+hofkamp	503:2	48155,48167
+hofmannpaettken	405:1	48161
+hofstrasse	503:1	48167
+hogenbergstrasse	602:1	48153
+hohe geest	602:1,603:1	48165
+hohe geist	401:1	48163
+hohenholter strasse	405:1	48161
+hohenzollernring	102:1,103:1	48145
+hoher hainweg	104:1	48153
+hoher heckenweg	103:1,201:1	48147,48157
+hollandtstrasse	402:1	48161
+hollenbeckerstrasse	101:1	48143
+holsenkampweg	603:1	48165
+holsteiner strasse	103:1	48147
+holtbeck	402:1	48161
+holteistrasse	405:1	48161
+holtkamp	403:1	48163
+holtmannsweg	201:1	48157
+holtrode	503:1	48167
+holtwickweg	402:1	48161
+holunderweg	203:1	48159
+holzbruecke	503:1	48167
+holzschuhmacherweg	405:1	48161
+homannstrasse	501:1,502:1	48167
+honebachaue	303:1	48155
+hoove	302:1	48157
+hoppendamm	102:1	48151
+hoppengarten	103:1	48147
+hornstrasse	102:1	48151
+horsteberg	101:1	48143
+horstmarer landweg	402:2,404:1,406:1	48149,48161
+hospitaliterweg	603:1	48165
+hoyastrasse	102:1	48147
+huberstrasse	104:1	48151
+hubertistrasse	103:1	48155
+hubertusweg	301:1	48157
+huefferstrasse	102:1	48149
+huelsebrockstrasse	603:1	48165
+huelsheide	603:1	48165
+huelshoffstrasse	404:1,405:1	48161
+huenenburg	602:1,603:1	48165
+hugerlandshofweg	301:2	48155,48157
+hummelbrink	603:1	48165
+humperdinckstrasse	103:1	48147
+hunnebeckweg	404:1	48161
+ida siekmann weg	102:1	48147
+idenbrockplatz	202:1	48159
+idenbrockweg	202:1	48159
+igelpatt	201:1	48157
+illa andreae weg	503:1	48167
+iltisweg	201:1	48157
+im aatal	203:1	48157
+im bilskamp	503:1	48167
+im birkenbusch	303:1	48155
+im brook	203:1	48159
+im dahl	603:1	48165
+im derdel	405:1	48161
+im draum	203:1	48159
+im drostebusch	303:1	48155
+im haberfeld	405:1	48161
+im hagedorn	202:1	48159
+im hagen	203:1	48159
+im hagenfeld	103:1	48147
+im hain	603:1	48165
+im heidgarten	203:1	48159
+im hook	603:1	48165
+im moorhock	202:1	48159
+im muehlenfeld	601:1	48163
+im muensteresch	103:1	48159
+im rueschenfeld	405:1	48161
+im seihof	405:1	48161
+im sonnentau	601:1	48163
+im stemmen	603:1	48165
+im sundern	301:1	48157
+im windhoek	301:1	48157
+im winkel	301:1	48157
+immanuel kant strasse	404:1	48161
+immelmannstrasse	302:1	48157
+immenkamp	603:1	48165
+in der au	203:1	48159
+in der brinke	503:1	48167
+in der stroth	302:1	48157
+in der weede	401:1	48163
+industrieweg	103:1,104:1	48153,48155
+ingeborg bachmann weg	603:1	48165
+inkingrodde	601:1	48163
+innenhof hansa domicil	102:1	48155
+innsbruckweg	103:1	48145
+inselbogen	104:1	48151
+inselgarten	104:1	48151
+inselweg	301:1	48157
+irmgard loermann weg	202:1	48159
+isingholtweg	404:1	48161
+isolde kurz strasse	404:1	48161
+jacob von korbach weg	503:1	48167
+jacobistrasse	404:1	48161
+jaegerstrasse	102:1	48153
+jahnstrasse	102:1,103:2	48147,48159
+janningsweg	202:1	48159
+janskamp	503:1	48167
+jeilerstrasse	102:1	48147
+jessingstrasse	102:1	48149
+jesuitengang	101:1	48143
+jochen klepper strasse	503:1	48167
+johann krane weg	406:1	48149
+johann strauss strasse	603:1	48165
+johanna paul weg	603:1	48165
+johanne walhorn weg	102:1	48147
+johannes busch platz	303:1	48155
+johannisberg	404:1	48161
+johannisstrasse	101:1	48143
+johanniterstrasse	102:2	48143,48145
+josef beckmann strasse	202:1	48159
+josef pieper strasse	406:1	48149
+josef suwelack weg	502:1	48167
+josefine mauser strasse	201:1	48157
+josefstrasse	102:1	48151
+joseph haydn strasse	103:1	48147
+jostesstrasse	103:1	48147
+juedefelderstrasse	101:1	48143
+juffernkamp	503:1	48167
+juistweg	202:1	48159
+julius hart strasse	103:1	48147
+julius leber strasse	104:1	48151
+julius voos gasse	101:1	48143
+jungeblodtplatz	406:1	48149
+jungfer willemin stiege	101:1	48143
+junglasweg	501:1	48167
+junker joerg platz	501:1	48167
+junkerstrasse	102:1	48153
+jupiterweg	601:1	48163
+kaerntner strasse	103:1	48145
+kaethe ernst weg	404:1	48161
+kaethe kollwitz strasse	501:1	48167
+kaiser wilhelm ring	102:1,103:1	48145
+kaldenhofer weg	302:1,502:1	48155,48157
+kamillusweg	301:1	48157
+kampstrasse	102:1	48147
+kanalpromenade	103:2,303:1,502:1,601:2,603:1	48145,48147,48155,48163,48165
+kanalstrasse	101:2,102:1,103:1,202:1	48143,48147,48159
+kannenheide	601:1	48163
+kannenweg	601:1	48163
+kanonierstrasse	102:1	48149
+kapellenstrasse	405:1	48161
+kapitelstrasse	103:1	48145
+kappenberger damm	104:1,601:1	48151,48163
+kappenberger feld	601:1	48163
+kapustaweg	203:1	48159
+kapuzinerstrasse	102:1	48149
+kardinal von galen ring	102:1,104:1,406:1	48149,48151
+kardinalstrasse	603:1	48165
+karl immermann strasse	603:1	48165
+karlsbadweg	104:1	48151
+karlstrasse	102:1	48147
+kartwinkel	403:1	48163
+kasewinkel	302:1	48157
+kastanienallee	603:1	48165
+kastanienweg	406:1	48149
+kastellstrasse	102:1	48149
+katharinenstrasse	102:1	48145
+katthagen	101:1	48143
+kegelskamp	104:1	48153
+kellermannstrasse	102:1	48149
+keltenweg	502:1	48167
+kemperweg	201:1	48157
+kentweg	502:1	48167
+keplerweg	202:1	48159
+kerkerinckstrasse	104:1	48151
+kerkheideweg	403:1	48163
+kerkschlag	302:1	48157
+kerssenbrockstrasse	102:1	48147
+kerstingskamp	202:1	48159
+kesselfeld	601:1	48163
+kesslerweg	502:1	48155
+ketteler ort	502:1	48167
+kettelerstrasse	102:1	48147
+kiebitzweg	603:1	48165
+kiefernweg	603:1	48165
+kiepenkerl	101:1	48143
+kiesekamps muehle	103:1	48155
+kiesekampweg	201:1	48157
+killingstrasse	202:1	48159
+kinderhaus	202:1	48159
+kinderhauser strasse	102:2,103:1	48147,48149
+kirchfeld	601:1	48163
+kirchherrngasse	101:1	48143
+kirchhoffweg	202:1	48159
+kirchplatz	501:1	48167
+kirchstrasse	103:1	48145
+kirmstrasse	404:1	48161
+kirschgarten	302:1	48157
+kissenkoetter	501:1	48167
+kissenkoetterweg	501:1	48167
+klapperhagen	403:1	48163
+klarissengasse	101:1	48143
+klausenburgweg	104:1	48151
+klausenerstrasse	104:1	48151
+kleibusch	403:1	48163
+kleiheide	203:1	48159
+kleihorststrasse	104:1	48151
+kleikamp	104:1	48153
+kleimannstrasse	102:2	48147,48149
+kleine breikamp	401:1	48163
+kleine turmstrasse	104:1	48151
+klemensstrasse	101:1	48143
+klinkkampweg	603:1	48165
+klosterbusch	502:1	48167
+klosterstrasse	101:1	48143
+klosterweg	404:1	48161
+knufenkamp	401:1	48163
+koburger weg	103:1	48159
+koehlweg	502:1	48155
+koelner strasse	601:1	48163
+koenemannstrasse	405:1	48161
+koenigsberger strasse	201:1,301:1	48157
+koenigsstrasse	101:1	48143
+koenigsweg	104:1	48153
+koerberheide	302:1	48157
+koernerstrasse	102:1	48151
+koesliner strasse	103:1	48147
+koestendeel	301:1	48157
+koesters kaempken	405:1	48161
+koetterstrasse	302:1	48157
+kolbergstrasse	103:1	48147
+kolde ring	102:1,104:1	48151
+kolmarstrasse	104:1	48151
+kolpingstrasse	102:1	48147
+konermannweg	202:1	48159
+konradstrasse	103:1	48145
+konsul schencking strasse	603:1	48165
+kopenhagener strasse	601:1	48163
+kopernikusweg	303:1	48155
+korbmacherweg	405:1	48161
+korduanenstrasse	101:1	48143
+kornblumenweg	302:1	48157
+korte ossenbeck	104:1	48151
+kortenkamp	403:1	48163
+kortumweg	603:1	48165
+koskamp	603:1	48165
+kranichweg	502:1	48167
+kreuzbach	503:1	48167
+kreuzgang	101:1	48143
+kreuzrittereck	603:1	48165
+kreuzschanze	102:1	48149
+kreuzstrasse	101:1	48143
+kriegerplatz	104:1	48153
+kriegerweg	104:1	48153
+kristiansandstrasse	202:1	48159
+kroegerweg	502:1	48155
+krokusweg	603:1	48165
+kronprinzenstrasse	102:1,104:1	48153
+kronstadtweg	104:1	48151
+kruesbreede	302:1	48157
+krumme strasse	101:1	48143
+krummer timpen	101:1	48143
+kuckuckshain	603:1	48165
+kueperweg	405:1	48161
+kuestrinweg	103:1	48147
+kuhstrasse	101:1	48143
+kunsthaus angelmodde	502:1	48167
+kupferbrink	503:1	48167
+kurneystrasse	404:1	48161
+kurze strasse	104:1	48151
+lackmannweg	503:1	48167
+laerchenweg	603:1	48165
+laerer landweg	303:2	48145,48155
+laerer werseufer	302:1,503:1	48155,48157
+lahnstrasse	103:1	48145
+lambertikirchplatz	101:1	48143
+lambertistrasse	103:1	48155
+lammerbach	302:1	48157
+landoisplatz	406:1	48161
+landoisstrasse	102:1	48149
+landsberger strasse	601:1	48163
+landwehr	201:1,203:1	48157,48159
+lange kuhle	601:1	48163
+lange ossenbeck	104:1	48151
+langebusch	202:1	48159
+langemarckstrasse	102:1,103:1	48147
+langenhorster stiege	203:1,404:1	48159,48161
+langenkamp	401:1	48163
+langeoogweg	202:1	48159
+langestrasse	603:1	48165
+langeworth	202:1	48159
+lauenburgstrasse	103:1	48147
+laukamp	402:1	48161
+laustiege	402:1	48161
+lazarettstrasse	102:1	48149
+lechtenbergweg	602:1	48165
+lechterstrasse	602:1	48153
+leerer strasse	102:1	48155
+legdenweg	402:1	48161
+lehmkamp	402:1	48161
+leibnizstrasse	603:1	48165
+leiferdingweg	404:1	48161
+leisnerstrasse	601:1	48163
+lenauweg	103:1	48147
+leostrasse	102:1	48153
+lerschmehr	503:1	48167
+lessingstrasse	405:1	48161
+letterhausweg	502:1	48167
+leuschnerstrasse	104:1	48151
+levin schuecking allee	102:1	48149
+liboristrasse	103:1	48155
+liebigweg	603:1	48165
+liegnitzer strasse	201:1	48157
+liekfor	601:1	48163
+lilienthalweg	502:1	48167
+linckensstrasse	603:1	48165
+lindberghweg	502:1	48155
+lindenallee	401:1	48163
+lindenbreie	402:1	48161
+lindenpark	406:1	48149
+lindenstrasse	405:1	48161
+lingener strasse	102:1	48155
+linnebornstiege	102:1	48155
+linnenbrinks garten	102:1	48145
+linus pauling weg	502:1	48155
+lippestrasse	103:1	48145
+lippstaedter strasse	103:1	48155
+lise meitner strasse	405:1	48161
+lisztstrasse	603:1	48165
+loddenheide	502:1	48155
+loddenweg	603:1	48165
+loeningenstrasse	103:1	48145
+loensstrasse	103:1	48145
+loergasse	101:1	48143
+loerstrasse	101:1	48143
+loevelingloh	601:1	48163
+loewenzahnweg	302:1	48157
+lohausweg	303:1	48145
+lohoefenerweg	104:1	48153
+lortzingstrasse	102:1	48145
+lotharingerstrasse	101:1	48147
+lublinring	102:1,103:1	48147
+ludgeriplatz	102:1	48151
+ludgeristrasse	101:1,102:1	48143,48151
+ludwig anzengruber weg	303:1	48155
+ludwig duerr strasse	102:1	48147
+ludwig thoma strasse	405:1	48161
+ludwig tieck strasse	405:1	48161
+ludwig wolker strasse	302:1	48157
+ludwigstrasse	102:1	48153
+luebecker strasse	601:1	48163
+luederitzweg	502:1	48167
+luedinghauser strasse	104:1	48163
+luehnstiege	102:1	48151
+luetke gasse	101:1	48143
+luetke geist	401:1	48163
+luetke ladbergen	404:1	48161
+luetkenbecker weg	303:1,502:1	48155
+luetzowstrasse	302:1	48157
+luise rappoport weg	402:1	48161
+luntenstiege	404:1	48161
+magdalenenstrasse	101:1	48143
+maikottenhoehe	303:1	48155
+maikottenweg	303:1	48155
+malmedyweg	406:1	48149
+malteserstrasse	603:1	48165
+malvenweg	601:1	48163
+manfred von richthofen strasse	103:1,303:1	48145
+manfredstrasse	103:1	48145
+marderweg	201:1	48157
+marga spiegel weg	401:1	48163
+margarete moormann weg	103:1	48147
+margaretenstrasse	102:1,103:1	48145
+maria euthymia platz	101:1	48143
+marianne mecke weg	502:1	48167
+marie curie strasse	603:1	48165
+marienburgstrasse	201:1	48157
+mariendorfer strasse	301:2,303:1	48155,48157
+marienfeldweg	503:1	48167
+mariengrotte	502:1	48155
+marienkirchweg	603:1	48165
+marienplatz	101:1	48143
+marienstrasse	203:1	48159
+marientalstrasse	102:2	48147,48149
+marievengasse	101:1	48143
+maringstrasse	104:1	48151
+markenweg	601:1	48163
+marks haindorf stiege	102:1	48151
+marktallee	603:1	48165
+marktstrasse	503:1	48167
+markweg	103:1	48147
+marsweg	601:1	48163
+martin luther king weg	502:1	48155
+martin luther strasse	102:1	48147
+martin niemoeller park	102:1	48147
+martin niemoeller strasse	202:1	48159
+martinikirchhof	101:1	48143
+masurenweg	103:1	48147
+mathilde anneke weg	103:1	48147
+mauritz dahl	303:1	48145
+mauritz lindenweg	103:1	48145
+mauritzheide	103:1	48145
+mauritzsteinpfad	102:1	48145
+mauritzstrasse	101:1	48143
+mauritztor	101:1,102:2	48143,48147
+mausbachstrasse	406:1	48149
+max reger strasse	603:1	48165
+max winkelmann strasse	603:1	48165
+maximilianstrasse	102:1	48147
+maybachstrasse	102:1	48145
+mazzottistrasse	602:1	48153
+mecklenbecker strasse	104:1,403:1	48151,48163
+mecklenburger strasse	103:2	48145,48147
+meckmannweg	403:1	48163
+meerhook	401:1	48163
+meesenstiege	603:1	48165
+mehringweg	202:1	48159
+meinenkampstrasse	603:1	48165
+meinertzstrasse	202:1	48159
+meinhoevelstrasse	503:1	48167
+meisenweg	502:1	48167
+melchersstrasse	102:2	48147,48149
+melissenweg	302:1	48157
+memelufer	103:1	48145
+memmertweg	202:1	48159
+mendelstrasse	406:1	48149
+mengelkamp	501:1	48167
+meppener strasse	102:1	48155
+mergelberg	402:1	48161
+merkureck	603:1	48165
+merschkamp	303:1	48155
+mersmannsstiege	104:1,403:1	48163
+mertensheide	603:1	48165
+messingweg	203:1	48157
+messkamp	103:1	48147
+metzer strasse	104:2	48151,48153
+meyerbeerstrasse	403:1	48163
+michaelisplatz	101:1	48143
+michaelweg	402:1	48149
+middelerstrasse	503:1	48167
+middelfeld	302:1	48157
+middelkamp	501:1	48167
+mierendorffstrasse	104:1	48151
+mindener strasse	103:1	48145
+modersohnweg	102:1,104:1	48151
+moellmannsweg	402:1	48161
+moerikestrasse	404:1	48161
+moeselerhook	401:1	48163
+moeserweg	102:1	48149
+moldrickx allee	202:1	48159
+moltkestrasse	102:1	48151
+monastirplatz	202:1	48159
+mondstrasse	303:1	48155
+montessoriweg	202:1	48159
+moorbirkenweg	302:1	48157
+moraenenstrasse	603:1	48165
+morthorststrasse	201:1	48157
+moselstrasse	103:1	48145
+mozartstrasse	603:1	48165
+muckermannweg	406:1	48149
+muehlendamm	503:1	48167
+muehlenesch	503:1	48167
+muehlenstrasse	101:1	48143
+muehlhaeuser strasse	303:1	48155
+muemmelmannpfad	201:1	48157
+muennichweg	502:1	48167
+muenstermannweg	104:1	48153
+muensterstrasse	302:1,503:2	48155,48157,48167
+muenzstrasse	101:1	48143
+museumspark	603:1	48165
+nachtigallenweg	502:1	48167
+nanny katz weg	402:1	48161
+natz thier weg	303:1	48155
+neisemeyerweg	603:1	48165
+neissestrasse	103:1	48145
+nelkenweg	603:1	48165
+nerzweg	201:1	48157
+neubrueckenstrasse	101:2	48143,48147
+neuer heidkamp	202:1	48159
+neuheim	303:1	48155
+neustrasse	503:1	48167
+neutor	102:2	48143,48149
+nevinghoff	103:1	48147
+nicolaistrasse	405:1	48161
+nieberdingstrasse	502:1	48155
+niedenstiege	402:1	48161
+niederort	401:1	48163
+niedersachsenring	102:2,103:2	48145,48147
+nielaenderweg	603:1	48165
+nieland	302:1	48157
+niels stensen strasse	406:1	48149
+nienberger kirchplatz	404:1	48161
+nienberger strasse	203:1	48159
+nienborgweg	402:1	48161
+nienkamp	103:1	48147
+niesertstrasse	103:1	48145
+niesingstrasse	104:1	48151
+nikolaus gross weg	502:1	48167
+nikolausweg	503:1	48167
+nimrodweg	603:1	48165
+nisinghoverweg	603:1	48165
+nobelstrasse	603:1	48165
+nogatstrasse	503:1	48167
+norbertstrasse	102:1	48151
+nordenfeld	302:1	48157
+norderneyweg	202:1	48159
+nordhornstrasse	402:2	48149,48161
+nordkirchenweg	601:1	48163
+nordplatz	102:2	48147,48149
+nordstrasse	102:1	48149
+norfolkweg	502:1	48167
+normannenweg	502:1	48167
+nottebohmstrasse	102:1	48145
+nottebrock	601:1	48163
+nottulner landweg	405:1	48161
+nuenningfeld	402:1	48161
+nuenningweg	402:1	48161
+obere parkallee	303:1	48155
+oberort	401:1,405:1	48161,48163
+oberschlesier strasse	104:1	48151
+ochtrupweg	402:1	48161
+oderstrasse	103:1	48145
+oedingheide	603:1	48165
+offenbergstrasse	102:1	48151
+offerbach park	401:1	48163
+offerkaempe	401:1	48163
+ohmweg	202:1	48159
+olfersstrasse	104:1	48153
+orionweg	601:1	48163
+orleans ring	406:1	48149
+ossenkampstiege	403:1	48163
+ostenbree	302:1	48157
+osterhoffstrasse	404:1	48161
+osterstrasse	403:1	48163
+osthofstrasse	401:1	48163
+ostmarkstrasse	102:1,103:1	48145
+ostpreussenstrasse	501:1	48167
+oststrasse	102:1	48145
+osttor	501:1,603:1	48165
+otterweg	201:1	48157
+ottmarsbocholter strasse	601:1	48163
+otto hahn strasse	405:1	48161
+otto hersing weg	502:1	48167
+otto weddigen strasse	103:1	48145
+ottostrasse	103:1	48155
+overbergstrasse	102:1	48145
+overeskenhoek	301:1	48157
+paengelantonweg	502:1	48167
+palestrinastrasse	103:1	48147
+pankokstrasse	602:1	48153
+pantaleonstrasse	405:1	48161
+papenburger strasse	102:1	48155
+papenbusch	202:1	48159
+papenstiege	404:1	48161
+pappelweg	603:1	48165
+parkallee	303:1	48155
+pastorsesch	202:1	48159
+pater balsliemke weg	301:1	48157
+pater kolbe strasse	601:1	48163
+patronatsstrasse	603:1	48165
+paul engelhard weg	502:1	48167
+paul gerhardt strasse	405:1	48161
+paul hoerst paettken	104:1	48153
+paul keller strasse	303:1	48155
+paul klee weg	603:1	48165
+paul wulf weg	102:1	48149
+paulstrasse	104:1	48151
+peppinghegeweg	501:1	48167
+pestalozzistrasse	202:1	48159
+peter buescher strasse	501:1	48167
+peter rosegger weg	303:1	48155
+peter wust strasse	102:1	48149
+petersdamm	503:1	48167
+petersheide	503:1	48167
+peterstrasse	104:1	48151
+petronillaplatz	302:1	48157
+pewostrasse	503:1	48167
+pfarrer ensink weg	603:1	48165
+pferdegasse	101:1	48143
+pferdekamp	503:1	48167
+philippistrasse	406:1	48149
+philippsweg	503:1	48167
+picassoplatz	101:1	48143
+pictoriusstrasse	602:1	48153
+pienersallee	405:1	48161
+pinienweg	603:1	48165
+pirolweg	502:1	48167
+piusallee	102:1,103:1	48147
+plantstaken	404:1	48161
+platanenweg	405:1	48161
+platz der weissen rose	102:1	48151
+platz des westfaelischen friedens	101:1	48143
+pleistermuehlenweg	302:1,303:1	48155,48157
+plettendorfstrasse	404:1	48161
+ploeniesstrasse	104:1	48153
+pluggenheide	203:1	48159
+plutoweg	601:1	48163
+poetterhoek	103:1	48145
+pohlbrede	401:1	48163
+pommernstrasse	501:1	48167
+potstiege	402:2	48149,48161
+potthoffweg	103:1	48147
+pottkamp	102:1	48149
+preussenstadion	602:1	48153
+prins claus strasse	103:1	48159
+prinz eugen strasse	104:1	48151
+prinzipalmarkt	101:1	48143
+proebstingstrasse	302:1	48157
+promenade	101:2,102:4	48143,48147,48149,48151
+propsteistrasse	103:1	48145
+prozessionsweg	103:1,302:1,303:1	48145,48155,48157
+querstrasse	103:1	48155
+raesfeldstrasse	102:2	48147,48149
+raiffeisenstrasse	405:1	48161
+rainer plein weg	103:1	48147
+ramertsweg	402:1	48161
+raringheide	601:1	48163
+redigerstrasse	406:1	48149
+reetbusch	302:1	48157
+regenskamp	203:1	48157
+regina protmann strasse	202:1	48159
+reha mathel falk weg	104:1	48153
+rehbaum	601:1	48163
+rehhagen	603:1	48165
+reiner klimke weg	406:1	48161
+reinerskamp	302:1	48157
+reinhard klose weg	403:1	48163
+reinhold friedrichs strasse	104:1	48151
+rektoratsweg	202:1	48159
+rheinstrasse	103:1	48145
+rhw park	406:1	48149
+ricarda huch strasse	405:1	48161
+richard schirrmann weg	102:1	48151
+richard wagner strasse	603:1	48165
+richters muehle	405:1	48161
+rigaweg	103:1	48159
+rikeweg	502:1	48155
+rilkeweg	603:1	48165
+rincklakeweg	602:1	48153
+ringoldsgasse	101:1	48143
+ringstrasse	603:1	48165
+rinkerodeweg	104:1	48163
+rinscheweg	202:1	48159
+ripenhorst	403:1	48163
+rishon le zion ring	102:1,406:1	48149
+ritterstrasse	101:1	48143
+rjasanstrasse	102:1	48147
+robert blum strasse	103:1	48147
+robert bosch strasse	103:1,602:1	48153,48155
+robert koch strasse	102:1	48149
+robertstrasse	102:1	48153
+rockbusch	403:1	48163
+roddestrasse	104:1	48153
+roentgenstrasse	406:1	48149
+roeschweg	102:1	48149
+roesnerstrasse	502:1	48155
+roesteberg	404:1	48161
+roggenmarkt	101:1	48143
+rohrkampstrasse	603:1	48165
+rolandweg	603:1	48165
+rolevinckweg	603:1	48165
+ronnebergweg	104:2	48151,48153
+rorupweg	402:1	48161
+roseneck	603:1	48165
+rosengarten	303:1	48155
+rosenplatz	101:1	48143
+rosenstrasse	101:1	48143
+rostockweg	103:1	48147
+rotbuchenweg	203:1	48159
+rotdornweg	603:1	48165
+rote erde	403:1	48163
+rothenburg	101:1	48143
+rottendorffweg	102:1	48149
+rottkamp	401:1	48163
+roxeler strasse	402:1,405:1,406:2	48149,48161
+rubensstrasse	603:1	48165
+rudolf diesel strasse	301:1	48157
+rudolf harbig weg	402:1,406:1	48149
+rudolf schmitz weg	603:1	48165
+rudolf schoepper weg	405:1	48161
+rudolf von langen strasse	102:1	48147
+rudolfstrasse	102:1	48145
+rueckertstrasse	603:1	48165
+ruegenufer	201:1	48157
+ruepingstrasse	104:1	48151
+rueschhausweg	402:1,404:1	48161
+ruhrstrasse	103:1	48145
+rummler	603:1	48165
+rumphorstweg	103:1	48147
+ruschheide	301:1	48157
+rwe ost weg	403:1	48163
+rwe park weg	403:1	48163
+rwe west weg	403:1	48163
+saarbruecker strasse	104:1	48151
+saarstrasse	103:1	48145
+sacre coeur weg	103:1	48147
+saffron	404:1	48161
+salbeiweg	302:1	48157
+salzburgweg	103:1	48145
+salzmannstrasse	103:1,202:1	48147,48159
+salzstrasse	101:1,102:1	48143
+samlandufer	201:1	48157
+sandbrink	302:1	48157
+sanddornweg	603:1	48165
+sandfortskamp	103:1	48159
+sandruper strasse	203:1	48159
+sandweg	401:1	48163
+sankt josefs kirchplatz	102:1	48153
+sankt mauritz freiheit	103:1	48145
+sattelplatz	601:1	48163
+saturnweg	601:1	48163
+sauerlaender weg	102:2	48145,48155
+schadowstrasse	601:1	48163
+scharnhorststrasse	102:1	48151
+schaumburgstrasse	102:1	48145
+scheffer boichorst strasse	406:1	48149
+scheibenstrasse	104:1	48153
+schelmenstiege	405:1	48161
+schenkewaldstrasse	601:1	48163
+schiffahrter damm	301:1	48157
+schifffahrter damm	103:2,301:1	48145,48147,48157
+schildstiege	405:1	48161
+schillerstrasse	102:1,103:1,303:1	48155
+schinkelstrasse	601:1	48163
+schlagholz	603:1	48165
+schlaunstrasse	101:1	48143
+schlautstiege	403:1	48163
+schleebrueggenkamp	103:1	48159
+schlehenweg	203:1	48159
+schlesienstrasse	501:1	48167
+schleswiger strasse	102:1,103:1	48147
+schleusenweg	103:1	48147
+schlienkamp	103:1	48145
+schlikoetterstiege	404:1	48161
+schlossplatz	101:1,102:2	48143,48149
+schlueterstrasse	406:1	48149
+schlusenweg	203:1	48157
+schmale strasse	102:1	48149
+schmeddingstrasse	406:1	48149
+schmidlinstrasse	104:1	48151
+schmitthausweg	404:1	48161
+schmittingheide	303:1,502:1	48155
+schmitz kuehlken	502:1	48155
+schmuellingstrasse	202:1	48159
+schneidemuehler strasse	201:1	48157
+schnorrenburg	103:1	48147
+schoeppingenweg	402:1	48149
+schonebeck	405:1	48161
+schonebecker weg	404:1	48161
+schopenhauerstrasse	501:1	48167
+schorlemerstrasse	102:2	48143,48151
+schornheide	301:1	48157
+schosterweg	502:1	48155
+schraederheide	301:1	48157
+schreiberstrasse	406:1	48149
+schrotbrei	602:1	48165
+schubertstrasse	603:1	48165
+schuckertstrasse	602:1	48153
+schuerbusch	403:1	48163
+schuergeist	603:1	48165
+schuerkamp	403:1	48163
+schuettorfweg	402:1	48161
+schuetzenstrasse	101:1	48143
+schulplatz	103:1	48145
+schulstrasse	102:1	48149
+schulte bernd strasse	405:1	48161
+schulte hermann strasse	405:1	48161
+schulteweg	406:1	48149
+schulze westerath strasse	102:1	48153
+schumannstrasse	603:1	48165
+schwalbenweg	502:1	48167
+schwarzer kamp	403:1	48163
+schwatter kotten busch	202:1	48159
+schwelingstrasse	102:1	48145
+schweriner strasse	405:1	48161
+schweringsheide	303:1	48155
+schwester laudeberta weg	101:1	48143
+sebastiankirchweg	104:1	48153
+sebastianstrasse	404:1	48161
+sendener stiege	401:1	48163
+sendenweg	104:1	48163
+sentmaringer park	104:1	48151
+sentmaringer weg	104:1	48151
+sentruper hoehe	406:1	48149
+sentruper strasse	405:1,406:2	48149,48161
+seppenradeweg	104:1	48163
+sertuernerstrasse	102:1	48149
+servatiikirchplatz	101:1	48143
+servatiiplatz	102:1	48143
+sessendrupweg	404:1	48161
+sibeliusstrasse	103:1	48147
+siebenbuergenweg	104:1	48151
+siegelkammer	101:1	48143
+siemensstrasse	602:1	48153
+silberbrink	503:1	48167
+sinnespark	601:1	48163
+siriusweg	601:1	48163
+siverdesstrasse	102:1	48147
+skagerrakstrasse	103:1	48145
+soester strasse	102:1,103:1	48155
+soestkamp	603:1	48165
+soetenkamp	406:1	48149
+sonja kutner weg	402:1	48161
+sonnenbergweg	602:1	48165
+sonnenstrasse	101:1	48143
+sophie heimbach weg	402:1	48161
+sophienstrasse	102:2,103:1	48145,48155
+spechtweg	502:1	48167
+sperberweg	303:1	48155
+sperlichstrasse	102:1,104:1	48151
+spichernstrasse	104:1	48153
+spiegelturm	101:1	48143
+spiekerhof	101:1	48143
+spiekeroogweg	202:1	48159
+sporckweg	104:1	48153
+sprakeler heide	203:1	48159
+sprakeler strasse	203:2	48157,48159
+sprakelweg	203:1	48159
+sprickmannplatz	202:1	48159
+sprickmannstrasse	202:1	48159
+stadtlohnweg	402:1	48161
+stakenkamp	601:1	48163
+stargarder strasse	405:1	48161
+starweg	502:1	48167
+staufenplatz	102:1	48145
+staufenstrasse	102:1	48145
+stefan zweig strasse	404:1	48161
+stehrweg	303:1	48155
+steinbrede	401:1	48163
+steinfurter strasse	102:1,202:1,402:2,406:2	48149,48159
+steingasse	101:1	48143
+steinkamp	603:1	48165
+steinkuhle	401:1	48163
+stellmacherweg	405:1	48161
+stephanuskirchplatz	104:1	48151
+stephanweg	303:1	48155
+sternbusch	104:1	48153
+sternkamp	603:1	48165
+sternstrasse	102:1	48145
+stettiner strasse	103:1	48147
+steveninkstrasse	104:1	48151
+stickamp	402:1	48161
+stiegkamp	405:1	48161
+stielhock	402:1	48161
+stierlinstrasse	102:1	48149
+stiftsherrenstrasse	101:1	48143
+stiftsstrasse	103:1	48145
+stockholmer strasse	601:1	48163
+stodtbrockweg	405:1	48161
+stolbergstrasse	102:2	48145,48147
+stralsundweg	103:1	48147
+strassburger weg	104:1	48151
+stratmannweg	403:1	48163
+stubengasse	101:1	48143
+studtplatz	102:1	48149
+studtstrasse	102:1	48149
+stuehmerweg	102:1	48147
+sudetenweg	104:1	48151
+sudhoff	601:1	48163
+sudmuehlenstrasse	301:1,302:1	48157
+suedlohnweg	402:1	48161
+suedpark	104:1	48153
+suedstrasse	102:1,104:1	48153
+sunderkamp	603:1	48165
+sunnenheide	401:1	48163
+surreyweg	502:1	48167
+sussexweg	502:1	48167
+syndikatgasse	101:1	48143
+syndikatplatz	101:1	48143
+taeppken	403:1	48163
+tannenbergstrasse	102:1	48147
+tannenhofallee	303:1	48155
+tannenweg	203:1	48159
+taubenstrasse	103:1	48145
+tegederstrasse	103:1	48145
+teichstrasse	102:1	48151
+teigelesch	103:1	48145
+teigelkamp	103:1	48145
+telemannstrasse	103:1	48147
+telgenweg	302:1	48157
+telgter strasse	503:1	48167
+tellbusch	403:1	48163
+temmeweg	303:1	48155
+templerweg	603:1	48165
+tengenkamp	601:1	48163
+ter borch strasse	602:1	48153
+theissingstrasse	102:1	48153
+theo breider weg	406:1	48149
+theodor fontane strasse	303:1	48155
+theodor heuss strasse	501:1	48167
+theodor hovestadt weg	301:1	48157
+theodor scheiwe strasse	502:1	48155
+theodor storm strasse	603:1	48165
+theresiengrund	406:2	48149,48161
+thieplatz	405:1	48161
+thierstrasse	601:1,602:1,603:1	48163,48165
+thomas mann weg	603:1	48165
+thomas morus weg	103:1	48147
+tibusstrasse	101:1	48143
+tiergarten	503:1	48167
+tilbecker strasse	405:1	48161
+tilsiter strasse	405:1	48161
+timmerscheidtstrasse	104:1	48153
+tischlerweg	405:1	48161
+toemmersweg	203:1	48159
+toenne vormann weg	503:1	48167
+toenskamp	503:1	48167
+toepferstrasse	603:1	48165
+tom rink strasse	102:1	48153
+tomkotten	302:1	48157
+tondernstrasse	406:1	48149
+toppheideweg	402:1	48161
+torminweg	502:1	48155
+trampelpfad	501:1	48167
+trauttmansdorffstrasse	602:1	48153
+travelmannstrasse	104:1	48153
+tresckowstrasse	403:1	48163
+tulpenweg	603:1	48165
+turmstrasse	104:1	48151
+twenhoevenweg	501:1	48167
+twenteweg	402:1	48161
+twerenfeldweg	404:1	48161
+ueberwasserkirchplatz	101:1	48143
+ueberwasserstrasse	101:1,102:1	48143
+uferstrasse	501:1	48167
+uhlandstrasse	405:1	48161
+uhlenbrockweg	404:1	48161
+ulmenweg	603:1	48165
+ulrichstrasse	102:1	48147
+umweltspur wienburg	103:1	48147
+unckelstrasse	603:1	48165
+universitaetsstrasse	101:1	48143
+unnerste meer	402:1	48161
+untietheide	403:1	48163
+uppenbergstrasse	102:1	48149
+uppenkampstiege	103:1	48147
+uranusstrasse	601:1	48163
+urbanstrasse	102:1	48143
+vagedesweg	104:1	48151
+vahlbusch	502:1	48155
+vechtastrasse	103:1	48145
+veghestrasse	102:1	48149
+vennemannstrasse	302:1	48157
+vennepohl	601:1	48163
+vennheideweg	602:2	48153,48165
+ventrup	401:1	48163
+verdistrasse	603:1	48165
+verfuerthweg	303:1	48155
+verspoel	101:1	48143
+verth	302:1	48157
+vesaliusweg	102:1	48149
+viktoriastrasse	102:1	48153
+vinzenzweg	102:1	48147
+virchowstrasse	501:1	48167
+virginia woolf weg	603:1	48165
+virginie hoelling weg	603:1	48165
+virnkamp	301:1	48157
+vivaldistrasse	103:1	48147
+voegedingplatz	404:1	48161
+voernste esch	502:1	48167
+vogel von falkenstein strasse	102:1	48151
+vogelrohrsheide	501:1	48167
+vogelsang	401:1,601:1	48163
+volbachweg	201:1	48157
+volkertweg	203:1	48159
+vollmerweg	202:1	48159
+von ascheberg weg	503:1	48167
+von bissendorf weg	404:1	48161
+von corfey strasse	602:1	48153
+von der tinnen strasse	103:1	48145
+von einem strasse	103:1	48159
+von esmarch strasse	402:1,406:1	48149
+von flotow strasse	603:1	48165
+von galen strasse	401:1	48163
+von grueter weg	503:1	48167
+von holte strasse	503:1	48167
+von huenefeld weg	502:1	48155
+von humboldt strasse	202:1	48159
+von kluck strasse	102:1	48151
+von krekenbeck weg	503:1	48167
+von lueninck strasse	104:1	48151
+von manger strasse	103:1	48145
+von morrien strasse	104:1	48151
+von ossietzky strasse	104:1	48151
+von renesse weg	601:1	48163
+von schonebeck ring	404:1	48161
+von stauffenberg strasse	104:1	48151
+von steinbeke weg	503:1	48167
+von steuben strasse	102:2	48143,48153
+von velen weg	104:1	48153
+von vincke strasse	102:1	48143
+von walsen weg	503:1	48167
+von witzleben strasse	104:1	48151
+vorbergs huegel	404:1	48161
+vorbergweg	202:1	48159
+vorholtweg	403:1	48163
+vorlaenderweg	104:1	48151
+vossbusch	303:1	48155
+vossgasse	101:1	48143
+vredenweg	402:1	48161
+wacholderweg	302:1	48157
+waldesruh	603:1	48165
+waldeyerstrasse	406:1	48149
+waldweg	403:1	48163
+walesallee	502:1	48167
+wallfahrtskottenweg	503:1	48167
+wallgasse	101:1	48143
+wallstrasse	503:1	48167
+waltermannstrasse	601:1	48163
+waltruper weg	404:1	48161
+wangeroogeweg	202:1	48159
+wankelgasse	101:1	48143
+warendorfer strasse	102:1,103:1,301:1,302:1,303:1	48145,48155,48157
+wasserstrasse	101:1	48147
+wasserweg	402:2	48149,48161
+weberborg	501:1	48167
+wedemhove	302:1	48157
+weg der jahresbaeume	406:1	48149
+wegesende	101:1	48143
+wehrstrasse	102:1	48151
+weichselstrasse	503:1	48167
+weidenweg	104:1	48153
+weierstrassweg	402:1	48149
+weinbergweg	503:1	48167
+weissdornweg	203:1	48159
+weissenburgstrasse	104:1	48151
+weitkampweg	402:1	48161
+wellingweg	404:1	48161
+welsingheide	401:1,405:1	48161,48163
+wemhoffstrasse	102:1	48147
+wendelplatz	103:1	48155
+wenningweg	405:1	48161
+werlandstrasse	104:1	48153
+wermelingstrasse	102:1	48147
+werneweg	104:2,601:1	48151,48163
+werseaue	302:1	48157
+wersebeckmannweg	301:1	48155
+werseblick	302:1	48157
+werseesch	301:1	48157
+wersegrund	302:1	48157
+wersetimpen	302:1	48157
+wersewinkel	503:1	48155
+weseler strasse	102:2,104:2,401:1,403:1	48143,48151,48163
+weserstrasse	103:1	48145
+wesselerweg	201:1	48157
+westenkamp	403:1	48163
+westerheide	301:1	48157
+westfalenstrasse	602:1,603:1	48165
+westhoffstrasse	202:1	48159
+westhuesweg	603:1	48165
+wettendorf	503:1	48167
+wevelinghofergasse	101:1	48143
+wibbeltstrasse	103:1	48147
+wichernstrasse	102:1	48147
+wickenkamp	402:1	48161
+wiedaustrasse	601:1	48163
+wiedehagen	403:1	48163
+wiedeiken	601:1	48163
+wiegandweg	502:1	48167
+wielandstrasse	603:1	48165
+wielerort	603:1	48165
+wiemannstrasse	601:1	48163
+wienburgpark	103:1	48147
+wienburgstrasse	102:1,103:2,202:1	48147,48159
+wiener strasse	103:1	48145
+wiengarten	103:1	48147
+wienkampstrasse	302:1	48157
+wierling	401:1	48163
+wieselweg	201:1	48157
+wiesenweg	603:1	48165
+wiethoelterdamm	203:1	48159
+wilbrenning	601:1	48163
+wildenkamp	601:1	48163
+wilhelm holthaus weg	502:1	48167
+wilhelm klemm strasse	406:1	48149
+wilhelm raabe strasse	405:1	48161
+wilhelm schickard strasse	406:1	48149
+wilhelm spieker strasse	603:1	48165
+wilhelm spinn weg	603:1	48165
+wilhelmshavenufer	303:1	48155
+wilhelmstrasse	102:1,406:1	48149
+wilkinghege	202:1,402:1	48159
+willingrott	302:1	48157
+willy brandt weg	502:1	48155
+wilmergasse	101:1	48143
+wiltshireweg	502:1	48167
+windbreede	301:1	48157
+windthorststrasse	101:1,102:1	48143
+winkelheide	301:1	48157
+winkelstrasse	101:1	48143
+wismarweg	103:1	48147
+wittlerheide	601:1	48163
+wittninkheide	301:1	48157
+woermannweg	502:1	48167
+woerthstrasse	104:2	48151,48153
+woestebach	203:1	48157
+wolbecker strasse	102:2,103:1,302:1,303:1	48143,48155,48157
+wolbecker windmuehle	503:1	48167
+wollinstrasse	103:1	48147
+wolteringstrasse	502:1	48167
+woortstiege	405:1	48161
+wortkamp	405:1	48161
+wuellnerstrasse	102:1	48149
+wulferdingheide	301:1	48157
+wulfertstrasse	405:1	48161
+wykstrasse	102:1	48153
+york ring	102:2,103:1	48149,48159
+yorkshireplatz	502:1	48167
+zedernweg	603:1	48165
+zeisigweg	502:1	48167
+zeppelinstrasse	102:1	48147
+ziegelhof	301:1	48157
+ziegen kreisel	402:1	48149
+zimmerstrasse	102:1	48153
+zuhornstrasse	102:1	48147
+zum bergbusch	202:1	48159
+zum burgschemm	501:1	48167
+zum erlenbusch	501:1	48167
+zum fischteich	401:1	48163
+zum guten hirten	103:1,303:1	48155
+zum haepper	601:1	48163
+zum heidehof	201:1	48157
+zum hiltruper see	603:1	48165
+zum kaiserbusch	501:1	48165
+zum klosterholz	601:1	48163
+zum offerbach	401:1	48163
+zum rieselfeld	201:1,202:1	48157,48159
+zum roten berge	603:1	48165
+zum schultenhof	405:1	48161
+zumbroockstrasse	102:1	48153
+zumbuschstrasse	503:1	48167
+zumsandestrasse	102:1	48145
+zur alten feuerwache	603:1	48165
+zur boergerbruecke	601:1	48163
+zur dornhiege	402:1	48161
+zur eckernheide	301:1	48157
+zur graefte	404:1	48161
+zur haskenau	302:1	48157
+zur hohen ward	603:1	48165
+zur landwehr	403:1	48163
+zur mariengrotte	502:1	48155
+zur rossheide	301:1	48157
+zur vogelstange	603:1	48165
+zur walbeke	503:1	48167
+zur wiese	401:1	48163
+zur windmuehle	601:1	48163
+zwi schulmann weg	502:1	48167

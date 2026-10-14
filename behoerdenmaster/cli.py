@@ -16,7 +16,7 @@ from .auswertung import heute, jetzt
 from .bauleitplanung import BauleitplanungQuelle
 from .bekanntmachungen import listen_url
 from .betrieb import Betrieb
-from .config import PROJEKT_KONTAKT, Quelle, Stadt, config_verzeichnis, lade_staedte
+from .config import PROJEKT_KONTAKT, Quelle, Stadt, config_verzeichnis, lade_staedte, standard_stadt
 from .crawl_sperre import CrawlLaeuft, crawl_sperre
 from .crawler import CRAWLER, ENTITAETEN, CrawlVerweigert, LaufOptionen
 from .demo import demo_quell_id, lade_demo, loesche_demo
@@ -147,7 +147,7 @@ def _probe(args) -> int:
             for p in projekte[:3]:
                 print(f"  - {p.status_kurz}: {p.titel[:80]}")
         elif quelle.typ == "oparl":
-            oparl = OParlQuelle(abrufer, quelle.system_url, quelle.body_id)
+            oparl = OParlQuelle(abrufer, quelle.system_url, quelle.body_id, quelle.koerperschaft)
             body = oparl.body()
             print(f"Körperschaft: {body.get('name', '?')} ({body.get('id', '?')})")
             seite = next(oparl.seiten(body["paper"], params={"modified_since": "2025-11-01T00:00:00+01:00"}))
@@ -207,7 +207,8 @@ def cmd_crawl(args) -> int:
 def _drucke_treffer(ergebnis: dict, v=None) -> None:
     if v is not None:
         ortsnamen = ", ".join(
-            f"{o['name']} (Stadtteil)" if o["typ"] == "stadtteil" else f"Stadtbezirk {o['name']}" for o in v.orte
+            f"{o['name']} (Stadtteil)" if o["typ"] == "stadtteil" else o.get("anzeige") or f"Stadtbezirk {o['name']}"
+            for o in v.orte
         ) or "alle Orte"
         themen = ", ".join(v.themen) or "alle Themen"
         zeile = f"Verstanden: Ort: {ortsnamen} · Thema: {themen}"
@@ -399,6 +400,41 @@ def cmd_serve(args) -> int:
     return 0
 
 
+def cmd_staedte(args) -> int:
+    """Angebundene Städte: Abrufmodus, Ladezustand und Bestand (nur lokal, kein Abruf)."""
+    from .staedte import markdown, uebersicht
+
+    staedte = lade_staedte(config_verzeichnis())
+    standard = standard_stadt(staedte).schluessel
+    if args.markdown:
+        sys.stdout.write(markdown(staedte, standard))
+        return 0
+    betrieb = Betrieb.aus_umgebung(streng=False)
+    dauerhafte = list(betrieb.sync_quellen) or [s.quell_id(q) for s in staedte.values() if not s.auf_abruf
+                                                for q in s.quellen if q.automatisch]
+    with Speicher(_db_pfad(args)) as sp:
+        daten = uebersicht(sp, staedte, standard=standard, auf_abruf=betrieb.auf_abruf,
+                           verfall_tage=betrieb.auf_abruf_tage, max_staedte=betrieb.auf_abruf_max,
+                           sync_aktiv=betrieb.sync_aktiv, dauerhafte_ids=dauerhafte)
+    if args.json:
+        print(json.dumps(daten, ensure_ascii=False, indent=2))
+        return 0
+    print(f"{len(daten['staedte'])} angebundene Städte (Standard: {standard})")
+    for e in daten["staedte"]:
+        g = e["gliederung"]
+        print(f"\n{e['name']} ({e['schluessel']}) – {e['abruf_text']}")
+        print(f"  Zustand: {e['zustand_text']} · Bestand: {einheit(e['bestand_vorgaenge'], 'Vorgang', 'Vorgänge')}")
+        print(f"  Ortsgliederung: {g['text']} ({g['bezirke']} Bezirke, {g['stadtteile']} Stadtteile, "
+              f"{g['plz']} PLZ, {g['strassen']} Straßen)")
+        for q in e["quellen"]:
+            print(f"  - {q['id']}: {q['status']}"
+                  + (f", letzter Erfolg {q['letzter_erfolg'][:16]}" if q["letzter_erfolg"] else "")
+                  + (f" – {q['fehlertext']}" if q["fehlertext"] else ""))
+            if q["pruefstand"]:
+                print(f"    Prüfstand: {q['pruefstand']}")
+    return 0
+
+
 # --- Parser --------------------------------------------------------------------
 
 def baue_parser() -> argparse.ArgumentParser:
@@ -409,6 +445,10 @@ def baue_parser() -> argparse.ArgumentParser:
     sub = p.add_subparsers(dest="befehl", required=True)
 
     sub.add_parser("status", help="Quellen, Bestand und letzte Läufe anzeigen")
+    pst = sub.add_parser("staedte", help="Angebundene Städte, Abrufmodus und Ladezustand anzeigen")
+    pst.add_argument("--json", action="store_true", help="Dieselbe Struktur wie /api/staedte")
+    pst.add_argument("--markdown", action="store_true",
+                     help="Übersicht aus der Konfiguration als Markdown (für docs/staedte.md)")
     pb = sub.add_parser("backup", help="Konsistente SQLite-Sicherung (einschließlich WAL) erstellen")
     pb.add_argument("ziel", help="Neue Sicherungsdatei; eine vorhandene Datei wird nicht überschrieben")
 
@@ -461,6 +501,7 @@ def main(argv: list[str] | None = None) -> int:
         "plz": cmd_plz, "demo": cmd_demo, "backup": cmd_backup, "serve": cmd_serve,
         "ortsbezug": cmd_ortsbezug,
         "ladebericht": cmd_ladebericht,
+        "staedte": cmd_staedte,
     }
     try:
         return befehle[args.befehl](args)

@@ -17,7 +17,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 
 from .abruf import Abrufer, BudgetErschoepft, NichtErlaubt, QuelleGesperrt, QuelleNichtErreichbar
-from .config import Quelle, Stadt
+from .config import Quelle, Stadt, seit_aufloesen
 from .geo import Gazetteer, OrtsBezug
 from .normalize import norm
 from .oparl import OParlQuelle, map_gremium, map_sitzung, map_vorgang
@@ -167,7 +167,7 @@ def crawle_oparl(speicher: Speicher, stadt: Stadt, quelle: Quelle, abrufer: Abru
     start_stempel = jetzt_iso()
     speicher.quelle_status(quelle_id, "laeuft")
     try:
-        oparl = OParlQuelle(abrufer, quelle.system_url, quelle.body_id)
+        oparl = OParlQuelle(abrufer, quelle.system_url, quelle.body_id, quelle.koerperschaft)
         body = oparl.body()
         listen = {
             "gremien": body.get("organization"),
@@ -189,7 +189,7 @@ def crawle_oparl(speicher: Speicher, stadt: Stadt, quelle: Quelle, abrufer: Abru
             else:
                 start = None
                 modified = (stand["modified_seit"] if stand and stand["modified_seit"]
-                            else _modified_seit_iso(optionen.seit or quelle.seit or "2020-01-01"))
+                            else _modified_seit_iso(optionen.seit or seit_aufloesen(quelle.seit) or "2020-01-01"))
                 params = {"modified_since": modified}
                 reihe = start_stempel
                 log.info("%s: neue Abrufreihe seit %s", entitaet, modified)

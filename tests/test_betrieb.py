@@ -120,9 +120,12 @@ def test_factory_initialisiert_nicht_im_build_erst_im_lifespan(tmp_path):
         assert client.head("/healthz").status_code == 200
         status = client.get("/api/status").json()
         assert status["zaehler"]["vorgang"] == 0
-        assert {q["id"] for q in status["quellen"]} == {
+        assert {q["id"] for q in status["quellen"] if q["id"].startswith("koeln:")} == {
             "koeln:ris", "koeln:bauleitplanung", "koeln:ris-rss", "koeln:presse-rss",
             "koeln:bekanntmachungen", "koeln:beteiligung", "koeln:opendata"}
+        # Weitere Städte sind angelegt (für die Städteübersicht), aber nicht im Dauerabruf.
+        assert "bonn:ris" in {q["id"] for q in status["quellen"]}
+        assert "bonn:ris" not in status["betrieb"]["quellen_effektiv"]
         assert not status["betrieb"]["sync_dienst_laeuft"]
 
 

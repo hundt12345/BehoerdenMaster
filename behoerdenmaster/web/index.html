@@ -29,6 +29,7 @@
     .tabs button.aktiv { background:var(--accent); border-color:var(--accent); color:#fff; }
     form.suche { display:flex; gap:8px; flex-wrap:wrap; }
     form.suche input[type=text] { flex:1 1 420px; padding:10px 12px; border:1px solid #c5ccd9; border-radius:8px; font-size:15px; }
+    form.suche input[type=date] { padding:10px 12px; border:1px solid #c5ccd9; border-radius:8px; font-size:15px; background:#fff; }
     form.suche select { padding:10px; border:1px solid #c5ccd9; border-radius:8px; background:#fff; }
     button.primaer { background:var(--accent); color:#fff; border:0; padding:10px 18px; border-radius:8px; font-weight:600; cursor:pointer; }
     button.primaer:disabled { opacity:.6; cursor:wait; }
@@ -148,6 +149,7 @@
   <div class="tabs" role="tablist">
     <button id="tab-frage" class="aktiv" role="tab" aria-selected="true">Frage stellen</button>
     <button id="tab-plz" role="tab" aria-selected="false">PLZ-Suche</button>
+    <button id="tab-stream" role="tab" aria-selected="false">Neueste (Stream)</button>
   </div>
 
   <section id="panel-frage">
@@ -160,7 +162,33 @@
       <button type="button" data-frage="Was gibt es zu Verkehr in Lindenthal seit 2024?">Verkehr in Lindenthal seit 2024</button>
       <button type="button" data-frage="Welche Vorlagen betreffen Wohnungsbau in Köln?">Wohnungsbau in Köln</button>
     </div>
-    <p class="hinweis">Tipp: Stadtteile, Stadtbezirke, Themen (Bauvorhaben, Verkehr, Schulen, Grün) und Jahreszahlen werden erkannt.</p>
+    <p class="hinweis">Tipp: Stadtteile, Stadtbezirke, Themen (Bauvorhaben, Verkehr, Schulen, Grün) und Jahreszahlen werden erkannt –
+      ebenso Stream-Fragen wie „Gib mir die neuesten Vorgänge für diese Stadt“ oder „Alle Vorgänge seit dem 9.10.“.</p>
+  </section>
+
+  <section id="panel-stream" class="versteckt">
+    <form id="form-stream" class="suche">
+      <select id="stream-zeitraum" aria-label="Zeitraum des Streams">
+        <option value="alle">Alle – neueste zuerst</option>
+        <option value="1">Nur heute</option>
+        <option value="7">Letzte 7 Tage</option>
+        <option value="30">Letzte 30 Tage</option>
+        <option value="90">Letzte 90 Tage</option>
+        <option value="datum">Seit einem Datum …</option>
+      </select>
+      <input id="stream-seit" type="date" class="versteckt" aria-label="Stream ab diesem Datum (einschließlich)">
+      <select id="stream-thema" aria-label="Thema">
+        <option value="">Alle Themen</option>
+        <option value="bauen">Bauvorhaben &amp; Bauleitplanung</option>
+        <option value="verkehr">Verkehr &amp; Mobilität</option>
+        <option value="schulen">Schulen &amp; Kitas</option>
+        <option value="gruen">Grün &amp; Klima</option>
+      </select>
+      <button class="primaer" type="submit">Stream laden</button>
+    </form>
+    <p class="hinweis">Der Stream zeigt die Vorgänge der gewählten Stadt chronologisch – neueste zuerst,
+      sortiert nach dem Datum des Vorgangs (nicht nach dem Abrufzeitpunkt). Gelesen wird nur der lokale
+      Bestand; ein Aufruf löst keinen Behördenabruf aus. Mit „Weitere Treffer laden“ blättern Sie weiter zurück.</p>
   </section>
 
   <section id="panel-plz" class="versteckt">
@@ -372,8 +400,16 @@
         if (v.plz) teile.push(` · PLZ ${v.plz}`);
         if ((v.freitext || []).length) teile.push(` · Stichworte: ${v.freitext.join(", ")}`);
         if (v.offen) teile.push(" · geplant bzw. offen");
-        if (v.von) teile.push(` · ab ${v.von.slice(0, 4)}`);
+        if (v.neueste) teile.push(" · Stream: neueste zuerst");
+        if (v.von) teile.push(` · ab ${v.von.slice(8, 10)}.${v.von.slice(5, 7)}.${v.von.slice(0, 4)}`);
         ausgabe.append(el("div", { class: "verstanden" }, ...teile));
+      }
+      if (daten.stream) {
+        const s = daten.stream;
+        const zeitraum = s.seit_de ? `ab dem ${s.seit_de}` : "alle Vorgänge";
+        ausgabe.append(el("div", { class: "verstanden" },
+          el("strong", null, "Stream:"),
+          ` ${daten.stadt ? daten.stadt.name : ""} · ${zeitraum} · neueste zuerst (nach Vorgangsdatum)`));
       }
       for (const h of daten.hinweise || []) ausgabe.append(el("p", { class: "hinweis" }, h));
       if (daten.stadt_vorschlag) {
@@ -423,19 +459,53 @@
     zeigeErgebnis(daten, offset > 0);
   }
 
+  async function sucheStream(offset, knopf) {
+    const zeitraum = $("stream-zeitraum").value;
+    const parameter = new URLSearchParams({ limit: "10", offset: String(offset) });
+    if (stadt) parameter.set("stadt", stadt);
+    if (zeitraum === "datum") {
+      const seit = $("stream-seit").value;
+      if (!seit) throw new Error("Bitte ein Startdatum für den Stream wählen.");
+      parameter.set("seit", seit);
+    } else if (zeitraum !== "alle") {
+      parameter.set("tage", zeitraum);
+    }
+    const thema = $("stream-thema").value;
+    if (thema) parameter.set("thema", thema);
+    const daten = await api(`/api/stream?${parameter}`);
+    if (knopf) knopf.remove();
+    zeigeErgebnis(daten, offset > 0);
+  }
+
+  function streamStarten() {
+    aktuelleSuche = (offset, mehrKnopf) => sucheStream(offset, mehrKnopf).catch((e) => zeigeFehler(e.message));
+    sucheStream(0, null).catch((e) => zeigeFehler(e.message));
+  }
+
   function umschalten(aktiv) {
     for (const [name, tabId, panelId] of [["frage", "tab-frage", "panel-frage"],
-                                          ["plz", "tab-plz", "panel-plz"]]) {
+                                          ["plz", "tab-plz", "panel-plz"],
+                                          ["stream", "tab-stream", "panel-stream"]]) {
       const an = name === aktiv;
       $(tabId).classList.toggle("aktiv", an);
       $(tabId).setAttribute("aria-selected", String(an));
       $(panelId).classList.toggle("versteckt", !an);
     }
     ausgabeLeeren();
+    // Der Stream lädt beim Öffnen sofort die neuesten Vorgänge der gewählten Stadt.
+    if (aktiv === "stream") streamStarten();
   }
 
   $("tab-frage").addEventListener("click", () => umschalten("frage"));
   $("tab-plz").addEventListener("click", () => umschalten("plz"));
+  $("tab-stream").addEventListener("click", () => umschalten("stream"));
+  $("stream-zeitraum").addEventListener("change", (ev) => {
+    $("stream-seit").classList.toggle("versteckt", ev.target.value !== "datum");
+  });
+  $("form-stream").addEventListener("submit", (ev) => {
+    ev.preventDefault();
+    streamStarten();
+  });
 
   // --- Grafische Ladeübersicht: Dokumente aus den Quellen ----------------
   const SVG_NS = "http://www.w3.org/2000/svg";
@@ -740,6 +810,8 @@
     staedteTabelle();
     stadtAnfordern(stadtInfo());
     status();
+    // Läuft gerade der Stream, zeigt er nach dem Wechsel die neue Stadt.
+    if (!$("panel-stream").classList.contains("versteckt")) streamStarten();
   }
 
   $("stadt-wahl").addEventListener("change", (ev) => stadtWechseln(ev.target.value));

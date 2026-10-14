@@ -6,7 +6,7 @@ automatische Abrufe gilt weiter Abschnitt [„Regeln für jede neue Quelle“](#
 Das Dokument beschreibt **Vorschläge**, keine Zusagen: Umgesetzt sind derzeit
 Ratsinformation (OParl), Bauleitplanung Online NRW, die öffentlichen Bekanntmachungen, die
 Bürgerbeteiligung „Meinung für Köln“, ausgewählte Tabellendatensätze des Offene-Daten-Portals
-(DKAN 2) sowie die RSS-Feeds (Sitzungen, Presse); siehe
+(DKAN 2) sowie die RSS-Feeds (Sitzungen, Presse, Verkehrskalender); siehe
 [Umsetzungsstand](#umsetzungsstand).
 
 ## Umsetzungsstand
@@ -17,6 +17,7 @@ Stand 12.10.2026, nach der Umsetzung im Repository:
 |---|---|---|
 | 1 SessionNet-RSS | **umgesetzt** (`typ = "ris-rss"`) | `robots.txt` ohne Sperre für unseren Client; ein Feed-Abruf je Lauf; Hinweise in eigener Tabelle, nicht in der Suche |
 | 9 Pressemeldungen (RSS) | **umgesetzt** (`typ = "presse-rss"`) | `robots.txt` ohne Sperre; nur Titel, Datum, Link, Kurztext |
+| 12 Verkehrskalender (RSS) | **umgesetzt** (`typ = "verkehr-rss"`, 14.10.2026) | Presseservice-Seite der Stadt listet den Feed; `robots.txt` ohne Sperre; nur Titel, Datum, Link, Kurztext als „Verkehrshinweis“. Nutzung nach den RSS-Nutzungsbedingungen der Stadt (nur nicht-kommerziell, widerrufbar). Die Schwester-Feeds **Veranstaltungen** (Termine ohne Verwaltungsbezug) und **Feuerwehr-Warnhinweise** (Einsatz-/Warnlage) bleiben bewusst unangebunden |
 | 2, 3, 6 Geoportal (Bebauungsplan-Übersicht, Verkehr, Baustellen, Baumkataster) | **nicht angebunden** | `https://geoportal.stadt-koeln.de/robots.txt` enthält `User-agent: *` mit `Disallow: /`. Der Abrufer würde ohnehin mit `NichtErlaubt` abbrechen, wir bauen dazu keinen Umweg. Eine Freigabe durch die Stadt oder ein anderer, nicht gesperrter Zugang (z. B. offizieller Open-Data-Export) ist nötig. |
 | 4 Bekanntmachungen/Amtsblatt | **umgesetzt** (`typ = "bekanntmachungen"`) | HTML-Liste auf `www.stadt-koeln.de` ist nicht gesperrt; Jahreslisten mit Paginierung, bis zu drei Jahrgänge je Lauf. Übernommen werden Datum, Art, Arbeitstitel, Hinweisveröffentlichung und Link – **das PDF wird nicht geladen** |
 | 5 Offene Daten Köln (DKAN) | **umgesetzt** (`typ = "opendata"`) | `robots.txt` ohne Sperre für den Datenbereich. Gelesen wird der Katalog und der Tabellenspeicher (Datastore); übernommen werden **nur** Datensätze unter DL-DE-Zero-2.0 oder DL-DE-BY-2.0 (BY mit Namensnennung), andere werden gezählt und übersprungen. Datensatz-Auswahl über Katalogstichworte in `config/cities/koeln.toml`; **ein Live-Lauf steht noch aus** (Stadt-Hosts aus der Entwicklungsumgebung nicht erreichbar) |
@@ -306,6 +307,23 @@ einer offenen Lizenz vor. Genutzt wird deshalb ein **OpenStreetMap-Auszug**:
   Stadt selber, nicht die eines Mediums.
 - **Umsetzung:** `typ = "presse-rss"`; nur Titel, Datum, Link, Kurztext speichern und über
   Orts-/Themenbezug an bestehende Vorgänge hängen. Keine Volltexte Dritter.
+
+## 12. Verkehrskalender der Stadt (RSS) – umgesetzt am 14.10.2026
+
+- **Adresse:** `https://www.stadt-koeln.de/externe-dienste/rss/verkehrskalender.xml`
+  (auf der Presseservice-Seite der Stadt als offizieller Feed gelistet).
+- **Beobachtung (14.10.2026):** Baustellen und Großveranstaltungen mit
+  Verkehrsbehinderungen; der Titel nennt Ort und Stadtteil („Subbelrather Straße
+  (Ehrenfeld)“, „Holzmarkt (Altstadt/Süd)“), dazu Link, Kurztext und Datum.
+- **Nutzung:** Nach den RSS-Nutzungsbedingungen der Stadt Köln
+  (`stadt-koeln.de/artikel/00121`) nur nicht-kommerziell und jederzeit widerrufbar,
+  Quellenangabe Pflicht – so steht es auch in der Quellenkonfiguration.
+- **Umsetzung:** `typ = "verkehr-rss"`; wie die anderen Feeds nur Titel, Datum, Link und
+  Kurztext als **Hinweise** (Art „Verkehrshinweis“), bewusst keine Vorgänge und nicht Teil
+  der Suche – Ratsvorgänge kommen weiter aus OParl; Baustellen als Tabellenbestand schon
+  aus Offene Daten. Die Schwester-Feeds **Veranstaltungen** und **Feuerwehr-Warnhinweise**
+  derselben Seite bleiben unangebunden (Terminliste ohne Verwaltungsbezug bzw.
+  Einsatz-/Warnlage statt Vorgangsbestand).
 
 ## 10. Statistik, 11. Wahlen
 

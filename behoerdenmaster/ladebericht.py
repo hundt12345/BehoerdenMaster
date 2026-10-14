@@ -31,6 +31,7 @@ TYP_TEXT = {
     "opendata": "Offene Daten Köln (Datensätze)",
     "ris-rss": "Sitzungstermine (RSS)",
     "presse-rss": "Pressemeldungen (RSS)",
+    "verkehr-rss": "Verkehrskalender (RSS)",
     "demo": "Offline-Beispiele",
 }
 
@@ -204,7 +205,7 @@ def _abrufweg(zahlen: Mapping[str, int], staende: list[Mapping], aufgaben: int,
                 "offen" if offen else ("ok" if kurs else "wartet"))
         schritt("Detailseiten", f"{einheit(aufgaben, 'Detailabruf', 'Detailabrufe')} in der Warteschlange" if aufgaben else "Warteschlange leer",
                 "offen" if aufgaben else ("ok" if kurs else "wartet"))
-    elif typ in ("ris-rss", "presse-rss"):
+    elif typ in ("ris-rss", "presse-rss", "verkehr-rss"):
         schritt("Zugriff", "ein Feed-Abruf je Lauf · Mindestabstand laut Stadtkonfiguration",
                 "ok" if kurs else "wartet")
         schritt("Hinweise", f"{einheit(zahlen.get('hinweise', 0), 'Hinweis', 'Hinweise')} "

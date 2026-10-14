@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Verkehrskalender Stadt Köln</title>
+    <link>https://www.stadt-koeln.de</link>
+    <description>Großveranstaltungen, Messen sowie Baustellen - wir haben für Sie zusammen gestellt, in welchen Bereichen Sie mit Verkehrsbehinderungen rechnen müssen.</description>
+    <item>
+      <title>Subbelrather Straße (Ehrenfeld)</title>
+      <link>https://www.stadt-koeln.de/leben-in-koeln/verkehr/verkehrskalender/subbelrather-strasse-ehrenfeld-22</link>
+      <description><![CDATA[Die Subbelrather Straße ist auf Höhe Myliusstraße in beide Fahrtrichtungen abschnittsweise und wechselseitig eingeengt.]]></description>
+      <pubDate>Thu, 22 Oct 2026 08:00:00 +0100</pubDate>
+    </item>
+    <item>
+      <title>Holzmarkt (Altstadt/Süd)</title>
+      <link>https://www.stadt-koeln.de/leben-in-koeln/verkehr/verkehrskalender/holzmarkt-altstadtsued-3</link>
+      <description><![CDATA[Der Holzmarkt ist zwischen Kleine Witschgasse und Mechtildisstraße in Fahrtrichtung stadtauswärts eingeengt.]]></description>
+      <pubDate>Mon, 05 Oct 2026 06:00:00 +0100</pubDate>
+    </item>
+  </channel>
+</rss>

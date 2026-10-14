@@ -9,7 +9,7 @@ import asyncio
 import os
 import sqlite3
 from contextlib import asynccontextmanager, closing
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Query
@@ -28,6 +28,7 @@ from .normalize import norm
 from .rechtliches import Betreiber, datenschutz, impressum
 from .speicher import Speicher
 from .staedte import sortiert, uebersicht
+from .stream import hole_stream, parse_datum
 from .suche import Suchauftrag, suche, vorgang_detail
 
 WEB_DATEI = Path(__file__).resolve().parent / "web" / "index.html"
@@ -58,7 +59,7 @@ def stadt_aus_frage(frage: str, staedte: dict[str, Stadt], standard: Stadt) -> S
 def _auftrag(v: Verstaendnis, stadt: Stadt, limit: int, offset: int) -> Suchauftrag:
     return Suchauftrag(
         stadt=stadt, orte=v.orte, plz=v.plz, themen=v.themen, freitext=v.freitext,
-        von=v.von, bis=v.bis, offen=v.offen, limit=limit, offset=offset,
+        von=v.von, bis=v.bis, offen=v.offen, neueste=v.neueste, limit=limit, offset=offset,
     )
 
 
@@ -292,7 +293,7 @@ def create_app(db_pfad: str | Path | None = None, config_dir: Path | None = None
         erkannt = genannt if anfrage.stadt is None else None
         vorschlag = genannt if anfrage.stadt is not None else None
         stadt = erkannt or gewaehlt
-        v = verstehe(anfrage.frage, stadt, gazetteers[stadt.schluessel])
+        v = verstehe(anfrage.frage, stadt, gazetteers[stadt.schluessel], referenz_datum=heute())
         abruf_hinweise = anfordern(stadt)
         with Speicher(db) as sp:
             ergebnis = suche(sp, _auftrag(v, stadt, anfrage.limit, anfrage.offset), heute(), zeitpunkt=jetzt())
@@ -313,6 +314,66 @@ def create_app(db_pfad: str | Path | None = None, config_dir: Path | None = None
             "stadt": {"schluessel": stadt.schluessel, "name": stadt.name, "hinweis": stadt.hinweis},
             "stadt_vorschlag": ({"schluessel": vorschlag.schluessel, "name": vorschlag.name}
                                 if vorschlag else None),
+        }
+
+    @app.get("/api/stream")
+    def stream(
+        stadt: str | None = None,
+        seit: str | None = Query(
+            default=None,
+            description="Startdatum (einschließlich): 2026-10-09, 9.10., 9.10.2026 oder 9. Oktober 2026"),
+        bis: str | None = Query(
+            default=None, description="Enddatum (einschließlich), gleiche Formen wie `seit`"),
+        tage: int | None = Query(
+            default=None, ge=1, le=365,
+            description="Alternativ zu `seit`: Fenster der letzten N Tage einschließlich heute"),
+        thema: str | None = Query(default=None, description="Themen, kommagetrennt, z. B. bauen,verkehr"),
+        limit: int = Query(default=20, ge=1, le=100),
+        offset: int = Query(default=0, ge=0),
+    ):
+        """Die neuesten Vorgänge einer Stadt als chronologischer Stream – nur lokale Daten.
+
+        Sortiert nach dem Datum des Vorgangs (neueste zuerst), geblättert über
+        `limit`/`offset`; `naechster_offset` im Ergebnis zeigt, ob es weitergeht.
+        Wie jede Suche löst auch der Stream keinen Behördenabruf aus; eine
+        Auf-Abruf-Stadt wird nur wie üblich zur Aktualisierung vermerkt.
+        """
+        st = stadt_waehlen(stadt)
+        if seit and tage is not None:
+            raise HTTPException(status_code=422,
+                                detail="Bitte entweder `seit` oder `tage` angeben, nicht beides.")
+        referenz = heute()
+        try:
+            von = parse_datum(seit, referenz) if seit else (
+                referenz - timedelta(days=tage - 1) if tage is not None else None)
+            bis_datum = parse_datum(bis, referenz) if bis else None
+        except ValueError as exc:
+            raise HTTPException(status_code=422, detail=str(exc)) from exc
+        if von and bis_datum and bis_datum < von:
+            raise HTTPException(status_code=422, detail="`bis` darf nicht vor `seit` liegen.")
+        themen = [t.strip() for t in (thema or "").split(",") if t.strip()]
+        unbekannt = [t for t in themen if t not in {x.schluessel for x in st.themen}]
+        if unbekannt:
+            raise HTTPException(status_code=422, detail=f"Unbekannte Themen: {', '.join(unbekannt)}")
+        hinweise = list(anfordern(st))
+        with Speicher(db) as sp:
+            daten = hole_stream(sp, st, referenz, von=von, bis=bis_datum, themen=themen,
+                                limit=limit, offset=offset, zeitpunkt=jetzt())
+        if von:
+            hinweise.append(f"Stream für {st.name} ab dem {daten['seit_de']}: {daten['sortierung_text']}")
+        else:
+            hinweise.append(f"Stream für {st.name} ohne Startdatum – alle Vorgänge, {daten['sortierung_text']}")
+        if daten["freitext_verworfen"] or daten["freitext_oder"]:
+            hinweise.append("Zu den Stichworten wurde nichts gefunden; angezeigt wird der Stream ohne sie.")
+        meta = {k: daten[k] for k in ("sortierung", "sortierung_text", "seit", "seit_de", "bis", "bis_de",
+                                      "limit", "offset", "naechster_offset", "hat_mehr")}
+        return {
+            "stadt": {"schluessel": st.schluessel, "name": st.name, "hinweis": st.hinweis},
+            "stream": meta,
+            "hinweise": hinweise,
+            "gesamt": daten["gesamt"],
+            "treffer": daten["treffer"],
+            "kandidaten_gekappt": daten["kandidaten_gekappt"],
         }
 
     @app.get("/api/plz/{plz}")

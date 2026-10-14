@@ -39,6 +39,7 @@ class OParlQuelle:
         """
         aktuell = start or url
         parameter = None if start else params
+        ursprungsparameter = dict(params or {})
         besucht: set[str] = set()
         while aktuell:
             if aktuell in besucht:
@@ -49,6 +50,13 @@ class OParlQuelle:
             objekte = [o for o in daten.get("data", []) if isinstance(o, dict)]
             verweis = (daten.get("links") or {}).get("next")
             naechste = urljoin(aktuell, verweis) if verweis else None
+            if naechste and ursprungsparameter:
+                # Manche Server (ALLRIS, z. B. Bonn) verlieren in `links.next` den
+                # Filterparameter der ersten Anfrage (z. B. modified_since); ohne ihn
+                # käme ab Seite 2 die gesamte Historie statt nur der Änderungen.
+                # Fehlende Parameter werden deshalb wieder angehängt – vorhandene
+                # Werte der Quelle bleiben unverändert.
+                naechste = _mit_parametern(naechste, ursprungsparameter)
             yield Seite(url=aktuell, objekte=objekte, naechste=naechste)
             aktuell = naechste
 
@@ -139,12 +147,15 @@ def _dateien_ohne_doppelte(paare: list[tuple[dict, str]]) -> list[dict]:
 
 
 def map_gremium(obj: dict, quelle_id: str) -> dict:
+    # Manche Server (ALLRIS, z. B. Bonn) liefern den Gremientyp nicht als
+    # ``organizationType``, sondern die Typ-URL im Feld ``Type`` und das Typ-Kürzel
+    # („gr“/„at“) im Feld ``type`` – dann steht eben das da, statt leer zu bleiben.
     return {
         "id": obj["id"],
         "quelle_id": quelle_id,
         "name": _str(obj.get("name")),
         "kurzname": _str(obj.get("shortName")),
-        "typ": _str(obj.get("organizationType")),
+        "typ": _str(obj.get("organizationType") or obj.get("Type") or obj.get("type")),
         "beginn": _str(obj.get("startDate")),
         "ende": _str(obj.get("endDate")),
         "web": _str(obj.get("web")),
@@ -170,7 +181,8 @@ def map_sitzung(obj: dict, quelle_id: str) -> tuple[dict, list[dict], list[dict]
         "datum": beginn[:10],
         "ort": ", ".join(t for t in ort_teile if t),
         "abgesagt": 1 if obj.get("cancelled") else 0,
-        "gremium_ids": json.dumps(_liste(obj.get("organization")), ensure_ascii=False),
+        "gremium_ids": json.dumps([_id_von(v) for v in _liste(obj.get("organization")) if _id_von(v)],
+                                  ensure_ascii=False),
         "web": _str(obj.get("web")),
         "geaendert": _str(obj.get("modified")),
         "geloescht": 0,
@@ -187,7 +199,9 @@ def map_sitzung(obj: dict, quelle_id: str) -> tuple[dict, list[dict], list[dict]
     dokumente = _dateien_ohne_doppelte(paare)
 
     tops = []
-    for a in _liste(obj.get("agendaItem")):
+    # Einzelne Server (ALLRIS) liefern die TOPs einer Sitzung auch unter dem
+    # kleingeschriebenen Schlüsselnamen `agendaitem`.
+    for a in _liste(obj.get("agendaItem") or obj.get("agendaitem")):
         if isinstance(a, dict) and "id" in a:
             tops.append(map_top(a, obj["id"]))
     return zeile, tops, dokumente
@@ -234,9 +248,13 @@ def map_vorgang(obj: dict, quelle_id: str) -> tuple[dict, list[dict], list[dict]
         beratungen.append({
             "id": c["id"],
             "vorgang_id": obj["id"],
-            "sitzung_id": _str(c.get("meeting")),
-            "top_id": _str(c.get("agendaItem")),
-            "gremium_ids": json.dumps(_liste(c.get("organization")), ensure_ascii=False),
+            "sitzung_id": _id_von(c.get("meeting")),
+            # ALLRIS (z. B. Bonn) schreibt den TOP-Verweis in Beratungen klein
+            # (``agendaitem``) und liefert Verweise teils als eingebettetes Objekt
+            # statt als URL – beides wird hier gleich behandelt.
+            "top_id": _id_von(c.get("agendaItem") or c.get("agendaitem")),
+            "gremium_ids": json.dumps([_id_von(v) for v in _liste(c.get("organization")) if _id_von(v)],
+                                      ensure_ascii=False),
             "rolle": _str(c.get("role")),
             "federfuehrend": 1 if c.get("authoritative") else 0,
             "geaendert": _str(c.get("modified")),
@@ -293,3 +311,16 @@ def _liste(wert) -> list:
     if isinstance(wert, list):
         return wert
     return [wert]
+
+
+def _mit_parametern(url: str, parameter: dict[str, str]) -> str:
+    """Fehlende Query-Parameter an eine Folgeseiten-URL anhängen (Werte der Quelle gewinnen)."""
+    from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
+
+    teile = urlsplit(url)
+    vorhanden = dict(parse_qsl(teile.query, keep_blank_values=True))
+    ergaenzt = {k: v for k, v in parameter.items() if k not in vorhanden and v}
+    if not ergaenzt:
+        return url
+    query = urlencode({**ergaenzt, **vorhanden})
+    return urlunsplit((teile.scheme, teile.netloc, teile.path, query, teile.fragment))

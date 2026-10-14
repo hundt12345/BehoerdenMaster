@@ -276,6 +276,7 @@ CRAWLER = {
     "bauleitplanung": crawle_bauleitplanung,
     "ris-rss": crawle_rss,
     "presse-rss": crawle_rss,
+    "verkehr-rss": crawle_rss,
     "bekanntmachungen": crawle_bekanntmachungen,
     "beteiligung": crawle_beteiligung,
     "opendata": crawle_opendata,

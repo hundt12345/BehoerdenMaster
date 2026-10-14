@@ -1,0 +1,213 @@
+# Stadt Bonn – Konfiguration für BehoerdenMaster
+#
+# Angebunden nach demselben System wie Köln: Ratsinformation über OParl (gleicher Adapter,
+# gleiche Drossel, robots.txt, Budgets und Abkühlzeiten). Der Stadtbezirk „Bonn“ heißt hier „Stadtbezirk Bonn“, damit nicht jede Nennung der Stadt als Bezirk zählt.
+#
+# Quellen:
+#   * OParl-Endpunkt: offizielle OParl-Endpunktliste (github.com/OParl/resources, endpoints.yml,
+#     abgerufen am 14.10.2026). Der Endpunkt ist von hier aus NICHT live geprüft (die
+#     Entwicklungsumgebung erreicht keine Behörden-Hosts) – vor dem ersten Lauf:
+#       python -m behoerdenmaster --stadt bonn probe --quelle ris
+#   * Ortsgliederung, PLZ und Straßen: OpenStreetMap-Auszug der OpenPLZ API (ODbL 1.0,
+#     © OpenStreetMap-Mitwirkende), erzeugt mit tools/stadt_aus_osm.py. Eine NÄHERUNG.
+#
+# Abruf auf Anforderung: Die Stadt wird erst geladen, wenn jemand sie in der Oberfläche
+# auswählt oder in ihr sucht (siehe README, „Weitere Städte – Laden auf Abruf“).
+
+[stadt]
+schluessel = "bonn"
+name = "Bonn"
+aliase = ["stadt bonn", "bundesstadt bonn"]
+ags = "05314000"
+bundesland = "Nordrhein-Westfalen"
+abruf = "auf_abruf"
+gliederung_quelle = "Stadtbezirke und Stadtteile aus dem OSM-Auszug der OpenPLZ API (ODbL 1.0), erzeugt mit tools/stadt_aus_osm.py"
+hinweis = "Ortsbezug aus Betreff und Gremium abgeleitet; Ortsgliederung und PLZ aus einem OpenStreetMap-Auszug (Näherung)."
+
+[[quellen]]
+schluessel = "ris"
+typ = "oparl"
+name = "Ratsinformation Bonn (OParl)"
+system_url = "https://www.bonn.sitzung-online.de/public/oparl/system"
+# Körperschaft über den Namen wählen; passen mehrere, bricht der Lauf ab statt zu raten.
+koerperschaft = "Bonn"
+# Rollierendes Fenster für den Erstabruf (90 Tage), damit eine neu angeforderte Stadt
+# klein und höflich startet. Folgeläufe holen nur Änderungen.
+seit = "90d"
+min_intervall_sekunden = 3.0
+lizenz = "Nicht geprüft – vor einer Veröffentlichung die Lizenzangabe des OParl-Systems bzw. der Stadt prüfen"
+pruefstand = "Endpunkt aus der OParl-Endpunktliste (Stand 14.10.2026); noch kein Abruf – vor dem ersten Lauf probe ausführen"
+
+[[themen]]
+schluessel = "bauen"
+bezeichnung = "Bauvorhaben & Bauleitplanung"
+begriffe = ["Bauvorhaben", "Bauprojekt", "Bauleitplan", "Bebauungsplan", "Bebauung", "Flächennutzungsplan", "Aufstellungsbeschluss", "Satzungsbeschluss", "Offenlage", "Arbeitstitel", "Städtebau", "Baugebiet", "Bauantrag", "Baugenehmigung", "Neubau", "Wohnungsbau", "Wohnbebauung", "Nachverdichtung", "vorhabenbezogen", "Hochhaus", "Quartier", "Abriss", "Umbau"]
+
+[[themen]]
+schluessel = "verkehr"
+bezeichnung = "Verkehr & Mobilität"
+begriffe = ["Verkehr", "Radweg", "Radverkehr", "Fahrradstraße", "Fahrrad", "Parkraum", "Parken", "Ampel", "Stadtbahn", "Buslinie", "Haltestelle", "Mobilität", "Fußverkehr", "Kreuzung", "Straßenbahn", "Tempo"]
+
+[[themen]]
+schluessel = "schulen"
+bezeichnung = "Schulen & Kitas"
+begriffe = ["Schule", "Kita", "Kindergarten", "Kindertagesstätte", "Jugendamt"]
+
+[[themen]]
+schluessel = "gruen"
+bezeichnung = "Grün & Klima"
+begriffe = ["Grün", "Grünzug", "Park", "Spielplatz", "Baum", "Bäume", "Klima", "Stadtgrün"]
+
+[erzeugung]
+# Steuerung für tools/stadt_aus_osm.py – von der Anwendung ignoriert.
+stadtteile = true
+bezirke = [
+  { osm = "Stadtbezirk Bonn", nr = "1", name = "Stadtbezirk Bonn", aliase = ["Bezirksvertretung Bonn"] },
+  { osm = "Bad Godesberg", nr = "2", name = "Bad Godesberg", aliase = ["Bonn-Bad Godesberg"] },
+  { osm = "Bonn-Beuel", nr = "3", name = "Beuel", aliase = ["Bonn-Beuel"] },
+  { osm = "Hardtberg", nr = "4", name = "Hardtberg", aliase = ["Bonn-Hardtberg"] },
+]
+
+# >>> ortsgliederung
+# Erzeugt von tools/stadt_aus_osm.py am 2026-10-14 – nicht von Hand ändern, sondern neu erzeugen.
+# Quelle: OpenStreetMap-Auszug der OpenPLZ API (github.com/openpotato/openplzapi.data),
+# Lizenz ODbL 1.0, © OpenStreetMap-Mitwirkende. Bezirks-/Stadtteilgrenzen und PLZ-Zuordnung
+# sind eine NÄHERUNG; Stadtteil-Schlüssel sind projektinterne Nummern.
+
+[bezirke]
+"1" = "Stadtbezirk Bonn"
+"2" = "Bad Godesberg"
+"3" = "Beuel"
+"4" = "Hardtberg"
+
+[bezirk_aliase]
+"1" = ["Bezirksvertretung Bonn"]
+"2" = ["Bonn-Bad Godesberg"]
+"3" = ["Bonn-Beuel"]
+"4" = ["Bonn-Hardtberg"]
+
+[stadtteile]
+# Stadtbezirk Bonn
+"101" = { name = "Auerberg", bezirk = "1" }
+"102" = { name = "Bonn-Castell", bezirk = "1" }
+"103" = { name = "Bonn-Zentrum", bezirk = "1" }
+"104" = { name = "Buschdorf", bezirk = "1" }
+"105" = { name = "Dottendorf", bezirk = "1" }
+"106" = { name = "Dransdorf", bezirk = "1" }
+"107" = { name = "Endenich", bezirk = "1" }
+"108" = { name = "Graurheindorf", bezirk = "1" }
+"109" = { name = "Gronau", bezirk = "1" }
+"110" = { name = "Ippendorf", bezirk = "1" }
+"111" = { name = "Kessenich", bezirk = "1" }
+"112" = { name = "Lessenich/Meßdorf", bezirk = "1" }
+"113" = { name = "Nordstadt", bezirk = "1" }
+"114" = { name = "Poppelsdorf", bezirk = "1" }
+"115" = { name = "Röttgen", bezirk = "1" }
+"116" = { name = "Südstadt", bezirk = "1" }
+"117" = { name = "Tannenbusch", bezirk = "1" }
+"118" = { name = "Ückesdorf", bezirk = "1" }
+"119" = { name = "Venusberg", bezirk = "1" }
+"120" = { name = "Weststadt", bezirk = "1" }
+# Bad Godesberg
+"201" = { name = "Alt-Godesberg", bezirk = "2" }
+"202" = { name = "Friesdorf", bezirk = "2" }
+"203" = { name = "Godesberg-Nord", bezirk = "2" }
+"204" = { name = "Heiderhof", bezirk = "2" }
+"205" = { name = "Hochkreuz", bezirk = "2" }
+"206" = { name = "Lannesdorf", bezirk = "2" }
+"207" = { name = "Mehlem", bezirk = "2" }
+"208" = { name = "Muffendorf", bezirk = "2" }
+"209" = { name = "Pennenfeld", bezirk = "2" }
+"210" = { name = "Plittersdorf", bezirk = "2" }
+"211" = { name = "Rüngsdorf", bezirk = "2" }
+"212" = { name = "Schweinheim", bezirk = "2" }
+"213" = { name = "Villenviertel", bezirk = "2" }
+# Beuel
+"301" = { name = "Beuel-Mitte", bezirk = "3" }
+"302" = { name = "Beuel-Ost", bezirk = "3" }
+"303" = { name = "Geislar", bezirk = "3" }
+"304" = { name = "Hoholz", bezirk = "3" }
+"305" = { name = "Holtorf", bezirk = "3" }
+"306" = { name = "Holzlar", bezirk = "3" }
+"307" = { name = "Küdinghoven", bezirk = "3" }
+"308" = { name = "Limperich", bezirk = "3" }
+"309" = { name = "Oberkassel", bezirk = "3" }
+"310" = { name = "Pützchen-Bechlinghoven", bezirk = "3" }
+"311" = { name = "Ramersdorf", bezirk = "3" }
+"312" = { name = "Schwarzrheindorf/Vilich-Rheindorf", bezirk = "3" }
+"313" = { name = "Vilich", bezirk = "3" }
+"314" = { name = "Vilich-Müldorf", bezirk = "3" }
+# Hardtberg
+"401" = { name = "Brüser Berg", bezirk = "4" }
+"402" = { name = "Duisdorf", bezirk = "4" }
+"403" = { name = "Hardthöhe", bezirk = "4" }
+"404" = { name = "Lengsdorf", bezirk = "4" }
+
+[plz."53111"]
+stadtteile = ["102", "103", "113"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Bonn-Castell (28/174); Bonn-Zentrum (90/174); Nordstadt (42/174)"
+
+[plz."53113"]
+stadtteile = ["103", "109", "116"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Bonn-Zentrum (26/159); Gronau (67/159); Südstadt (49/159)"
+
+[plz."53115"]
+stadtteile = ["114", "116", "120"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Poppelsdorf (70/172); Südstadt (18/172); Weststadt (46/172)"
+
+[plz."53117"]
+stadtteile = ["101", "102", "104", "108"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Auerberg (41/165); Bonn-Castell (20/165); Buschdorf (56/165); Graurheindorf (28/165)"
+
+[plz."53119"]
+stadtteile = ["113", "117"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Nordstadt (45/126); Tannenbusch (65/126)"
+
+[plz."53121"]
+stadtteile = ["106", "107"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Dransdorf (40/151); Endenich (79/151)"
+
+[plz."53123"]
+stadtteile = ["112", "402"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Lessenich/Meßdorf (31/188); Duisdorf (127/188)"
+
+[plz."53125"]
+stadtteile = ["115", "118", "401"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Röttgen (67/169); Ückesdorf (36/169); Brüser Berg (49/169)"
+
+[plz."53127"]
+stadtteile = ["110", "119", "404"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Ippendorf (67/167); Venusberg (39/167); Lengsdorf (48/167)"
+
+[plz."53129"]
+stadtteile = ["105", "111"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Dottendorf (45/119); Kessenich (58/119)"
+
+[plz."53173"]
+stadtteile = ["201", "210", "211", "213"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Alt-Godesberg (32/141); Plittersdorf (24/141); Rüngsdorf (32/141); Villenviertel (41/141)"
+
+[plz."53175"]
+stadtteile = ["202", "205", "210"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Friesdorf (59/194); Hochkreuz (34/194); Plittersdorf (55/194)"
+
+[plz."53177"]
+stadtteile = ["201", "204", "208", "212"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Alt-Godesberg (69/226); Heiderhof (29/226); Muffendorf (36/226); Schweinheim (34/226)"
+
+[plz."53179"]
+stadtteile = ["206", "207", "211"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Lannesdorf (38/151); Mehlem (68/151); Rüngsdorf (34/151)"
+
+[plz."53225"]
+stadtteile = ["301", "303", "312", "313"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Beuel-Mitte (65/169); Geislar (30/169); Schwarzrheindorf/Vilich-Rheindorf (33/169); Vilich (22/169)"
+
+[plz."53227"]
+stadtteile = ["307", "308", "309", "311"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Küdinghoven (30/177); Limperich (32/177); Oberkassel (59/177); Ramersdorf (26/177)"
+
+[plz."53229"]
+stadtteile = ["305", "306", "310", "314"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Holtorf (30/271); Holzlar (90/271); Pützchen-Bechlinghoven (50/271); Vilich-Müldorf (33/271)"
+# <<< ortsgliederung

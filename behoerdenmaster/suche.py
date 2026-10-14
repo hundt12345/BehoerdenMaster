@@ -211,7 +211,7 @@ def _orte_anzeige(stadt: Stadt, orte_rows: list) -> tuple[list[dict], list[str]]
     for nr in bezirke:
         bezirk_hat_stadtteil = any(stadt.stadtteile[s].bezirk == nr for s in stadtteile if s in stadt.stadtteile)
         if not bezirk_hat_stadtteil and nr in stadt.bezirke:
-            anzeige.append(eintrag("bezirk", nr, f"Stadtbezirk {stadt.bezirke[nr]}"))
+            anzeige.append(eintrag("bezirk", nr, stadt.bezirk_anzeige(nr)))
     for p in plz:
         anzeige.append(eintrag("plz", p, f"PLZ {p}"))
     return anzeige, herkunft

@@ -9,20 +9,25 @@ import asyncio
 import os
 import sqlite3
 from contextlib import asynccontextmanager, closing
+from datetime import datetime, timezone
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Query
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, HTMLResponse
 from pydantic import BaseModel, Field
 
 from . import __version__
 from .auswertung import heute, jetzt
+from .bedarf import bedarf_melden
 from .betrieb import Betrieb, SyncDienst, initialisiere
-from .config import PROJEKTWURZEL, Stadt, config_verzeichnis, lade_staedte
+from .config import PROJEKTWURZEL, Stadt, config_verzeichnis, lade_staedte, standard_stadt
 from .geo import Gazetteer
 from .ladebericht import ladebericht
 from .nlq import Verstaendnis, verstehe
+from .normalize import norm
+from .rechtliches import Betreiber, datenschutz, impressum
 from .speicher import Speicher
+from .staedte import sortiert, uebersicht
 from .suche import Suchauftrag, suche, vorgang_detail
 
 WEB_DATEI = Path(__file__).resolve().parent / "web" / "index.html"
@@ -34,6 +39,20 @@ class FrageAnfrage(BaseModel):
     stadt: str | None = None
     limit: int = Field(default=20, ge=1, le=100)
     offset: int = Field(default=0, ge=0)
+
+
+def stadt_aus_frage(frage: str, staedte: dict[str, Stadt], standard: Stadt) -> Stadt | None:
+    """Eine andere Stadt, wenn die Frage genau sie (und nicht die Standardstadt) nennt.
+
+    „Was plant Düsseldorf in Bilk?“ soll nicht in Köln suchen, nur weil kein `stadt`
+    mitgeschickt wurde. Nennt die Frage mehrere Städte, bleibt es bei der Standardstadt.
+    """
+    text = f" {norm(frage)} "
+    treffer = [st for st in staedte.values()
+               if any(f" {a} " in text for a in {norm(x) for x in (st.name, *st.aliase)} - {""})]
+    if len(treffer) == 1 and treffer[0].schluessel != standard.schluessel:
+        return treffer[0]
+    return None
 
 
 def _auftrag(v: Verstaendnis, stadt: Stadt, limit: int, offset: int) -> Suchauftrag:
@@ -107,8 +126,13 @@ def create_app(db_pfad: str | Path | None = None, config_dir: Path | None = None
     gazetteers = {k: Gazetteer(s) for k, s in staedte.items()}
     # streng=False: Ein falsch gesetzter Umgebungswert darf die Seite nicht unbeantwortbar machen.
     einstellungen = betrieb or Betrieb.aus_umgebung(streng=False)
-    alle_quell_ids = [s.quell_id(q) for s in staedte.values() for q in s.quellen]
-    sync_quellen_effektiv = list(einstellungen.sync_quellen) or alle_quell_ids
+    standard = standard_stadt(staedte)
+    betreiber = Betreiber.aus_umgebung()
+    # Ohne ausdrückliche Liste: alle automatischen Quellen der dauerhaft abgerufenen Städte.
+    # Auf-Abruf-Städte kommen erst nach einer Anforderung hinzu (siehe /api/staedte).
+    dauerhafte_ids = [s.quell_id(q) for s in staedte.values() if not s.auf_abruf
+                      for q in s.quellen if q.automatisch]
+    sync_quellen_effektiv = list(einstellungen.sync_quellen) or dauerhafte_ids
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
@@ -132,10 +156,66 @@ def create_app(db_pfad: str | Path | None = None, config_dir: Path | None = None
 
     def stadt_waehlen(schluessel: str | None) -> Stadt:
         if schluessel is None:
-            return next(iter(staedte.values()))
+            return standard
         if schluessel not in staedte:
             raise HTTPException(status_code=404, detail=f"Unbekannte Stadt: {schluessel}")
         return staedte[schluessel]
+
+    def bestand_der_stadt(sp: Speicher, stadt: Stadt) -> int:
+        return sp.db.execute(
+            "SELECT COUNT(*) FROM vorgang WHERE geloescht = 0 AND quelle_id IN "
+            "(SELECT id FROM quelle WHERE stadt = ?)", (stadt.schluessel,)).fetchone()[0]
+
+    def anfordern(stadt: Stadt) -> list[str]:
+        """Bedarf an einer Auf-Abruf-Stadt vermerken und Hinweise für die Antwort liefern.
+
+        Kein Behördenabruf: Es entsteht nur ein Vermerk; der Hintergrunddienst holt die
+        Stadt in seinem normalen, gedrosselten Plan.
+        """
+        if not stadt.auf_abruf:
+            return []
+        with Speicher(db) as sp:
+            neu = einstellungen.auf_abruf and einstellungen.sync_aktiv and bedarf_melden(
+                sp, stadt, datetime.now(timezone.utc))
+            bestand = bestand_der_stadt(sp, stadt)
+        if neu and app.state.sync_dienst:
+            app.state.sync_dienst.wecken()
+        if bestand:
+            return []
+        if not einstellungen.sync_aktiv:
+            return [f"{stadt.name} ist auf Abruf angebunden, automatische Abrufe sind auf diesem Server "
+                    "aber ausgeschaltet. Daten kommen nur über einen manuellen Lauf hinzu."]
+        if not einstellungen.auf_abruf:
+            return [f"{stadt.name} ist auf Abruf angebunden, das Laden auf Abruf ist auf diesem Server "
+                    "aber ausgeschaltet (BEHOERDEN_AUF_ABRUF=false)."]
+        return [f"{stadt.name} wird auf Abruf geladen: Die Anforderung ist vermerkt, der erste Abruf läuft "
+                "im Hintergrund – gedrosselt, in der Regel einige Minuten. Bis dahin gibt es hier noch "
+                "keine Vorgänge; die Seite zeigt den Ladezustand unter „Angebundene Städte“."]
+
+    @app.get("/impressum", include_in_schema=False, response_class=HTMLResponse)
+    def impressum_seite():
+        return HTMLResponse(impressum(betreiber))
+
+    @app.get("/datenschutz", include_in_schema=False, response_class=HTMLResponse)
+    def datenschutz_seite():
+        return HTMLResponse(datenschutz(betreiber))
+
+    @app.get("/api/staedte")
+    def staedte_endpunkt():
+        """Angebundene Städte mit Abrufmodus, Ladezustand und Bestand – nur lokale Daten."""
+        with Speicher(db) as sp:
+            return uebersicht(sp, staedte, standard=standard.schluessel,
+                              auf_abruf=einstellungen.auf_abruf, verfall_tage=einstellungen.auf_abruf_tage,
+                              max_staedte=einstellungen.auf_abruf_max, sync_aktiv=einstellungen.sync_aktiv,
+                              dauerhafte_ids=sync_quellen_effektiv)
+
+    @app.post("/api/staedte/{schluessel}/anfordern")
+    def stadt_anfordern(schluessel: str):
+        """Eine Auf-Abruf-Stadt anfordern. Vermerkt nur den Bedarf; löst selbst keinen Abruf aus."""
+        stadt = stadt_waehlen(schluessel)
+        hinweise = anfordern(stadt)
+        eintrag = next(e for e in staedte_endpunkt()["staedte"] if e["schluessel"] == stadt.schluessel)
+        return {"stadt": eintrag, "hinweise": hinweise}
 
     @app.get("/", include_in_schema=False)
     def startseite():
@@ -173,8 +253,10 @@ def create_app(db_pfad: str | Path | None = None, config_dir: Path | None = None
         daten["bestand_leer"] = daten["zaehler"].get("vorgang", 0) == 0
         daten["hinweise"] = _hinweise(daten["zaehler"], daten["quellen"], daten["letzte_laeufe"],
                                       einstellungen, demo_status, sync_quellen_effektiv)
-        daten["staedte"] = [{"schluessel": s.schluessel, "name": s.name, "hinweis": s.hinweis}
-                            for s in staedte.values()]
+        daten["staedte"] = [{"schluessel": s.schluessel, "name": s.name, "hinweis": s.hinweis,
+                             "abruf": s.abruf, "standard": s.schluessel == standard.schluessel}
+                            for s in sortiert(staedte, standard.schluessel)]
+        daten["rechtliches"] = {"impressum_vollstaendig": betreiber.vollstaendig}
         return daten
 
     @app.get("/api/ladebericht")
@@ -203,11 +285,19 @@ def create_app(db_pfad: str | Path | None = None, config_dir: Path | None = None
 
     @app.post("/api/frage")
     def frage(anfrage: FrageAnfrage):
-        stadt = stadt_waehlen(anfrage.stadt)
+        gewaehlt = stadt_waehlen(anfrage.stadt)
+        genannt = stadt_aus_frage(anfrage.frage, staedte, gewaehlt)
+        # Ohne gewählte Stadt folgt die Suche der Frage; mit gewählter Stadt bleibt es bei der
+        # Wahl und die genannte Stadt wird nur vorgeschlagen („Bonner Münster“ ≠ Münster).
+        erkannt = genannt if anfrage.stadt is None else None
+        vorschlag = genannt if anfrage.stadt is not None else None
+        stadt = erkannt or gewaehlt
         v = verstehe(anfrage.frage, stadt, gazetteers[stadt.schluessel])
+        abruf_hinweise = anfordern(stadt)
         with Speicher(db) as sp:
             ergebnis = suche(sp, _auftrag(v, stadt, anfrage.limit, anfrage.offset), heute(), zeitpunkt=jetzt())
-        hinweise = list(v.hinweise)
+        hinweise = ([f"Stadt aus der Frage erkannt: {stadt.name}."] if erkannt else []) + abruf_hinweise
+        hinweise += list(v.hinweise)
         if ergebnis.get("freitext_verworfen"):
             hinweise.append("Zu den Stichworten wurde im gefragten Ort bzw. Thema nichts gefunden. "
                             "Angezeigt werden die Vorgänge des Orts und Themas ohne die Stichworte – "
@@ -221,6 +311,8 @@ def create_app(db_pfad: str | Path | None = None, config_dir: Path | None = None
             "treffer": ergebnis["treffer"],
             "kandidaten_gekappt": ergebnis["kandidaten_gekappt"],
             "stadt": {"schluessel": stadt.schluessel, "name": stadt.name, "hinweis": stadt.hinweis},
+            "stadt_vorschlag": ({"schluessel": vorschlag.schluessel, "name": vorschlag.name}
+                                if vorschlag else None),
         }
 
     @app.get("/api/plz/{plz}")
@@ -234,15 +326,19 @@ def create_app(db_pfad: str | Path | None = None, config_dir: Path | None = None
         if len(plz) != 5 or not plz.isdigit():
             raise HTTPException(status_code=422, detail="Eine PLZ besteht aus genau 5 Ziffern.")
         st = stadt_waehlen(stadt)
+        abruf_hinweise = anfordern(st)
         themen = [t.strip() for t in (thema or "").split(",") if t.strip()]
         bekannte = {t.schluessel for t in st.themen}
         unbekannt = [t for t in themen if t not in bekannte]
         if unbekannt:
             raise HTTPException(status_code=422, detail=f"Unbekannte Themen: {', '.join(unbekannt)}")
 
-        hinweise = []
+        hinweise = list(abruf_hinweise)
         eintrag = st.plz.get(plz)
-        if eintrag is None:
+        if eintrag is None and not st.plz:
+            hinweise.append(f"Für {st.name} ist noch keine PLZ-Zuordnung hinterlegt. Es werden nur Vorgänge "
+                            "mit ausdrücklicher PLZ-Nennung gefunden.")
+        elif eintrag is None:
             hinweise.append(f"Die PLZ {plz} gehört nicht zum Gebiet von {st.name}. Es werden nur Vorgänge "
                             "mit ausdrücklicher PLZ-Nennung gefunden.")
         elif not eintrag.stadtteile:

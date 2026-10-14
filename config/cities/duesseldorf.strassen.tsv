@@ -1,0 +1,2795 @@
+# BehoerdenMaster – Straßenverzeichnis (abgeleitet, Näherung)
+# Quelle: OpenStreetMap-Auszug aus dem OpenPLZ-API-Datenexport (github.com/openpotato/openplzapi.data, src/de/osm/streets.updated.csv)
+# Lizenz: Open Database License (ODbL) 1.0 – © OpenStreetMap-Mitwirkende
+# Stand: 2026-10-14
+# Filter: Regionalschlüssel 05111000 (Stadt aus der gleichnamigen .toml)
+# Aufbau: name<TAB>Stadtteile<TAB>PLZ  (Stadtteile als Nummer:Anzahl der Straßenobjekte)
+# PLZ-Ableitung: Stadtteil ab 10 % und mindestens drei Straßen der PLZ (Werkzeug-Ausgabe)
+# Mehrere Stadtteile = mehrdeutiger Name; die Anwendung ordnet dann keinen Stadtteil zu,
+# sondern nutzt die Kandidaten nur, um eine Suchanfrage zu verstehen.
+# Erzeugt von tools/strassen_aus_osm.py
+aachener strasse	301:1,302:1	40223
+abteihofstrasse	308:1	40221
+achenbachstrasse	201:1	40237
+achillesstrasse	404:1	40545
+ackerstrasse	106:2,202:2	40211,40233,40235
+adalbert probst strasse	1001:1	40595
+adalbertstrasse	404:1	40545
+adam stegerwald strasse	1001:1	40595
+aderdamm	305:1	40221
+aderkirchweg	305:1	40221
+aderraeuscherweg	301:1,305:1	40221
+adersstrasse	303:2	40210,40215
+aderweg	305:1	40221
+adlerstrasse	105:1	40211
+adolf klarenbach strasse	904:1	40589
+adolph kolping strasse	907:1	40593
+adolph von vagedes platz	105:1	40479
+aggerweg	701:1	40625
+agnesstrasse	501:1	40489
+ahnenweg	307:1	40219
+ahnfeldstrasse	201:1	40239
+ahornallee	604:1	40468
+ahornblick	705:1	40629
+ahornstrasse	803:1	40627
+akademiestrasse	101:1	40213
+akazienallee	701:1	40625
+akazienstrasse	803:1	40627
+akazienweg	501:1	40489
+alberichweg	404:1	40549
+albert schoendorff platz	802:1	40231
+albertstrasse	203:1	40233
+albrecht duerer strasse	501:1	40489
+albrecht von hagen platz	104:1	40474
+aldekerkstrasse	401:1	40549
+alexanderstrasse	106:1	40210
+alfelder strasse	902:1	40599
+alfred doeblin strasse	1001:1	40595
+alice heye platz	908:1	40591
+allensteiner strasse	802:1	40231
+allmendenweg	308:1	40221
+allmersstrasse	505:1	40474
+aloys odenthal platz	701:1	40625
+alt eller	801:1	40229
+alt heerdt	401:1	40549
+alt himmelgeist	903:1	40589
+alt niederkassel	403:1	40547
+alt pempelfort	105:2	40211,40479
+altdorferstrasse	201:1	40237
+alte flughafenstrasse	504:1	40474
+alte gasse	501:1	40489
+alte insel	701:1	40627
+alte kalkumer strasse	502:1	40489
+alte landstrasse	502:1	40489
+alte stadtgrenze	903:1	40589
+altenbergstrasse	202:1	40235
+altenbrueckstrasse	902:1	40599
+alter bilker friedhof	301:1	40221
+alter gerresheimer friedhof park	701:1	40625
+alter markt	701:1	40625
+altestadt	101:1	40213
+alzeyer weg	306:1	40227
+am aaper weg	704:1	40629
+am adershof	103:1	40476
+am albertussee	401:1	40549
+am alten amtsgericht	101:1	40213
+am alten rhein	907:1	40593
+am angerbach	501:1	40489
+am angerfeld	501:1	40489
+am ausleger	907:1	40593
+am auwald	907:1	40593
+am backesberg	705:1	40629
+am baerenkamp	903:1	40589
+am bahnhof	503:1	40489
+am bauenhaus	603:1	40472
+am benrather markt	901:1	40597
+am bermeshau	802:1	40231
+am binnenwasser	104:1	40474
+am birkenhain	602:1	40470
+am birkenkamp	704:1	40629
+am bockskothen	603:1	40472
+am boellert	501:1	40489
+am bongard	705:1	40629
+am bonneshof	104:1	40474
+am botanischen garten	301:1	40225
+am brambusch	505:1	40468
+am broichgraben	905:1	40589
+am brueckerbach	908:1	40591
+am brugacker	501:1,506:1	40489
+am buchholzer busch	1001:2,901:2	40593,40595,40597
+am buergerhaus	703:1	40629
+am dammsteg	801:1,904:1,908:1	40591
+am deich	403:1	40547
+am denkmal	902:1	40599
+am dernkamp	705:1	40629
+am dominikanerkloster	101:1	40213
+am ellerforst	804:1	40627
+am erlenhof	908:1	40591
+am eulenthal	701:1	40627
+am falder	904:1	40589
+am fallhammer	304:1	40221
+am farnacker	904:1	40589
+am feldhof	704:1	40629
+am feldwinkel	504:1	40474
+am fischerbreuel	501:1	40489
+am flugfeld	503:1	40489
+am forst kalkum	601:1	40472
+am frohnhof	503:1	40489
+am fronberg	502:1	40489
+am gallberg	705:1	40629
+am gansbruch	301:1,908:1	40225,40591
+am garather muehlenbach	1001:1	40595
+am gartenkamp	705:1	40629
+am gatherhof	603:1	40472
+am geisterberg	705:1	40629
+am gengelstraesschen	604:1	40468
+am gentenberg	502:1,504:1	40489
+am gieb	703:1	40629
+am ginsterberg	803:1	40627
+am goetzenkothen	603:1	40472
+am grenzgraben	604:1	40468
+am grossen dern	705:1	40625
+am gruenewald	701:1	40625
+am gruenhof	901:1	40597
+am hackenbruch	801:1,802:1,804:1	40231,40627
+am haferkamp	908:1	40589
+am hain	505:2	40468,40474
+am handelshafen	304:1	40221
+am hang	803:1	40627
+am haustertshof	803:1	40627
+am heerdter busch	401:1	40549
+am heerdter hof	401:1	40549
+am heerdter krankenhaus	401:1	40549
+am heidberg	803:1	40627
+am heidhuegel	505:1	40468
+am heiligenhaeuschen	404:1	40545
+am hexbusch	803:1	40627
+am hirschgraben	804:1	40627
+am hochofen	401:1	40549
+am hohlen berg	803:1	40627
+am holderbusch	804:1	40627
+am holunderbusch	602:1	40470
+am holzkamp	701:1	40625
+am huelserhof	603:1	40472
+am huelsfeld	703:1	40629
+am huettenhof	503:1	40489
+am irlenspahn	701:1	40625
+am kaldenberg	506:1	40489
+am kapeller feld	1001:1	40595
+am karlshof	802:1	40231
+am katharinenkloster	501:1	40489
+am kehrbesen	506:1	40489
+am keienhof	705:1	40629
+am kiefernforst	803:1	40627
+am kirschbaumwaeldchen	402:1	40547
+am kittelbach	604:1	40468
+am kleiansacker	503:1	40489
+am kleianskreuz	503:1	40489
+am kleinforst	803:1,804:1	40627
+am klompenkothen	503:1	40489
+am klosterhof	604:1	40472
+am koehnen	902:1	40599
+am koenigshof	604:1	40472
+am koppelshof	703:1	40629
+am krahnap	801:1	40229
+am krausen baum	506:1	40489
+am kreuz	501:1	40489
+am kreuzberg	502:1	40489
+am krienengarten	506:1	40489
+am krummen weg	402:1	40547
+am kuhtor	305:1	40221
+am langen weiher	904:1	40589
+am langenfeldsbusch	803:1	40627
+am lehn	701:1	40625
+am lichtenbroicher graben	601:1	40472
+am litzgraben	501:1	40489
+am loericker waeldchen	402:1	40547
+am massenberger kamp	908:1	40589
+am mergelsberg	704:1	40629
+am mickeler busch	903:1	40589
+am moenchgraben	901:1	40597
+am moschenhof	705:1	40629
+am muehlenacker	502:1	40489
+am muehlenberg	401:1	40549
+am muehlendamm	501:1	40489
+am muehlenkamp	506:1	40489
+am muehlenturm	502:1	40489
+am nettchesfeld	904:1	40589
+am neuenhof	704:1	40629
+am nussbaum	602:1	40470
+am oberen werth	502:1	40489
+am oekotop	401:1	40549
+am pesch	701:1	40625
+am pfaffenbusch	803:1	40627
+am pflanzkamp	801:1	40229
+am platten stein	501:1	40489
+am postsportplatz	701:1	40625
+am poth	701:1	40625
+am pritschauhof	901:1	40597
+am puettkamp	704:1	40629
+am quellenbusch	701:1	40625
+am rahmer feld	501:1	40489
+am rethert	902:1	40599
+am ringofen	705:1	40629
+am rittersberg	1001:1,907:2	40593,40595
+am ritterskamp	502:1	40489
+am roehrenwerk	603:1	40472
+am roettchen	604:1	40468
+am rosenbusch	803:1	40627
+am roten haus	505:1,604:1	40468
+am sankt remigius	506:1	40489
+am schabernack	801:1	40229
+am scharfenstein	302:1	40223
+am scheidt	703:1	40629
+am schein	602:1	40470
+am scheitenweg	903:1	40589
+am schmidtberg	703:1	40629
+am schmiedekotten	804:1	40627
+am schneisbroich	604:1	40468
+am schnepfenhof	201:1	40239
+am schoenenkamp	801:1,901:2,902:1	40229,40597,40599
+am schorn	601:1	40472
+am schuettenhof	603:1	40472
+am schultersbusch	704:1	40629
+am schurfwinkel	802:1	40231
+am schwalbenberg	803:1	40627
+am schwarzbach	506:1	40489
+am seeblick	803:1	40627
+am seestern	402:1	40547
+am silberberg	803:1	40627
+am spaltwerk	908:1	40591
+am spangen	802:1	40231
+am spielberg	502:1,504:1	40474,40489
+am spindelbusch	803:1	40627
+am staad	505:1	40474
+am staatsforst	902:1	40599
+am steinberg	301:1	40225
+am steinebrueck	903:1,905:1	40589
+am stock	601:1	40472
+am strasserfeld	803:1	40627
+am strauchbusch	402:1	40547
+am straussenkreuz	801:1	40229
+am stufstock	802:1	40231
+am suedfriedhof	301:1,305:1	40221
+am tannenwaeldchen	103:1	40476
+am tiefenberg	705:1	40629
+am toellershof	506:1	40489
+am trippelsberg	904:1	40589
+am turnisch	802:1	40231
+am venn	701:1	40625
+am vogelsang	505:1	40474
+am wagenrast	704:1	40629
+am walbert	604:1	40468
+am wald	901:1,902:1	40597,40599
+am wallgraben	701:1	40625
+am wasserturm	901:1	40597
+am wehrhahn	105:1,106:1,201:1,202:1	40211,40237
+am weissen stein	501:1,506:1	40489
+am weyersberg	803:1	40627
+am wiedenhof	502:1	40489
+am wildpark	705:1	40629
+am zaulsbusch	803:1	40627
+am zollhaus	701:1	40625
+am zunder	904:1	40589
+amalienstrasse	603:1	40472
+ambossplatz	402:1	40547
+ambossstrasse	402:1	40547
+ammerweg	604:1	40468
+amrumstrasse	604:1	40468
+amselstrasse	804:1	40627
+amsterdamer strasse	505:1	40474
+an den birken	505:1	40468
+an den buchen	703:1	40629
+an den garather huetten	1001:1	40595
+an den kaempen	501:1	40489
+an den linden	501:1	40489
+an den vier winden	504:1	40474
+an der alten muehle	503:1	40489
+an der anger	501:1,503:1	40489
+an der apfelweide	403:1	40547
+an der bausenheide	504:1	40474
+an der dankeskirche	901:1	40597
+an der eselsfurt	801:1	40229
+an der garather motte	1001:1	40595
+an der golzheimer heide	604:1	40468
+an der icklack	203:1	40233
+an der jagengrenze	905:1	40589
+an der kaempe	1001:1,907:1	40595
+an der kaiserburg	705:1	40629
+an der kalvey	506:1	40489
+an der leimkuhle	701:1	40625
+an der linde	703:1	40629
+an der piwipp	103:1,604:1	40468
+an der reith	503:1	40489
+an der schanz	506:1	40489
+an der schuetzenwiese	802:1	40231
+an der thomaskirche	602:1	40470
+an der ulanenkaserne	103:1	40476
+an der vehlingshecke	301:2	40221,40223
+an der wilkesfurth	902:1	40599
+an der ziegelei	907:1	40593
+an dreilinden	703:1	40629
+an sankt lambertus	503:1	40489
+an sankt swidbert	502:1	40489
+andreasstrasse	101:1	40213
+anemonenweg	802:1	40231
+angeraue	501:1	40489
+angerbenden	501:1	40489
+angermunder strasse	501:1	40489
+angerstrasse	907:1	40593
+anhalter strasse	801:1	40229
+anna maria luisa medici platz	102:1	40213
+anna von krane strasse	504:1	40474
+annastrasse	105:1	40477
+annostrasse	502:1	40489
+annweilerstrasse	801:1	40229
+anrather weg	402:1	40547
+ansbacher strasse	901:1	40597
+anton betz strasse	301:1	40223
+anton fahne weg	705:1	40629
+antoniusstrasse	303:1	40215
+aplerbecker strasse	603:1	40472
+apollinarisstrasse	306:1	40227
+apollo platz	307:1	40219
+aprather strasse	705:1	40629
+arag platz	201:1	40239
+arcaden terrasse	307:1	40217
+arcadiastrasse	603:1	40472
+ardennenstrasse	401:1	40549
+arminstrasse	306:1	40227
+arndtstrasse	105:1	40479
+arnheimer strasse	502:1,506:1	40489
+arnold schoenberg strasse	907:1	40593
+arnoldstrasse	105:1	40479
+arnstadter weg	804:1	40627
+arnulfstrasse	404:1	40545
+arthur kampf strasse	501:1	40489
+artusstrasse	603:1	40470
+aschaffenburger strasse	906:1	40599
+aschenbroedelweg	202:1	40235
+askanierstrasse	403:1	40547
+asternweg	604:1	40468
+auenblick	907:1	40593
+auerhahnweg	604:1	40468
+auerweg	908:1	40591
+auf dem draap	305:1,308:1	40221
+auf dem kampe	305:1	40221
+auf dem rheindamm	302:1	40223
+auf dem scheinsfeld	602:1	40470
+auf den breiden	803:1	40627
+auf den gathen	305:1	40221
+auf den geisten	604:1	40468
+auf den kuhbenden	701:1	40625
+auf den kuhlen	305:1	40221
+auf den steinen	305:1	40221
+auf der bieth	503:1	40489
+auf der boeck	305:1	40221
+auf der gemarke	701:1	40625
+auf der hardt	701:1	40625
+auf der hofreith	503:1	40489
+auf der krone	501:1	40489
+auf der lausward	304:1	40221
+auf der reide	604:1	40468
+auf m grossenfeld	801:1	40229
+auf m hennekamp	301:1,306:1	40225
+auf m hitzberg	803:1	40627
+auf m rott	908:1	40591
+auf m tetelberg	301:1	40221
+auf m wettsche	905:1	40589
+auf m winkel	905:1	40589
+augsburger strasse	901:1	40597
+august clemens strasse	907:1	40593
+augustastrasse	105:2	40477,40479
+aussichtsbruecke	1001:1	40595
+bachstelzenweg	604:1	40468
+bachstrasse	301:1,303:1,307:2	40217,40223
+bad harzburger strasse	1002:1	40595
+baeckergasse	102:1	40213
+baeckerstrasse	102:1	40213
+bagelstrasse	105:2	40211,40479
+bahlenstrasse	904:1,908:1	40589
+bahnhofstrasse	501:1	40489
+bahnstrasse	106:2	40210,40212
+balckestrasse	901:1	40597
+baldurstrasse	401:1	40549
+baltenstrasse	701:1	40625
+baltrumstrasse	604:1	40468
+bamberger strasse	901:1,906:1	40599
+bankstrasse	104:1	40476
+barbarastrasse	103:2	40476,40477
+barbarossaplatz	404:1	40545
+barbarossawall	502:1	40489
+bardelebenstrasse	404:1	40545
+barmer strasse	404:1	40545
+barntruper weg	604:1	40468
+baseler weg	701:1	40625
+bastionstrasse	102:1,106:2	40212,40213
+batterieweg	305:1	40221
+bauenhaeuser weg	603:1	40472
+baumberger weg	907:1	40593
+baumschulenweg	501:1	40489
+baumstrasse	103:1	40468
+bayerstrasse	401:1	40549
+bayreuther strasse	901:1,906:1	40597,40599
+bebelstrasse	804:1	40627
+bebraer weg	701:1	40627
+becherstrasse	103:1	40476
+beckbuschstrasse	505:1	40474
+bedburger strasse	301:1	40221
+beedstrasse	604:1	40468
+beethovenstrasse	201:1,202:2	40233,40237
+beginengaesschen	701:1	40625
+begonienstrasse	505:1	40474
+behrenstrasse	203:1	40233
+behringweg	908:1	40591
+beim dorf	403:1	40547
+bellscheidtstrasse	701:1	40625
+belsenplatz	404:1	40545
+belsenstrasse	404:1	40545
+bendemannstrasse	106:1	40210
+benderstrasse	701:2	40625,40629
+benedikt schmittmann strasse	105:1	40479
+benediktusstrasse	401:1	40549
+bennigsen platz	104:1	40474
+benninghauser strasse	908:1	40591
+benrather marktplatz	901:1	40597
+benrather rathausstrasse	901:1	40597
+benrather schlossallee	901:1	40597
+benrather schlossufer	901:1,907:1	40593,40597
+benrather strasse	102:1,106:2	40212,40213
+benrodestrasse	901:1	40597
+bensberger weg	908:1	40591
+bensheimer strasse	801:1	40229
+benzenbergstrasse	307:1	40219
+benzstrasse	202:1	40235
+berger allee	102:1	40213
+berger strasse	101:1,102:1	40213
+bergesweg	506:1	40489
+bergische landstrasse	701:2,703:1,705:1	40625,40629
+bergiusstrasse	904:1	40589
+bergstrasse	803:1	40627
+bergzaberner weg	306:1	40227
+berliner allee	106:1,303:1	40212
+bernburger strasse	801:1	40229
+berner weg	701:1	40625
+bernhard pfau passage	106:1	40211
+bertastrasse	701:1	40625
+bertelsweg	703:1	40629
+bertha von suttner platz	306:1	40227
+bertha von suttner strasse	1002:1	40595
+berty albrecht park	105:1	40211
+berzeliusstrasse	401:1	40549
+bessemerstrasse	906:1	40599
+beuthstrasse	105:1	40211
+beverweg	701:1	40625
+bielefelder strasse	604:1	40468
+bieler weg	701:1	40625
+bilker allee	303:2,307:2	40215,40217,40219
+bilker strasse	102:1	40213
+bilkrather weg	501:1	40489
+bingener weg	801:1	40229
+binnenstrasse	203:1	40233
+binterimstrasse	301:1	40223
+birkenhof	301:1	40225
+birkenplatz	801:1	40231
+birkenstrasse	202:2	40233,40235
+birkenweg	803:1	40627
+birkhahnweg	604:1	40468
+birnenallee	701:1	40625
+bismarckstrasse	106:1	40210
+bismarckweg	705:1	40629
+bittweg	301:1,306:1	40225
+blanckertzstrasse	705:1	40629
+blasiusstrasse	305:1	40221
+blaumeisenweg	501:1	40489
+bleichstrasse	106:2	40211,40212
+bloemstrasse	103:1	40468
+blombachweg	701:1	40625
+bluecherstrasse	105:1	40477
+blumenstrasse	106:1	40212
+blumenthalstrasse	103:1	40476
+blumenweg	501:1,701:1	40489,40625
+bocholter strasse	604:1	40468
+bochumer strasse	603:1	40472
+bockhackstrasse	907:1	40593
+bockumer strasse	506:1	40489
+bockumer weg	601:1	40472
+bodinusstrasse	201:1	40239
+boecklinstrasse	702:1	40235
+boehlerstrasse	401:1	40549
+boehlerweg	401:1	40549
+boehmestrasse	505:1	40474
+boehnekloepperallee	901:1	40597
+boerchemstrasse	901:1	40597
+boernestrasse	106:1	40211
+bogenstrasse	306:1	40227
+bolderbergweg	705:1	40629
+bolkerpassage	101:1,106:1	40213
+bolkerstrasse	101:1	40213
+boltensternstrasse	201:1	40239
+bongardstrasse	105:1	40479
+bonifatiusstrasse	402:1	40547
+bonner strasse	901:1,904:1	40589
+bonner strasse henkelstrasse	904:1	40589
+borbecker strasse	604:1	40472
+borkumstrasse	604:1	40468
+borsigstrasse	306:1	40227
+boschstrasse	904:1	40589
+boskampweg	603:1	40472
+bottroper strasse	604:1	40468
+brabantstrasse	702:1	40235
+brachtstrasse	301:1	40223
+brachvogelweg	604:1	40468
+brackeler strasse	603:1	40472
+brackweder strasse	604:1	40468
+brahmsplatz	201:1	40237
+brandenburgstrasse	702:1	40629
+brassertweg	908:1	40591
+braunfelsweg	801:1	40229
+braunsberger strasse	902:1	40599
+bredelaerstrasse	504:1	40474
+brehmplatz	201:2	40237,40239
+brehmstrasse	201:1,602:1	40239
+breidenplatz	803:1	40627
+breisacher strasse	604:1	40468
+breite strasse	106:1	40213
+breitscheider strasse	705:1	40625
+bremer strasse	304:1	40221
+brend amourstrasse	404:1	40545
+breslauer strasse	801:1,802:1	40231
+briedestrasse	906:1	40599
+brieger weg	804:1	40627
+brinckmannstrasse	301:1	40225
+brinellstrasse	803:1	40627
+brockenstrasse	901:1	40597
+broelweg	701:1	40625
+bromberger strasse	902:1	40599
+brorsstrasse	803:1	40627
+bruchgrabenweg	803:1	40627
+bruchhausen	703:1	40629
+bruchhausenstrasse	908:1	40591
+bruchstrasse	202:1	40235
+brucknerstrasse	901:1	40593
+brueckenschlag	501:1	40489
+brueckenstrasse	307:1	40221
+brueggener weg	403:1	40547
+bruesseler strasse	402:1,403:1,404:1	40547
+bruhnstrasse	301:1	40225
+brunhildenstrasse	401:1	40549
+brunnenstrasse	301:1	40223
+bruno recht weg	702:2	40235,40629
+bruno schmitz strasse	1001:1	40595
+bublitzer strasse	902:1	40599
+buchenstrasse	906:1	40599
+buchenweg	803:1	40627
+buchfinkenweg	604:1	40468
+buchholzer weg	601:1	40472
+buchsbaumweg	602:1	40470
+buddestrasse	201:1	40470
+buecherstrasse	907:1	40593
+bueckerbergweg	302:1	40223
+bueckstrasse	103:1	40468
+buedingenstrasse	701:1	40625
+buellenkothenweg	801:1	40229
+buelowstrasse	103:1	40476
+buengerstrasse	901:1	40597
+buergerstrasse	307:1	40219
+buettgenbachstrasse	401:1	40549
+buettgenweg	402:1	40547
+bunsenstrasse	303:1	40215
+bunzlauer weg	804:1	40627
+burgenlandweg	908:1	40591
+burggrafenstrasse	404:1	40545
+burghofstrasse	301:1,307:1	40217,40223
+burgmuellerstrasse	702:1	40235
+burgplatz	101:1	40213
+burgunderstrasse	401:1	40549
+burscheider strasse	908:1	40591
+buscher muehle	201:1	40239
+buscherhofstrasse	901:1	40597
+buscherstrasse	201:1	40239
+buschgasser weg	506:1	40489
+butzbacher weg	801:1	40229
+buysstrasse	301:1	40223
+caecilie beuken strasse	901:1	40597
+caecilienstrasse	901:1	40597
+calvinstrasse	901:1	40597
+camphausenstrasse	105:1	40479
+cannstatter strasse	907:1	40593
+cantadorstrasse	106:1	40211
+capitostrasse	901:1	40597
+cardaunstrasse	804:1	40627
+caritas platz	307:1	40219
+carl friedrich goerdeler strasse	1001:1	40595
+carl maria splett strasse	1002:1	40595
+carl severing strasse	1001:1	40595
+carl sonnenschein strasse	505:1	40468
+carl theodor strasse	106:1	40213
+carl von ossietzky strasse	1001:1	40595
+carlo schmid strasse	1002:1	40595
+carlsplatz	102:1	40213
+carlstor	102:1	40213
+carmenstrasse	404:1	40549
+cecilienallee	104:1,105:1	40474
+celler weg	604:1	40468
+celsiusweg	908:1	40591
+chamissostrasse	201:1	40237
+champagnerallee	901:1	40597
+charlottenstrasse	106:1	40210
+chemnitzer strasse	804:1	40627
+cheruskerstrasse	404:1	40545
+chlodwigstrasse	301:1	40225
+chopinstrasse	901:1	40593
+christophstrasse	301:1	40225
+cimbernstrasse	404:1	40545
+citadellstrasse	102:1	40213
+clara schumann strasse	901:1	40593
+clara viebig strasse	201:1	40237
+clarissenstrasse	401:1	40549
+claudiusstrasse	505:1	40474
+clausiusweg	908:1	40591
+clausthal zellerfelder strasse	1002:1	40595
+clemens brentano strasse	505:1	40474
+clemensstrasse	301:1	40225
+cloppenburger weg	604:1	40468
+coburger weg	804:1	40627
+coesfelder strasse	604:1	40468
+collenbachstrasse	103:1,105:2	40476,40477
+colmarer strasse	604:1	40468
+columbusstrasse	404:2	40545,40549
+comeniusplatz	403:1	40547
+comeniusstrasse	404:1	40545
+cordobastrasse	105:1	40477
+corellistrasse	907:1	40593
+corneliusstrasse	301:1,303:1	40215,40223
+cottbusser strasse	701:1	40625
+couvenstrasse	105:1	40211
+cranachplatz	202:1	40235
+cranachstrasse	202:2	40235,40237
+cronenberger weg	908:1	40591
+cruthovener strasse	801:1	40231
+curieweg	908:1	40591
+curt beckmann strasse	504:1	40474
+cuxhavener strasse	304:1	40221
+d benrath s	901:1	40597
+dabringhauser strasse	908:1	40591
+dachsbergweg	603:1	40472
+daelenstrasse	202:1	40235
+dagobertstrasse	301:1	40225
+dahlienweg	604:1	40468
+daimlerstrasse	202:1	40235
+dalienweg	701:1	40625
+damaschkestrasse	604:1	40468
+danekoethen	804:1	40627
+danziger strasse	103:2,104:1,504:1	40468,40474,40476
+darmstaedter strasse	801:1	40229
+dasselstrasse	902:1	40599
+dauzenbergstrasse	502:1	40489
+davidstrasse	603:1	40472
+de blaeaek	305:1	40221
+dechant koenig weg	404:1	40545
+dechenweg	908:1	40591
+degerstrasse	202:1	40235
+deikerstrasse	505:1,604:1	40468
+deilbachweg	701:1	40625
+dellestrasse	803:1	40627
+demagstrasse	901:1	40597
+derendorfer allee	103:1	40476
+derendorfer strasse	105:2	40477,40479
+derfflingerstrasse	603:2	40470,40472
+dernbuschweg	705:2	40625,40629
+derner hof	705:1	40625
+detmolder weg	604:1	40468
+deutzer strasse	801:1	40229
+dianastrasse	301:1	40223
+dickelsbachweg	701:1	40625
+dickhausweg	601:1	40472
+diedenhofener strasse	103:1	40476
+diepenstrasse	701:1	40625
+dieselstrasse	202:1	40235
+diesterwegstrasse	401:1	40549
+dietrich bonhoeffer platz	1001:1	40595
+dietrich bonhoeffer strasse	1002:1	40595
+dietrichstrasse	801:1	40229
+diezelweg	604:1	40468
+dillenburger weg	801:1	40229
+dinnendahlstrasse	202:1	40235
+dinslakener strasse	604:1	40468
+dirschauer weg	902:1	40599
+doeberitzer strasse	902:1	40599
+doergelsberg	506:1	40489
+doernbergstrasse	902:1	40599
+doerpeweg	701:1	40625
+doerpfeldstrasse	701:1	40625
+dohlenweg	604:1	40468
+dominikanerstrasse	404:1	40545
+dompfaffweg	604:1	40468
+dopplerweg	908:1	40591
+dorfstrasse	703:1	40629
+dormagener strasse	301:1	40221
+dornaper strasse	701:1	40625
+dornroeschenweg	202:1	40235
+dornweg	701:1	40625
+dorothea habedank strasse	601:1	40472
+dorotheenplatz	202:1	40235
+dorotheenstrasse	202:2,203:1	40235,40237
+dorper weg	703:1	40629
+dorstener strasse	603:1	40472
+dortmunder strasse	603:1	40472
+draengenburger strasse	907:1	40593
+drakeplatz	404:1	40545
+drakestrasse	404:1	40545
+dreherstrasse	701:1	40625
+dreieckstrasse	306:1	40227
+dreifaltigkeitsstrasse	701:1	40625
+dresdener strasse	1002:1	40595
+driburger strasse	603:1	40472
+drosselstrasse	804:1	40627
+drosselweg	501:1	40489
+droste huelshoff strasse	505:1	40474
+drususstrasse	404:1	40549
+duderstaedter strasse	1002:1	40595
+duelmener weg	603:1	40472
+duenenweg	604:1	40468
+duerener strasse	301:1	40223
+duerkheimer weg	306:1,801:1	40227
+duesseldorf benrath bahnhof	901:1	40597
+duesseldorf hauptbahnhof nordtunnel	106:1	40210
+duesseldorf v	505:1	40474
+duesseldorfer strasse	401:1,404:2,603:1,701:1	40472,40545,40549,40625
+duesselkaempchen	201:1	40239
+duesselstrasse	307:1	40219
+duesselthaler strasse	105:1	40211
+duisburger landstrasse	506:1	40489
+duisburger strasse	105:2	40477,40479
+e plus strasse	601:1	40472
+eckampstrasse	603:1	40472
+eckenerstrasse	604:1	40468
+edenkobener weg	801:1	40229
+edisonplatz	202:1	40235
+edith fuerst strasse	307:1	40219
+edmund bertrams strasse	503:1,504:1	40474,40489
+eduard schloemann strasse	201:1	40237
+eduard schulte strasse	301:1	40225
+efeuweg	604:1,701:1	40468,40625
+egbertstrasse	502:1	40489
+eggerscheidter strasse	603:1	40472
+egilweg	802:1	40231
+ehrenhof	105:1	40479
+ehrenpreisweg	202:1	40235
+ehrenstrasse	105:1	40479
+eibenstrasse	803:1	40627
+eichelstrasse	906:1	40599
+eichenbruch	505:1	40468
+eichendorffstrasse	505:1	40474
+eichengrund	602:1	40470
+eichenkreuzstrasse	904:1	40589
+eichenwand	803:1	40627
+eichkatzstrasse	804:1	40627
+eichsfelder strasse	1002:1	40595
+eickeler strasse	603:1	40472
+eifeler strasse	306:1	40227
+eifgenweg	701:1	40625
+einbecker strasse	902:1	40599
+einbrunger strasse	506:1	40489
+einbrunger weg	601:1	40472
+eingang messe	505:1	40474
+einsiedelstrasse	901:1	40597
+einsteinstrasse	904:1	40589
+eintrachtstrasse	306:1	40227
+eisenacher weg	701:1	40627
+eisenstrasse	306:1	40227
+eiskellerberg	101:1	40213
+eiskellerstrasse	101:1	40213
+eisvogelweg	907:1	40593
+eitelstrasse	603:1	40472
+ekkehardstrasse	602:1	40470
+elberfelder strasse	106:2	40212,40213
+elbinger weg	504:1	40474
+elbruchstrasse	904:1	40589
+elfgenweg	402:1	40547
+elfriede bial strasse	103:1	40476
+elisabethstrasse	307:1	40217
+eller kamp	804:1	40627
+ellerbittweg	801:1	40229
+ellerkirchstrasse	801:1	40229
+ellerstrasse	106:1,303:1,306:1	40210,40227
+elly heuss knapp strasse	1002:1	40595
+ellystrasse	908:1	40591
+elmenweide	903:1	40589
+elsa braendstroem strasse	1002:1	40595
+elsaesser strasse	604:1	40468
+else gores strasse	104:1	40474
+elsternweg	604:1	40468
+emanuel leutze strasse	402:1	40547
+emil barth strasse	1001:1	40595
+emilie preyer platz	105:1	40479
+emilie schneider platz	101:1	40213
+emmastrasse	306:1	40227
+emmericher strasse	104:1,105:1	40474,40477
+enge gasse	907:1	40593
+engelbertstrasse	203:1	40233
+engerstrasse	202:2	40235,40237
+englaenderwiese	104:1	40474
+ennepeweg	701:1	40625
+enzianstrasse	505:1	40474
+erasmusstrasse	301:1,303:1	40223
+erbacher weg	306:1	40227
+erftplatz	307:1	40219
+erftstrasse	307:1	40219
+erfurter weg	804:1	40627
+ergo platz	105:1	40477
+erich hoepner strasse	104:1	40474
+erich klausener strasse	505:1	40474
+erich mueller strasse	901:1	40597
+erich ollenhauer strasse	1001:1	40595
+erik noelting strasse	306:1	40227
+erika mann strasse	1001:1	40595
+erikastrasse	804:1	40627
+erkelenzer strasse	301:1	40223
+erkrather landstrasse	703:1	40629
+erkrather strasse	106:2,203:1,306:2,802:2	40210,40227,40231,40233
+erlanger strasse	901:1	40597
+erlenkamp	804:1	40627
+erlenweg	902:1	40599
+erna eckstein strasse	301:1	40225
+ernst abbe weg	908:1	40589
+ernst derra strasse	301:1	40225
+ernst gnoss strasse	307:2	40219,40221
+ernst lemmer strasse	1002:1	40595
+ernst poensgen allee	702:1,705:1	40629
+ernst reuter platz	303:1	40215
+erwin rommel strasse	602:1	40470
+erwin von witzleben strasse	104:1	40474
+eschbachweg	701:1	40625
+eschenweg	604:1	40468
+eschweilerstrasse	403:1	40547
+esmarchstrasse	301:1	40223
+espenweg	501:1	40489
+esperantostrasse	103:1	40468
+essener strasse	103:1	40476
+esslinger strasse	907:1	40593
+eugen richter strasse	602:1	40470
+eulerstrasse	103:2,105:1	40476,40477
+eupener strasse	401:1	40549
+euref campus	601:2	40472,40474
+europaplatz	505:1	40474
+euskirchener strasse	403:1	40547
+eythstrasse	202:1	40235
+fabriciusstrasse	301:1	40225
+faehrerweg	502:1	40489
+faehrstrasse	301:1,305:1	40221
+faerberstrasse	301:1,303:1	40223
+fahneburgstrasse	603:1,705:2	40472,40629
+fahrenheitweg	908:1	40591
+falkenweg	604:1	40468
+fallingbosteler strasse	604:1	40468
+farnweg	505:1	40468
+fasanenweg	604:1	40468
+faunastrasse	201:1	40239
+fechnerweg	908:1	40591
+fehmarnstrasse	604:1	40468
+fehrbellinstrasse	603:1	40472
+feldersbachweg	701:1	40625
+feldmuehleplatz	404:1	40545
+feldstrasse	105:1	40479
+felix klein strasse	104:1	40474
+ferdinand braun platz	401:1	40549
+ferdinand hiller weg	907:1	40593
+ferdinandstrasse	902:1	40599
+festenbergstrasse	801:1	40231
+feuer und rettungswache 3	105:1	40477
+feuerbachstrasse	301:1	40223
+fichtenstrasse	203:1	40233
+finschstrasse	907:1	40593
+fischerstrasse	104:2,105:1	40474,40476,40477
+flachskampstrasse	803:1	40627
+flachsmarkt	701:1	40625
+flaschenstrasse	701:1	40627
+fleher strasse	301:1,302:1	40223
+flemingweg	908:1	40591
+flenderstrasse	901:1	40597
+flensburger strasse	604:1	40468
+fliederweg	501:1	40489
+fliednerstrasse	502:1	40489
+flinger broich	202:2	40233,40235
+flinger passage	106:2	40212,40213
+flinger richtweg	202:1	40235
+flinger strasse	101:1,106:1	40213
+floesserstrasse	907:1	40593
+florapark	307:1	40217
+florastrasse	307:1	40217
+florensstrasse	305:1	40221
+flotowstrasse	901:1	40593
+flottenstrasse	801:1	40229
+fluegelstrasse	306:1	40227
+flughafenstrasse	504:1,604:1	40474
+flurstrasse	202:1	40235
+foehrenweg	505:1	40468
+fontanestrasse	602:1	40470
+forster weg	705:1	40629
+forststrasse	901:2,902:2	40597,40599
+fortunastrasse	202:1	40235
+frachtstrasse	504:1,601:1	40474
+frank zappa strasse	202:1	40235
+frankenplatz	103:1	40476
+frankensteiner strasse	801:1	40231
+frankenstrasse	103:1	40476
+frankenthaler weg	306:1	40227
+frankfurter strasse	1001:2,1002:1	40593,40595
+franklinstrasse	105:1	40479
+franz hitze strasse	907:1	40593
+franz lieder strasse	907:1	40593
+franz liszt strasse	907:1	40593
+franz rennefeld weg	601:1	40472
+franz vaahsen weg	506:1	40489
+franziusstrasse	304:2	40219,40221
+frauenlobweg	602:1	40470
+fraunhoferweg	908:1	40591
+freiburger strasse	801:1	40229
+freiheitplatz	804:1	40627
+freiheitshagen	501:1	40489
+freiheitstrasse	804:1	40627
+freiherr vom stein strasse	1002:1	40595
+freiligrathplatz	505:1	40474
+freiligrathstrasse	105:1	40479
+freytagstrasse	201:1	40237
+friedberger weg	801:1	40229
+friedensplaetzchen	307:1	40219
+friedenstrasse	307:1	40219
+friederike fliedner weg	506:1	40489
+friedhofstrasse	901:1	40597
+friedhofsweg	503:1	40489
+friedingstrasse	701:1	40625
+friedlandstrasse	801:1	40231
+friedrich ebert strasse	106:1	40210
+friedrich engels strasse	804:1	40627
+friedrich lau strasse	104:1	40474
+friedrich springorum strasse	201:1	40237
+friedrich von spee strasse	502:1	40489
+friedrich wilhelm strasse	701:1	40625
+friedrichstrasse	106:1,303:2,307:2	40213,40217,40223
+friesenstrasse	404:1	40545
+fringsstrasse	304:1	40221
+fritz brandt weg	907:1	40593
+fritz erler strasse	1001:1	40595
+fritz koehler weg	506:1	40489
+fritz reuter strasse	301:1	40221
+fritz roeber strasse	101:1	40213
+fritz strassmann strasse	908:1	40591
+fritz vomfelde strasse	401:1,402:1	40547,40549
+fritz von wille strasse	603:1	40472
+fritz wuest strasse	201:2	40237,40239
+frobenstrasse	603:1	40470
+froebelstrasse	701:1	40625
+froehlenstrasse	902:1	40599
+froschkoenigweg	202:1	40235
+fruchtstrasse	301:2	40223,40225
+fuellenbachstrasse	104:1	40474
+fuerstenberger strasse	902:1	40599
+fuerstenplatz	303:1	40215
+fuerstenwall	303:2,307:2	40215,40217,40219
+fuesilierstrasse	103:1	40476
+fuhlrottweg	908:1	40591
+fuldaer strasse	801:1	40229
+further strasse	902:1	40599
+gablonzer strasse	501:1	40489
+gaensestrasse	907:1	40593
+gaertnereiweg	903:1,905:1	40589
+gandersheimer strasse	502:1	40489
+ganghoferstrasse	505:1	40474
+gantenbergweg	302:1	40223
+garather schlosspark	1001:1	40595
+garather strasse	907:1	40593
+gartenstrasse	105:1	40479
+gatherweg	802:1	40231
+gaussstrasse	202:1	40235
+geeststrasse	904:1	40589
+gehrtsstrasse	702:1	40235
+geibelstrasse	702:1	40235
+geisslerweg	908:1	40591
+geistenstrasse	103:1	40476
+gelderner strasse	104:1	40474
+gelleper strasse	402:1	40547
+gellertstrasse	201:1	40237
+gelsenkirchener strasse	603:1	40472
+gemuender strasse	404:1	40547
+gemuesegarten	901:1	40593
+genfer weg	701:1	40625
+gengerstrasse	201:1	40239
+georg daniel teutsch strasse	1002:1	40595
+georg glock strasse	104:2	40474,40476
+geraer weg	804:1	40627
+geranienweg	604:1	40468
+gerberstrasse	306:1	40591
+gerhard domagk strasse	104:1	40474
+gerhardstrasse	103:1	40468
+gerhart hauptmann strasse	602:1	40470
+gerichtsschreiberweg	501:1,503:1,506:1	40489
+germaniastrasse	301:2	40221,40223
+gerresheimer landstrasse	803:1	40627
+gerresheimer strasse	106:1,202:1,203:1	40211,40233
+gerricusplatz	701:1	40625
+gerricusstrasse	701:1	40625
+gerstaeckerstrasse	505:1	40474
+gertrud woker strasse	908:1	40589
+gertrudisplatz	801:1	40229
+gertrudisstrasse	801:1	40229
+geschwister aufricht strasse	502:1	40489
+giessener weg	801:1	40229
+gilbachstrasse	307:1	40219
+ginsterweg	501:1	40489
+girardetbruecke	106:1	40212
+gladbacher strasse	307:1	40219
+gladbecker strasse	604:1	40472
+gladiolenstrasse	505:1	40474
+glasblaeserstrasse	701:1	40625
+glashuettenstrasse	701:1,803:1,804:1	40627
+glatzer strasse	801:1	40231
+glehner weg	402:1	40547
+gleiwitzer strasse	802:1	40231
+glockenstrasse	103:1	40476
+glogauer strasse	801:1	40231
+gluckstrasse	901:1	40593
+gluecksburger strasse	404:1	40545
+gneisenaustrasse	105:1	40477
+gnesener strasse	902:1	40599
+gocher strasse	402:1	40547
+goebenstrasse	105:1	40477
+goedinghover weg	803:1	40627
+goeppinger strasse	907:1	40593
+goerlitzer strasse	501:1	40489
+goerresstrasse	901:1	40597
+goethestrasse	201:1	40237
+gogrevestrasse	301:1	40223
+goldackerweg	501:1	40489
+goldene bruecke	106:1	40213
+goldlackstrasse	804:1	40627
+goldregenweg	505:1	40468
+gollenbergsweg	703:1	40629
+goltsteinstrasse	106:1	40211
+golzheimer platz	104:1	40474
+golzheimer strasse	103:1	40476
+goslarer strasse	1002:1	40595
+gotenstrasse	301:1	40225
+gothaer weg	701:1,804:1	40627
+gottfried hoetzel strasse	401:1	40549
+gottfried keller strasse	505:1	40474
+grabbeplatz	101:1,106:1	40213
+grabenstrasse	102:1,106:1	40213
+graefrather strasse	701:1	40625
+graeulinger strasse	701:1,705:1	40625
+graf adolf platz	106:3,303:2,307:1	40212,40213,40215
+graf adolf strasse	106:3,303:3	40210,40212,40215
+graf engelbert strasse	501:1	40489
+graf recke strasse	201:2,602:1,702:2	40235,40237,40239,40629
+graf recke weg	506:1	40489
+graf von stauffenberg strasse	1002:1	40595
+grafenberger allee	201:1,202:2,702:2	40235,40237
+grafenberger hoehenweg	705:1	40629
+grashofstrasse	201:2,602:1	40239,40470
+grasweg	701:1	40625
+graudenzer strasse	902:1	40599
+gravelottestrasse	103:1	40476
+greifswalder strasse	1001:1	40595
+greifweg	404:1	40549
+grenzweg	506:1	40489
+grevenbroicher weg	402:1	40547
+grillparzerstrasse	602:1	40470
+grimlinghauser strasse	301:1	40221
+grimmstrasse	702:1	40235
+grossenbaumer weg	601:1	40472
+grosser torfbruch	803:1	40627
+gruenberger weg	804:1	40627
+gruene mitte	506:1	40489
+gruener weg	801:1	40229
+gruenewaldstrasse	104:1	40474
+grueneweg	305:1	40221
+gruenscheider strasse	908:1	40591
+gruenstrasse	106:1	40212
+gruetersaaper weg	603:1,704:1	40629
+gruitener strasse	203:1	40233
+grunerstrasse	201:1	40239
+grupellostrasse	106:1	40210
+gubener strasse	804:1	40627
+gudastrasse	701:1	40625
+guerickeweg	908:1	40591
+guestrower strasse	1001:1	40595
+gumbertstrasse	801:1	40229
+gurlittstrasse	301:1	40223
+gustaf gruendgens platz	106:1	40211
+gustav kneist weg	701:1	40625
+gustav mahler strasse	907:1	40593
+gustav poensgen strasse	303:1	40215
+gustorfer strasse	401:1	40549
+gutenbergstrasse	702:1	40235
+haberstrasse	904:1	40589
+habichtstrasse	602:1	40470
+habsburgerstrasse	403:1	40547
+haendelstrasse	901:1	40593
+haeselerstrasse	602:1	40470
+hafenstrasse	102:1	40213
+hagebuttenweg	202:1	40235
+hagenauer strasse	604:1	40468
+hagener strasse	701:1	40625
+hahnenfurther strasse	705:1	40629
+haifastrasse	306:1	40227
+haigerweg	801:1	40229
+hainbuchenweg	902:1	40599
+halbuschstrasse	904:1,908:1	40591
+hallbergstrasse	201:1	40239
+hallesche strasse	701:1	40625
+halskestrasse	303:1	40215
+hamborner strasse	604:2	40468,40472
+hamburger strasse	304:1	40221
+hammer dorfstrasse	305:1	40221
+hammer strasse	304:1,307:1	40219
+hanauer weg	306:1	40227
+haniel park	201:1	40237
+hanns heuer platz	401:1	40549
+hans aring platz	908:1	40591
+hans beckers strasse	1002:1	40595
+hans boeckler strasse	104:1	40476
+hans sachs strasse	201:1	40237
+hans vilz weg	506:1	40489
+hansaallee	401:1,402:1,404:3	40545,40547,40549
+hansaplatz	201:1	40239
+hardenbergstrasse	701:1	40625
+hardter hoehenweg	701:1	40625
+hardtstrasse	702:1	40629
+harffstrasse	306:1,801:1,908:1	40591
+harkortstrasse	106:1,303:1	40210
+harlessstrasse	201:1	40239
+haroldstrasse	102:1,307:1	40213
+harpener strasse	603:1	40472
+harry piel platz	901:1	40597
+hartwichstrasse	403:1	40547
+haselnussweg	602:1	40470
+hasper strasse	603:1	40472
+hasselbecker strasse	703:1	40629
+hasselbeckstrasse	701:1	40625
+hasseler richtweg	801:1	40229
+hasselsstrasse	901:1,902:2	40597,40599
+hattinger strasse	603:1	40472
+hatzfeldstrasse	701:1	40625
+haubachweg	701:1	40625
+hauptallee	901:1	40597
+hauptstrasse	901:1	40597
+haus endt strasse	907:1	40593
+haydnstrasse	901:1	40593
+hebbelstrasse	201:1	40237
+heckteichstrasse	701:1	40627
+hectorstrasse	404:1	40545
+hedwig jung danielewicz strasse	201:1	40237
+heerdter landstrasse	401:1	40549
+heerdter lohweg	401:1,404:1	40549
+heerdter rheinpark	404:1	40549
+heerdter sandberg	404:1	40549
+heerdterhof garten	401:1	40549
+heerstrasse	306:1	40227
+heesenstrasse	401:1	40549
+heggemannstrasse	904:1	40589
+heidelberger strasse	801:1	40229
+heiderpatt	501:1	40489
+heiderweg	501:1	40489
+heidestieg	504:1	40474
+heideweg	602:1	40470
+heilbronner strasse	907:1	40593
+heilenbeckeweg	701:1	40625
+heiligenhauser strasse	902:1	40599
+heiligenstaedter strasse	1002:1	40595
+heiligenstrasse	907:1	40593
+heimgarten	802:1	40231
+heinefeldplatz	604:1	40468
+heinrich biesenbach strasse	804:1	40627
+heinrich ehrhardt strasse	103:2,201:1,602:1	40468,40470,40476
+heinrich heine allee	101:1,106:1	40213
+heinrich heine gaerten	401:1	40549
+heinrich heine passage	106:1	40213
+heinrich heine platz	101:1,106:1	40213
+heinrich hertz strasse	904:1	40589
+heinrich holtschneider weg	506:1	40489
+heinrich koenn strasse	701:2	40625,40629
+heinrich koeppler strasse	1002:1	40595
+heinrich lersch strasse	1001:1	40595
+heinrich opladen strasse	907:1	40593
+heinrich schuetz strasse	901:1	40593
+heinrich von brentano platz	1001:1	40595
+heinrich walbroehl weg	506:1	40489
+heinrich willinghoefer weg	804:1	40627
+heinrichstrasse	201:2,602:1	40237,40239
+heinsbergstrasse	403:1	40547
+heinsenstrasse	305:1	40221
+heinz schmoele strasse	306:1	40227
+heinzelmaennchenweg	202:1	40235
+helene weber strasse	1002:1	40595
+helgolandstrasse	604:1	40468
+hellerhofweg	1002:1	40595
+hellriegelstrasse	308:1	40221
+hellweg	202:1,701:1	40235,40625
+helmholtzstrasse	303:1	40215
+helmut stieff strasse	104:1	40474
+helmutstrasse	603:1	40472
+heltorfer mark	501:1	40489
+heltorfer schlossallee	501:1	40489
+heltorfer strasse	601:1	40472
+henkelstrasse	902:1,904:1,906:2	40589,40599
+henri dunant strasse	504:1	40474
+henriettenstrasse	301:1	40223
+heppenheimer weg	306:1	40227
+herbert eulenberg weg	502:1	40489
+herborner weg	801:1	40229
+herchenbachstrasse	602:1	40470
+herdecker strasse	603:1	40472
+herderstrasse	201:1	40237
+heresbachstrasse	301:1	40223
+herforder weg	604:1	40468
+hermann dornscheidt strasse	602:1	40470
+hermann dronscheidt strasse	602:1	40470
+hermann ehlers strasse	1001:1	40595
+hermann harry schmitz strasse	306:1	40227
+hermann hesse strasse	602:1	40470
+hermann raddatz weg	506:1	40489
+hermann reuter strasse	103:1	40476
+hermann schauten weg	506:1	40489
+hermann smeets strasse	307:1	40219
+hermann vom endt strasse	1001:1	40595
+hermann weill strasse	104:1	40474
+hermannstadtstrasse	908:1	40591
+hermannstrasse	202:2	40233,40237
+herner strasse	603:1	40472
+hersfelder strasse	801:1	40229
+herzogstrasse	303:2,307:1	40215,40217
+hetjensstrasse	603:1	40472
+heubesstrasse	901:1	40597
+heyestrasse	701:1	40625
+heymstrasse	505:1	40474
+hiddenseestrasse	604:1	40468
+hilarius gilges platz	101:1	40213
+hilde und joseph neyses platz	103:1	40476
+hildebrandtstrasse	303:1	40215
+hildegard knef strasse	401:1	40549
+hildener strasse	901:2	40593,40597
+hildesheimer weg	604:1	40468
+himmelgeister landstrasse	302:1,903:1	40589
+himmelgeister strasse	301:1,302:2	40223,40225
+hinacker	506:1	40489
+hinsbecker strasse	403:1	40547
+hinter den hoefen	904:1	40589
+hinter den kaempen	506:1	40489
+hinter der boeck	305:1	40221
+hirschweg	603:1	40472
+hitdorfweg	908:1	40591
+hochdahler strasse	705:1	40625
+hochstrasse	907:1	40593
+hoehenstrasse	306:1	40227
+hoeherhofstrasse	701:1,804:1	40627
+hoeherweg	203:1,802:1	40231,40233
+hoehrather strasse	908:1	40591
+hoehscheider strasse	908:1	40591
+hoelderlinstrasse	505:1	40474
+hoeltystrasse	504:1	40474
+hoerder strasse	603:1	40472
+hoerdtweg	602:1	40470
+hoexterweg	103:1,604:1	40468
+hoferhofstrasse	604:1	40468
+hoffeldstrasse	202:1,203:1	40233,40235
+hofgartenrampe	101:1,105:2	40213,40479
+hofgartenstrasse	105:1,106:1	40213,40479
+hofgartenterrassen	106:1	40212
+hohe strasse	102:1	40213
+hohenfriedbergstrasse	801:1	40231
+hohensandweg	908:1	40591
+hohenstaufenstrasse	403:1	40547
+hohenzollernallee	202:1	40235
+hohenzollernstrasse	106:1	40211
+holbeinstrasse	201:1	40237
+holbeinweg	501:1	40489
+holterweg	305:1	40221
+holtumer weg	506:1	40489
+holunderstrasse	505:1	40474
+holunderweg	501:1	40489
+holzkampsweg	803:1	40627
+holzstrasse	304:2	40219,40221
+homberger strasse	104:1	40474
+hompeschstrasse	201:1	40239
+hoppengarten	501:1	40489
+horionplatz	102:1,307:1	40213
+hortensienstrasse	505:1	40474
+hospitalstrasse	901:1	40597
+howeweg	602:1	40470
+hoxbachstrasse	901:1,902:2	40597,40599
+hubbelrather strasse	203:1	40233
+hubert hermes strasse	402:1	40547
+hubertusstrasse	307:1	40219
+hueckeswagener strasse	908:1	40591
+huegelstrasse	904:1,908:1	40589,40591
+huehnerweg	501:1	40489
+huelchrather strasse	301:1	40221
+huelsdeller weg	703:1	40629
+huelsestrasse	505:1	40474
+huelsmeyerplatz	603:1	40472
+huelsmeyerstrasse	705:1	40629
+huenefeldstrasse	504:1	40474
+huerthstrasse	804:1	40627
+huettenstrasse	303:1,306:1	40215,40227
+huettmannstrasse	504:1	40474
+hugo viehoff strasse	103:1	40468
+hugo wilderer weg	907:1	40593
+humboldtstrasse	201:1	40237
+humperdinckstrasse	901:2	40593,40597
+hunsrueckenstrasse	101:1	40213
+huschbergerstrasse	106:1	40212
+huvestrasse	905:1	40589
+hymgasse	401:1	40549
+ickerswarder strasse	903:1,908:1	40589
+ihz park	306:1	40227
+ikarusstrasse	504:1	40474
+ikenstrasse	701:1	40625
+ilbeckweg	703:1	40629
+ilexweg	501:1	40489
+ilna wunderwald strasse	202:1	40235
+ilvericher strasse	402:1	40547
+im besental	905:1	40589
+im broich	803:1	40627
+im bruehl	701:1	40625
+im daemmergrund	602:1	40470
+im dahlacker	301:1	40223
+im diepental	901:1	40597
+im geesterfeld	604:1	40468
+im grossen winkel	501:1	40489
+im grund	504:1	40474
+im hasengraben	905:1	40589
+im heerdter feld	401:1	40549
+im heidewinkel	701:1	40625
+im heidkamp	501:1	40489
+im hochfeld	803:1	40627
+im huferfeld	604:1	40468
+im kaempchen	401:1	40549
+im kleinen winkel	501:1	40489
+im liefeld	306:1	40227
+im lohauser feld	504:1	40474
+im luftfeld	502:1	40489
+im muehlenbruch	501:1	40489
+im rottfeld	201:1	40239
+im schlank	604:1	40472
+im spich	502:1	40489
+im winkel	803:1	40627
+immenweg	501:1	40489
+immermannplatz	106:1	40210
+immermannstrasse	106:2	40210,40212
+immigrather strasse	908:1	40591
+in den benden	701:1	40625
+in den blamuesen	501:1	40489
+in den dellen	506:1	40489
+in den diken	603:1	40472
+in den grossen banden	908:1	40225
+in den koetten	804:1	40627
+in den maisbanden	801:1	40229
+in der aue	908:1	40591
+in der buhlack	305:1	40221
+in der donk	902:1	40599
+in der elb	801:1	40229
+in der flieth	704:1	40629
+in der gartenstadt	602:1	40470
+in der hoett	302:1	40223
+in der meide	701:1	40627
+in der niessdonk	601:1	40472
+in der rehwiese	705:1	40629
+in der steele	902:1	40599
+industriestrasse	306:1	40227
+ingeborg bachmann strasse	1002:1	40595
+ingenhoven tal	106:1	40211
+inkmannstrasse	906:1	40599
+innenhof	901:1	40597
+inselstrasse	105:1	40479
+insterburger weg	802:1	40231
+irenenstrasse	604:1	40468
+irisweg	501:1,701:1	40489,40625
+irmerstrasse	505:1	40474
+irmgardstrasse	702:1	40235
+isenburgstrasse	701:1	40625
+iserlohner strasse	603:1	40472
+itterdamm	905:1	40589
+itterstrasse	904:1,905:1	40589
+ivo beucker strasse	201:1	40237
+jacobistrasse	105:2,106:1	40211,40479
+jaegerei	907:1	40593
+jaegerhofstrasse	105:1	40479
+jaegerstrasse	801:1	40231
+jagenbergstrasse	901:1	40597
+jahnstrasse	303:1	40215
+jakob kneip strasse	1001:1	40595
+james von moltke platz	1001:1	40595
+jan wellem platz	106:1	40212
+jean paul strasse	603:1	40470
+jenaer weg	804:1	40627
+joachim erwin platz	106:1	40212
+joachimstrasse	403:1,404:1	40545,40547
+johannes hesse strasse	901:1	40597
+johannes karsch weg	506:1	40489
+johannes radke strasse	1001:1	40595
+johannes rau platz	307:1	40213
+johannes weyer strasse	301:1	40225
+johannstrasse	103:2,104:1	40468,40474,40476
+jordanstrasse	105:1	40477
+josef gockeln strasse	104:1	40474
+josef kleesattel strasse	1001:1	40595
+josef knab strasse	104:1	40474
+josef kuerten platz	907:1	40593
+josef maria olbrich strasse	1001:1	40595
+josef neuberger strasse	701:1	40625
+josef ponten strasse	1001:1	40595
+josef stick strasse	801:1	40229
+josef wilbert strasse	801:1	40229
+josef wilden strasse	504:1	40474
+josef willecke strasse	402:1	40547
+josef wimmer gasse	101:1	40213
+josefplatz	306:1	40227
+josefstrasse	306:1	40227
+joseph beuys ufer	101:1,105:1	40213,40479
+joseph brodmann strasse	502:1	40489
+josephinenstrasse	106:1	40212
+jostenstrasse	906:1	40599
+juechener weg	402:1	40547
+juelicher bruecke	103:1,105:1	40477
+juelicher strasse	103:2,105:1	40476,40477
+jugendverkehrsschule rath	603:1	40472
+juiststrasse	604:1	40468
+julius buths weg	907:1	40593
+julius raschdorff strasse	1001:1	40595
+julius rietz strasse	907:1	40593
+julo levin ufer	304:1	40221
+jung stilling strasse	104:1	40474
+junkersstrasse	202:1	40235
+kaarster weg	402:1	40547
+kaerntner weg	908:1	40591
+kaiser friedrich ring	403:1,404:1	40545,40547
+kaiser friedrich strasse	901:1	40597
+kaiser wilhelm ring	404:1	40545
+kaiserslauterner strasse	306:1	40591
+kaiserstrasse	105:1	40479
+kaiserswerther markt	502:1	40489
+kaiserswerther strasse	104:2,105:1,503:1,505:1	40474,40476,40477,40489
+kaistrasse	304:1	40221
+kaktusweg	701:1	40625
+kaldenberger strasse	904:1	40589
+kalkarer strasse	403:1	40547
+kalkstrasse	506:1	40489
+kalkumer schlossallee	502:1,503:1	40489
+kalkumer strasse	501:1,604:1	40468,40489
+kalkumer weg	506:1	40489
+kalkweg	501:1	40489
+kallenbachstrasse	901:1	40597
+kamenzer weg	804:1	40627
+kammerrathsfeldstrasse	907:1	40593
+kamper acker	904:1	40589
+kamper weg	804:1	40627
+kamperstrasse	904:1	40589
+kampstrasse	908:1	40591
+kanalstrasse	403:1	40547
+kanonierstrasse	103:1	40476
+kanzlerstrasse	603:1	40472
+kapeller hofweg	1001:1	40595
+kapellstrasse	105:1	40479
+kapellweg	305:1	40221
+kappeler strasse	901:2,906:1	40597,40599
+kapuzinergasse	101:1	40213
+karl anton strasse	106:1	40211
+karl arnold platz	104:1	40474
+karl frech strasse	804:1	40627
+karl friedrich klees strasse	103:1	40476
+karl geusen strasse	306:1,801:1,802:1	40227,40231
+karl heinz bott weg	701:1	40625
+karl hohmann strasse	901:2,906:1	40597,40599
+karl houben strasse	504:1	40474
+karl jaspers strasse	1002:1	40595
+karl kleppe strasse	104:1	40474
+karl knoedl strasse	803:1	40627
+karl mueller strasse	201:1	40237
+karl panzner weg	907:1	40593
+karl roettger platz	602:1	40470
+karl rudolf strasse	303:1	40215
+karl schurz strasse	301:1	40223
+karl wagner platz	202:1	40235
+karlsbader strasse	701:1	40625
+karlsruher strasse	801:1	40229
+karlstrasse	106:1	40210
+karolingerplatz	301:1	40223
+karolingerstrasse	301:1	40223
+kartaeuserstrasse	604:1	40468
+karweg	904:1	40589
+kasernenstrasse	101:1,102:1	40213
+kastanienhof	301:1	40225
+katharinenstrasse	701:1	40627
+kattowitzer strasse	801:1	40231
+katzbachstrasse	801:1	40231
+kavalleriestrasse	307:1	40213
+kay und lore lorentz platz	101:1	40213
+kehler strasse	604:1	40468
+keldachstrasse	301:1	40225
+keldenichstrasse	701:1	40625
+kelheimer strasse	906:1	40599
+kelsweg	604:1	40472
+kempener strasse	104:1	40474
+kempgensweg	802:1	40231
+kennedydamm	103:1,104:2	40474,40476
+keplerstrasse	303:1	40215
+kessel passage	102:1	40213
+kesselsbergweg	502:1	40489
+kesselstrasse	304:1	40221
+kettelbecksweg	603:2,704:1	40472,40629
+kettelerstrasse	907:1	40593
+kettwiger strasse	203:1	40233
+kevelaerer strasse	401:1	40549
+kiefernstrasse	203:1	40233
+kiefernweg	902:1	40599
+kieselstrasse	702:1	40235
+kieshecker weg	601:2,604:3	40468,40472,40474
+kiesselbachstrasse	904:1	40589
+kikweg	803:1	40627
+kinkelstrasse	301:1	40223
+kirchfeldstrasse	303:2,307:1	40215,40217
+kirchhoffweg	908:1	40591
+kirchplatz	307:1	40217
+kirchstrasse	306:1	40227
+kirchweg	501:1	40489
+kirschbluetenweg	803:1	40627
+kissbergweg	705:1	40629
+kissinger strasse	801:1	40229
+kittelbachpark	604:1	40468
+kittelbachstrasse	502:1	40489
+klapheckstrasse	505:1	40474
+klarastrasse	501:1	40489
+klashausweg	703:1	40629
+klaus bungert strasse	604:2	40468,40474
+klausingstrasse	104:1	40474
+kleeweg	701:1	40625
+kleianspatt	503:1	40489
+kleiansring	503:1	40489
+klein eller	801:2	40229,40231
+kleiner torfbruch	803:1	40627
+kleinschmitthauser weg	604:1	40468
+kleinstrasse	901:1	40597
+klemensplatz	502:1	40489
+klever strasse	104:2,105:3	40474,40476,40477
+klingelhoeferstrasse	908:1	40591
+klopstockstrasse	201:1	40237
+klosekamp	502:1	40489
+klosterstrasse	106:2	40210,40211
+klotzbahn	701:1	40625
+knechtstedenstrasse	401:1	40549
+knittkuhler strasse	704:1,705:1	40629
+koblenzer strasse	1001:2,901:1,907:1	40593,40595
+koe bogen tunnel	106:2	40211,40212
+koe center	106:1	40212
+koehlstrasse	504:1	40474
+koelner landstrasse	306:1,904:1,908:2	40589,40591
+koelner strasse	106:3,306:1	40210,40211,40227
+koelner tor	701:1	40625
+koelner weg	903:1	40589
+koenenkampweg	501:1	40489
+koenigsallee	106:2,303:1	40212,40215
+koenigsberger strasse	801:1,802:2	40231,40233
+koenigshof	604:1	40472
+koenigshuetter strasse	804:1	40627
+koenigstrasse	106:1	40212
+koertingstrasse	202:1	40235
+koesener weg	804:1	40627
+koesliner strasse	501:1	40489
+koetschaustrasse	505:1	40474
+kohlrauschweg	908:1	40591
+kohlweg	305:1	40221
+kolberger strasse	902:1	40599
+kolhagenstrasse	901:1,907:1	40593
+kolpingplatz	105:1	40477
+konkordiastrasse	307:1	40219
+konrad adenauer platz	106:1	40210
+konrad hagius strasse	907:1	40593
+konradstrasse	801:1	40229
+kopernikusstrasse	301:2	40223,40225
+koppelskamp	501:1	40489
+koppersstrasse	401:1	40549
+kornblumenweg	802:1	40231
+korveyer strasse	604:1	40468
+krahestrasse	203:1	40233
+krahkampweg	302:1,308:1	40221,40223
+krahnenburgstrasse	601:1	40472
+krefelder strasse	401:1	40549
+kreisverkehr aachenerstrasse ulenbergstrasse	301:1,302:1	40223
+kreitenstrasse	602:1	40470
+kreutzerstrasse	402:1	40547
+kreuzbergstrasse	502:1	40489
+kreuzburger weg	802:1	40231
+kreuzstrasse	106:3	40210,40211,40212
+kribbenstrasse	401:1	40549
+kriegerstrasse	103:1	40468
+kriegestrasse	504:1	40474
+krippstrasse	801:1	40229
+kroenerweg	604:1	40468
+krokusweg	802:1	40231
+kronacher weg	804:1	40627
+kronenstrasse	307:1	40217
+kronprinzenstrasse	307:1	40217
+kruppstrasse	306:1	40227
+kuehlwetterstrasse	201:1	40239
+kuendgensweg	802:1	40231
+kuennestrasse	701:1	40625
+kueppersteger strasse	908:2	40589,40591
+kuertenstrasse	603:1,604:1	40472
+kuhstrasse	304:1,305:1	40221
+kulmer strasse	902:1	40599
+kurfuerstenstrasse	106:2	40210,40211
+kurt baurichter strasse	105:1	40474
+kurt schumacher strasse	1001:1	40595
+kurt tucholsky strasse	1001:1	40595
+kurze strasse	101:1	40213
+kuseler weg	801:1	40229
+kuthsweg	802:1	40231
+kyffhaeuserstrasse	404:1	40545
+lacombletstrasse	201:1	40239
+laerchenweg	902:1	40599
+lahnweg	307:1	40219
+lakronstrasse	701:1	40625
+lambert backer strasse	804:1	40627
+lambertusstrasse	101:1	40213
+landauer weg	306:1	40227
+landsberger strasse	902:1	40599
+langenberger strasse	203:1	40233
+langenbielauer weg	804:1	40627
+langenfelder strasse	908:1	40591
+langeoogstrasse	604:1	40468
+langerstrasse	203:1,306:1	40233
+langfuhrstrasse	902:1	40599
+lanker strasse	404:2	40545,40547
+lantz scher park	504:1	40474
+lantzallee	504:1	40474
+lassallestrasse	804:1	40627
+laubachstrasse	701:1	40625
+leichlinger strasse	908:1	40591
+leierbachweg	701:1	40625
+leinenweberweg	907:1	40593
+leipziger strasse	501:1	40489
+leitenstorfferstrasse	901:1	40597
+lemgoer weg	604:1	40468
+lenaustrasse	602:1,603:2,702:1	40470,40472
+lenneper strasse	908:1	40591
+lennestrasse	105:1	40477
+leo baeck strasse	1002:1	40595
+leo statz platz	307:1	40219
+leo statz strasse	104:1	40474
+leopoldstrasse	106:1	40211
+leostrasse	403:1,404:1	40545,40547
+lerchenstrasse	404:1	40547
+lessingplatz	306:1	40227
+lessingstrasse	306:1	40227
+leuchtenberger kirchweg	502:1,504:1	40474,40489
+leuthenstrasse	801:1	40231
+leverkuser strasse	908:1	40591
+lewitstrasse	403:1	40547
+lichtenbroicher weg	601:1,604:1	40472
+lichtstrasse	202:1	40235
+liebfrauenstrasse	908:1	40591
+liebigstrasse	105:1	40479
+liedberger weg	402:1	40547
+liefergasse	101:1	40213
+liegnitzer strasse	801:1	40231
+lierenfelder strasse	802:2	40231,40233
+liesegangstrasse	106:2	40211,40212
+ligusterweg	602:1	40470
+liliencronstrasse	603:1	40472
+lilienstrasse	505:1	40474
+lilienthalstrasse	504:1,505:1	40474
+lilli marx strasse	901:1	40597
+limburgstrasse	702:1	40235
+lindemannstrasse	201:1	40237
+lindenbecker weg	703:1	40629
+lindenplatz	202:1	40235
+lindenplatzallee	901:1	40597
+lindenstrasse	202:3	40233,40235,40237
+lingeweide	501:1	40489
+linienstrasse	306:1	40227
+linnicher strasse	403:1	40547
+lintorfer strasse	603:1	40472
+lintorfer waldstrasse	501:1	40489
+lippestrasse	307:1	40221
+lippstadtstrasse	701:1	40627
+lise meitner strasse	908:1	40591
+liststrasse	201:1	40470
+lobbericher strasse	403:1	40547
+lobensteiner weg	701:1	40627
+loebbeckestrasse	201:1	40239
+loensstrasse	505:1	40474
+loericker strasse	401:1,402:1	40547,40549
+loerracher strasse	801:1	40229
+loewengang	505:1	40474
+loewenzahnweg	202:1	40235
+lohauser deich	502:1	40489
+lohauser dorfstrasse	504:1	40474
+lohbachweg	701:1	40625
+lohengrinstrasse	404:1	40549
+lore agnes weg	1002:1	40595
+lorettostrasse	307:1	40219
+lotharstrasse	403:1	40547
+lothringer strasse	604:1	40468
+lotte wicke weg	804:1	40627
+lotzweg	504:1,505:1	40474
+louis pasteur platz	105:1	40211
+louise dumont strasse	105:1	40211
+lubarschstrasse	301:1	40225
+luckemeyerstrasse	705:1	40629
+ludenberger strasse	701:1,702:1,705:1	40625,40629
+ludgerusstrasse	301:1	40225
+ludolfstrasse	901:1	40597
+ludwig beck strasse	201:1,602:2	40239,40470
+ludwig erhard allee	306:1	40227
+ludwig wolker strasse	105:1	40477
+ludwigshafener strasse	801:2,802:1	40229,40231
+ludwigstrasse	801:1	40229
+luebecker strasse	604:1	40468
+luedenscheider strasse	701:1	40625
+luegallee	404:1	40545
+luegplatz	404:1	40545
+lueneburger weg	604:1	40468
+luenener strasse	603:1	40472
+luermannstrasse	202:1	40235
+luetticher strasse	402:1,403:1,404:1	40547
+luetzenkircher strasse	908:1	40591
+luetzowstrasse	104:1	40476
+luise hensel strasse	504:1	40474
+luise oppenheimer platz	105:1	40477
+luise rainer strasse	202:2	40235,40237
+luisenstrasse	303:1	40215
+luppstrasse	103:1	40468
+luzerner weg	701:1	40625
+maasstrasse	404:1	40547
+maerkische strasse	701:1	40625
+magistrale	301:1	40225
+maikammer	903:1	40589
+malkastenstrasse	105:1	40211
+malmedyer strasse	401:1	40549
+manforter strasse	908:1	40591
+mannesmannufer	102:1	40213
+mannheimer weg	801:1	40229
+mansfeldstrasse	701:1	40625
+manthenstrasse	701:1	40625
+marbacher strasse	901:1	40597
+marburger strasse	801:1	40229
+marc chagall strasse	105:1	40477
+marconistrasse	904:1	40589
+margaretenstrasse	702:1	40235
+margaretenweg	506:1	40489
+maria und josef otten platz	105:1	40477
+marie curie strasse	701:1	40625
+marie juchacz strasse	602:1	40470
+marienburger strasse	902:1	40599
+marienstrasse	106:2	40210,40212
+maritim platz	604:1	40474
+markenstrasse	306:1	40227
+markgrafenstrasse	404:1	40545
+marktplatz	101:1	40213
+marktplatz eller	801:1	40229
+marktstrasse	101:1	40213
+marlene dietrich strasse	401:1	40549
+marler strasse	603:1	40472
+marschallstrasse	105:1	40477
+marschnerstrasse	901:1	40593
+marthastrasse	705:1	40629
+martin luther platz	106:1	40212
+martinstrasse	301:1,307:2	40219,40223
+masbergweg	602:1	40470
+mathildenstrasse	201:1	40239
+matthias erzberger strasse	1001:1	40595
+matthiaskirchweg	601:1	40472
+mauerstrasse	104:1,105:1	40476,40477
+maurenbrecherstrasse	201:1	40239
+maurice ravel park	105:1	40477
+max born strasse	908:1	40591
+max brandts strasse	301:1	40223
+max halbe strasse	602:1	40470
+max planck strasse	201:1	40237
+maximilian kolbe strasse	1002:1	40595
+maximilian weyhe allee	105:1,106:1	40213,40479
+maxplatz	102:1	40213
+maybachstrasse	201:1	40470
+mecklenburger weg	604:1	40468
+mecumstrasse	301:2	40223,40225
+meidericher strasse	604:1	40468
+meineckestrasse	104:1	40474
+meininger weg	804:1	40627
+meisenheimer weg	801:1	40229
+meisenweg	604:1	40468
+meissener strasse	701:1	40625
+melanchthonstrasse	901:1	40597
+melaniestrasse	501:1	40489
+melbecksweg	506:1	40489
+melchthalweg	802:1	40231
+meliesallee	901:1	40597
+memeler strasse	802:1	40231
+mendelssohnstrasse	202:1	40233
+mendelweg	908:1	40591
+mensabruecke	301:1	40225
+mercatorstrasse	404:1	40545
+mercedesstrasse	201:1,602:1	40470
+mergelgasse	908:1	40591
+merkurstrasse	301:1	40223
+merlinweg	604:1	40468
+merowingerplatz	301:1	40225
+merowingerstrasse	301:2	40223,40225
+merscheider strasse	908:1	40591
+merseburger strasse	701:1	40625
+mertensgasse	101:1	40213
+merziger strasse	103:1	40476
+metro strasse	202:1	40235
+mettlacher strasse	604:1	40468
+mettmanner strasse	203:1,703:1	40233,40629
+metzer strasse	103:1	40476
+metzkauser strasse	701:1	40625
+meyerhofstrasse	904:1	40589
+michaelplatz	301:1	40223
+miep gies platz	1001:1	40595
+millrather strasse	908:1	40591
+mindener strasse	306:1	40227
+mintarder weg	604:1	40472
+mintropplatz	303:1	40210
+mintropstrasse	303:2	40210,40215
+mirkerbachweg	701:1	40625
+mittelstrasse	101:1	40213
+moehkersgaesschen	305:1	40221
+moehlaustrasse	103:1	40468
+moenchenwerther strasse	403:1,404:1	40545,40547
+moerikestrasse	505:1	40474
+moersenbroicher weg	602:2,702:2	40239,40470,40629
+mohnweg	701:1,802:1	40231,40625
+mohrunger strasse	902:1	40599
+moltkestrasse	105:3	40211,40477,40479
+monheimstrasse	306:1	40227
+monschauer strasse	401:1	40549
+moorenplatz	301:1	40225
+moorenstrasse	301:1	40225
+moritz sommer strasse	306:1	40225
+morper strasse	701:1	40625
+morsbachweg	701:1	40625
+morsestrasse	303:1	40215
+moselstrasse	307:1	40219
+moskauer strasse	306:2	40227,40233
+mozartstrasse	105:1	40479
+muehlenbergweg	705:1	40629
+muehlenbroich	603:1	40472
+muehlenbroicher weg	603:1	40472
+muehlengasse	101:1	40213
+muehlenkamp	801:1	40229
+muehlenplatz	907:1	40593
+muehlenstrasse	101:1	40213
+muehlenweg	502:1	40489
+muehligweg	604:1	40468
+muehltaler strasse	301:1	40221
+muelheimer strasse	201:1	40239
+mueller schloesser gasse	101:1	40213
+muenchener strasse	903:1,904:1,905:1,908:1	40589
+muendelheimer weg	601:1	40472
+muendrathweg	804:1	40627
+muenster center	103:1	40476
+muenster center passage	103:1	40476
+muensterplatz	103:1	40476
+muensterstrasse	103:2,105:1,201:2,602:2,603:1	40239,40470,40472,40476,40477
+mulvanystrasse	201:1	40239
+mutter ey platz	101:1	40213
+mutter ey strasse	101:1	40213
+mydlinghoven	703:1	40629
+nach den 12 morgen	308:1	40221
+nach den maureskoethen	701:2,804:1	40625,40627
+nachbarschaftspark am hackenbruch	801:1	40231
+nachtigallenweg	501:1	40489
+nachtigallstrasse	701:1	40625
+naegelestrasse	301:1	40225
+nagelsweg	504:1	40474
+nassauer weg	801:1	40229
+naumburger strasse	804:1	40627
+neanderstrasse	202:2	40233,40237
+neckarstrasse	307:1	40219
+neersener strasse	404:1	40547
+neisser strasse	501:1	40489
+nelkenweg	701:1,802:1	40231,40625
+nelly sachs strasse	505:1	40474
+neptunstrasse	301:1	40223
+nernstweg	908:1	40591
+nesslerstrasse	901:1,907:1	40593
+nettelbeckstrasse	105:1	40477
+nettetalstrasse	803:1	40627
+neubrandenburger strasse	1001:1	40595
+neubrueckstrasse	101:1	40213
+neuburgstrasse	702:1	40629
+neuenhofstrasse	603:1	40472
+neuenkampstrasse	902:1	40599
+neumannstrasse	202:1	40235
+neunzigstrasse	701:1	40625
+neusalzer weg	804:1	40627
+neusser strasse	307:2,401:1	40213,40219,40549
+neusser tor	701:1	40625
+neusser weg	502:1,504:1	40474,40489
+neustaedter weg	801:1	40229
+neustrasse	101:1	40213
+neustrelitzer strasse	1001:1	40595
+neuwerker strasse	401:1	40549
+nevigesstrasse	701:1	40625
+neyeweg	701:1	40625
+nibelungenstrasse	404:1	40549
+niederbeckstrasse	601:1	40472
+niederdonker strasse	402:1	40547
+niederheider strasse	904:1	40589
+niederkasseler deich	402:1,403:1	40547
+niederkasseler kirchweg	403:1,404:1	40547
+niederkasseler lohweg	402:1	40547
+niederkasseler strasse	403:1	40547
+niederrheinstrasse	502:1,504:1,505:1	40474,40489
+niederstrasse	301:1	40223
+nienburger strasse	604:1	40468
+niersstrasse	404:1	40547
+niersteiner weg	801:1	40229
+nievenheimer strasse	301:1	40221
+nikolaus faber platz	305:1	40221
+nikolaus gross platz	1001:1	40595
+nikolaus knopp platz	401:1	40549
+nikolausstrasse	903:1	40589
+nixenstrasse	908:1	40591
+noeggerathweg	908:1	40591
+noerdlicher zubringer	602:1	40470
+noerdlinger strasse	901:1	40597
+norbert schmidt strasse	701:1	40625
+nord carree	105:1	40477
+norderneyweg	604:1	40468
+nordhausener strasse	1002:1	40595
+nordpark	505:1	40474
+nordparksiedlung	505:1	40474
+nordstrasse	105:2	40477,40479
+norfer strasse	301:1	40221
+nosenberger strasse	601:1	40472
+nosthoffenstrasse	904:1,908:1	40589
+novalisstrasse	505:1	40474
+nuernberger strasse	901:1,904:1,906:1	40599
+nymphenburgstrasse	701:1	40625
+oberacker	506:1	40489
+oberbilker allee	301:1,303:2,306:1	40215,40223,40227
+oberbilker markt	306:1	40227
+oberdorfstrasse	503:1	40489
+oberhausener strasse	603:1	40472
+oberheider strasse	902:1	40599
+oberkasseler strasse	404:1	40545
+oberlinplatz	904:1	40589
+oberlinstrasse	701:1	40625
+oberloericker strasse	402:1	40547
+oberrather strasse	603:1	40472
+obersteiner weg	801:1	40229
+odenthaler weg	908:1	40591
+oderstrasse	802:1	40231
+oechelhaeuserstrasse	202:1	40235
+oederallee	105:1	40479
+oekotop	401:1	40549
+oelser strasse	801:1	40231
+oerschbachstrasse	904:1,906:1,908:1	40589,40591,40599
+oertelstrasse	301:1	40225
+oestliche faecherallee	901:1	40597
+offenbacher weg	306:1,801:1	40227,40229
+ohlauer weg	804:1	40627
+ohligser strasse	908:1	40591
+ohmweg	908:1	40591
+oldenburger strasse	604:1	40468
+oleanderweg	803:1	40627
+opern passage	101:1,106:1	40213
+opfergasse	305:1	40221
+opitzstrasse	602:1	40470
+opladener strasse	908:1	40591
+oppelner weg	804:1	40627
+oppenheimer weg	306:1	40227
+orangeriestrasse	102:1	40213
+oranienburger strasse	902:1	40599
+orsoyer strasse	104:1	40474
+ortweg	907:1	40593
+ostendorfstrasse	201:1	40239
+osterather strasse	403:1	40547
+osterfelder strasse	603:1	40472
+osteroder strasse	1002:1	40595
+ostpark	702:1	40629
+oststrasse	106:2	40210,40211
+ostwaldstrasse	904:1	40589
+oswald spengler strasse	104:1	40474
+otto beche strasse	804:1	40627
+otto braun strasse	1001:1	40595
+otto hahn strasse	908:2	40589,40591
+otto pankok strasse	801:1	40231
+otto petersen strasse	201:1,702:1	40235,40237
+otto zur linde strasse	504:1	40474
+ottostrasse	701:1	40625
+ottweilerstrasse	103:1	40476
+owensstrasse	701:1	40625
+pabsthofweg	703:1	40629
+paderborner strasse	604:1	40468
+pahlshof	603:1	40472
+pallenbergstrasse	504:1	40474
+palmenstrasse	307:1	40217
+pannebaeckerstrasse	907:1	40593
+pannschoppen	501:1	40489
+pappelweg	501:1	40489
+pariser strasse	401:1,404:2	40545,40549
+park an der liebfrauenstrasse	908:1	40591
+park horten hauptverwaltung	402:1	40547
+parkstrasse	105:1	40477
+parlamentsufer	304:1	40221
+parsevalstrasse	604:1	40468
+pascalstrasse	908:1	40591
+pastor broehl strasse	504:1	40474
+pastor busch weg	404:1	40547
+pastor doerr ring	905:1	40589
+pastor drauschke weg	604:1	40472
+pastor finke weg	804:1	40627
+pastor jaeaesch weg	102:1	40213
+pastor kramer weg	604:1	40468
+pastor zentis weg	403:1	40547
+pastoratsweg	506:1	40489
+pattscheider strasse	908:1	40591
+paul bonatz strasse	1001:1	40595
+paul gerhardt strasse	907:1	40593
+paul klee platz	101:1	40213
+paul klee weg	502:1	40489
+paul loebe strasse	1002:1	40595
+paul pieper strasse	701:1	40625
+paul spiegel platz	104:1	40476
+paul thomas strasse	901:2,904:2,906:1	40589,40599
+paul von hase strasse	104:1	40474
+paulinenplatz	906:1	40599
+paulinenstrasse	701:1	40627
+paulistrasse	901:1	40597
+paulsmuehlenstrasse	901:1	40597
+paulusplatz	201:1	40237
+paulusstrasse	201:1	40237
+peckhausweg	701:1,705:1	40625
+peenemuender strasse	1001:1	40595
+pelmanstrasse	705:1	40629
+pempelforter strasse	105:1	40211
+perleberger weg	1001:1	40593
+pestalozzistrasse	401:1	40549
+peter adolphs strasse	907:1	40593
+peter behrens strasse	1001:1	40595
+peter berten strasse	804:1	40627
+peter janssen strasse	201:1	40237
+peter krahe strasse	906:1	40599
+peter mueller strasse	604:2	40468,40474
+peter richarz strasse	801:1	40229
+peter roos strasse	403:1	40547
+peter royen weg	505:1	40474
+peter steinhauer weg	403:1	40547
+petersenstrasse	104:1	40474
+pfaffenmuehlenweg	502:1	40489
+pfalzstrasse	105:1	40477
+pfarrer holl weg	501:1	40489
+pfeiffer bruecke	701:2,705:1	40625,40629
+pfeifferstrasse	701:1	40625
+pfeillstrasse	904:1	40589
+pflugstrasse	602:1	40470
+philipp reis strasse	301:1,303:2	40215,40223
+philipp scheidemann strasse	1002:1	40595
+philippus platz	402:1	40547
+pigageallee	901:1	40597
+pilgerweg	701:1	40625
+pillebachweg	701:1	40625
+pinienstrasse	203:1	40233
+pionierstrasse	303:2	40210,40215
+pirmasenser weg	801:1	40229
+pirnaer strasse	701:1	40625
+pirolstrasse	804:1	40627
+planetenstrasse	301:1	40223
+platanenstrasse	202:1	40233
+platz der deutschen einheit	106:1	40210
+platz der diakonie	203:1	40233
+platz der ideen	103:1	40476
+platz des landtags	304:1	40221
+plauener strasse	804:1	40627
+plektrudisstrasse	502:1	40489
+plesser strasse	804:1	40627
+plochinger strasse	907:1	40593
+plockstrasse	304:2,305:1,307:2	40219,40221
+plueschowstrasse	505:1	40474
+pocketpark	203:1	40233
+poehlenweg	701:2,702:1,705:1	40625,40629
+portastrasse	701:1	40625
+posener strasse	801:1,802:1	40231
+possbergweg	705:1	40629
+postenweg	506:1	40489
+poststrasse	102:1,307:1	40213
+potsdamer strasse	902:1	40599
+prenzlauer strasse	1001:1	40595
+primelweg	701:1	40625
+prinz georg strasse	105:2	40477,40479
+prinzenall	401:1	40549
+prinzenallee	401:1	40549
+prof oehler strasse	904:1	40589
+prof schwippert strasse	306:1	40591
+provinzialplatz	908:1	40591
+quadenhofstrasse	701:1	40625
+quadestrasse	904:1,908:1	40589
+querstrasse	306:1	40227
+quirinstrasse	404:1	40545
+radeberger strasse	701:1	40625
+radschlaegerweg	602:1	40470
+raeuscherweg	301:1	40221
+rahmer kirchweg	501:1	40489
+rahmer strasse	501:1	40489
+rampenstrasse	701:2	40625,40627
+rankestrasse	104:1	40474
+rapunzelweg	202:1	40235
+rathausufer	101:1,102:1	40213
+rathelbeckstrasse	803:1	40627
+rathenower strasse	902:1	40599
+rather broich	603:2	40470,40472
+rather kirchplatz	603:1	40472
+rather kreuzweg	603:1	40472
+rather markt	603:1	40472
+rather strasse	103:1	40476
+ratiborweg	801:1	40231
+ratinger landstrasse	703:1	40629
+ratinger mauer	101:1	40213
+ratinger strasse	101:1	40213
+ratinger weg	705:1	40629
+rautendeleinweg	202:1	40235
+readinger strasse	306:1	40227
+recklinghauser strasse	603:1	40472
+redinghovenstrasse	301:1,306:1	40225
+redlichstrasse	201:1	40239
+reeser strasse	104:1	40474
+regenbergastrasse	701:1	40625
+regerstrasse	901:1	40593
+rehstrasse	603:1	40472
+reichenbacher weg	804:1	40627
+reichsgasse	307:1	40217
+reichsstrasse	307:2	40213,40217
+reichswaldallee	603:1	40472
+reiherweg	604:1	40468
+reinerstrasse	907:1	40593
+reinhold schneider strasse	1001:1	40595
+reisholzer bahnstrasse	906:1	40599
+reisholzer strasse	802:1	40231
+reisholzer werftstrasse	904:1	40589
+reitbahn	901:1	40597
+reitschulallee	901:1	40597
+rembrandtstrasse	201:1	40237
+remscheider strasse	303:1	40215
+rendsburger weg	604:1	40468
+rene schickele strasse	1001:1	40595
+rennbahnstrasse	701:1,705:2	40472,40629
+resedastrasse	804:1	40627
+rethelstrasse	201:2,202:1	40237,40239
+reusrather strasse	908:1	40591
+reuterkaserne	101:1	40213
+reutlinger strasse	907:1	40593
+rhein fire strasse	604:1	40472
+rheinallee	401:1,404:1	40545,40549
+rheinbabenstrasse	103:1	40476
+rheinberger strasse	104:1	40474
+rheinbrohler weg	502:1	40489
+rheincargo steiger 1	105:1	40474
+rheincargo steiger 3	104:1	40474
+rheindorfer weg	908:1	40591
+rheingaertchen	105:1	40479
+rheinkopf	901:1	40597
+rheinlandstrasse	604:1	40468
+rheinmetall platz	103:1	40476
+rheinort	101:1,102:1	40213
+rheinpark	104:1,304:1	40221,40474
+rheinstahlstrasse	901:1	40597
+rheinstrasse	101:1	40213
+rheinuferweg	506:1	40489
+rheinweg	506:1	40489
+rheinwerft	101:1	40213
+ria thiele strasse	404:1	40549
+ricarda huch strasse	1001:1	40595
+richard strauss platz	901:1	40593
+richardstrasse	801:1	40231
+richrather strasse	908:1	40591
+rigastrasse	701:1	40625
+rilkestrasse	505:1	40474
+ringelsweide	301:1	40223
+ringstrasse	703:1	40629
+ritastrasse	904:1	40589
+rittersbergstrasse	907:2	40593,40595
+ritterstrasse	101:1	40213
+robert bernardis strasse	104:1	40474
+robert hansen strasse	907:1	40593
+robert kratz weg	907:1	40593
+robert lehr ufer	104:1,105:1	40474
+robert luther strasse	301:1	40223
+robert mayer weg	908:1	40591
+robert reinick strasse	505:1	40474
+robert stolz strasse	602:1	40470
+robertstrasse	801:1	40229
+rochusmarkt	105:1	40479
+rochusstrasse	105:1	40479
+rodendeich	501:1	40489
+roderbirkener strasse	908:1	40591
+roehrenstrasse	603:1	40472
+roemerstrasse	103:1	40476
+roentgenweg	908:1	40591
+roepkestrasse	202:1	40235
+roettgerstrasse	504:1	40474
+rolander weg	705:1	40629
+rolandstrasse	104:1	40476
+rolf bongs strasse	402:1	40547
+romy schneider strasse	401:1	40549
+ronsdorfer strasse	202:1,203:1,306:2,802:1	40227,40233
+rose auslaender strasse	103:1	40476
+roseggerstrasse	602:1	40470
+rosellener weg	402:1	40547
+rosengarten	901:1	40593
+rosenstrasse	105:1	40479
+rosenthalstrasse	701:1	40625
+rosenweg	501:1,701:1	40489,40625
+rosmarinstrasse	202:1	40235
+rossbachstrasse	801:1	40231
+rosspfad	506:1	40489
+rossstrasse	103:1,104:1,105:1	40476
+rostocker strasse	1001:1	40595
+rotdornstrasse	603:1	40472
+rotdornweg	902:1	40599
+roteichenweg	602:1	40470
+rothenbergstrasse	803:1,804:1	40627
+rotkaeppchenweg	202:1	40235
+rotkehlchenweg	604:1	40468
+rotterdamer strasse	104:1,505:1	40474
+rottgaerten	501:1	40489
+rotthaeuser weg	703:1,705:1	40629
+rubensstrasse	201:1	40237
+rudolf breitscheid strasse	1002:1	40595
+rudolf lupp platz	103:1	40468
+rudolfstrasse	401:1	40549
+ruebezahlweg	202:1	40235
+rueckertstrasse	603:1	40470
+ruedigerstrasse	603:1	40472
+ruegenstrasse	604:1	40468
+ruesselsheimer weg	801:1	40229
+ruetgerstrasse	801:1	40229
+ruhrtalstrasse	203:1	40233
+rybniker strasse	804:1	40627
+saalfelder weg	701:1	40627
+saarbruecker strasse	103:1	40476
+saargemuender strasse	604:1	40468
+saarwerdenstrasse	404:1	40547
+saddelerstrasse	907:1	40593
+saeckinger strasse	602:1	40470
+saganer weg	804:1	40627
+salierplatz	404:1	40545
+salierstrasse	404:1	40545
+san remo strasse	404:1	40545
+sandstrasse	803:1	40627
+sandtraegerweg	804:1	40627
+sandweg	505:2	40468,40474
+sankt franziskus strasse	201:1,602:2,603:2	40239,40470,40472
+sankt goeres strasse	502:2	40489
+sankt hubertus ring	905:1	40589
+sankt martin platz	307:1	40219
+sauerweg	703:1	40629
+schadow arkaden	106:1	40212
+schadowplatz	106:1	40212
+schadowstrasse	106:1	40212
+schaeferstrasse	105:1	40479
+schaffhausener weg	701:1	40625
+schanzenstrasse	404:1	40549
+scharnhorststrasse	105:1	40477
+scheerenburger strasse	701:1	40625
+scheffelstrasse	602:1	40470
+scheibenstrasse	105:2	40477,40479
+scheideweg	908:1	40591
+scheidlingsmuehlenweg	908:1	40591
+scheidtstrasse	201:1	40239
+schellbergweg	705:1	40629
+scheurenstrasse	303:1	40215
+schiefbahnweg	402:1	40547
+schiessstrasse	401:1	40549
+schillerplatz	201:1	40237
+schillerstrasse	201:1	40237
+schillstrasse	902:1	40599
+schimmelbuschstrasse	103:1	40468
+schimmelpfennigstrasse	901:1	40597
+schinkelstrasse	105:1	40211
+schirmerstrasse	105:1	40211
+schlaegelstrasse	306:1	40227
+schlebuscher strasse	908:1	40591
+schlehenweg	505:1	40468
+schleidener strasse	401:1	40549
+schleifergasse	502:1	40489
+schleizer weg	701:1	40627
+schlesische strasse	801:1,802:1	40231
+schlossallee	801:1	40229
+schlossmannstrasse	301:1	40225
+schlosspark heltorf	501:1	40489
+schlosspark kalkum	503:1	40489
+schlossparkstrasse	901:1	40597
+schlossstrasse	105:1	40477
+schlossufer	101:1	40213
+schlueterstrasse	202:2,702:1	40235,40237
+schmiedestrasse	306:1	40227
+schmitterweg	501:1	40489
+schnaasestrasse	504:1	40474
+schneewittchenweg	202:1	40235
+schneidemuehler strasse	902:1	40599
+schneider wibbel gasse	101:1	40213
+schoellerstrasse	705:1	40625
+schoenaustrasse	701:1	40625
+schoendorffstrasse	801:1,802:1	40229
+schoene aussicht	901:1	40597
+schopenhauerstrasse	602:1	40470
+schorlemerstrasse	403:1,404:1	40545,40547
+schreberweg	701:1	40625
+schreiberhauer weg	804:1	40627
+schubertstrasse	702:1	40235
+schuchardstrasse	1001:1	40595
+schuesslerstrasse	505:1	40474
+schuetzenplatz rath	603:1	40472
+schuetzenstrasse	106:1	40211
+schulstrasse	102:1	40213
+schulweg	506:1	40489
+schumannstrasse	201:1	40237
+schwabstrasse	202:1	40235
+schwalbenweg	604:1	40468
+schwalmstrasse	404:1	40547
+schwanenmarkt	102:1	40213
+schwannstrasse	104:1	40476
+schwarzbachaue	506:1	40489
+schwarzbachstrasse	701:1	40625
+schwarzer weg	901:1,907:1	40593
+schweidnitzer strasse	801:1	40231
+schweitzerstrasse	804:1	40627
+schwelmer strasse	202:1	40235
+schwerinstrasse	104:1,105:1	40476,40477
+schwerter strasse	603:1	40472
+schwietzkestrasse	602:1	40470
+sebastian schaeffer strasse	804:1	40627
+sebastiansweg	802:1	40231
+sedanstrasse	307:1	40217
+seeheimer weg	306:1,801:1	40227,40229
+seesener strasse	1002:1	40595
+seeweg	803:1	40627
+segeberger weg	604:1	40468
+seidenweg	907:1	40593
+selbecker strasse	603:1	40472
+selikumstrasse	401:1	40549
+selma meyer strasse	301:1	40225
+senefelderweg	908:1	40591
+senftenberger weg	804:1	40627
+sengbachweg	701:1	40625
+sengelsweg	501:1	40489
+sentaweg	505:1	40468
+sermer weg	601:1	40472
+seydlitzstrasse	104:1	40476
+sichelstrasse	701:1	40625
+siebenbuergenweg	908:1	40591
+siedlerweg	701:1	40625
+siegburger strasse	306:2	40227,40591
+siegfried klein strasse	102:1	40213
+siegfriedstrasse	404:2	40545,40549
+siegplatz	307:1	40219
+siegstrasse	307:1	40219
+siemensstrasse	306:1	40227
+sigmaringenstrasse	403:1	40547
+silcherstrasse	901:1	40593
+simrockstrasse	201:1,702:2	40235,40237
+sistenichstrasse	901:1	40597
+sittarder strasse	105:1	40477
+sodener weg	801:1	40229
+sodenstrasse	907:1	40593
+sohnstrasse	201:1	40237
+solenanderstrasse	301:1	40225
+solfstrasse	907:1	40593
+solinger strasse	306:1	40227
+soltauer weg	604:1	40468
+sommerfeldstrasse	904:1	40589
+sommersstrasse	103:2	40476,40477
+sonderburgstrasse	404:1	40545
+sonnbornstrasse	701:1	40625
+sonnenacker	506:1	40489
+sonnenpark	306:1	40227
+sonnenstrasse	306:1	40227
+sonsbecker strasse	403:1	40547
+sophienstrasse	901:1	40597
+sorpeweg	701:1	40625
+spandauer strasse	902:1	40599
+spangerstrasse	902:1	40599
+spatenstrasse	602:1	40470
+speckmannweg	505:1	40474
+speditionstrasse	304:1	40221
+spee scher graben	102:1	40213
+speestrasse	701:1	40625
+speldorfer strasse	201:1	40239
+sperberstrasse	804:1	40627
+sperlingsweg	604:1	40468
+speyerweg	801:1	40229
+spichernplatz	103:1	40476
+spichernstrasse	103:1	40476
+spiekeroogstrasse	604:1	40468
+spielberger weg	504:1	40474
+spohrstrasse	901:1	40593
+sportstrasse	402:1	40547
+sprockhoeveler strasse	908:1	40591
+sprottauer weg	804:1	40627
+stadionweg	504:1,505:1	40474
+stadtbrueckchen	106:1	40213
+stadttor	307:1	40221
+stadtwerkepark	203:1	40233
+staendehauspark	307:1	40217
+stahlstrasse	306:1	40227
+stahlwerkstrasse	306:1	40227
+stapelbachweg	701:1	40625
+starenweg	604:1	40468
+stargarder strasse	902:1	40599
+staufenplatz	702:2	40235,40629
+stauffacherweg	802:1	40231
+steffaniweg	907:1	40593
+steffenstrasse	404:1	40545
+steinhauerstrasse	901:1	40597
+steinkaul	903:1	40589
+steinkribbenstrasse	901:1	40597
+steinstrasse	106:2	40210,40212
+steinweg	701:1	40625
+steinwerth	501:1	40489
+stendaler strasse	902:1	40599
+stephan lochner strasse	501:1	40489
+stephanienstrasse	106:1	40211
+stephanstrasse	906:1	40599
+sternstrasse	105:2	40477,40479
+sterntalerweg	202:1	40235
+sternwartstrasse	301:1	40223
+stettiner strasse	1001:1	40595
+steubenstrasse	906:1	40599
+stieglitzstrasse	602:1	40470
+stiftsgasse	502:1	40489
+stiftsplatz	101:1	40213
+stippelburggasse	305:1	40221
+stockgartenfeld	804:1	40627
+stockhausgasse	502:1	40489
+stockkampstrasse	105:1	40477
+stockumer hoefe	504:1,505:1	40474
+stockumer kirchstrasse	505:1	40474
+stoffeler damm	301:1,302:2	40223,40225
+stoffeler kapellenweg	306:1,908:1	40225
+stoffeler strasse	306:1	40227
+stolberger strasse	401:1	40549
+straelener weg	601:1	40472
+stralsunder strasse	1001:1	40595
+strassburger strasse	103:1	40476
+stratenweg	703:1	40629
+stratumer strasse	402:1	40547
+stresemannplatz	106:1	40210
+stresemannstrasse	106:2	40210,40212
+striegauer weg	804:1	40627
+stromstrasse	304:1,307:1	40221
+struempellstrasse	301:1	40225
+struwwelpeterplatz	202:1	40235
+stueckerstrasse	201:1	40239
+stuempeweg	907:1	40593
+stuerzelberger strasse	402:1	40547
+stumpfkreuzweg	305:1	40221
+sturmstrasse	801:1	40229
+sudetenstrasse	801:1	40231
+suedallee	901:1,907:1	40593
+suedpark	306:1	40225
+suedring	301:2,305:1	40221,40223
+suedstrasse	102:1	40213
+suellenstrasse	902:1	40599
+suitbertus stiftsplatz	502:1	40489
+suitbertusplatz	301:1	40223
+suitbertusstrasse	301:1	40223
+sulzbachstrasse	701:1,702:1	40629
+sybelstrasse	201:1	40239
+syltstrasse	604:1	40468
+talstrasse	303:1	40217
+talweg	506:1	40489
+tannenhofweg	804:1	40627
+tannenstrasse	103:1	40476
+tannhaeuserstrasse	404:1	40549
+taubenbergstrasse	701:1	40625
+taubenstrasse	105:1	40479
+telemannstrasse	901:1	40593
+telleringstrasse	901:1	40597
+teplitzer strasse	801:1	40231
+terminal ring	504:1,604:1	40474
+tersteegenplatz	104:1	40474
+tersteegenstrasse	104:1	40474
+teutoburgstrasse	701:1	40625
+teutonenstrasse	404:1	40545
+tevernstrasse	603:1	40472
+theo champion strasse	404:1	40549
+theodor andresen strasse	104:1	40474
+theodor heuss bruecke	104:1,403:1	40474,40547
+theodor koerner strasse	106:1	40212
+theodor litt strasse	907:1	40593
+theodor mommsen strasse	104:1	40474
+theodor storm strasse	505:1	40474
+theodorstrasse	601:1,603:1,604:1	40472
+thewissenweg	103:1,604:1	40468
+thomas dehler strasse	1001:1	40595
+thomas mann strasse	602:1	40470
+thomasstrasse	102:1	40213
+thorner strasse	902:1	40599
+thuner weg	701:1	40625
+tichauer weg	802:1	40231
+tiefenbroicher weg	601:1	40472
+tiergartenstrasse	201:1	40237
+tilde klose weg	604:1	40468
+tilsiter strasse	501:1	40489
+tiroler weg	908:1	40591
+toenisheider strasse	908:1	40591
+toenisstrasse	902:1	40599
+toepferstrasse	907:1	40593
+tonhallen ufer	105:1	40479
+tonhallenpassage	105:1	40479
+tonhallenstrasse	106:1	40211
+toni kryn weg	701:1	40625
+tor zum hofgarten	106:1	40212
+torfbruchstrasse	701:1	40625
+torgauer strasse	801:1,802:1	40231
+toulouser allee	103:1,105:2	40211,40476,40477
+tower strasse	604:1	40474
+trebnitzer strasse	801:1	40231
+tribuenenweg	505:1	40474
+trillser strasse	908:1	40591
+trinkausstrasse	106:1	40213
+trinkhaus karree	106:1	40212
+trojanstrasse	505:1	40474
+trompetenallee	901:1	40597
+trompeterstrasse	602:1	40470
+truchsessstrasse	701:1	40625
+tuebinger strasse	907:1	40593
+tulpenweg	701:1,802:1	40231,40625
+tussmannstrasse	105:1	40477
+ubierstrasse	301:1	40223
+ueberanger	501:1	40489
+uedesheimer strasse	301:1	40221
+uelfeweg	701:1	40625
+uelzener weg	604:1	40468
+uerdinger strasse	104:1	40474
+uferstrasse	904:1	40589
+uhlandstrasse	201:1	40237
+uhlenweg	505:1	40468
+ulanenstrasse	103:1	40468
+ulenbergstrasse	301:2,302:1	40223,40225
+ulmenkopf	901:2	40593,40597
+ulmenstrasse	103:2	40468,40476
+ulrike scheffler rother strasse	103:1	40476
+undinenstrasse	908:1	40591
+ungelsheimer weg	601:1	40472
+universitaetsstrasse	301:1,302:1,908:1	40225,40589
+unter den eichen	701:1	40625
+unter den erlen	501:1	40489
+unteracker	506:1	40489
+unterbacher strasse	802:1	40231
+unterdorfstrasse	503:1,506:1	40489
+unterrather strasse	604:1	40468
+urdenbacher acker	907:1	40593
+urdenbacher allee	901:2,907:1	40593,40597
+urdenbacher dorfstrasse	907:1	40593
+ursula trabalski strasse	701:1	40625
+ursulinengasse	101:1	40213
+vagedesstrasse	105:2	40211,40479
+van der werff strasse	306:1	40227
+van douven strasse	306:1	40227
+varnhagenstrasse	301:1	40225
+vautierstrasse	201:1,702:1	40235,40237
+vdi platz	604:1	40468
+veehstrasse	801:1	40231
+veenpark	804:1	40627
+veilchenweg	802:1	40231
+velberter strasse	306:1	40227
+venloer strasse	105:1	40477
+vennhauser allee	801:1,804:1	40229,40627
+vennhauser strasse	203:1	40233
+vennstrasse	803:1	40627
+vereinsstrasse	701:1	40625
+vereinsweg	701:1	40625
+verloher kirchweg	501:1	40489
+verschaffeltstrasse	907:1	40593
+victoriaplatz	105:1	40479
+victoriaplatz klever strasse	105:1	40477
+viehfahrtsweg	305:1,308:1	40221
+viehgasser weg	501:1,506:1	40489
+viehstrasse	503:1	40489
+viernheimer weg	801:1	40229
+viersener strasse	401:1	40549
+vikarieweg	506:1	40489
+vinckestrasse	602:1	40470
+vinzenzplatz	106:1	40211
+virchowstrasse	301:1	40225
+vlattenstrasse	301:1	40223
+voelklinger strasse	301:1,305:1,307:2	40219,40221
+vogelsanger weg	602:1,604:1	40468,40470
+vogelskothen	703:1	40629
+vogesenstrasse	401:1	40549
+vohwinkelallee	801:1	40229
+volkardeyer weg	601:1,604:1	40472
+volksgarten	306:1	40225
+volksgartenstrasse	306:1	40227
+volmarweg	308:1	40221
+volmerswerther deich	308:1	40221
+volmerswerther strasse	301:1,302:1,307:1,308:1	40221
+volmeweg	701:1	40625
+voltaweg	908:1	40591
+von gahlen strasse	701:1	40625
+von krueger strasse	801:1	40229
+vossen links	404:1	40545
+vulkanstrasse	306:1	40227
+waagenstrasse	801:1	40229
+wacholderstrasse	501:1	40489
+wacholderweg	505:1	40468
+waeschlacker weg	802:1	40231
+wagnerstrasse	106:1	40212
+wahlerstrasse	603:1	40472
+walbecker strasse	403:1	40547
+walburgisstrasse	502:1	40489
+waldecker platz	801:1	40229
+waldenburger weg	804:1	40627
+waldlehne	501:1	40489
+waldnieler strasse	401:1	40549
+waldshuter strasse	801:1	40229
+waldstrasse	603:1	40472
+walkuerenstrasse	404:1	40545
+wallstrasse	101:1,102:1	40213
+walsroder weg	604:1	40468
+walter eucken strasse	202:1	40235
+walter kyllmann strasse	1001:1	40595
+walther hensel strasse	402:1	40547
+walther rathenau strasse	904:1	40589
+walzwerkstrasse	906:1	40599
+wambachweg	701:1	40625
+wangeroogestrasse	604:1	40468
+wanheimer strasse	601:3	40468,40472,40474
+warendorfer strasse	604:1	40468
+warschauer strasse	306:1	40227
+wasserstrasse	307:1	40213
+wasserwerksweg	506:1	40489
+wattenscheider strasse	603:1	40472
+weberstrasse	303:2	40215,40223
+weezer strasse	403:1	40547
+weg nach den hingbenden	502:1	40489
+wegberger strasse	403:1	40547
+weichselstrasse	802:1	40231
+weidenweg	505:1	40474
+weiherstrasse	307:1	40219
+weilburger weg	801:1	40229
+weimarer weg	701:1	40627
+weinheimer strasse	801:1	40229
+weissdornstrasse	505:1	40474
+weissenburgstrasse	103:1	40476
+weitmarer platz	603:1	40472
+weitmarer strasse	603:1	40472
+weizenmuehlenstrasse	304:1	40221
+wendekreis plange muehle	304:1	40221
+wendersstrasse	603:1	40472
+wenkerstrasse	602:1	40470
+werdener strasse	203:1,306:1	40227,40233
+werftstrasse	401:1	40549
+wernigeroder strasse	1002:1	40595
+werstener dorfstrasse	908:1	40591
+werstener feld	801:2,908:2	40229,40589,40591
+werstener friedhofstrasse	908:1	40591
+werstener strasse	301:1,908:1	40225
+weseler strasse	201:1	40239
+wesermuender strasse	304:1	40221
+westfalenstrasse	603:1	40472
+westliche faecherallee	901:1	40597
+weststrasse	901:1	40597
+wetterstrasse	202:1,203:1	40233
+wettinerstrasse	403:1	40547
+wetzelgasse	401:1	40549
+wetzlarer weg	801:1	40229
+wevelinghover strasse	402:1	40547
+wickenweg	701:1,802:1	40231,40625
+wickrather strasse	402:1	40547
+wiebachweg	701:1	40625
+wiedenhofenstrasse	1002:1	40595
+wiedfeld	904:1,905:1	40589
+wielandstrasse	105:1	40211
+wiesbadener strasse	301:1	40225
+wiesdorfer strasse	908:1	40591
+wiesenstrasse	401:1	40549
+wildenbruchstrasse	404:1	40545
+wildentenweg	604:1	40468
+wilhelm boetzkes strasse	104:1	40474
+wilhelm busch strasse	505:1	40474
+wilhelm heinrich weg	802:1	40231
+wilhelm kaisen strasse	1002:1	40595
+wilhelm kienzl strasse	901:1	40593
+wilhelm kreis strasse	1001:1	40595
+wilhelm raabe strasse	602:1,603:1	40470
+wilhelm ruether strasse	901:1	40597
+wilhelm suter pfad	603:1	40472
+wilhelm tell strasse	307:1	40219
+wilhelm unger strasse	603:1	40472
+wilkesfurther strasse	801:1	40229
+willi aengevelt strasse	201:1	40237
+willi becker allee	306:1	40227
+willi terbuyken strasse	804:1	40627
+willicher strasse	402:1	40547
+willstaetterstrasse	401:1,404:1	40549
+wilseder weg	604:1	40468
+wimpfener strasse	901:1	40597
+windmuehlenstrasse	401:1	40549
+windscheidstrasse	201:1	40239
+winkelsfelder strasse	105:1	40477
+wipperfuerther strasse	908:1	40591
+wirmerstrasse	104:1	40474
+wittelsbachstrasse	702:1	40629
+wittenberger weg	1001:1	40593
+wittenbruchplatz	803:1	40627
+wittenbruchstrasse	803:1	40627
+wittener strasse	603:1	40472
+wittgatt	506:1	40489
+wittlaerer kamp	506:1	40489
+wittlaerer kirchweg	506:1	40489
+wittlaerer weg	601:1	40472
+witzelstrasse	301:2	40223,40225
+witzheldener strasse	908:1	40591
+wodanstrasse	404:1	40545
+woerthstrasse	103:1	40476
+wolfgang borchert strasse	1002:1	40595
+wolfgang doering strasse	1001:1	40595
+wolfsaaper steig	603:1	40472
+wolfsschlucht	705:1	40629
+wormser weg	801:1	40229
+worpsweder weg	604:1	40468
+worringer platz	106:2	40210,40211
+worringer strasse	106:3	40210,40211,40233
+wrangelstrasse	602:1	40470
+wuelfrather strasse	202:1	40233
+wuerzburger strasse	906:1	40599
+wulfertzberg	703:1	40629
+wupperstrasse	307:1	40219
+xantener strasse	104:1	40474
+yorckstrasse	103:2	40476,40477
+zaberner strasse	604:1	40468
+zamenhofweg	701:1	40625
+zaunkoenigweg	602:1	40470
+zedernweg	803:1	40627
+zeisigweg	604:1	40468
+zeitzer weg	804:1	40627
+zeppelinstrasse	801:1	40231
+zeppenheimer dorfstrasse	503:1	40489
+zeppenheimer strasse	503:1	40489
+zeppenheimer weg	502:1,503:1	40489
+zg berliner allee	106:1	40212
+zg hofgarten	105:1	40479
+zg inselstrasse	105:1	40479
+zg nordstrasse	105:1	40479
+zg sternstrasse	105:1	40479
+ziegeleiweg	908:1	40591
+ziegelstrasse	604:1	40468
+zietenstrasse	104:1	40476
+zimmerstrasse	303:1	40215
+zittauer strasse	701:1	40625
+zollhof	304:1	40221
+zollstrasse	101:1	40213
+zonser strasse	301:1	40223
+zoopark	201:1	40239
+zoppoter strasse	902:1	40599
+zu den eichen	505:1	40474
+zuelpicher strasse	401:1	40549
+zuericher weg	701:1	40625
+zugang gemuesegarten	901:1	40593
+zuger weg	701:1	40625
+zum gut heiligendonk	603:1	40472
+zum hexenkotten	803:1	40627
+zum hohen broehl	503:1	40489
+zum maerchenland	202:1	40235
+zum veilchental	506:1	40489
+zum wildpark	705:1	40629
+zum winnenberg	703:1	40629
+zum zault	803:1	40627
+zur alten exerzierhalle	103:1	40476
+zur alten kaserne	602:1,702:1	40470
+zur bockumer linde	506:1	40489
+zur duesselaue	701:1	40627
+zur lindung	501:1	40489
+zur schoenen aussicht	705:1	40629
+zur schwarzbachmuendung	506:1	40489
+zur weide	602:1	40470
+zur wildkirsche	602:1	40470
+zweibrueckenstrasse	701:1	40625
+zwickauer strasse	804:1	40627
+zypressenweg	902:1	40599

@@ -23,9 +23,11 @@ from typing import Callable
 from urllib.parse import urlsplit
 
 from .abruf import Abrufer, BudgetErschoepft, Drossel
+from .bedarf import aktive_staedte
 from .config import PROJEKT_KONTAKT, Quelle, Stadt
 from .crawl_sperre import CrawlLaeuft, crawl_sperre
 from .crawler import CRAWLER, CrawlVerweigert, LaufBericht, LaufOptionen
+from .sicherung import sichere_datenbank
 from .speicher import Speicher, jetzt_iso
 
 log = logging.getLogger("behoerdenmaster.betrieb")
@@ -93,6 +95,14 @@ class Betrieb:
     sync_zeitbudget: int = 240
     sync_startverzoegerung: int = 30
     sync_seit: str = ""  # leer = `seit` aus der Stadtkonfiguration; "90d" = rollierendes Fenster
+    # Laden auf Abruf (bedarf.py): Städte mit `abruf = "auf_abruf"` erst nach Anforderung abrufen.
+    auf_abruf: bool = True
+    auf_abruf_tage: int = 14  # ohne neue Anforderung ruht die Stadt danach wieder
+    auf_abruf_max: int = 3  # höchstens so viele Auf-Abruf-Städte gleichzeitig aktuell halten
+    # Automatische Sicherung (nur mit persistenter Disk sinnvoll); leer = aus.
+    backup_verzeichnis: str = field(default="", repr=False)
+    backup_intervall: int = 86400
+    backup_behalten: int = 7
     # Konfigurationsprobleme, die den Dienst bewusst nicht stoppen (z. B. fehlende Kontaktadresse).
     warnungen: tuple[str, ...] = ()
 
@@ -172,6 +182,12 @@ class Betrieb:
             sync_zeitbudget=zahl("BEHOERDEN_SYNC_ZEITBUDGET", 240, 30),
             sync_startverzoegerung=zahl("BEHOERDEN_SYNC_STARTVERZOEGERUNG", 30, 0),
             sync_seit=seit(),
+            auf_abruf=flag("BEHOERDEN_AUF_ABRUF", default=True),
+            auf_abruf_tage=zahl("BEHOERDEN_AUF_ABRUF_TAGE", 14, 1),
+            auf_abruf_max=zahl("BEHOERDEN_AUF_ABRUF_MAX", 3, 0),
+            backup_verzeichnis=env.get("BEHOERDEN_BACKUP_VERZEICHNIS", "").strip(),
+            backup_intervall=zahl("BEHOERDEN_BACKUP_INTERVALL", 86400, 3600),
+            backup_behalten=zahl("BEHOERDEN_BACKUP_BEHALTEN", 7, 1),
             warnungen=tuple(warnungen),
         )
 
@@ -197,6 +213,17 @@ class Betrieb:
             "startverzoegerung_sekunden": self.sync_startverzoegerung,
             "erstabruf_seit": self.sync_seit,
             "quellen": list(self.sync_quellen),
+            "laden_auf_abruf": {
+                "aktiv": self.auf_abruf,
+                "verfall_tage": self.auf_abruf_tage,
+                "max_staedte": self.auf_abruf_max,
+            },
+            # Ob gesichert wird – nie der Pfad.
+            "sicherung": {
+                "aktiv": bool(self.backup_verzeichnis),
+                "intervall_sekunden": self.backup_intervall,
+                "behalten": self.backup_behalten,
+            },
             "warnungen": list(self.warnungen),
         }
 
@@ -270,15 +297,26 @@ class SyncDienst:
         self.abrufer_factory = abrufer_factory
         self.clock = clock or (lambda: datetime.now(timezone.utc))
         self._stop = threading.Event()
+        # Weckt die Schleife vorzeitig, z. B. wenn eine Auf-Abruf-Stadt angefordert wurde.
+        self._wecker = threading.Event()
         self._thread: threading.Thread | None = None
+        self.staedte = staedte
         alle = {s.quell_id(q): (s, q) for s in staedte.values() for q in s.quellen}
-        auswahl = betrieb.sync_quellen or tuple(alle)
+        # Ohne ausdrückliche Liste: alle automatischen Quellen der dauerhaft abgerufenen Städte.
+        auswahl = betrieb.sync_quellen or tuple(
+            qid for qid, (s, q) in alle.items() if not s.auf_abruf and q.automatisch)
         unbekannte = [qid for qid in auswahl if qid not in alle]
         if unbekannte:
             raise ValueError("Unbekannte BEHOERDEN_SYNC_QUELLEN: " + ", ".join(unbekannte))
         self.quellen: dict[str, tuple[Stadt, Quelle]] = {qid: alle[qid] for qid in auswahl}
         if any(q.typ not in CRAWLER for _, q in self.quellen.values()):
             raise ValueError("Automatischer Abruf für einen nicht implementierten Quelltyp konfiguriert.")
+        # Auf-Abruf-Städte: ihre Quellen kommen erst nach einer Anforderung in die Etappe.
+        self.abruf_quellen: dict[str, dict[str, tuple[Stadt, Quelle]]] = {
+            s.schluessel: {s.quell_id(q): (s, q) for q in s.quellen
+                           if q.automatisch and q.typ in CRAWLER and s.quell_id(q) not in self.quellen}
+            for s in staedte.values() if s.auf_abruf
+        }
 
     @property
     def laeuft(self) -> bool:
@@ -297,6 +335,20 @@ class SyncDienst:
 
     def stoppen(self) -> None:
         self._stop.set()
+        self._wecker.set()
+
+    def wecken(self) -> None:
+        """Nächste Etappe vorziehen (z. B. nach einer Anforderung); ändert keine Drossel."""
+        self._wecker.set()
+
+    def geplante_quellen(self, sp: Speicher) -> dict[str, tuple[Stadt, Quelle]]:
+        """Quellen dieser Etappe: dauerhafte plus die der aktuell angeforderten Städte."""
+        geplant = dict(self.quellen)
+        if self.betrieb.auf_abruf:
+            for schluessel in aktive_staedte(sp, self.staedte, tage=self.betrieb.auf_abruf_tage,
+                                             maximum=self.betrieb.auf_abruf_max, jetzt=self.clock()):
+                geplant.update(self.abruf_quellen.get(schluessel, {}))
+        return geplant
 
     def warten(self, timeout: float = 40) -> None:
         if self._thread is not None:
@@ -317,8 +369,44 @@ class SyncDienst:
             except Exception:
                 # Ein unerwarteter Fehler darf den Web-Service nicht beenden.
                 log.exception("Hintergrundabruf fehlgeschlagen; keine sofortige Wiederholung")
-            if self._stop.wait(60):
+            try:
+                self.sicherung()
+            except Exception:
+                log.exception("Automatische Sicherung fehlgeschlagen")
+            self._wecker.wait(60)
+            self._wecker.clear()
+            if self._stop.is_set():
                 return
+
+    def sicherung(self) -> Path | None:
+        """Fällige automatische Sicherung anlegen und alte Sicherungen ausdünnen.
+
+        Nur aktiv mit `BEHOERDEN_BACKUP_VERZEICHNIS`. Der Zeitpunkt steht in SQLite, damit
+        ein Neustart keine zusätzliche Sicherung erzwingt. Gelöscht werden ausschließlich
+        Dateien nach dem eigenen Namensmuster – nie andere Dateien im Verzeichnis.
+        """
+        if not self.betrieb.backup_verzeichnis:
+            return None
+        jetzt = self.clock()
+        with Speicher(self.db_pfad) as sp:
+            letzte = sp.betrieb_wert("sicherung_zuletzt")
+            if letzte and jetzt < _utc(letzte) + timedelta(seconds=self.betrieb.backup_intervall):
+                return None
+            verzeichnis = Path(self.betrieb.backup_verzeichnis).expanduser()
+            ziel = verzeichnis / f"behoerdenmaster-{jetzt.astimezone(timezone.utc):%Y%m%dT%H%M%SZ}.sqlite"
+            try:
+                sichere_datenbank(self.db_pfad, ziel)
+            except (OSError, ValueError) as exc:
+                sp.betrieb_setzen("sicherung_fehler", f"{jetzt.isoformat(timespec='seconds')}: {type(exc).__name__}")
+                raise
+            sp.betrieb_setzen("sicherung_zuletzt", jetzt.isoformat(timespec="seconds"))
+            sp.betrieb_setzen("sicherung_fehler", "")
+        vorhandene = sorted(verzeichnis.glob("behoerdenmaster-*Z.sqlite"))
+        for alt in vorhandene[:-self.betrieb.backup_behalten]:
+            alt.unlink(missing_ok=True)
+        log.info("Automatische Sicherung angelegt; %d Sicherungen vorhanden",
+                 min(len(vorhandene), self.betrieb.backup_behalten))
+        return ziel
 
     def etappe(self) -> list[LaufBericht]:
         """Nur fällige Quellen, begrenzt und – bis `sync_parallel` – gleichzeitig.
@@ -336,7 +424,7 @@ class SyncDienst:
         try:
             with crawl_sperre(self.db_pfad), Speicher(self.db_pfad) as sp:
                 faellig = []
-                for qid, (stadt, quelle) in self.quellen.items():
+                for qid, (stadt, quelle) in self.geplante_quellen(sp).items():
                     if self._stop.is_set():
                         break
                     zeile = sp.db.execute("SELECT * FROM quelle WHERE id=?", (qid,)).fetchone()

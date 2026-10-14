@@ -1,0 +1,190 @@
+# Stadt Wuppertal – Konfiguration für BehoerdenMaster
+#
+# Angebunden nach demselben System wie Köln: Ratsinformation über OParl (gleicher Adapter,
+# gleiche Drossel, robots.txt, Budgets und Abkühlzeiten). Der OSM-Auszug führt unterhalb der Bezirke nur Gemarkungen, keine Stadtteile; hinterlegt sind deshalb nur die Stadtbezirke.
+#
+# Quellen:
+#   * OParl-Endpunkt: offizielle OParl-Endpunktliste (github.com/OParl/resources, endpoints.yml,
+#     abgerufen am 14.10.2026). Der Endpunkt ist von hier aus NICHT live geprüft (die
+#     Entwicklungsumgebung erreicht keine Behörden-Hosts) – vor dem ersten Lauf:
+#       python -m behoerdenmaster --stadt wuppertal probe --quelle ris
+#   * Ortsgliederung, PLZ: OpenStreetMap-Auszug der OpenPLZ API (ODbL 1.0,
+#     © OpenStreetMap-Mitwirkende), erzeugt mit tools/stadt_aus_osm.py. Eine NÄHERUNG.
+#
+# Abruf auf Anforderung: Die Stadt wird erst geladen, wenn jemand sie in der Oberfläche
+# auswählt oder in ihr sucht (siehe README, „Weitere Städte – Laden auf Abruf“).
+
+[stadt]
+schluessel = "wuppertal"
+name = "Wuppertal"
+aliase = ["stadt wuppertal"]
+ags = "05124000"
+bundesland = "Nordrhein-Westfalen"
+abruf = "auf_abruf"
+gliederung_quelle = "Stadtbezirke aus dem OSM-Auszug der OpenPLZ API (ODbL 1.0), erzeugt mit tools/stadt_aus_osm.py"
+hinweis = "Ortsbezug aus Betreff und Gremium abgeleitet; Ortsgliederung und PLZ aus einem OpenStreetMap-Auszug (Näherung)."
+
+[[quellen]]
+schluessel = "ris"
+typ = "oparl"
+name = "Ratsinformation Wuppertal (OParl)"
+system_url = "https://oparl.wuppertal.de/oparl/system"
+# Körperschaft über den Namen wählen; passen mehrere, bricht der Lauf ab statt zu raten.
+koerperschaft = "Wuppertal"
+# Rollierendes Fenster für den Erstabruf (90 Tage), damit eine neu angeforderte Stadt
+# klein und höflich startet. Folgeläufe holen nur Änderungen.
+seit = "90d"
+min_intervall_sekunden = 3.0
+lizenz = "Nicht geprüft – vor einer Veröffentlichung die Lizenzangabe des OParl-Systems bzw. der Stadt prüfen"
+pruefstand = "Endpunkt aus der OParl-Endpunktliste (Stand 14.10.2026); noch kein Abruf – vor dem ersten Lauf probe ausführen"
+
+[[themen]]
+schluessel = "bauen"
+bezeichnung = "Bauvorhaben & Bauleitplanung"
+begriffe = ["Bauvorhaben", "Bauprojekt", "Bauleitplan", "Bebauungsplan", "Bebauung", "Flächennutzungsplan", "Aufstellungsbeschluss", "Satzungsbeschluss", "Offenlage", "Arbeitstitel", "Städtebau", "Baugebiet", "Bauantrag", "Baugenehmigung", "Neubau", "Wohnungsbau", "Wohnbebauung", "Nachverdichtung", "vorhabenbezogen", "Hochhaus", "Quartier", "Abriss", "Umbau"]
+
+[[themen]]
+schluessel = "verkehr"
+bezeichnung = "Verkehr & Mobilität"
+begriffe = ["Verkehr", "Radweg", "Radverkehr", "Fahrradstraße", "Fahrrad", "Parkraum", "Parken", "Ampel", "Stadtbahn", "Buslinie", "Haltestelle", "Mobilität", "Fußverkehr", "Kreuzung", "Straßenbahn", "Tempo"]
+
+[[themen]]
+schluessel = "schulen"
+bezeichnung = "Schulen & Kitas"
+begriffe = ["Schule", "Kita", "Kindergarten", "Kindertagesstätte", "Jugendamt"]
+
+[[themen]]
+schluessel = "gruen"
+bezeichnung = "Grün & Klima"
+begriffe = ["Grün", "Grünzug", "Park", "Spielplatz", "Baum", "Bäume", "Klima", "Stadtgrün"]
+
+[erzeugung]
+# Steuerung für tools/stadt_aus_osm.py – von der Anwendung ignoriert.
+stadtteile = false
+bezirke = [
+  { osm = "Elberfeld", nr = "1", name = "Elberfeld" },
+  { osm = "Elberfeld-West", nr = "2", name = "Elberfeld-West" },
+  { osm = "Uellendahl-Katernberg", nr = "3", name = "Uellendahl-Katernberg" },
+  { osm = "Vohwinkel", nr = "4", name = "Vohwinkel" },
+  { osm = "Cronenberg", nr = "5", name = "Cronenberg" },
+  { osm = "Barmen", nr = "6", name = "Barmen" },
+  { osm = "Oberbarmen", nr = "7", name = "Oberbarmen" },
+  { osm = "Heckinghausen", nr = "8", name = "Heckinghausen" },
+  { osm = "Langerfeld-Beyenburg", nr = "9", name = "Langerfeld-Beyenburg" },
+]
+ergaenzte_bezirke = [
+  { nr = "10", name = "Ronsdorf", grund = "Wuppertal hat zehn Stadtbezirke; Ronsdorf ist im OSM-Auszug keinem Bezirk zugeordnet und wurde ergänzt" },
+]
+
+# >>> ortsgliederung
+# Erzeugt von tools/stadt_aus_osm.py am 2026-10-14 – nicht von Hand ändern, sondern neu erzeugen.
+# Quelle: OpenStreetMap-Auszug der OpenPLZ API (github.com/openpotato/openplzapi.data),
+# Lizenz ODbL 1.0, © OpenStreetMap-Mitwirkende. Bezirks-/Stadtteilgrenzen und PLZ-Zuordnung
+# sind eine NÄHERUNG; Stadtteil-Schlüssel sind projektinterne Nummern.
+
+[bezirke]
+"1" = "Elberfeld"
+"2" = "Elberfeld-West"
+"3" = "Uellendahl-Katernberg"
+"4" = "Vohwinkel"
+"5" = "Cronenberg"
+"6" = "Barmen"
+"7" = "Oberbarmen"
+"8" = "Heckinghausen"
+"9" = "Langerfeld-Beyenburg"
+"10" = "Ronsdorf"
+
+[stadtteile]
+
+[plz."42103"]
+stadtteile = []
+quelle = "Für diese Stadt ist nur die Bezirksgliederung hinterlegt (der OSM-Auszug führt keine Stadtteile); die PLZ gehört laut Auszug zur Stadt"
+
+[plz."42105"]
+stadtteile = []
+quelle = "Für diese Stadt ist nur die Bezirksgliederung hinterlegt (der OSM-Auszug führt keine Stadtteile); die PLZ gehört laut Auszug zur Stadt"
+
+[plz."42107"]
+stadtteile = []
+quelle = "Für diese Stadt ist nur die Bezirksgliederung hinterlegt (der OSM-Auszug führt keine Stadtteile); die PLZ gehört laut Auszug zur Stadt"
+
+[plz."42109"]
+stadtteile = []
+quelle = "Für diese Stadt ist nur die Bezirksgliederung hinterlegt (der OSM-Auszug führt keine Stadtteile); die PLZ gehört laut Auszug zur Stadt"
+
+[plz."42111"]
+stadtteile = []
+quelle = "Für diese Stadt ist nur die Bezirksgliederung hinterlegt (der OSM-Auszug führt keine Stadtteile); die PLZ gehört laut Auszug zur Stadt"
+
+[plz."42113"]
+stadtteile = []
+quelle = "Für diese Stadt ist nur die Bezirksgliederung hinterlegt (der OSM-Auszug führt keine Stadtteile); die PLZ gehört laut Auszug zur Stadt"
+
+[plz."42115"]
+stadtteile = []
+quelle = "Für diese Stadt ist nur die Bezirksgliederung hinterlegt (der OSM-Auszug führt keine Stadtteile); die PLZ gehört laut Auszug zur Stadt"
+
+[plz."42117"]
+stadtteile = []
+quelle = "Für diese Stadt ist nur die Bezirksgliederung hinterlegt (der OSM-Auszug führt keine Stadtteile); die PLZ gehört laut Auszug zur Stadt"
+
+[plz."42119"]
+stadtteile = []
+quelle = "Für diese Stadt ist nur die Bezirksgliederung hinterlegt (der OSM-Auszug führt keine Stadtteile); die PLZ gehört laut Auszug zur Stadt"
+
+[plz."42275"]
+stadtteile = []
+quelle = "Für diese Stadt ist nur die Bezirksgliederung hinterlegt (der OSM-Auszug führt keine Stadtteile); die PLZ gehört laut Auszug zur Stadt"
+
+[plz."42277"]
+stadtteile = []
+quelle = "Für diese Stadt ist nur die Bezirksgliederung hinterlegt (der OSM-Auszug führt keine Stadtteile); die PLZ gehört laut Auszug zur Stadt"
+
+[plz."42279"]
+stadtteile = []
+quelle = "Für diese Stadt ist nur die Bezirksgliederung hinterlegt (der OSM-Auszug führt keine Stadtteile); die PLZ gehört laut Auszug zur Stadt"
+
+[plz."42281"]
+stadtteile = []
+quelle = "Für diese Stadt ist nur die Bezirksgliederung hinterlegt (der OSM-Auszug führt keine Stadtteile); die PLZ gehört laut Auszug zur Stadt"
+
+[plz."42283"]
+stadtteile = []
+quelle = "Für diese Stadt ist nur die Bezirksgliederung hinterlegt (der OSM-Auszug führt keine Stadtteile); die PLZ gehört laut Auszug zur Stadt"
+
+[plz."42285"]
+stadtteile = []
+quelle = "Für diese Stadt ist nur die Bezirksgliederung hinterlegt (der OSM-Auszug führt keine Stadtteile); die PLZ gehört laut Auszug zur Stadt"
+
+[plz."42287"]
+stadtteile = []
+quelle = "Für diese Stadt ist nur die Bezirksgliederung hinterlegt (der OSM-Auszug führt keine Stadtteile); die PLZ gehört laut Auszug zur Stadt"
+
+[plz."42289"]
+stadtteile = []
+quelle = "Für diese Stadt ist nur die Bezirksgliederung hinterlegt (der OSM-Auszug führt keine Stadtteile); die PLZ gehört laut Auszug zur Stadt"
+
+[plz."42327"]
+stadtteile = []
+quelle = "Für diese Stadt ist nur die Bezirksgliederung hinterlegt (der OSM-Auszug führt keine Stadtteile); die PLZ gehört laut Auszug zur Stadt"
+
+[plz."42329"]
+stadtteile = []
+quelle = "Für diese Stadt ist nur die Bezirksgliederung hinterlegt (der OSM-Auszug führt keine Stadtteile); die PLZ gehört laut Auszug zur Stadt"
+
+[plz."42349"]
+stadtteile = []
+quelle = "Für diese Stadt ist nur die Bezirksgliederung hinterlegt (der OSM-Auszug führt keine Stadtteile); die PLZ gehört laut Auszug zur Stadt"
+
+[plz."42369"]
+stadtteile = []
+quelle = "Für diese Stadt ist nur die Bezirksgliederung hinterlegt (der OSM-Auszug führt keine Stadtteile); die PLZ gehört laut Auszug zur Stadt"
+
+[plz."42389"]
+stadtteile = []
+quelle = "Für diese Stadt ist nur die Bezirksgliederung hinterlegt (der OSM-Auszug führt keine Stadtteile); die PLZ gehört laut Auszug zur Stadt"
+
+[plz."42399"]
+stadtteile = []
+quelle = "Für diese Stadt ist nur die Bezirksgliederung hinterlegt (der OSM-Auszug führt keine Stadtteile); die PLZ gehört laut Auszug zur Stadt"
+# <<< ortsgliederung

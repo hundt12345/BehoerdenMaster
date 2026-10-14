@@ -24,10 +24,12 @@ class Seite:
 
 
 class OParlQuelle:
-    def __init__(self, abrufer: Abrufer, system_url: str, body_id: str | None = None):
+    def __init__(self, abrufer: Abrufer, system_url: str, body_id: str | None = None,
+                 koerperschaft: str = ""):
         self.abrufer = abrufer
         self.system_url = system_url
         self.body_id = body_id
+        self.koerperschaft = koerperschaft
 
     def seiten(self, url: str, params: dict[str, str] | None = None, start: str | None = None) -> Iterator[Seite]:
         """Alle Seiten einer OParl-Liste. Folgt ``links.next`` bis zum Ende.
@@ -58,11 +60,35 @@ class OParlQuelle:
         bodies_url = system.get("body")
         if not bodies_url:
             raise ValueError("System-Objekt enthält keinen 'body'-Verweis")
+        if self.body_id is None and self.koerperschaft:
+            return self._body_nach_name(bodies_url)
         for seite in self.seiten(bodies_url):
             for body in seite.objekte:
                 if self.body_id is None or str(body.get("id", "")).endswith("/" + self.body_id):
                     return body
         raise ValueError(f"Körperschaft '{self.body_id or '(erste)'}' nicht gefunden")
+
+    def _body_nach_name(self, bodies_url: str) -> dict:
+        """Körperschaft über den Namen wählen (für neu angebundene Städte ohne geprüfte ID).
+
+        Rechenzentren wie ITK Rheinland oder KDVZ betreiben mehrere Kommunen auf einem
+        System. „Die erste Körperschaft“ wäre dort womöglich eine andere Stadt – deshalb
+        muss der Name passen, und mehrere Treffer brechen ab, statt zu raten.
+        """
+        from .normalize import norm
+
+        gesucht = norm(self.koerperschaft)
+        treffer = []
+        for seite in self.seiten(bodies_url):
+            for body in seite.objekte:
+                namen = " | ".join(norm(str(body.get(k) or "")) for k in ("name", "shortName"))
+                if gesucht and gesucht in namen:
+                    treffer.append(body)
+        if len(treffer) == 1:
+            return treffer[0]
+        if not treffer:
+            raise ValueError(f"Keine Körperschaft mit dem Namen „{self.koerperschaft}“ gefunden")
+        raise ValueError(f"Mehrere Körperschaften passen zu „{self.koerperschaft}“; bitte body_id festlegen")
 
 
 # --- Abbildung auf Speicherzeilen -------------------------------------------

@@ -1,0 +1,2254 @@
+# BehoerdenMaster – Straßenverzeichnis (abgeleitet, Näherung)
+# Quelle: OpenStreetMap-Auszug aus dem OpenPLZ-API-Datenexport (github.com/openpotato/openplzapi.data, src/de/osm/streets.updated.csv)
+# Lizenz: Open Database License (ODbL) 1.0 – © OpenStreetMap-Mitwirkende
+# Stand: 2026-10-14
+# Filter: Regionalschlüssel 05314000 (Stadt aus der gleichnamigen .toml)
+# Aufbau: name<TAB>Stadtteile<TAB>PLZ  (Stadtteile als Nummer:Anzahl der Straßenobjekte)
+# PLZ-Ableitung: Stadtteil ab 10 % und mindestens drei Straßen der PLZ (Werkzeug-Ausgabe)
+# Mehrere Stadtteile = mehrdeutiger Name; die Anwendung ordnet dann keinen Stadtteil zu,
+# sondern nutzt die Kandidaten nur, um eine Suchanfrage zu verstehen.
+# Erzeugt von tools/strassen_aus_osm.py
+abenteuerweg	401:1	53125
+abtstrasse	303:1	53225
+acherstrasse	103:1	53111
+achim von arnim strasse	109:1	53113
+ackerstrasse	207:1	53179
+adalbert stifter strasse	109:1	53113
+adele schopenhauer weg	314:1	53229
+adelheidisplatz	310:1	53229
+adelheidisstrasse	313:1	53225
+adenauerallee	103:1,109:1,116:2	53111,53113
+adolf heuser weg	104:1	53117
+adolf hombitzer strasse	309:1	53227
+adolf quad strasse	314:1	53229
+adolfstrasse	113:1	53111
+adrianstrasse	309:1	53227
+aegidienstrasse	104:1	53117
+aennchenplatz	201:2	53173,53177
+aennchenstrasse	201:1	53177
+aggerstrasse	210:1	53175
+agnesstrasse	301:1	53225
+agnetendorfer strasse	117:1	53119
+agrippinenstrasse	120:1	53115
+ahornweg	204:1	53177
+ahrstrasse	210:1	53175
+ahrweg	111:1	53129
+akazienweg	204:1	53177
+alaunbachweg	310:1	53229
+alberichstrasse	207:1	53179
+albert fischer strasse	111:1	53129
+albert schweitzer strasse	107:1	53115
+albertus magnus strasse	209:1	53177
+alemannenstrasse	210:1	53175
+alemannenweg	113:1	53119
+alexander koenig strasse	114:1	53115
+alexanderstrasse	103:1,113:1	53111
+alfred bucherer strasse	107:1	53115
+alfterer strasse	106:1,402:1	53121,53123
+alice salomon strasse	313:1	53229
+allensteiner strasse	101:1	53117
+aloys mueller weg	104:1	53117
+aloys schulte strasse	111:1	53129
+alsstrasse	309:1	53227
+alt gensem	312:1	53225
+alte bahnhofstrasse	201:1	53173
+alte bonner strasse	306:1	53229
+alte heerstrasse	107:1	53121
+alte schulstrasse	310:1	53229
+alte strasse	402:1	53123
+altenburgstrasse	401:1	53125
+alter heerweg	112:1,402:1	53123
+alter viehweg	212:1	53177
+altrheinstrasse	309:1	53227
+am agnesstift	102:1	53117
+am alfterhof	118:1	53125
+am alten forsthaus	115:1	53125
+am alten friedhof	103:1,113:1	53111
+am alten poststadion	113:1	53119
+am alten puetz	303:1	53225
+am alten rheinarm	307:1	53227
+am apfelbaum	104:1	53117
+am arndtplatz	213:1	53173
+am bach	112:1	53123
+am baumgarten	210:1	53175
+am berghang	305:1	53229
+am birkenbruch	110:1	53127
+am bismarckturm	201:1	53177
+am bleichgraben	106:1,107:1	53121
+am bleidriesch	105:1	53129
+am boeselagerhof	103:1	53111
+am bogen	115:1	53125
+am bolzplatz	305:1	53229
+am bommerich	202:1	53175
+am bonner berg	108:1	53117
+am botanischen garten	114:1	53115
+am botten	207:1	53179
+am bruch	402:1	53123
+am bruennchen	308:1	53227
+am buchenhang	111:1	53115
+am buechel	210:1	53173
+am buergerpark	309:1	53227
+am bungert	311:1	53227
+am bungertsbusch	115:1	53125
+am burgfriedhof	212:1	53177
+am burggraben	107:1	53121
+am burgpark	313:1	53225
+am burgweiher	402:1	53123
+am buschacker	202:1	53175
+am buschhof	309:1	53227
+am coellenhof	107:1	53121
+am conzberg	311:1	53227
+am dichbach	402:1	53123
+am dickobskreuz	120:1	53121
+am dinaswerk	206:1	53179
+am doernchen	106:1	53121
+am domblick	208:1	53177
+am draitschbusch	201:1	53177
+am ehrenmal	404:1	53127
+am eichkamp	107:1	53121
+am engelsbach	110:1	53127
+am engelspfad	110:1	53127
+am ennertbad	310:1	53229
+am erdbeerfeld	211:1	53179
+am fahrweg	404:1	53123
+am fasanenhang	306:1	53229
+am finkenberg	308:1	53227
+am finkenherd	211:1	53179
+am frankenbad	113:1	53111
+am friedhof	306:1	53229
+am fronhof	201:1	53177
+am gaesschen	208:1	53177
+am gerhardsplatz	113:1	53119
+am glueckshaus	207:1	53179
+am goetgesbach	115:1,118:1	53125
+am guesgensberg	202:1	53175
+am gymnicher hof	103:1	53111
+am haehnchen	304:1	53229
+am hang	306:1	53229
+am hauptbahnhof	103:2	53111,53113
+am helpert	208:1	53177
+am herrengarten	310:1,314:1	53229
+am herz jesu kloster	310:1	53229
+am hoehnchen	110:1	53127
+am hoelder	115:1	53125
+am hof	103:1	53113
+am hofgarten	116:1	53113
+am holzlarer see	305:1,306:1	53229
+am jesuitenhof	102:1	53117
+am johanneskreuz	102:1	53111
+am josephinum	101:1	53117
+am kaeferberg	404:1	53127
+am kamin	305:1	53229
+am karmelkloster	310:1	53229
+am katzenlochbach	115:1	53125
+am kettelerplatz	106:1	53121
+am klostergarten	107:1	53121
+am klufterhof	202:1	53175
+am knippchen	310:1	53229
+am koeppekreuz	312:1	53225
+am kottenforst	115:1	53125
+am kraehenhorst	117:1	53119
+am kreuter	201:1	53177
+am kriegersgraben	309:1	53227
+am kuempel	110:1	53127
+am kurfuerstenkreuz	110:1	53127
+am kurpark	201:1	53177
+am langen graben	302:1	53227
+am lappenweiher	110:1	53127
+am ledenhof	312:1	53225
+am lenkert	201:1,212:1	53177
+am lindenbach	206:1	53179
+am magdalenenkreuz	309:1	53227
+am marienhof	303:1	53225
+am marthashof	103:1	53111
+am metternicher hof	103:1	53111
+am michaelshof	201:1	53177
+am muellestump	308:1	53227
+am nesselroder hof	103:1	53111
+am neuen lindenhof	113:1	53117
+am neutor	103:1	53113
+am nippenkreuz	207:1	53179
+am nordpark	113:1	53117
+am nossbacher weg	206:1	53179
+am pappelhain	306:1	53229
+am paulshof	119:1	53127
+am paulusacker	104:1	53117
+am petrusacker	104:1	53117
+am poppelsdorfer weiher	114:1	53115
+am prinzenrain	404:1	53127
+am propsthof	107:1,113:1,120:1	53121
+am quintengarten	306:1	53229
+am quirinusbrunnen	105:1	53129
+am rehsprung	305:1,306:1,310:1	53229
+am rheindorfer ufer	108:1	53117
+am ringwall	117:1	53119
+am roemerkastell	102:1	53111
+am roemerlager	102:1	53117
+am rosenrain	207:1	53179
+am schaenzchen	102:1	53111
+am schaumburger hof	210:1	53175
+am schickshof	402:1	53123
+am schlossbach	115:1	53125
+am schlossplatz	115:1	53125
+am schoernchen	212:1	53177
+am schuetzenhof	117:1	53119
+am schwanenmorgen	107:1	53121
+am schwimmbad	211:1	53179
+am sennertspfad	402:1	53123
+am siepen	111:1	53129
+am sonnenberg	307:1	53227
+am sonnenhang	110:1	53127
+am spielplatz	104:1	53117
+am sportplatz	306:1	53229
+am stadion	301:1	53225
+am stadtkanal	112:1	53121
+am stadtwald	212:1	53177
+am steinbach	306:1	53229
+am stingenberg	309:1	53227
+am suedfriedhof	105:1,202:1	53129,53175
+am tanzberg	306:1	53229
+am tiergarten	306:1	53229
+am toennessenkreuz	112:1	53123
+am trajekt	311:1	53227
+am turmhof	210:1	53175
+am vogelherd	115:1	53125
+am waldhang	110:1	53127
+am waldrand	305:1	53229
+am weckhasen	202:1	53175
+am weidenbach	310:1	53229
+am weidenstueck	305:1	53229
+am weiher	306:1	53229
+am weinstock	306:1	53229
+am weissen stein	309:1	53227
+am weitgarten	309:1	53227
+am wesselpuetz	402:1	53123
+am wichelshof	102:1	53111
+am winkel	206:1	53179
+am wolfsbach	306:1	53229
+am woltersweiher	202:1	53175
+am ziegenbaum	206:1	53179
+am zinnbruch	105:1	53129
+amalienhoehe	212:1	53177
+amselweg	117:1	53119
+amsterdamer strasse	101:1	53117
+an brenigs ziegelei	202:1	53175
+an den buchen	115:1	53125
+an den eichen	115:1	53125
+an den hecken	310:1	53229
+an den kiefern	115:1	53125
+an den kreuzen	118:1	53125
+an den markthallen	113:1	53119
+an der alten stadtgaertnerei	106:1	53121
+an der arndtruhe	202:1	53175
+an der baerenwiese	305:1	53229
+an der burg lede	313:1	53225
+an der burg medinghoven	402:1	53123
+an der buschdorfer burg	104:1	53117
+an der dransdorfer burg	106:1	53121
+an der duene	117:1	53119
+an der elisabethkirche	116:1	53113
+an der esche	102:1	53111
+an der evangelischen kirche	116:1	53113
+an der gierponte	301:1	53225
+an der haeschmaar	401:1	53125
+an der immenburg	107:1	53121
+an der josefshoehe	101:1,108:1	53117
+an der kelter	208:1	53177
+an der knappenmuehle	112:1	53123
+an der kommende	208:1	53177
+an der kueppe	301:1	53225
+an der kurfuerstenquelle	402:1	53123
+an der linde	308:1	53227
+an der margarethenkirche	108:1	53117
+an der marienkapelle	211:1	53179
+an der nesselburg	206:1,207:1	53179
+an der ohligsmuehle	404:1	53127
+an der pfaffenmuetze	108:1	53117
+an der post	309:1	53227
+an der rheindorfer burg	101:1,108:1	53117
+an der schlosskirche	103:1	53113
+an der schwarzen bruecke	106:1	53121
+an der siebengebirgsbahn	307:1	53227
+an der steinbruecke	117:1	53119
+an der umkehr	311:1	53227
+an der vogelweide	306:1	53229
+an der waldau	119:1	53127
+an der weissen bruecke	107:1	53121
+an der windmuehle	103:1	53111
+an der wolfsburg	312:1	53225
+an der ziegelei	404:1	53127
+an sankt josef	301:1	53225
+an tiebes eiche	306:1	53229
+andreas hermes strasse	205:1	53175
+andreasstrasse	211:1	53179
+anemonenweg	119:1	53127
+angelbisstrasse	113:1	53119
+anhalter strasse	205:1	53175
+ankerbachtalweg	307:1,311:1	53227
+anna schubring strasse	104:1	53117
+annaberger strasse	202:1	53175
+annagraben	103:1	53111
+annaweg	118:1	53125
+anne marie prevot strasse	313:1	53229
+annettenstrasse	210:1	53175
+antilopenweg	101:1	53117
+anton engels strasse	104:1	53117
+anton mai strasse	402:1	53123
+antoniterstrasse	206:1	53179
+antoniusplatz	305:1	53229
+antoniusweg	305:1	53229
+arcadia passage	201:2	53173,53177
+argelanderstrasse	111:1,116:1	53115
+arminiusstrasse	102:1	53117
+arndtplatz	210:1,213:1	53173
+arndtstrasse	109:1	53113
+arnoldstrasse	312:1	53225
+athener strasse	101:1	53117
+auenweg	108:1	53117
+auerberger mitte	101:1	53117
+auerbergweg	101:1	53117
+auerhofstrasse	210:1	53175
+auestrasse	303:1	53225
+auf dem bachfeld	314:1	53229
+auf dem brand	212:1	53177
+auf dem domhof	207:1	53179
+auf dem dransdorfer berg	106:1	53121
+auf dem essig	110:1	53127
+auf dem freibogen	404:1	53127
+auf dem gierolsrott	110:1	53127
+auf dem godesberg	201:1	53177
+auf dem grendt	308:2	53225,53227
+auf dem heidgen	110:1	53127
+auf dem hirschberg	312:1	53225
+auf dem huckstein	113:1	53117
+auf dem huegel	106:1,107:1	53121
+auf dem junkerfeld	105:1	53129
+auf dem kirchbuechel	402:1,404:1	53123,53127
+auf dem kirchweg	115:1	53125
+auf dem maar	110:1	53127
+auf dem muehlenberg	313:1	53225
+auf dem oelsfeld	207:1	53179
+auf dem rabenplatz	115:1	53125
+auf dem rotkopf	212:1	53177
+auf dem schellenberg	404:1	53127
+auf dem steinchen	110:1	53127
+auf dem tonnenpfad	106:1	53123
+auf dem uhlberg	404:1	53127
+auf dem weiler	118:1	53125
+auf den sauren wiesen	305:1,310:1	53229
+auf den sechs morgen	309:1	53227
+auf den steinen	118:1,404:1	53125
+auf der bitzen	115:1	53125
+auf der clemensbitze	303:1	53225
+auf der erk	402:1	53123
+auf der heide	115:1	53125
+auf der hostert	210:1	53173
+auf der kaiserfuhr	404:1	53127
+auf der koppel	106:1	53121
+auf der ley	212:1	53177
+auf der roetschen	303:1	53225
+auf der schleide	301:1	53225
+auf der steige	111:1	53129
+auf der steinkaule	310:1	53229
+auf der urdel	402:1	53123
+august bebel allee	202:1	53175
+august bier strasse	111:1	53129
+august macke platz	113:1	53119
+augustastrasse	213:2	53173,53175
+augustinusstrasse	402:1,404:1	53123
+auguststrasse	302:1	53229
+augustusring	102:1	53111
+aurelianastrasse	303:1	53225
+austrasse	207:1,211:1	53179
+axenfeldstrasse	212:1	53177
+azaleenweg	104:1	53117
+babette koch weg	107:1	53121
+bachaue	202:1	53175
+bachemer strasse	207:1	53179
+bachstrasse	120:1	53115
+bad godesberger tunnel	201:2,203:1,209:1,211:1,213:2	53173,53175,53177
+badener strasse	102:1	53111
+baguettestrasse	303:1	53225
+bahnhofstrasse	112:1,402:1	53123
+bahnstrasse	202:1	53175
+balthasar neumann strasse	110:1	53127
+barbaraweg	118:1	53125
+barfusspfad	119:1	53127
+barthlott weg	114:1	53115
+basaltstrasse	309:1	53227
+basketsring	402:1	53123
+basteistrasse	211:2	53173,53179
+bataverweg	102:1	53117
+baumschul waeldchen	120:1	53115
+baumschulallee	116:1,120:1	53115
+baumstrasse	309:1	53227
+baunscheidtstrasse	109:1	53113
+beckstrasse	402:1	53123
+beethovenallee	210:1,213:1	53173
+beethovenplatz	120:1	53115
+beethovenstrasse	120:1	53115
+behringstrasse	209:1	53177
+beissner ring	114:1	53115
+belderberg	103:2	53111,53113
+belderbuschstrasse	212:1	53177
+bendenweg	106:1	53121
+bennauerstrasse	114:1	53115
+benngasse	208:1	53177
+bergergasse	303:1	53225
+bergfeldstrasse	107:1	53121
+bergheimer strasse	312:1	53225
+berghovener strasse	309:1	53227
+bergiusstrasse	106:1	53121
+bergmeisterstueck	306:1	53229
+bergstrasse	111:1	53129
+bergweg	301:1	53225
+beringstrasse	120:1	53115
+berliner freiheit	103:1	53111
+berliner platz	103:1,113:1	53111
+berliner ring	205:1	53175
+bernard custodis strasse	116:1	53113
+berner strasse	101:1	53117
+bernhard berzheim platz	110:1	53127
+bernhardstrasse	309:1	53227
+bernkasteler strasse	202:1,203:1	53175
+berta lungstras strasse	117:1	53119
+bertha von suttner platz	103:1	53111
+beueler bahnhofsplatz	301:1	53225
+beueler strasse	314:1	53229
+beuthener strasse	117:1	53117
+billrothstrasse	402:1	53123
+birkenweg	115:1	53125
+birkheuserstrasse	108:1	53117
+birlinghovener strasse	304:1	53229
+birzentalstrasse	208:1	53177
+bischofsplatz	103:1	53111
+bismarckallee	211:1	53173
+bismarckstrasse	116:1	53113
+bitzerweg	304:1	53229
+blankenbergweg	310:1	53229
+blaukehlchenweg	110:1	53127
+blaumeisenweg	402:1	53123
+bleibtreustrasse	305:1	53229
+bluecherstrasse	111:1,114:1	53115
+blumenaustrasse	211:1	53179
+blumenhof	113:1	53119
+blumenstrasse	115:1	53125
+bodelschwinghstrasse	202:1	53175
+bodelschwinghweg	119:1	53127
+bodenstaffstrasse	207:1	53179
+bollenackerweg	402:1	53123
+bonner logsweg	112:1	53123
+bonner strasse	201:1,203:1	53173
+bonner talweg	111:1,116:3	53113,53115,53129
+bonner weg	106:1	53123
+bonngasse	103:1	53111
+borkenweg	119:1	53127
+bornheimer strasse	113:2	53111,53119
+borsigallee	401:1	53125
+bottlerplatz	103:1	53111
+bouche ring	114:1	53115
+brahmsstrasse	107:1	53121
+brandenburger strasse	205:1	53175
+brandis weg	114:1	53115
+brassertufer	103:1,116:1	53111
+braunkehlchenweg	306:1	53229
+bredowallee	401:1	53125
+breite strasse	113:1	53111
+breiter weg	204:1	53177
+brentanostrasse	109:1	53113
+breslauer strasse	210:1	53175
+briandstrasse	402:1	53123
+brieger weg	117:1	53119
+brigitte schroeder strasse	112:1	53123
+broehlweg	310:1	53229
+broichstrasse	307:1,308:1	53227
+brombeerweg	119:1	53127
+brucknerstrasse	120:1	53115
+brueckenstrasse	404:1	53127
+bruedergasse	103:1	53111
+bruehler strasse	113:1,117:1	53119
+brueser damm	401:1	53125
+bruesseler strasse	101:1	53117
+brungsgasse	108:1	53117
+brunhildstrasse	207:1	53179
+brunnenallee	201:1	53177
+brunnenplatz	206:1	53179
+brunnenstrasse	402:1	53123
+brunnenweg	310:1	53229
+buchenweg	307:1	53227
+buchfinkenweg	402:1	53123
+buchholzstrasse	110:1	53127
+budafok park	103:1	53111
+budapester strasse	103:1,113:1	53111
+buechelgarten	312:1	53225
+buechelstrasse	309:1	53227
+buergerpark	309:1	53227
+buergerstrasse	201:1,213:1	53173
+buervigstrasse	208:1	53177
+buettinghausenstrasse	111:1	53129
+bukarester strasse	101:1	53117
+bundesgrenzschutzstrasse	314:1	53229
+bundeskanzlerplatz	109:1	53113
+bungartstrasse	102:1	53111
+bunsenstrasse	106:1	53121
+buntspechtweg	402:1	53123
+bunzlauer weg	117:1	53119
+burbacher strasse	111:1	53129
+burbankstrasse	314:1	53229
+burgblick	212:1	53177
+burggartenstrasse	114:1	53115
+burggrafenstrasse	308:1	53227
+burghofstrasse	305:1	53229
+burgstrasse	201:1	53177
+burgweg	112:1	53123
+buschackerweg	402:1	53123
+buschdorfer kirchweg	108:1	53117
+buschdorfer strasse	104:1	53117
+buschgarten	304:1,306:1	53229
+buschstrasse	109:1	53113
+buschweg	115:1,314:1	53125,53229
+caecilienheidchensweg	206:1	53179
+caecilienstrasse	309:1	53227
+caesariusstrasse	211:1	53173
+camminer strasse	117:1	53119
+carl duisberg strasse	106:1	53121
+carl justi strasse	107:1	53121
+carl schurz strasse	402:1	53123
+carl troll strasse	114:1	53115
+carlo mense strasse	104:1	53117
+caroline herschel weg	314:1	53229
+caspar david friedrich strasse	118:1	53125
+cassius bastei	103:1	53111
+cassius passage	103:1	53111
+cassiusgraben	103:1	53111
+cecile vogt weg	113:1	53117
+cellitinnenstrasse	303:1	53225
+celsiusstrasse	401:1	53125
+charles de gaulle strasse	109:1	53113
+charles wimar strasse	118:1	53125
+charlotte von stein strasse	209:1	53177
+cheruskerstrasse	205:1	53175
+chlodwigplatz	113:1	53119
+christ koenig strasse	306:1	53229
+christian koelbach strasse	302:1	53227
+christian lassen strasse	104:2	53117,53119
+christian miesen strasse	105:1	53129
+christoph fischer weg	105:1	53129
+clara schumann weg	314:1	53229
+clara viebig strasse	402:1	53123
+clara wieck strasse	211:1	53179
+clausiusstrasse	116:1	53113
+clematisweg	404:1	53127
+clemens august platz	114:1	53115
+clemens august strasse	114:1	53115
+clemensstrasse	301:1,312:1	53225
+clementiaweg	115:1	53125
+coburger strasse	109:1	53113
+colmantstrasse	120:1	53115
+combahnstrasse	301:1	53225
+communicationsweg	115:1	53125
+dachsweg	402:1	53125
+dahlienweg	306:1	53229
+dahlmannstrasse	109:1	53113
+damaschkestrasse	105:1	53129
+dankwardstrasse	207:1	53179
+danziger strasse	210:1	53175
+de breze strasse	207:1	53179
+de gasperi strasse	402:1	53123
+dechant heimbach strasse	201:1,212:1	53177
+dechenstrasse	120:1	53115
+deichmanns aue	211:1	53179
+dellweg	104:1	53117
+delpstrasse	402:1	53123
+denglerstrasse	213:1	53173
+derlestrasse	402:1	53123
+derletal	402:1	53125
+dessaustrasse	401:1	53125
+deutschherrenstrasse	206:1,208:2,209:1	53177,53179
+dietkirchenstrasse	102:1	53111
+dietrich bonhoeffer strasse	308:1	53227
+dietrich glauner strasse	207:1	53179
+dietrichstrasse	203:1	53175
+diezstrasse	116:1	53113
+distelfinkweg	402:1	53123
+dixstrasse	312:1	53225
+doetschstrasse	103:1	53111
+dohmstrasse	107:1	53121
+doktor eva glees strasse	119:1	53127
+doktor weis platz	301:1	53225
+dollendorfer allee	309:1	53227
+dollendorfer strasse	210:1	53173
+domhofstrasse	207:1	53179
+dompfaffenweg	112:1	53123
+don bosco strasse	119:1	53127
+donatusstrasse	210:1	53175
+dorfstrasse	115:1	53125
+dornenkreuzstrasse	307:1	53227
+dornheckenstrasse	309:1,311:1	53227
+dornierstrasse	401:1	53125
+dorothea erxleben weg	314:1	53229
+dorotheenstrasse	113:2	53111,53119
+dottendorfer allee	119:1	53127
+dottendorfer strasse	105:1,109:1	53113,53129
+drachenburgstrasse	206:1,211:1	53179
+drachenfelsstrasse	201:1	53177
+drachenfelsweg	308:1	53227
+drachensteinpark	207:1	53179
+dreholzstrasse	207:1	53179
+dreieck	103:1	53111
+dreizehnmorgenweg	202:1	53175
+dresdener strasse	104:1	53117
+dromersheimer strasse	202:1	53175
+drosselstrasse	305:1	53229
+drosselweg	117:1	53119
+droste huelshoff strasse	105:1	53129
+drususstrasse	102:1	53111
+dubliner strasse	101:1	53117
+duerenstrasse	213:1	53173
+dunantstrasse	301:1	53225
+dyroffstrasse	116:1	53113
+e t a hoffmann strasse	109:1	53113
+ebereschenweg	119:1	53127
+edisonallee	401:1	53125
+edith stein anlage	402:1	53123
+eduard otto strasse	111:1	53129
+eduard pflueger strasse	109:1	53113
+eduard spoelgen strasse	102:1	53117
+effertzstrasse	107:1	53121
+egerstrasse	104:1	53117
+ehrlichstrasse	119:1	53127
+eibenweg	119:1	53127
+eichendorffstrasse	308:1	53227
+eichenweg	314:1	53229
+eichhoernchenweg	402:1	53125
+eifelstrasse	113:1	53119
+einsteinstrasse	402:1	53123
+eintrachtstrasse	102:1	53117
+eisenacher strasse	104:1	53117
+eislebenstrasse	401:1	53125
+elbestrasse	110:1	53127
+elbingstrasse	104:1	53117
+elfstrasse	208:1	53177
+elisabeth daub strasse	104:1	53117
+elisabeth enseling strasse	106:1	53121
+elisabeth mayer strasse	208:1	53177
+elisabeth schwarzhaupt strasse	115:1	53125
+elisabeth selbert allee	210:1	53175
+elisabeth selbert platz	113:1	53111
+elisabethstrasse	201:1	53177
+elisestrasse	313:1	53225
+ellerstrasse	113:1	53119
+ellesdorfer strasse	206:1	53179
+elliger hoehe	208:1	53177
+elsa braendstroem strasse	301:1,308:1	53225,53227
+elsaesser strasse	203:2,210:1,213:1	53173,53175
+eltviller strasse	202:1	53175
+emanuel leutze strasse	118:1	53125
+embavenhof	201:1	53177
+emil nolde strasse	109:1	53113
+emilie heyermann weg	107:1	53121
+emmy noether weg	314:1	53229
+endenicher allee	107:1,114:1,120:1	53115,53121
+endenicher strasse	107:1,120:1	53115,53121
+engelbertzstrasse	107:1	53121
+engelsgaesschen	402:1	53123
+engeltalstrasse	103:1	53111
+enggasse	404:1	53127
+englaenderweg	101:1,104:1,108:1	53117
+ennemoserstrasse	113:2	53119,53121
+ennert rundweg	307:1	53229
+ennerthang	307:1	53227
+ennertstrasse	306:1	53229
+ennertweg	307:1	53229
+erftstrasse	210:1	53175
+erftweg	111:1	53129
+erfurtstrasse	401:1	53125
+erich boeger strasse	110:1	53127
+erich hoffmann strasse	107:1	53121
+erlenweg	307:1	53227
+ermekeilstrasse	116:2	53113,53115
+ermlandstrasse	112:1	53123
+ernst abbe strasse	119:1	53127
+ernst meurer weg	104:1	53117
+ernst moritz arndt strasse	301:1	53225
+ernst robert curtius strasse	104:1	53117
+ernststrasse	309:1	53227
+erste faehrgasse	116:1	53113
+erzbergerufer	103:1	53111
+eschelbachstrasse	105:1	53129
+eschenweg	204:1	53177
+espeler wiese	306:1	53229
+espenweg	119:1	53127
+estermannstrasse	108:1	53117
+ettenhausener strasse	306:1	53229
+ettighofferstrasse	402:1	53123
+etzelstrasse	207:1	53179
+eulaliastrasse	314:1	53229
+eulenweg	105:1	53129
+eupener strasse	101:1	53117
+europaring	402:1	53123
+europastrasse	210:1	53175
+euskirchener strasse	107:1	53121
+everhardstrasse	310:1	53229
+ewigstrasse	313:1	53225
+f a schmidt weg	105:1	53129
+fabristrasse	303:1	53225
+faehrstrasse	207:1	53179
+fahrenheitstrasse	401:1	53125
+falkenbergweg	306:1	53229
+falkenweg	115:1	53125
+fasanenstrasse	211:1	53179
+fasanenweg	110:1	53127
+father bill strasse	210:1	53175
+feldstrasse	301:1	53225
+ferdinand lassalle strasse	205:1	53175
+ferdinand porsche strasse	112:1	53123
+ferdinand weg	114:1	53115
+ferdinandstrasse	110:1	53127
+fichtenweg	115:1	53125
+fichtestrasse	204:1	53177
+fideliostrasse	313:1	53225
+finkenbergstrasse	308:1	53227
+finkenhof	402:1	53123
+finkenhofpark	402:1	53123
+finkenweg	306:1	53229
+fitting weg	114:1	53115
+flemingstrasse	402:1	53123
+flensburger strasse	101:1	53117
+flerzheimer allee	115:1	53125
+fliederstrasse	206:1	53179
+flodelingsweg	107:2	53115,53121
+florastrasse	118:1	53125
+florentiusgraben	103:1	53111
+florusstrasse	303:1	53225
+flossweg	206:1	53179
+flughafenstrasse	314:1	53229
+flutgraben	307:1	53227
+fockestrasse	401:1	53125
+fonckstrasse	118:1	53125
+fontainengraben	401:2,402:1	53123,53125
+fontanestrasse	211:1	53173
+forellstrasse	112:1	53123
+forststrasse	115:1	53125
+forstweg	307:1	53227
+fourthweg	204:1,206:1	53179
+fraenkische strasse	310:1	53229
+frankengraben	202:1	53175
+frankenstrasse	205:1	53175
+frankenweg	312:1	53225
+franz boeckle strasse	118:1	53125
+franz buchbender strasse	303:1	53225
+franz buecheler strasse	111:1	53129
+franz josef strauss allee	109:1	53113
+franz kissel weg	309:1	53227
+franz linz strasse	202:1	53175
+franz lohe strasse	111:1	53129
+franziskanerinnenplatz	301:1	53225
+franziskanerstrasse	103:1	53113
+franzstrasse	113:1	53111
+frascatistrasse	209:1	53177
+fraunhoferstrasse	106:1	53121
+frechengasse	404:1	53127
+freier weg	212:1	53177
+freiligrathstrasse	402:1	53123
+freizeitpark rheinaue	205:1	53175
+freizeitpark rheinaue beueler seite	308:1	53227
+freudestrasse	313:1	53225
+fridtjof nansen strasse	110:1	53127
+frieda mager allee	107:1	53121
+frieda nadig strasse	115:1	53125
+friedensplatz	103:1	53111
+friedensplatz passage	103:1	53111
+friedenstrasse	310:1	53229
+friedensweg	306:1	53229
+friedhofstrasse	301:1	53225
+friedlandstrasse	104:1	53117
+friedrich bleek strasse	207:1	53179
+friedrich breuer strasse	301:1	53225
+friedrich ebert allee	109:1	53113
+friedrich ebert strasse	201:1	53177
+friedrich friesen strasse	301:1	53225
+friedrich wilhelm strasse	109:1	53113
+friedrich woehler strasse	101:1	53117
+friedrichallee	201:2,209:1,211:1	53173,53177
+friedrichstrasse	103:1	53111
+friesdorfer park	205:1	53175
+friesdorfer strasse	201:2,202:1,203:2	53173,53175,53177
+friesenstrasse	210:1	53175
+friesenweg	108:1	53117
+fritz bauer strasse	402:1	53123
+fritz eggeling platz	401:1	53125
+fritz erler strasse	109:1	53113
+fritz schaeffer strasse	109:1	53113
+fritz schroeder ufer	102:1,103:1	53111
+fritz tillmann strasse	116:1	53113
+froebelstrasse	207:1	53179
+frongasse	107:1	53121
+fuchsweg	402:1	53125
+fuderbachsweg	204:1	53177
+fuerstenbergstrasse	208:1	53177
+fuerstenstrasse	103:1	53111
+fuessenichgasse	111:1	53129
+fuhrweg	306:1	53229
+gabelsbergerstrasse	113:1	53119
+galileistrasse	206:1,209:1	53177
+gallierweg	102:1	53117
+gallusstrasse	307:1,311:1	53227
+gandhistrasse	107:1	53121
+gangolfstrasse	103:1	53111
+garrestrasse	119:1	53127
+garten der erinnerung	102:1	53117
+gartenstrasse	313:1	53229
+gartenweg	306:1	53229
+gaussstrasse	401:1	53125
+gaussstrasse von guericke allee	401:1	53125
+gebrueder wright strasse	401:1	53125
+geislarstrasse	303:1,313:1	53225
+geisslerstrasse	111:1	53129
+gellertstrasse	402:1	53123
+genscherallee	109:1	53113
+gensemer strasse	312:1	53225
+georg elser weg	104:1,117:1	53117,53119
+georg von boeselager strasse	101:1	53117
+georg weiss weg	118:1	53125
+georgstrasse	113:1	53111
+gerastrasse	401:1	53125
+gerberaweg	402:1	53123
+gerd hoellige weg	201:1	53177
+gerhard domagk strasse	107:1,120:1	53121
+gerhard krause weg	110:1	53127
+gerhard rohlfs strasse	211:1	53173
+gerhard samuel strasse	111:1	53129
+gerhard von are strasse	103:2	53111,53113
+gerhardsplatz	113:1	53119
+gerhardstrasse	302:1,313:2	53225,53229
+gerhart hauptmann strasse	106:1	53121
+gerichtsweg	307:1,311:1	53227
+germanenstrasse	210:1	53175
+gernotstrasse	207:1	53179
+geschwister scholl strasse	402:1	53123
+gielgenstrasse	306:1	53229
+gielsdorfer strasse	112:1	53123
+gierenweg	111:1	53129
+giergasse	103:1	53113
+gierolstrasse	110:1	53127
+giersbergstrasse	306:1	53229
+gieveningsweg	119:1	53175
+ginsterweg	306:1	53229
+giselherstrasse	207:1	53179
+glatzer strasse	117:1	53119
+gleiwitzer weg	117:1	53119
+glockenstrasse	404:1	53123
+glogauer strasse	117:1	53117
+gluckstrasse	120:1	53115
+glueckstrasse	310:1	53229
+gneisenaustrasse	213:1	53173
+goddardstrasse	401:1	53125
+godesberger allee	202:1,205:1,210:1,213:2	53173,53175
+godesberger strasse	203:1	53175
+goebenstrasse	116:1	53113
+goerdelerstrasse	402:1	53123
+goerlitzer strasse	117:1	53119
+goerresstrasse	207:1	53179
+goetheallee	301:1	53225
+goethestrasse	116:1	53113
+goldbergweg	204:1,208:1	53177
+goldfussstrasse	401:1	53125
+gorch fock strasse	313:1	53229
+gotenstrasse	210:1	53175
+gothastrasse	401:1	53125
+gottbergstrasse	108:1	53117
+gottfried claren strasse	301:1	53225
+gottfried kinkel strasse	402:1	53123
+grabengasse	307:1	53227
+grabenstrasse	312:1	53225
+graf galen strasse	111:1	53129
+graf stauffenberg strasse	111:1	53115
+graf von lehndorff strasse	205:1	53175
+grasmueckenweg	402:1	53123
+graurheindorfer strasse	102:2,108:1	53111,53117
+gregor mendel strasse	111:1	53115
+greifswalder weg	117:1	53119
+grimmgasse	402:1	53123
+gringsstrasse	208:1	53177
+grootestrasse	106:1	53121
+grossenbuschstrasse	306:1	53229
+grubenstrasse	206:1	53179
+gruene spielstadt	106:1	53121
+gruener weg	202:1	53175
+guardinistrasse	305:1	53229
+gudenauer weg	110:1,119:1	53127
+guessgasse	307:1	53227
+guido westerwelle bruecke	113:1,120:1	53115,53119
+gunterstrasse	207:1	53179
+gustav kessler strasse	301:1	53225
+gustav oel strasse	105:1	53129
+gustav von veit strasse	119:1	53127
+gutenbergallee	211:1	53179
+gutenbergstrasse	402:1	53123
+haager weg	110:1,119:1	53127
+haberbitze	310:1	53229
+habsburgerstrasse	213:1	53173
+haendelstrasse	120:1	53115
+hagenstrasse	207:1	53179
+hainbuchenweg	204:1	53177
+hainstrasse	107:1,404:1	53121
+halberstadtstrasse	401:1	53125
+haldenstrasse	307:1	53227
+hallestrasse	401:1	53125
+hammstrasse	303:1	53225
+hang an der peter ruster strasse	102:1	53111
+hangelarer strasse	306:1	53229
+hangelarer weg	314:1	53229
+hangstrasse	307:1,311:1	53227
+hankelstrasse	401:1	53125
+hannah arendt strasse	210:1	53175
+hannover strasse	403:1	53123
+hans boeckler allee	209:1	53177
+hans boeckler strasse	301:1	53225
+hans cloos strasse	107:1	53121
+hans grade strasse	401:1	53125
+hans herter strasse	104:1	53117
+hans iwand strasse	116:1	53113
+hans riegel strasse	111:1	53129
+hans rosenberg strasse	202:1	53175
+hans sachs strasse	106:1	53121
+hans steger ufer	301:1	53225
+hans welzel strasse	112:1	53123
+hanstein weg	114:1	53115
+hardtbergstrasse	404:1	53127
+hardtstrasse	210:1	53175
+hardtweg	306:1	53229
+hardtweiherstrasse	306:1	53229
+harlessstrasse	105:1	53129
+hartsteinstrasse	116:1	53115
+hartwig hueser strasse	309:1	53227
+haselnussweg	204:1	53177
+hasenweg	402:1	53125
+hasertstrasse	310:1	53229
+hatschiergasse	103:1	53111
+haubenlerchenweg	402:1	53123
+hauptstrasse	306:1	53229
+hausdorffstrasse	105:1,111:1,116:1	53113,53129
+hauweg	119:1	53127
+havelstrasse	110:1	53127
+haydnstrasse	120:1	53115
+heckelsbergplatz	301:1	53225
+heckelsgasse	309:1	53227
+heckenweg	306:1	53229
+hedwig dransfeld strasse	115:1	53125
+heerstrasse	113:1	53111
+heerweg	107:1	53121
+hegelstrasse	204:1	53177
+heidebergenstrasse	306:1	53229
+heidegartenstrasse	115:1	53125
+heiderhofring	204:1	53177
+heideweg	306:1	53229
+heidgesallee	115:1	53125
+heilsbachstrasse	402:1	53123
+hein moeller strasse	120:2	53115,53121
+heinemannstrasse	205:1	53175
+heinkelstrasse	401:1	53125
+heinrich behr strasse	306:1	53229
+heinrich bloemer weg	119:1	53127
+heinrich boell ring	113:1	53119
+heinrich bruening strasse	109:1	53113
+heinrich bursch strasse	104:1	53117
+heinrich dittmaier strasse	118:1	53125
+heinrich els strasse	119:1	53127
+heinrich fritsch strasse	119:1	53127
+heinrich heine strasse	301:1	53225
+heinrich hertz strasse	209:1	53177
+heinrich koerner strasse	111:1	53129
+heinrich konen strasse	311:1	53227
+heinrich luebke strasse	109:1	53113
+heinrich luetzeler strasse	114:1	53115
+heinrich nauen strasse	104:1	53117
+heinrich sauer strasse	102:1	53111
+heinrich schneiders strasse	105:1	53129
+heinrich settels strasse	104:1	53117
+heinrich von kleist strasse	116:1	53113
+heinrich von stephan strasse	205:1	53175
+heinrich winand weg	105:1	53129
+heinrich wolsing weg	307:1	53227
+heinrichstrasse	207:1	53179
+heinz stelling weg	107:1	53121
+heisenbergstrasse	306:1	53229
+heisterbacherhofstrasse	103:1	53111
+heisterbachstrasse	211:1	53173
+helene weber strasse	313:1	53229
+helene weigel weg	314:1	53229
+helene wessel strasse	115:1	53125
+helenenstrasse	301:1	53225
+helmholtzstrasse	402:1	53123
+helmut kohl allee	109:1	53113
+helmut schmidt platz	109:1	53113
+helsinkistrasse	101:1	53117
+henri parisot strasse	312:1	53225
+henri spaak strasse	402:1	53123
+henriettenstrasse	118:1	53125
+hensstrasse	213:1	53173
+herbert rabius strasse	301:1	53225
+herderstrasse	213:1	53173
+hermann dienz strasse	104:1	53117
+hermann ehlers strasse	109:1	53113
+hermann gmeiner strasse	313:1	53229
+hermann loens strasse	206:1	53177
+hermann milde strasse	111:1	53129
+hermann schloesser strasse	118:1	53125
+hermann wandersleb ring	107:1	53121
+hermannstaedter strasse	117:1	53119
+hermannstrasse	301:1	53225
+herpenstrasse	108:1	53117
+herrenacker	305:1	53229
+herseler strasse	108:1	53117
+herwarthstrasse	120:2	53111,53115
+herzogsfreudenweg	115:1,118:1	53125
+heussallee	109:1	53113
+hildebrandstrasse	207:1	53179
+hildegard wegscheider strasse	115:1	53125
+himmelsweg	304:1	53229
+himmerichweg	308:1	53227
+hindenburgplatz	105:1	53129
+hinsenkampstrasse	105:1	53129
+hinter aue	402:1	53123
+hinter hoben	105:1	53129
+hirschberger strasse	117:1	53119
+hirschgasse	107:1	53121
+hittorfstrasse	105:1	53129
+hobsweg	115:1	53125
+hochkreuzallee	202:1,203:1	53175
+hochstadenring	113:2	53111,53119
+hoehenweg	110:1	53127
+hoehlenweg	118:1	53125
+hoelderlinstrasse	106:1	53121
+hoelzebergstrasse	306:1	53229
+hoevelweg	306:1	53229
+hofgarten	116:1	53113
+hofstrasse	210:1	53175
+hohe strasse	117:1	53119
+hohenzollernplatz	213:1	53173
+hohenzollernstrasse	210:1,213:1	53173,53175
+hohle gasse	208:1	53177
+hoholzstrasse	304:1	53229
+holbeinstrasse	205:1	53175
+holtorfer strasse	310:1	53229
+holtorfer weg	306:1	53229
+holunderweg	119:1	53127
+holzgasse	311:1	53227
+holzlarer strasse	306:1	53229
+holzlarer weg	310:1	53229
+honnefer strasse	206:1	53179
+hopmannstrasse	208:1	53177
+horionstrasse	212:1	53177
+hospitalweg	114:1	53115
+hosterbacher strasse	309:1	53227
+hosterstrasse	309:1	53227
+hoverstrasse	206:1	53179
+hubert jedin strasse	112:1	53123
+hubert maurer strasse	404:1	53127
+hubert peter strasse	202:1	53175
+hubertinumshof	201:1	53173
+hubertusallee	115:1	53125
+hubertusstrasse	118:1	53125
+huettenweg	402:1	53123
+hugo haelschner strasse	111:1	53129
+hugo junkers strasse	401:1	53125
+humboldtstrasse	120:1	53115
+humbroichweg	309:1	53227
+hummerichs bitze	314:1	53229
+hummerichsweg	115:1	53177
+humperdinckstrasse	107:1	53121
+hundeshagenstrasse	312:1	53225
+hunsrueckstrasse	113:1	53119
+husarenstrasse	102:1	53117
+igelweg	402:1	53125
+iltisweg	402:1	53125
+im acker	110:1	53127
+im aeuelchen	201:1	53177
+im ahlgasserfeld	402:1	53123
+im alten wingert	311:1	53227
+im apfelgarten	208:1	53177
+im bachele	202:1	53175
+im bachfeld	207:1	53179
+im bendel	203:1	53175
+im bendenberg	404:1	53127
+im birkenfeld	314:1	53229
+im blankert	310:1	53229
+im blumengarten	110:1	53127
+im bonnet	310:1	53229
+im brandengarten	404:1	53127
+im brocken	112:1	53123
+im buchengrund	202:1	53175
+im bungert	309:1	53227
+im burgacker	402:1	53123
+im dahl	104:1	53117
+im dohm	303:1	53225
+im dottenberg	105:1	53129
+im dransdorfer feld	106:1	53121
+im eichholz	110:1	53127
+im ellig	404:1	53127
+im erlenbusch	110:1	53127
+im erlengrund	202:1	53175
+im etzental	201:1	53177
+im feldpuetz	404:1	53123
+im frankenkeller	207:1	53179
+im gensem	312:1	53225
+im gerott	306:1	53229
+im gesetz	307:1	53227
+im goeseler	402:1	53123
+im gries	206:1	53179
+im grossen garten	104:1	53117
+im gruenen winkel	402:1	53123
+im haeringsthal	106:1	53121
+im hag	207:1	53179
+im heckengarten	309:1	53227
+im hellengarten	404:1	53127
+im herrngarten	115:1	53125
+im hohn	212:1	53177
+im hohnderfeld	404:1	53127
+im jagdfeld	115:1	53125
+im johdorf	308:1	53227
+im jonengarten	115:1	53125
+im jungen wingert	107:1	53121
+im kirchenbenden	105:1	53129
+im krausfeld	113:1	53111
+im kremerich	303:1	53225
+im maigarten	105:1	53129
+im meisengarten	211:1	53179
+im meisengrund	307:1	53229
+im michelsfeld	309:1	53227
+im mohrenfeld	309:1	53227
+im muehlenbach	404:1	53127
+im muehlenfeld	402:1	53123
+im pesch	404:1	53127
+im pfirsichgarten	208:1	53177
+im puetzengarten	402:1	53123
+im puetzfeld	115:1	53125
+im rebgarten	404:1	53127
+im rheinfeld	301:1	53227
+im rheingarten	301:1	53225
+im ringelsacker	404:1	53123
+im roehfeld	313:1	53229
+im rosenberg	207:1	53179
+im rosenhag	118:1	53125
+im ruebengarten	303:1	53225
+im sand	303:1	53225
+im schildchen	104:1	53117
+im schmalzacker	118:1	53125
+im sonnenpuetz	105:1	53129
+im sonnenwinkel	110:1	53127
+im tannenbusch	117:1	53119
+im thelenpfand	310:1	53229
+im uckerfeld	110:1	53127
+im uhlengarten	106:1	53121
+im verbott	306:1	53229
+im versteck	306:1	53229
+im vogelsang	207:1	53179
+im weiler	404:1	53123
+im weingarten	202:1	53175
+im wiesengrund	202:1	53175
+im wiesfeld	206:1	53179
+im wingert	114:1	53115
+im wolfsgraben	115:1	53125
+im wurzelbusch	110:1	53127
+im ziegelfeld	314:1	53229
+immenburgstrasse	120:1	53121
+in den bieshecken	306:1	53229
+in den dauen	101:2,104:1,117:1	53117,53119
+in den erlen	309:1	53227
+in den schleiden	206:1	53179
+in den weingaerten	404:1	53127
+in den wiesen	302:1	53227
+in der aue	404:1	53127
+in der dahlbitze	307:1	53227
+in der dehlen	402:2	53123,53125
+in der graecht	404:1	53127
+in der kumme	202:1	53175
+in der langhecke	118:1	53125
+in der lies	111:1	53129
+in der maar	202:1	53175
+in der persch	309:1	53227
+in der proffe	309:1	53227
+in der raste	105:1	53129
+in der roten kanne	404:1	53127
+in der suerst	103:1	53111
+in der wehrhecke	115:1	53125
+in der wieste	118:1	53125
+insterburger strasse	101:1	53117
+ippendorfer allee	110:2	53115,53127
+ippendorfer allee trierer strasse	110:1	53127
+ippendorfer weg	110:1,404:1	53127
+irmintrudisstrasse	102:1	53111
+ittenbacher strasse	206:1	53179
+jaegerstrasse	115:1	53125
+jaegerweg	212:1	53177
+jagdweg	114:1	53115
+jahnallee	213:1	53173
+jahnstrasse	312:1	53225
+jakob hengstler strasse	117:1	53119
+jakob kaiser strasse	313:1	53225
+jakob mager strasse	104:1	53117
+jakobstrasse	309:1	53227
+jan loh platz	113:1	53111
+jasminweg	306:1	53229
+jean monnet strasse	205:1	53175
+jean paul strasse	213:1	53173
+jenastrasse	401:1	53125
+joachimstrasse	109:1	53113
+johann bieser strasse	112:1	53123
+johann link strasse	301:1	53225
+johann wilhelm schirmer strasse	118:1	53125
+johann wirtz strasse	104:1	53117
+johanna kinkel strasse	205:1	53175
+johanna kirchner strasse	402:1	53123
+johannes buecher ufer	301:1	53225
+johannes henry strasse	109:1	53113
+johannes mueller strasse	119:1	53127
+johannes norbisrath strasse	313:1	53229
+johannes von hanstein strasse	111:1	53115
+johannesstrasse	301:1	53225
+johanniterstrasse	109:1	53113
+jonas cahn strasse	120:1	53115
+josef boecker strasse	402:1	53123
+josef kuth strasse	104:1	53117
+josef schell strasse	107:1	53121
+josef thiebes strasse	302:1	53227
+josef wirmer strasse	402:1	53123
+josefstrasse	103:1	53111
+joseph beuys allee	109:1	53113
+joseph clemens ufer	114:1	53115
+joseph roth strasse	202:1	53175
+joseph schumpeter allee	311:1	53227
+julius leber strasse	402:1	53123
+julius palm strasse	303:1	53225
+julius pluecker strasse	111:1	53115
+julius vorster strasse	309:1	53227
+junkerstrasse	201:1	53177
+juppi schaefer weg	201:1	53177
+justus von liebig strasse	106:1,113:1,117:1	53119,53121
+kaesbergstrasse	313:1	53225
+kaethe kollwitz strasse	302:1	53227
+kaiser friedrich strasse	109:1	53113
+kaiser karl ring	102:1,113:2	53111,53119
+kaiser konrad strasse	301:1	53225
+kaiserplatz	103:1,116:1	53113
+kaiserstrasse	109:1,116:1	53113
+kalkuhlstrasse	309:1	53227
+kallenweg	105:1,111:1	53129
+kanalstrasse	210:1	53175
+kaninsberg	304:1	53229
+kannheideweg	402:1	53123
+kantstrasse	204:1	53177
+kapellenstrasse	107:2,114:1	53115,53121
+kapellenweg	209:1,211:1	53177,53179
+kapitelshof	310:1	53229
+kapuzinerstrasse	103:1	53111
+kardinal galen weg	202:1	53175
+karl arnold strasse	313:1	53225
+karl barth strasse	105:1,111:1	53129
+karl carstens strasse	109:1	53113
+karl duwe strasse	309:1,311:1	53227
+karl finkelnburg strasse	211:1	53173
+karl friedrich schinkel strasse	110:1	53127
+karl frowein strasse	120:1	53115
+karl hoch strasse	108:1	53117
+karl lambertz strasse	314:1	53229
+karl landsteiner strasse	119:1	53127
+karl legien strasse	102:1,108:1	53117
+karl leisner strasse	402:1	53123
+karl marx strasse	109:1	53113
+karl meisen weg	115:1	53125
+karl wiltberger strasse	112:1	53123
+karlrobert kreiten strasse	114:1	53115
+karlstrasse	120:1	53115
+karmeliterstrasse	310:1	53229
+karsten schenk weg	114:1	53115
+karthaeuserplatz	111:1	53129
+karthaeuserstrasse	111:1	53129
+kasernenstrasse	103:1	53111
+kasseler ley	309:1	53227
+kastanienweg	204:1	53177
+kastellstrasse	309:1	53227
+katharina focke strasse	109:1	53113
+katharinenstrasse	402:1	53123
+kattowitzer weg	117:1	53119
+katzenburgweg	114:1	53115
+kaufmannstrasse	120:1	53115
+kautexstrasse	306:1	53229
+kekulestrasse	114:1	53115
+keltenweg	108:1	53117
+kelterweg	404:1	53127
+kelzenbergstrasse	202:1	53175
+kennedyallee	205:1,210:1	53175
+keplerstrasse	206:1	53177
+kesselgasse	103:1	53111
+kessenicher strasse	105:1,111:1	53129
+kettelerplatz	106:1	53121
+kiefernweg	119:1	53127
+kinkelplatz	306:1	53229
+kinkelstrasse	309:1	53227
+kirchberg	206:1	53179
+kirchfeldstrasse	312:1	53225
+kirchplatz	402:1	53123
+kirchstrasse	307:1	53227
+kirchweg	402:1	53123
+kirchweingarten	208:1	53177
+kirschallee	114:1	53115
+klara m fassbinder strasse	106:1	53121
+klarastrasse	402:1	53123
+klausgarten	306:1	53229
+kleine strasse	106:1	53121
+kleinfeldstrasse	304:1	53229
+klemens hofbauer strasse	101:1	53117
+klosterbergstrasse	208:1	53177
+klostergarten	101:1	53117
+klosterstrasse	402:1	53123
+klosterweg	104:1	53117
+klufterplatz	202:1	53175
+klufterstrasse	202:1	53175
+koblenzer strasse	201:2,209:1,211:1	53173,53177,53179
+koehlstrasse	401:1	53125
+koeln duesseldorfer	211:1	53173
+koelnstrasse	101:1,102:1,103:1,104:1,113:2,314:1	53111,53117,53229
+koenigsberger strasse	117:1	53119
+koenigsberger weg	402:1	53123
+koenigsheimstrasse	301:1	53225
+koenigsplatz	213:1	53173
+koenigstrasse	116:2	53113,53115
+koenigswinterer strasse	301:1,302:2,307:1,308:1,309:1,311:1	53225,53227,53229
+koernerstrasse	210:1,213:2	53173,53175
+koernicker weg	114:1	53115
+koernickestrasse	112:1	53123
+koeslinstrasse	402:1	53123
+kohlbergstrasse	306:1	53229
+kohlkauler platz	306:1	53229
+kolberger strasse	210:1	53175
+kolfhausstrasse	213:1	53173
+kollegienweg	107:1	53121
+kolpingstrasse	107:1	53121
+kolumbusring	210:1	53175
+kommanderiestrasse	103:1	53111
+kommendeweg	311:1	53227
+kommentalweg	312:1	53225
+komtureistrasse	208:1	53177
+konrad adenauer damm	401:1,402:1,404:1	53123,53127
+konrad adenauer platz	301:1	53225
+konrad zuse platz	311:1	53227
+konradstrasse	107:1	53121
+konstantinstrasse	207:1,211:1	53179
+konviktstrasse	103:1	53113
+kopenhagener strasse	101:1	53117
+kopernikusstrasse	209:1	53177
+kortrijker strasse	206:1	53177
+kottenstrasse	206:1	53179
+kragstrasse	402:1	53123
+kranenweg	108:1	53117
+kraterstrasse	207:1	53179
+krausgaesschen	112:1	53123
+kreisauer strasse	210:1	53175
+kreuzbergallee	110:1,114:1	53115,53127
+kreuzberger allee	115:1	53177
+kreuzbergpark	404:1	53127
+kreuzbergstrasse	404:1	53127
+kreuzbergweg	114:1,120:1	53115
+kreuzherrenstrasse	308:1	53227
+kreuzritterstrasse	311:1	53227
+kreuzstrasse	301:1	53225
+kriemhildstrasse	207:1	53179
+krokusweg	306:1	53229
+kronprinzenstrasse	211:1,213:1	53173
+kronstaedter strasse	117:1	53119
+krummfuhr	304:1,306:1	53229
+kucksteinweg	309:1	53227
+kuckucksweg	402:1	53123
+kuedinghovener strasse	307:1,308:2	53225,53227
+kueppersgarten	306:1	53229
+kuestriner strasse	402:1	53123
+kuhgasse	111:1	53129
+kunigundenstrasse	207:1	53179
+kurfuerstenallee	201:1	53177
+kurfuerstenplatz	115:1	53125
+kurfuerstenstrasse	116:1	53115
+kurfuerstlicher mineralbrunnen draitsch	201:1	53177
+kurlandstrasse	312:1	53225
+kurt georg kiesinger allee	205:1	53175
+kurt schumacher strasse	109:1	53113
+ladestrasse	402:1	53123
+laerchenstrasse	104:1	53117
+lahnstrasse	210:1	53175
+lahnweg	111:1	53129
+lambareneweg	113:1	53119
+lambertusweg	106:1	53121
+landgrabenweg	308:1,311:1	53227
+landsberger strasse	117:1	53119
+langemarckstrasse	309:1	53227
+langenbachstrasse	109:1	53113
+langenbergsweg	207:1	53179
+langer grabenweg	205:1	53175
+langgasse	103:1	53111
+langwartweg	105:1	53129
+lannesdorfer strasse	206:1	53179
+laufenbergstrasse	201:1	53173
+laurentiusstrasse	112:1	53123
+legionsweg	102:1	53117
+lehnpuetz	208:1	53177
+leibnizstrasse	204:1	53177
+lenaustrasse	106:1	53121
+lengsdorfer hauptstrasse	404:1	53127
+lengsdorfer strasse	110:1	53127
+lenne weg	114:1	53115
+lennestrasse	116:1	53113
+leo breuer weg	104:1	53117
+leonardusstrasse	210:1	53175
+lerchenweg	117:1	53119
+leserpark	210:1	53173
+lessenicher kirchpaedchen	112:1	53123
+lessenicher strasse	402:1	53123
+lessingstrasse	116:1	53113
+letterhausstrasse	402:1	53123
+leuschnerstrasse	402:1	53123
+levyweg	207:1	53179
+liebfrauenweg	118:1	53125
+liegnitzer strasse	117:1	53119
+liessemer strasse	206:1	53179
+liessemer weg	204:1	53177
+liestrasse	303:1	53225
+lievelingsweg	113:2,117:1	53117,53119
+ligusterweg	110:1	53127
+lilienthalstrasse	401:1	53125
+lilienweg	402:1	53123
+limpericher strasse	301:1,308:1	53225
+lindenallee	211:1	53173
+lindenstrasse	311:1	53227
+lindenweg	115:1	53125
+lindershausweg	306:1	53229
+lindstrasse	206:1	53177
+lingsgasse	404:1	53127
+lipschitzstrasse	107:1	53121
+lissaboner strasse	101:1	53117
+lisztstrasse	120:1	53115
+loebestrasse	201:2	53173,53177
+loeschckestrasse	111:1	53129
+loestrasse	116:1	53113
+loewenberger weg	117:1	53119
+loewenburgstrasse	305:1	53229
+loewenburgweg	306:1	53229
+lohrbergstrasse	201:1	53177
+lohrbergweg	308:1	53227
+loki schmidt platz	105:1	53129
+londoner strasse	101:1	53117
+lortzingstrasse	211:1	53179
+lotharstrasse	111:2	53115,53129
+lucas cranach strasse	205:1	53175
+ludwig erhard allee	205:1	53175
+ludwig richter strasse	402:1	53123
+ludwig schopp strasse	104:1	53117
+luebener weg	117:1	53119
+lueckingstrasse	110:1	53127
+luetzowstrasse	213:1	53173
+luigi pirandello strasse	110:1	53127
+luisenstrasse	111:1,114:2	53113,53129
+lupinenweg	306:1	53229
+lutfridstrasse	107:1	53121
+luxemburger strasse	101:1	53117
+lyngsbergstrasse	206:1,208:1	53177
+maarflach	116:1	53113
+maarstrasse	302:1,310:1	53227
+maarweg	402:1	53123
+mackestrasse	113:1	53119
+madridstrasse	101:1	53117
+magdalenenstrasse	107:1	53121
+magdalenenweg	118:1	53125
+magdeburger strasse	117:1	53119
+magnolienweg	204:1	53177
+maidenheadstrasse	209:1	53177
+mainzer strasse	207:1,211:1	53179
+malgisostrasse	112:1	53123
+mallwitzstrasse	206:1	53177
+malteserstrasse	120:1	53115
+malusiusstrasse	107:1	53121
+mandelbaumweg	204:1	53177
+marchstrasse	301:1	53225
+margaretenstrasse	202:1	53175
+margarethe jochimsen strasse	120:1	53115
+margarethenplatz	108:1	53117
+maria montessori allee	313:1	53229
+maria tiefenbacher strasse	313:1	53229
+marie curie strasse	401:1	53125
+marie elisabeth lueders strasse	115:1	53125
+marie kahle allee	109:1	53113
+marie schlei allee	202:1	53175
+marienburger strasse	117:1	53119
+marienforster kirchweg	212:1	53177
+marienforster promenade	201:1	53177
+marienforster steinweg	201:1,204:1	53177
+marienforster strasse	201:1	53177
+marienstrasse	301:1	53225
+markt	103:1	53111
+marktbruecke	103:1	53111
+marktplatz	201:1	53177
+marktstrasse	310:1	53229
+markusstrasse	111:1	53129
+marquartstrasse	302:1	53229
+marta worringer strasse	209:1	53177
+martin goergens strasse	104:1	53117
+martin legros strasse	112:1	53123
+martin luther allee	202:1	53175
+martin luther king strasse	205:1,210:1	53175
+martinsplatz	103:2	53111,53113
+martinstrasse	208:1	53177
+mary wigman weg	314:1	53229
+masurenweg	117:1	53119
+mathildastrasse	313:1	53225
+mathonetstrasse	203:1	53175
+matthaeistrasse	402:1,404:1	53123
+matthias gruenewald strasse	205:1	53175
+mauerseglerweg	110:1	53127
+mauspfad	103:1	53111
+max born strasse	306:1	53229
+max braubach strasse	118:1	53125
+max bruch strasse	107:1	53121
+max cohen strasse	107:1	53121
+max ernst strasse	118:1	53125
+max franz strasse	201:1	53177
+max habermann strasse	402:1	53123
+max loebner strasse	205:1	53175
+max planck strasse	206:1,209:1	53177
+maximilian kolbe bruecke	106:1,117:1	53119,53121
+maximilianpassage	103:1	53111
+maximilianstrasse	103:2,116:1	53111,53113
+maxstrasse	113:1	53111
+mechenstrasse	111:1	53129
+meckenheimer allee	114:1,120:1	53115
+meckenheimer strasse	207:1	53179
+mecklenburger strasse	205:1	53175
+meerhausener strasse	309:1	53227
+meersburgstrasse	210:1	53175
+mehlbergweg	307:1	53227
+mehlemer dorfplatz	207:1	53179
+mehlemer strasse	206:1	53179
+mehlemstrasse	311:1	53227
+meindorfer strasse	303:1	53225
+meisenweg	117:1	53119
+meitnerstrasse	206:1	53177
+melbweg	110:1,119:1	53127
+memelweg	117:1	53119
+mendelssohnstrasse	211:1	53179
+mendener weg	314:1	53229
+menuhinstrasse	109:1	53113
+merianstrasse	206:1	53177
+merler allee	115:1	53125
+merowingerstrasse	310:1	53229
+mertensgasse	108:1	53117
+messdorfer feldweg	107:1	53121
+messdorfer strasse	106:1,112:2	53121,53123
+messerschmittstrasse	401:1	53125
+michael leveilly strasse	110:1	53127
+michael passage	201:1	53177
+michael piel strasse	313:1	53229
+michaelplatz	201:1	53177
+michaelstrasse	113:1	53111
+milchgaesschen	201:1	53173
+milchgasserweg	108:1	53117
+mildred scheel strasse	205:1	53175
+mirbachstrasse	211:1	53173
+mirecourtstrasse	312:1	53225
+mittelstrasse	210:1	53175
+modestusstrasse	310:1	53229
+moehneplatz	301:1	53225
+moenkemoellerstrasse	105:1	53129
+moerikestrasse	106:1	53121
+mohnweg	305:1	53229
+mohrenstrasse	210:1	53173
+mohrstrasse	107:1	53121
+moltkeplatz	201:1	53173
+moltkestrasse	201:1	53173
+mondorfer strasse	113:1	53117
+monheimstrasse	310:1	53229
+monschauer strasse	107:1	53121
+monsignore hausen allee	104:1	53117
+mordkapellenpfad	114:1	53115
+moselstrasse	210:1	53175
+moselweg	111:1	53129
+moses hess ufer	103:1	53111
+mozartstrasse	120:1	53115
+muehlenbachstrasse	314:1	53229
+muehlenpfad	207:1	53179
+muehlenstrasse	210:1	53173
+muehlenweg	306:1	53229
+mueldorfer anger	314:1	53229
+mueldorfer strasse	306:1,310:1	53229
+muelheimer platz	103:1	53111
+muenchener platz	403:1	53123
+muensterberger weg	117:1	53119
+muensterplatz	103:1	53111
+muensterstrasse	103:1	53111
+muffendorfer hauptstrasse	208:1	53177
+muffendorfer strasse	201:1,208:1	53177
+muffendorfer wein ecke	208:1	53177
+mutter barat strasse	310:1	53229
+mutter theresa strasse	302:1	53227
+nachtigallenstrasse	211:1	53179
+nachtigallenweg	114:1,119:1	53115,53127
+nahestrasse	210:1	53175
+naheweg	111:1	53129
+nahum goldmann allee	109:1,202:1	53113,53175
+narzissenweg	306:1	53229
+nassestrasse	116:1	53113
+naumburger strasse	104:1	53117
+neckarstrasse	210:1	53175
+neefestrasse	120:1	53115
+nees weg	114:1	53115
+neissestrasse	110:1	53127
+nelkenweg	402:1	53123
+nelly sachs weg	314:1	53229
+nepomuk platz	301:1	53225
+nesselroder strasse	307:1	53227
+netzestrasse	110:1	53127
+neuenahrer strasse	120:1	53115
+neuer weg	206:1	53179
+neues alleechen	115:1	53125
+neustrasse	301:1	53225
+newtonstrasse	401:1	53125
+nibelungenstrasse	207:1	53179
+nideggerstrasse	120:1	53115
+niebuhrstrasse	109:1	53113
+niederkasseler strasse	303:1,312:1	53225
+niersteiner strasse	202:1	53175
+nietzschestrasse	204:1	53177
+nikolaus becker strasse	201:1	53177
+nikolaus gross strasse	404:1	53127
+nikolausstrasse	111:1	53129
+nipkowstrasse	401:1	53125
+noeggerathstrasse	103:1	53111
+nonnenpfad	313:1	53229
+nonnenstrombergstrasse	402:1	53123
+nonnstrasse	113:1	53119
+nordstrasse	102:1	53111
+nussallee	114:1	53115
+ober den erlen	309:1	53227
+oberaustrasse	207:1	53179
+oberdorfstrasse	303:1	53225
+obere wilhelmstrasse	301:1	53225
+oberer lindweg	105:1	53129
+oberkasseler strasse	311:1	53227
+obernierstrasse	113:1	53119
+oberstrasse	206:1	53179
+oderstrasse	110:1	53127
+oedekovener strasse	112:1	53123
+oelbergstrasse	201:1	53177
+oelbergweg	308:1	53227
+oeliedenweg	105:1	53129
+oelser strasse	117:1	53117
+offenbachstrasse	211:1	53173
+ollenhauerstrasse	109:1	53113
+olof palme allee	109:1	53113
+oppelner strasse	101:1,117:1	53119
+oppenhoffstrasse	113:1	53111
+orchideenweg	402:1	53123
+ortwinstrasse	207:1	53179
+oscar romero allee	109:1	53113
+oskar walzel strasse	111:2,116:1	53113,53129
+osloer strasse	101:1	53117
+ossietzkystrasse	402:1	53123
+ostpreussenstrasse	117:1	53119
+ostseestrasse	210:1	53175
+oststrasse	201:1	53173
+ostwaldstrasse	107:1	53115
+oswald achenbach strasse	118:1	53125
+otto hahn strasse	104:1	53117
+otto kuehne platz	213:1	53173
+otto mueller strasse	404:1	53127
+oxfordstrasse	103:1,113:1	53111
+paffelsbergplatz	309:1	53227
+panoramapark	211:1	53173
+panoramaplattform oberkasseler mensch	309:1	53227
+panoramaplatz	211:1	53173
+pappelweg	204:1	53177
+paracelsusstrasse	206:2	53177,53179
+pariser strasse	101:1	53117
+park carstanjen	210:1	53175
+parkweg	207:1	53179
+pascalstrasse	401:2	53123,53125
+pastor koenigs weg	312:1	53225
+pastoratsgasse	107:1	53121
+paul clemen strasse	109:1	53113
+paul kemp strasse	213:1	53173
+paul langen strasse	306:1	53229
+paul magar strasse	205:1	53175
+paul martini strasse	119:1	53127
+paul schumacher strasse	313:1	53229
+paul weg	114:1	53115
+paulstrasse	113:1	53111
+paulusplatz	117:1	53119
+paulusstrasse	302:1	53227
+pecher strasse	204:1,212:1	53177
+peenestrasse	110:1	53127
+pennefeldsweg	206:1	53177
+perthesanlage	113:1	53119
+peter clever strasse	110:1	53127
+peter heider strasse	303:1	53225
+peter hensen strasse	202:1	53175
+peter klein strasse	104:2	53117,53119
+peter ohlenhardt strasse	110:1	53127
+peter ruster strasse	102:1	53111
+peter schwingen strasse	208:1	53177
+petersbergstrasse	201:1	53177
+petersbergweg	308:1	53227
+peterstrasse	113:1	53111
+peterweg	306:1	53229
+petra kelly allee	109:1,205:1	53113,53175
+petrusstrasse	312:1	53225
+pfaelzer strasse	102:1	53111
+pfaffenweg	302:1	53227
+pfaffenweiherweg	107:1	53121
+pfarrer byns strasse	107:1	53121
+pfarrer huerth strasse	114:1	53115
+pfarrer marten strasse	310:1	53229
+pfarrer martini strasse	107:1	53121
+pfarrer merck strasse	202:1	53175
+pfarrer minartz strasse	201:1	53177
+pfarrer pohl strasse	402:1	53123
+pfarrer schneider strasse	106:1	53121
+pfeffer weg	114:1	53115
+philipp reis strasse	401:1	53125
+philippsonstrasse	401:1	53125
+philosophenring	204:1	53177
+pilgerweg	313:1	53229
+pionierstrasse	203:1	53175
+pipinstrasse	113:1	53111
+pirolweg	207:1	53179
+platanenweg	301:1	53225
+platz der deutschen post	109:1	53113
+platz der vereinten nationen	109:1	53113
+pleimesstrasse	105:1	53129
+plittersdorfer strasse	201:1,210:1,213:1	53173
+pommernstrasse	117:1	53119
+poppelsdorfer allee	103:2,114:1,116:1,120:1	53113,53115
+poppelsdorfer platz	114:1	53115
+posener weg	117:1	53119
+postrasse	103:1	53111
+poststrasse	103:1	53111
+potsdamer platz	113:1	53119
+prager strasse	101:1	53117
+pregelstrasse	110:1	53127
+primelweg	306:1	53229
+prinz albert strasse	116:1	53113
+prinz loewenstein strasse	210:1	53175
+prinzenstrasse	202:1	53175
+professor dennert strasse	211:1	53173
+professor huber strasse	402:1	53123
+professor neu allee	301:1	53225
+professorenweg	115:2	53125,53177
+promenadenweg	202:1,203:1	53175
+provinzialstrasse	107:2,402:1,404:3	53121,53123,53127
+puerschweg	212:1	53177
+puetzchens chaussee	302:2,305:1,307:1,310:1	53227,53229
+puetzchensweg	307:1	53227
+puetzfelder weg	206:1	53177
+puetzgaesschen	202:1	53175
+puetzhecke	304:1,306:1	53229
+puetzstrasse	111:1	53129
+puetzweg	308:1	53227
+quantiusstrasse	103:1,116:1	53115
+quellenstrasse	201:1,212:1	53177
+quellenweg	110:1	53127
+quirinstrasse	105:1	53129
+quirinusplatz	105:1	53129
+rabinstrasse	103:1	53111
+raiffeisenstrasse	109:1	53113
+ramersdorfer strasse	305:1	53229
+rastenweg	311:1	53227
+rathausgasse	103:1	53111
+rathausstrasse	301:1	53225
+rathenauufer	116:1	53113
+ratiborstrasse	104:1	53117
+rauchlochweg	305:1,309:1	53227,53229
+reaumurstrasse	401:1	53125
+redoutenweg	201:1	53177
+regel weg	114:1	53115
+regerstrasse	107:1	53121
+regina pacis weg	103:1,116:1	53113
+rehfuesstrasse	114:1	53115
+reichenbacher strasse	117:1	53119
+reichsstrasse	115:1,118:1,404:1	53125
+reifenbergstrasse	309:1	53227
+reinhard selten strasse	114:1	53115
+reinold hagen strasse	306:1,310:1	53229
+remagener strasse	207:1,211:1	53179
+remi baert platz	208:1	53177
+remigiusplatz	103:1	53111
+remigiusstrasse	103:1	53111
+rene schickele strasse	402:1	53123
+renoisstrasse	111:1	53129
+reuterpark	111:1	53129
+reuterstrasse	109:1,111:1,114:2,116:2	53113,53115,53129
+reykjavikstrasse	101:1	53117
+rhedenstrasse	310:1	53229
+rheinallee	210:1,211:1,213:1	53173
+rheinaustrasse	301:1,312:1	53225
+rheinbacher strasse	120:1	53115
+rheinbleichardweg	404:1	53127
+rheindorfer strasse	301:1,312:1	53225
+rheingasse	103:1	53113
+rheingoldstrasse	207:1	53179
+rheinhoehenweg	202:1	53175
+rheinstrasse	211:1	53179
+rheinweg	109:1,111:1	53113,53129
+rhenusallee	308:1	53227
+rhodosstrasse	206:1	53177
+rhoendorfer strasse	206:1	53179
+ria maternus platz	201:1	53173
+richard scherer strasse	313:1	53229
+richard wagner strasse	120:1	53115
+richthofenstrasse	101:1	53117
+riegelerstrasse	113:1	53119
+riemannstrasse	401:1	53125
+riemenschneiderstrasse	205:1	53175
+riesengebirgsstrasse	117:1	53119
+riesstrasse	116:1	53113
+rilkestrasse	301:1	53225
+ringstrasse	301:1	53225
+rittershausstrasse	116:1	53113
+robelstrasse	402:1	53123
+robert havemann strasse	107:1	53121
+robert kirchhoff strasse	106:1	53121
+robert koch strasse	114:1,119:1	53115,53127
+robert schuman platz	205:1	53175
+rochusplatz	402:1	53123
+rochusstrasse	107:2,402:2	53121,53123
+rochusweg	105:1	53129
+rodderbergstrasse	207:1	53179
+roderichstrasse	207:1	53179
+rodeweg	306:1	53229
+roeckesbergstrasse	309:1	53227
+roeckumstrasse	107:1	53121
+roedderstrasse	402:1	53123
+roehfeldstrasse	302:1	53227
+roelsdorfstrasse	301:1	53225
+roemerplatz	211:2	53173,53179
+roemerstrasse	102:2,108:1	53111,53117
+roemerweg	106:1	53121
+roemlinghovener strasse	309:1	53227
+roentgenstrasse	209:1	53177
+roettgener strasse	110:2,115:1,118:1	53125,53127
+roettgener weg	212:1	53177
+roisdorfer weg	106:1	53121
+rolandstrasse	211:1	53179
+rolandswerther strasse	207:1	53179
+roleberstrasse	306:1	53229
+roncallistrasse	112:1,402:1	53123
+roonstrasse	213:2	53173,53175
+rosenbach	310:1	53229
+rosenburgweg	111:2	53115,53129
+rosenhain	402:1	53123
+rosenpfad	306:1	53229
+rosenstrasse	102:1	53111
+rosental	102:1	53111
+rosenweg	301:2	53225,53227
+rostocker strasse	104:1	53117
+rotdornweg	204:1	53177
+rothwiesenweg	306:1	53229
+rotkehlchenweg	117:1	53119
+rottenburgstrasse	120:1	53115
+rottlandstrasse	310:1	53229
+rotweingarten	206:1	53179
+rubensstrasse	205:1	53175
+rudolf hahn strasse	301:1,308:1	53225,53227
+rudolf herzog strasse	402:1	53123
+rudolf stoecker weg	114:1	53115
+rueckelswiese	304:1	53229
+ruedesheimer strasse	202:1	53175
+ruedigerstrasse	207:1	53179
+ruengsdorfer strasse	201:1,211:2,213:1	53173,53179
+ruesterstrasse	314:1	53229
+rulandsweg	115:1	53125
+rurweg	111:1	53129
+saalestrasse	110:1	53127
+saarbrueckener strasse	101:1	53117
+saarstrasse	210:1	53175
+saarweg	111:1	53129
+sachs ring	114:1	53115
+sachsenstrasse	205:1	53175
+sachsenweg	113:2	53111,53119
+saime genc ring	106:1	53121
+saint cloud strasse	209:1	53177
+salamanderweg	306:1	53229
+salierweg	108:1	53117
+samansstrasse	307:1	53227
+sandkaule	103:1	53111
+sandorfstrasse	303:1	53225
+sankt augustiner strasse	301:1,306:1,310:1,313:2,314:1	53225,53229
+sankt augustinus strasse	201:1,203:1	53175
+sauerbruchstrasse	119:1	53127
+saynstrasse	305:1	53229
+schaaffhausenstrasse	119:1	53127
+schallengasse	404:1	53127
+scharnhorststrasse	213:1	53175
+schaumburg lippe strasse	116:1	53113
+schedestrasse	109:1	53113
+scheerenbergweg	206:1	53179
+scheidfeldstrasse	305:1	53229
+schenkendorfstrasse	213:1	53173
+schenkpfaedchen	206:1	53179
+schevastesstrasse	313:1	53229
+schickgasse	104:1,117:1	53117
+schieffelingsweg	107:1,402:1	53123
+schiessbergweg	311:1	53227
+schiessstandweg	401:1	53125
+schiffgesweg	404:1	53127
+schillerstrasse	313:1	53225
+schillingsweg	313:1	53229
+schimper weg	114:1	53115
+schlangenpfad	201:1	53177
+schlegelstrasse	109:1	53113
+schlehenweg	204:1	53177
+schleichstrasse	119:1	53127
+schleidener strasse	107:1	53121
+schleifenfelsweg	305:1	53229
+schlesienstrasse	104:2,117:1	53117,53119
+schlossallee	207:1	53179
+schlossplatz	115:1	53125
+schlossstrasse	116:1	53115
+schmale allee	115:1	53177
+schmales alleechen	115:1	53177
+schmidtbonnstrasse	114:1	53115
+schmittenpfaedchen	107:1	53121
+schmittgasser kirchweg	402:1	53123
+schmittstrasse	402:1	53123
+schneidemuehler strasse	117:1	53119
+schnorrenbergstrasse	313:1	53229
+schnufertsberg	303:1	53225
+schoenfeldstrasse	401:1	53125
+schopenhauerstrasse	204:1	53177
+schubertstrasse	120:1	53115
+schuellerweg	105:1	53129
+schuetzengraben	207:1	53179
+schuetzenstrasse	113:1	53111
+schulplatz	202:1	53175
+schulstrasse	404:1	53127
+schultheissgasse	201:1	53177
+schultheissstrasse	313:1	53225
+schumacher weg	114:1	53115
+schumannstrasse	116:1	53113
+schwalbengarten	202:1	53175
+schwalbenweg	402:1	53123
+schwanenweg	110:1	53127
+schwannstrasse	211:1	53179
+schwarzbirkenweg	204:1	53177
+schwarzer weg	302:1,308:1	53227
+schweidnitzer weg	117:1	53119
+schweinheimer platz	212:1	53177
+schweinheimer weg	212:1	53177
+schwertberger strasse	201:1	53177
+schwester melania strasse	303:1	53225
+sebastianstrasse	107:1,114:1	53115
+sebastianusstrasse	310:1	53229
+sebastianusweg	212:1	53177
+sedanstrasse	211:1	53173
+seehausstrasse	101:1	53117
+semmelweisstrasse	402:1	53123
+sertuernerstrasse	119:1	53127
+servatiusstrasse	105:1,202:1	53129,53175
+servitenweg	114:1	53115
+seufertstrasse	211:1	53173
+severinsweg	207:1	53179
+sibyllenstrasse	210:2	53173,53175
+siebenbuergenstrasse	117:1	53119
+siebengebirgsstrasse	304:1,306:1	53229
+siebenmorgenweg	301:1,302:1,313:1	53225,53229
+siebenwegekreuzplatz	306:1	53229
+siegauenstrasse	303:1	53225
+siegburger strasse	302:2,306:1,310:1,313:1	53227,53229
+siegfried leopold strasse	301:1	53225
+siegfriedstrasse	207:1	53179
+siegstrasse	210:1	53175
+siegweg	111:1	53129
+siemensstrasse	106:1,107:1	53121
+sigambrerweg	102:1	53117
+sigmund freud strasse	119:1	53127
+simone veil strasse	107:1	53121
+simonstrasse	309:1	53227
+simrockallee	210:1	53173
+simrockstrasse	109:1	53113
+sinning weg	114:1	53115
+sobottaweg	114:1	53115
+soenneckenstrasse	117:1	53119
+sommerbergweg	204:1,206:1	53177,53179
+sonnenhag	207:1	53179
+sonnenhof	117:1	53119
+sonnenscheinstrasse	202:1	53175
+sonnenweg	306:1	53229
+spatzenweg	207:1	53179
+spechtweg	207:1	53179
+sperberweg	115:1	53125
+spessartstrasse	113:1	53119
+spichernstrasse	203:1	53175
+spiegelhofstrasse	210:1	53173
+splickgasse	206:1	53179
+spreestrasse	110:1	53127
+sprottauer strasse	117:1	53117
+st adelheid park	310:1	53229
+st lamberti kirchweg	107:1	53121
+stadtgarten	116:1	53111
+stadthaus passage	113:1	53111
+starenweg	110:1	53127
+stationsweg	110:1,114:1	53115,53127
+steg	311:1	53227
+stegerwaldstrasse	310:1	53229
+steglitzer strasse	209:1	53177
+steinacker	306:1	53229
+steinbruchweg	308:1	53227
+steinerstrasse	301:1	53225
+steingasse	208:1	53177
+steinpilzweg	402:1	53123
+steinstrasse	210:1	53175
+steinsweg	305:1	53229
+steinweg	107:1	53121
+stenzelbergweg	306:1	53229
+stephan lochner strasse	205:1	53175
+stephanstrasse	105:1	53129
+stern passage	103:1	53111
+sternenburgstrasse	114:1	53115
+sternstrasse	103:1	53111
+sterntorbruecke	103:1	53111
+stettiner strasse	117:1	53119
+steubenring	210:1	53175
+stieglitzweg	306:1	53229
+stieldorfer strasse	305:1	53229
+stiftsgasse	103:1	53111
+stiftsplatz	103:1	53111
+stiftsstrasse	312:1,313:1	53225
+stirzenhofstrasse	210:1	53173
+stockenstrasse	103:1,116:1	53113
+stockholmer strasse	101:1	53117
+stolpmuender strasse	117:1	53119
+stolpstrasse	117:1	53119
+strackhofstrasse	309:1	53227
+straesschensweg	109:1	53113
+stralsunder weg	117:1	53119
+strasburger weg	114:1	53115
+strassburger weg	109:1	53113
+streffenweg	307:1	53227
+stresemannstrasse	402:1	53123
+stresemannufer	109:1	53113
+stroofstrasse	313:1	53225
+stueffgenstrasse	309:1	53227
+stuempchensweg	212:1	53177
+sudetenstrasse	117:1	53119
+suebenstrasse	210:1	53175
+suedstrasse	203:1	53175
+susanne miller strasse	115:1	53125
+swinemuender strasse	117:1	53119
+synagogenplatz	301:1	53225
+talstrasse	208:1	53177
+talweg	308:1	53227
+tannenallee	211:1	53179
+tannenweg	115:1	53125
+taubengasse	303:1	53225
+taunusstrasse	113:1	53119
+telemannstrasse	211:1	53173
+tempelstrasse	109:1	53113
+tentenstrasse	312:1	53225
+teufelsbachweg	310:1	53229
+teutonenstrasse	210:1	53175
+theaterpassage	201:2	53173,53177
+theaterplatz	201:2	53173,53177
+theaterstrasse	103:1	53111
+theodor brinkmann strasse	107:1	53115
+theodor heuss strasse	201:1,209:1	53177
+theodor litt strasse	107:1	53121
+therese giehse weg	314:1	53229
+theresienau	309:1	53227
+theresienweg	118:1	53125
+thielstrasse	116:1	53113
+thomas mann strasse	103:1,113:1	53111
+thomastrasse	103:1,113:2	53111,53119
+thuarstrasse	113:1	53119
+thueringer strasse	205:1	53175
+thusneldastrasse	102:1	53117
+tilsiter strasse	101:1	53117
+traenkweg	305:1	53229
+trierer strasse	110:1,114:1	53115
+troschelstrasse	114:1	53115
+truchsessstrasse	201:1,203:1	53175,53177
+tulpenbaumweg	204:1	53177
+tulpenfeld	109:1	53113
+tulpenweg	306:1	53229
+turmfalkenweg	110:1	53127
+turmstrasse	210:1	53175
+ubierstrasse	210:1,211:1	53173
+ubierweg	102:1	53117
+uerziger strasse	202:1	53175
+uhlandstrasse	213:1	53173
+uhlgasse	404:1	53127
+ulmenweg	104:1	53117
+ulrich haberland strasse	107:1	53121
+ulrich von hassell strasse	402:1	53123
+ungartenstrasse	304:1,305:1	53229
+urstadtstrasse	105:1,111:1	53129
+ursulastrasse	402:1	53123
+usenerstrasse	111:1	53129
+utestrasse	207:1	53179
+vaclav havel platz	107:1	53121
+veilchenweg	306:1	53229
+venantiusstrasse	115:1	53125
+venner allee	115:1	53125
+venner kirchweg	212:1	53177
+venner strasse	115:1,212:1	53177
+venusberg campus	119:1	53127
+venusbergweg	114:1,116:1	53115
+verdistrasse	120:2	53115,53121
+verweyenstrasse	107:1	53121
+vikariegasse	210:1	53175
+viktor schnitzler strasse	207:1	53179
+viktoriaplatz	213:1	53173
+viktoriastrasse	210:1,213:1	53173
+viktoriaunterfuehrung	120:1	53111
+vili viorel paun platz	107:1	53121
+vilicher strasse	312:1	53225
+villemombler strasse	402:1,404:2	53123,53127
+villenstrasse	105:1	53129
+villichgasse	201:2	53173,53177
+villiper allee	115:1	53125
+vinzenzstrasse	310:1	53229
+virchowstrasse	402:1	53123
+vivatsgasse	103:1	53111
+vogel weg	114:1	53115
+vogelskaulerweg	206:1	53179
+vogtsgasse	103:1	53113
+volkerstrasse	207:1	53179
+von den driesch strasse	104:1	53117
+von der heydt strasse	201:1	53177
+von groote platz	211:1	53173
+von guericke allee	401:1	53125
+von halberg strasse	118:1	53125
+von hompesch strasse	402:1	53123
+von hymmen platz	107:1	53121
+von ketteler strasse	310:1	53229
+von kuegelgen strasse	118:1	53125
+von lapp strasse	107:1	53121
+von muellenark strasse	207:1	53179
+von pfingsten strasse	313:1	53229
+von sandt strasse	301:1,312:1	53225
+von sandt ufer	210:2	53173,53175
+von weichs strasse	107:1	53121
+von witzleben strasse	402:1	53123
+vorgebirgsstrasse	113:2	53111,53119
+vulkanstrasse	207:1	53179
+waasemstrasse	208:1	53177
+wacholderweg	119:1	53127
+wachsbleiche	102:1,103:1	53111
+wachtelweg	115:1	53125
+wagnergasse	301:1	53225
+waldauweg	119:1	53127
+waldburgstrasse	212:1	53177
+waldenburger ring	117:1	53119
+waldmeisenweg	110:1	53127
+waldstrasse	212:1	53177
+waldweg	212:1,306:1	53177,53229
+wallfahrtsweg	114:1	53115
+walramstrasse	202:1	53175
+warschauer strasse	101:1	53117
+wasserturmstrasse	110:1	53127
+weberstrasse	109:1,116:1	53113
+weckhasenpfad	202:1	53175
+wegelerstrasse	114:1,120:1	53115
+wehrhausweg	307:1	53227
+weidengarten	111:1	53129
+weidenpeschweg	112:2	53121,53123
+weidenweg	311:1	53227
+weierbornstrasse	402:1	53123
+weiers wiesen	306:1	53229
+weiherpfad	402:1	53123
+weiherstrasse	113:1	53111
+weilbergstrasse	402:1	53123
+weimarer strasse	401:1	53125
+weinbergstrasse	208:1	53177
+weinbergweg	308:1	53227
+weingartsbahn	115:1	53125
+weinheimstrasse	305:1	53229
+weissdornweg	204:1	53177
+weissenburgstrasse	201:1	53175
+weissstrasse	402:1	53123
+welckerstrasse	109:1	53113
+welfenstrasse	213:1	53173
+welrichsweg	102:1	53111
+welschnonnenstrasse	103:1	53111
+wendelstadtallee	211:1	53179
+wenzelgasse	103:1	53111
+werdstrasse	312:1	53225
+werftstrasse	108:1	53117
+werner koervers strasse	314:1	53229
+wernher von braun strasse	116:1	53113
+wesendonckstrasse	120:1	53115
+wesselheideweg	402:1	53123
+wesselstrasse	103:2	53111,53113
+westpreussenstrasse	117:1	53119
+weststrasse	203:1	53175
+weyhe weg	114:1	53115
+wichernstrasse	111:1	53129
+wichterichstrasse	212:1	53177
+wiedemannstrasse	211:2	53173,53179
+wiedstrasse	212:1	53177
+wielandstrasse	211:1	53173
+wielsgaesschen	114:1	53115
+wielstrasse	114:1	53115
+wiener strasse	101:1	53117
+wieselweg	402:1	53125
+wiesenweg	107:2,120:1	53115,53121
+wilfried hatzfeld strasse	314:1	53229
+wilhelm flohe strasse	310:1	53229
+wilhelm kerp strasse	115:1	53125
+wilhelm levison strasse	116:1	53115
+wilhelm neuss strasse	112:1	53123
+wilhelm spiritus ufer	109:1	53113
+wilhelmpassage	301:1	53225
+wilhelmsplatz	103:1,113:1	53111
+wilhelmstrasse	103:1	53111
+willi graf ring	314:1	53229
+willy brandt allee	109:1	53113
+windeckstrasse	103:1	53111
+windgassenstrasse	306:1	53229
+windmuehlenstrasse	103:1	53111
+winkelsweg	202:1	53175
+winston churchill strasse	109:1	53113
+winter weg	114:1	53115
+winterstrasse	201:1,212:1	53177
+winzerstrasse	105:1	53129
+wittelsbacherring	120:1	53115
+wittelsbacherstrasse	213:1	53173
+wittenbergstrasse	401:1	53125
+witterschlicker allee	115:1,401:1,402:1	53125
+witterschlicker strasse	402:1	53123
+wittestrasse	312:1	53225
+woerthstrasse	201:1	53177
+wolfgang paul strasse	106:1	53121
+wolfsgasse	312:1	53225
+wolfstrasse	113:1	53111
+wolkenburgstrasse	201:1	53177
+wolkenburgweg	308:1	53227
+wolterstrasse	111:1	53129
+wuerttemberger strasse	102:1	53111
+wupperstrasse	210:1	53175
+wurzerstrasse	210:1,213:1	53175
+yalovastrasse	201:1	53177
+yorckstrasse	210:1	53173
+zanderstrasse	201:1,209:1	53177
+zedernweg	115:1	53125
+zeisigweg	117:1	53119
+zeller strasse	202:1	53175
+zeppelinstrasse	209:1	53177
+zietenstrasse	213:1	53173
+zingsheimstrasse	301:1	53225
+zipperstrasse	309:1	53227
+zitelmannstrasse	109:1	53113
+zoppoter strasse	117:1	53119
+zuelpicher strasse	120:1	53115
+zum kempenberg	208:1	53177
+zum wingertsberg	118:1	53125
+zur marterkapelle	404:1	53127
+zur saalkirche	305:1	53229
+zweimuehlenweg	108:1	53117
+zweite faehrgasse	109:1,116:1	53113

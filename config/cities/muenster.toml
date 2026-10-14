@@ -1,0 +1,168 @@
+# Stadt Münster – Konfiguration für BehoerdenMaster
+#
+# Angebunden nach demselben System wie Köln: Ratsinformation über OParl (gleicher Adapter,
+# gleiche Drossel, robots.txt, Budgets und Abkühlzeiten). Als Stadtteile führt der OSM-Auszug die 22 statistischen Bezirke (z. B. „Innenstadtring“, „Mitte-Süd“); Namen wie „Münster-Mitte“ werden auch in der Frage erkannt.
+#
+# Quellen:
+#   * OParl-Endpunkt: offizielle OParl-Endpunktliste (github.com/OParl/resources, endpoints.yml,
+#     abgerufen am 14.10.2026). Der Endpunkt ist von hier aus NICHT live geprüft (die
+#     Entwicklungsumgebung erreicht keine Behörden-Hosts) – vor dem ersten Lauf:
+#       python -m behoerdenmaster --stadt muenster probe --quelle ris
+#   * Ortsgliederung, PLZ und Straßen: OpenStreetMap-Auszug der OpenPLZ API (ODbL 1.0,
+#     © OpenStreetMap-Mitwirkende), erzeugt mit tools/stadt_aus_osm.py. Eine NÄHERUNG.
+#
+# Abruf auf Anforderung: Die Stadt wird erst geladen, wenn jemand sie in der Oberfläche
+# auswählt oder in ihr sucht (siehe README, „Weitere Städte – Laden auf Abruf“).
+
+[stadt]
+schluessel = "muenster"
+name = "Münster"
+aliase = ["muenster", "stadt münster"]
+ags = "05515000"
+bundesland = "Nordrhein-Westfalen"
+abruf = "auf_abruf"
+gliederung_quelle = "Stadtbezirke und Stadtteile aus dem OSM-Auszug der OpenPLZ API (ODbL 1.0), erzeugt mit tools/stadt_aus_osm.py"
+hinweis = "Ortsbezug aus Betreff und Gremium abgeleitet; Ortsgliederung und PLZ aus einem OpenStreetMap-Auszug (Näherung)."
+
+[[quellen]]
+schluessel = "ris"
+typ = "oparl"
+name = "Ratsinformation Münster (OParl)"
+system_url = "https://oparl.stadt-muenster.de/system"
+# Körperschaft über den Namen wählen; passen mehrere, bricht der Lauf ab statt zu raten.
+koerperschaft = "Münster"
+# Rollierendes Fenster für den Erstabruf (90 Tage), damit eine neu angeforderte Stadt
+# klein und höflich startet. Folgeläufe holen nur Änderungen.
+seit = "90d"
+min_intervall_sekunden = 3.0
+lizenz = "Nicht geprüft – vor einer Veröffentlichung die Lizenzangabe des OParl-Systems bzw. der Stadt prüfen"
+pruefstand = "Endpunkt aus der OParl-Endpunktliste (Stand 14.10.2026); noch kein Abruf – vor dem ersten Lauf probe ausführen"
+
+[[themen]]
+schluessel = "bauen"
+bezeichnung = "Bauvorhaben & Bauleitplanung"
+begriffe = ["Bauvorhaben", "Bauprojekt", "Bauleitplan", "Bebauungsplan", "Bebauung", "Flächennutzungsplan", "Aufstellungsbeschluss", "Satzungsbeschluss", "Offenlage", "Arbeitstitel", "Städtebau", "Baugebiet", "Bauantrag", "Baugenehmigung", "Neubau", "Wohnungsbau", "Wohnbebauung", "Nachverdichtung", "vorhabenbezogen", "Hochhaus", "Quartier", "Abriss", "Umbau"]
+
+[[themen]]
+schluessel = "verkehr"
+bezeichnung = "Verkehr & Mobilität"
+begriffe = ["Verkehr", "Radweg", "Radverkehr", "Fahrradstraße", "Fahrrad", "Parkraum", "Parken", "Ampel", "Stadtbahn", "Buslinie", "Haltestelle", "Mobilität", "Fußverkehr", "Kreuzung", "Straßenbahn", "Tempo"]
+
+[[themen]]
+schluessel = "schulen"
+bezeichnung = "Schulen & Kitas"
+begriffe = ["Schule", "Kita", "Kindergarten", "Kindertagesstätte", "Jugendamt"]
+
+[[themen]]
+schluessel = "gruen"
+bezeichnung = "Grün & Klima"
+begriffe = ["Grün", "Grünzug", "Park", "Spielplatz", "Baum", "Bäume", "Klima", "Stadtgrün"]
+
+[erzeugung]
+# Steuerung für tools/stadt_aus_osm.py – von der Anwendung ignoriert.
+stadtteile = true
+bezirke = [
+  { osm = "Münster-Mitte", nr = "1", name = "Münster-Mitte" },
+  { osm = "Münster-Nord", nr = "2", name = "Münster-Nord" },
+  { osm = "Münster-Ost", nr = "3", name = "Münster-Ost" },
+  { osm = "Münster-West", nr = "4", name = "Münster-West" },
+  { osm = "Münster-Südost", nr = "5", name = "Münster-Südost" },
+  { osm = "Münster-Hiltrup", nr = "6", name = "Münster-Hiltrup" },
+]
+
+# >>> ortsgliederung
+# Erzeugt von tools/stadt_aus_osm.py am 2026-10-14 – nicht von Hand ändern, sondern neu erzeugen.
+# Quelle: OpenStreetMap-Auszug der OpenPLZ API (github.com/openpotato/openplzapi.data),
+# Lizenz ODbL 1.0, © OpenStreetMap-Mitwirkende. Bezirks-/Stadtteilgrenzen und PLZ-Zuordnung
+# sind eine NÄHERUNG; Stadtteil-Schlüssel sind projektinterne Nummern.
+
+[bezirke]
+"1" = "Münster-Mitte"
+"2" = "Münster-Nord"
+"3" = "Münster-Ost"
+"4" = "Münster-West"
+"5" = "Münster-Südost"
+"6" = "Münster-Hiltrup"
+
+[stadtteile]
+# Münster-Mitte
+"101" = { name = "Altstadt", bezirk = "1" }
+"102" = { name = "Innenstadtring", bezirk = "1" }
+"103" = { name = "Mitte-Nordost", bezirk = "1" }
+"104" = { name = "Mitte-Süd", bezirk = "1" }
+# Münster-Nord
+"201" = { name = "Coerde", bezirk = "2" }
+"202" = { name = "Kinderhaus", bezirk = "2" }
+"203" = { name = "Sprakel", bezirk = "2" }
+# Münster-Ost
+"301" = { name = "Gelmer-Dyckburg", bezirk = "3" }
+"302" = { name = "Handorf", bezirk = "3" }
+"303" = { name = "Mauritz-Ost", bezirk = "3" }
+# Münster-West
+"401" = { name = "Albachten", bezirk = "4" }
+"402" = { name = "Gievenbeck", bezirk = "4" }
+"403" = { name = "Mecklenbeck", bezirk = "4" }
+"404" = { name = "Nienberge", bezirk = "4" }
+"405" = { name = "Roxel", bezirk = "4" }
+"406" = { name = "Sentruper Höhe", bezirk = "4" }
+# Münster-Südost
+"501" = { name = "Angelmodde", bezirk = "5" }
+"502" = { name = "Gremmendorf", bezirk = "5" }
+"503" = { name = "Wolbeck", bezirk = "5" }
+# Münster-Hiltrup
+"601" = { name = "Amelsbüren", bezirk = "6" }
+"602" = { name = "Berg Fidel", bezirk = "6" }
+"603" = { name = "Hiltrup", bezirk = "6" }
+
+[plz."48143"]
+stadtteile = ["101", "102"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Altstadt (119/175); Innenstadtring (47/175)"
+
+[plz."48145"]
+stadtteile = ["102", "103"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Innenstadtring (50/148); Mitte-Nordost (80/148)"
+
+[plz."48147"]
+stadtteile = ["102", "103"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Innenstadtring (88/213); Mitte-Nordost (99/213)"
+
+[plz."48149"]
+stadtteile = ["102", "402", "406"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Innenstadtring (82/185); Gievenbeck (28/185); Sentruper Höhe (58/185)"
+
+[plz."48151"]
+stadtteile = ["102", "104"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Innenstadtring (53/164); Mitte-Süd (99/164)"
+
+[plz."48153"]
+stadtteile = ["102", "104", "602"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Innenstadtring (36/122); Mitte-Süd (60/122); Berg Fidel (22/122)"
+
+[plz."48155"]
+stadtteile = ["102", "103", "303", "502"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Innenstadtring (25/228); Mitte-Nordost (35/228); Mauritz-Ost (82/228); Gremmendorf (44/228)"
+
+[plz."48157"]
+stadtteile = ["201", "301", "302"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Coerde (42/223); Gelmer-Dyckburg (52/223); Handorf (85/223)"
+
+[plz."48159"]
+stadtteile = ["103", "202", "203"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Mitte-Nordost (23/192); Kinderhaus (90/192); Sprakel (49/192)"
+
+[plz."48161"]
+stadtteile = ["402", "404", "405"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Gievenbeck (78/281); Nienberge (85/281); Roxel (97/281)"
+
+[plz."48163"]
+stadtteile = ["401", "403", "601"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Albachten (54/256); Mecklenbeck (66/256); Amelsbüren (96/256)"
+
+[plz."48165"]
+stadtteile = ["603"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Hiltrup (175/210)"
+
+[plz."48167"]
+stadtteile = ["501", "502", "503"]
+quelle = "Straßenverzeichnis (OSM-Auszug): Angelmodde (51/216); Gremmendorf (68/216); Wolbeck (93/216)"
+# <<< ortsgliederung

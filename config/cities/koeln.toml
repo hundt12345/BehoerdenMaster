@@ -20,6 +20,10 @@ schluessel = "koeln"
 name = "Köln"
 aliase = ["stadt koeln", "koeln", "cologne"]
 ags = "05315000"
+bundesland = "Nordrhein-Westfalen"
+# dauerhaft = der Hintergrunddienst hält Köln laufend aktuell (Gegenteil: auf_abruf).
+abruf = "dauerhaft"
+gliederung_quelle = "Wikipedia „Liste der Stadtbezirke und Stadtteile Kölns“ (amtliche Nummerierung); PLZ und Straßen aus OSM-Auszug (ODbL 1.0)"
 hinweis = "Ortsbezug aus Betreff, Gremium bzw. öffentlicher Planbeschreibung abgeleitet; PLZ-Zuordnung ist eine Näherung."
 
 [[quellen]]
@@ -39,6 +43,7 @@ web_vorlage = "https://ratsinformation.stadt-koeln.de/vo0050.asp?__kvonr={id}"
 web_sitzung = "https://ratsinformation.stadt-koeln.de/si0057.asp?__ksinr={id}"
 web_gremium = "https://ratsinformation.stadt-koeln.de/kp0040.asp?__kgrnr={id}"
 lizenz = "Datenlizenz Deutschland – Zero – Version 2.0"
+pruefstand = "Originalantworten am 11.10.2026 geprüft und als Testdaten aufgezeichnet; Abruf aus dem Render-Netz noch nicht bestätigt"
 
 # Öffentliche JSON-Suche der NRW-Plattform demosPlan (nur die Organisation Köln).
 # Es werden keine Anmeldung, internen Felder oder Stellungnahmen abgerufen.
@@ -52,6 +57,7 @@ min_intervall_sekunden = 3.0
 # Die UUID aus der öffentlichen API ist zugleich die ID der Verfahrensseite.
 web_vorlage = "https://nw.bauleitplanung-online.de/verfahren/{id}/public/detail"
 lizenz = "Öffentliche Verfahrensinformationen; Nutzungsbedingungen der Plattform beachten"
+pruefstand = "Listenantwort am 09.10.2026 beobachtet; Live-Lauf nicht bestätigt, im Render-Blueprint bis zur Klärung ausgenommen"
 
 # RSS-Feed der Ratsinformation (SessionNet): Sitzungstermine als Hinweis. Ergänzt OParl, ersetzt es nicht.
 # Die Nummer aus rssgo.asp?siNNNN entspricht OParl meetings/NNNN. robots.txt: keine Sperre für unbekannte Clients.
@@ -62,6 +68,7 @@ name = "Sitzungstermine Ratsinformation (RSS)"
 system_url = "https://buergerinfo.stadt-koeln.de/rssfeed.asp?id=1&filter=snvf"
 min_intervall_sekunden = 3.0
 lizenz = "Datenlizenz Deutschland – Zero – Version 2.0 (laut docs/quellen-koeln.md, je Feed bestätigen)"
+pruefstand = "Endpunkt und robots.txt am 12.10.2026 geprüft"
 
 # Pressemitteilungen der Stadt Köln als RSS. Nur Titel, Datum, Link und Kurztext; keine Volltexte Dritter.
 [[quellen]]
@@ -71,6 +78,7 @@ name = "Pressemeldungen Stadt Köln (RSS)"
 system_url = "https://www.stadt-koeln.de/externe-dienste/rss/pressemeldungen.xml"
 min_intervall_sekunden = 3.0
 lizenz = "Datenlizenz Deutschland – Namensnennung – Version 2.0 (laut Datensatz \"Pressemeldungen\" auf offenedaten-koeln.de; der Feed selbst nennt keine Lizenz)"
+pruefstand = "Endpunkt und robots.txt am 12.10.2026 geprüft"
 
 # Öffentliche Bekanntmachungen der Stadt (Amtsblatt-Struktur, keine offene Lizenz nötig/keine
 # zugesichert). Übernommen werden Titel, Datum, Hinweisveröffentlichung und der Link auf die
@@ -86,6 +94,7 @@ listen_vorlage = "https://www.stadt-koeln.de/politik-und-verwaltung/bekanntmachu
 start_jahr = 2025
 min_intervall_sekunden = 3.0
 lizenz = "Amtliche Bekanntmachung; keine offene Lizenz zugesichert – nur Titel, Datum und Link werden übernommen"
+pruefstand = "Live-Probelauf aus einem Rechenzentrums-Netz am 12.10.2026 bestätigt (135 Bekanntmachungen)"
 
 # Bürgerbeteiligung „Meinung für Köln“: öffentliche Projektliste. Übernommen werden Titel,
 # Statuszeile der Plattform, Kurztext und Link. Keine Beiträge, Kommentare, Namen oder Fotos
@@ -97,6 +106,7 @@ name = "Bürgerbeteiligung Meinung für Köln"
 system_url = "https://meinungfuer.koeln/mitmachen/alle-projekte"
 min_intervall_sekunden = 5.0
 lizenz = "Keine offene Lizenz zugesichert; nur Titel, Statuszeile, Kurztext und Link der städtischen Projektseite"
+pruefstand = "Live-Probelauf aus einem Rechenzentrums-Netz am 12.10.2026 bestätigt (56 Projekte)"
 
 # Offene Daten Köln (DKAN 2): Katalog und Tabellenspeicher („Datastore“) des
 # städtischen Open-Data-Portals. Je Eintrag in `datensaetze` wird der Katalog nach dem
@@ -113,6 +123,7 @@ name = "Offene Daten Köln (Datensätze)"
 system_url = "https://www.offenedaten-koeln.de"
 min_intervall_sekunden = 3.0
 lizenz = "Je Datensatz DL-DE-Zero-2.0 (ohne Namensnennung) oder DL-DE-BY-2.0 (mit Namensnennung); andere Lizenzen werden übersprungen"
+pruefstand = "Offline gegen den DKAN-2-Vertrag getestet; Live-Lauf steht aus"
 datensaetze = [
   "Baustellen Köln",
   "Bebauungspläne Köln Aufstellungsbeschlüsse",

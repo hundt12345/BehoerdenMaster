@@ -68,6 +68,18 @@ services:
       # sie durch eine eigene, erreichbare Adresse ersetzen.
       - key: BEHOERDEN_KONTAKT
         value: "behordenkontakt123@posteo.de"
+      # Laden auf Abruf: Aachen, Bonn, Düsseldorf, Münster und Wuppertal werden erst geladen,
+      # wenn jemand sie auswählt (siehe docs/staedte.md). Auf der Free-Instanz höchstens zwei
+      # gleichzeitig, damit der Erstabruf nach einem Neustart klein bleibt. Ohne Disk geht
+      # der Anforderungsvermerk beim Neustart verloren; die Stadt wird dann neu angefordert.
+      - key: BEHOERDEN_AUF_ABRUF
+        value: "true"
+      - key: BEHOERDEN_AUF_ABRUF_TAGE
+        value: "14"
+      - key: BEHOERDEN_AUF_ABRUF_MAX
+        value: "2"
+      # Impressum/Datenschutz: BEHOERDEN_BETREIBER_NAME, _ANSCHRIFT, _EMAIL (optional _TELEFON,
+      # _VERANTWORTLICH) im Render-Dashboard setzen – bewusst nicht im Repository.
       - key: WEB_CONCURRENCY
         value: "1"
       - key: PYTHONUNBUFFERED

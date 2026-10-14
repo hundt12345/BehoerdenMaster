@@ -72,9 +72,18 @@ def verstehe(frage: str, stadt: Stadt, gaz: Gazetteer) -> Verstaendnis:
     woerter = _WORT.findall(frage)
     s = f" {norm(frage)} "
 
+    # 0) Ortsnamen, die den Stadtnamen enthalten („Münster-Mitte“, „Bonn-Castell“), zuerst
+    #    erkennen – sonst entfernt Schritt 1 den Stadtnamen und vom Ort bleibt nur „Mitte“.
+    aliase = sorted({norm(a) for a in (stadt.name, *stadt.aliase)} - {""}, key=len, reverse=True)
+    gefunden: list[tuple[str, str]] = []
+    for phrase in gaz.sortiert:
+        if any(f" {a} " in f" {phrase} " for a in aliase) and f" {phrase} " in s:
+            gefunden.extend(gaz.phrasen[phrase])
+            s = s.replace(f" {phrase} ", " ")
+
     # 1) Stadt – nur entfernen, damit sie nicht als Freitext zählt.
     stadt_tokens: set[str] = set()
-    for alias in sorted({norm(a) for a in (stadt.name, *stadt.aliase)} - {""}, key=len, reverse=True):
+    for alias in aliase:
         if f" {alias} " in s:
             s = s.replace(f" {alias} ", " ")
             stadt_tokens.update(alias.split())
@@ -99,7 +108,6 @@ def verstehe(frage: str, stadt: Stadt, gaz: Gazetteer) -> Verstaendnis:
                 v.bis = f"{max(jahre) + 1}-01-01"
 
     # 4) Orte (längste Phrasen zuerst; verbrauchte Phrasen werden entfernt)
-    gefunden: list[tuple[str, str]] = []
     for phrase in gaz.sortiert:
         if f" {phrase} " in s and phrase_erlaubt(phrase, woerter):
             gefunden.extend(gaz.phrasen[phrase])
@@ -113,7 +121,8 @@ def verstehe(frage: str, stadt: Stadt, gaz: Gazetteer) -> Verstaendnis:
                 "bezirk": bezirk, "bezirk_name": stadt.bezirke.get(bezirk or "", ""),
             })
         else:
-            v.orte.append({"typ": "bezirk", "schluessel": nr, "name": stadt.bezirke[nr]})
+            v.orte.append({"typ": "bezirk", "schluessel": nr, "name": stadt.bezirke[nr],
+                           "anzeige": stadt.bezirk_anzeige(nr)})
     # Name zugleich Stadtteil und Stadtbezirk (z. B. Ehrenfeld): ausdrücklich erklären.
     for typ, nr in dict.fromkeys(gefunden):
         if typ == "bezirk":

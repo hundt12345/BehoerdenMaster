@@ -10,6 +10,8 @@ diesen Auszügen; Kopf und Element-Anordnung sind eine Rekonstruktion in RSS 2.0
 - `sitzungen.xml`: drei Sitzungseinträge, ein Vorlagen-Eintrag (wird verworfen) und ein
   Eintrag mit fremdem Host (wird verworfen).
 - `presse.xml`: zwei Pressemeldungen.
+- `verkehrskalender.xml`: zwei Einträge des Verkehrskalenders (Baustellen mit Ort und
+  Stadtteil im Titel), rekonstruiert aus dem Live-Feed vom 14.10.2026.
 
 Die Tests in `tests/test_rss.py` prüfen das Parsen gegen diese Dateien. Vor einer
 Entscheidung über einen automatischen Dauerabruf das Rohformat der echten Feeds mit

@@ -8,6 +8,7 @@ import logging
 import os
 import sqlite3
 import sys
+from datetime import timedelta
 from pathlib import Path
 
 from . import __version__
@@ -23,13 +24,14 @@ from .demo import demo_quell_id, lade_demo, loesche_demo
 from .geo import Gazetteer
 from .ladebericht import einheit, entitaet_name, ladebericht
 from .meldungen import datum_anzeige, parse_bekanntmachungen, parse_beteiligungen
-from .nlq import verstehe
+from .nlq import parse_datum, verstehe
 from .ortsbezug import aktualisiere as ortsbezug_aktualisieren
 from .opendata import daten_verteilungen, katalog_treffer, lizenz_text, passende_datensaetze
 from .oparl import OParlQuelle
 from .rss import ART_JE_TYP, parse_feed
 from .sicherung import sichere_datenbank
 from .speicher import Speicher
+from .stream import hole_stream
 from .suche import Suchauftrag, suche
 
 STANDARD_DB = Path(os.environ.get("BEHOERDEN_DB", Path(__file__).resolve().parent.parent / "data" / "behoerdenmaster.sqlite"))
@@ -218,6 +220,12 @@ def _drucke_treffer(ergebnis: dict, v=None) -> None:
             zeile += " · Stichworte: " + ", ".join(v.freitext)
         if v.offen:
             zeile += " · geplant bzw. offen"
+        if v.neueste:
+            zeile += " · Stream: neueste zuerst"
+        if v.von:
+            zeile += f" · ab {v.von}"
+            if v.bis:
+                zeile += f" bis vor {v.bis}"
         print(zeile)
         for h in v.hinweise:
             print(f"Hinweis: {h}")
@@ -251,10 +259,11 @@ def _drucke_treffer(ergebnis: dict, v=None) -> None:
 
 def cmd_frage(args) -> int:
     stadt = _stadt(args.stadt)
-    v = verstehe(" ".join(args.text), stadt, Gazetteer(stadt))
+    v = verstehe(" ".join(args.text), stadt, Gazetteer(stadt), referenz_datum=heute())
     with Speicher(_db_pfad(args)) as sp:
         ergebnis = suche(sp, Suchauftrag(stadt=stadt, orte=v.orte, plz=v.plz, themen=v.themen,
                                          freitext=v.freitext, von=v.von, bis=v.bis, offen=v.offen,
+                                         neueste=v.neueste,
                                          limit=args.limit), heute(), zeitpunkt=jetzt())
     if ergebnis.get("freitext_verworfen"):
         print("Hinweis: Zu den Stichworten wurde im gefragten Ort bzw. Thema nichts gefunden. Angezeigt werden "
@@ -262,6 +271,46 @@ def cmd_frage(args) -> int:
     if ergebnis.get("freitext_oder"):
         print("Hinweis: Keine Vorgänge mit allen Stichworten gefunden. Angezeigt werden Vorgänge mit mindestens einem Stichwort.")
     _drucke_treffer(ergebnis, v)
+    return 0
+
+
+def cmd_stream(args) -> int:
+    """Die neuesten Vorgänge einer Stadt als Stream – nur lokale Daten, kein Abruf."""
+    stadt = _stadt(args.stadt)
+    if args.seit and args.tage is not None:
+        raise SystemExit("Bitte entweder --seit oder --tage angeben, nicht beides.")
+    if args.tage is not None and args.tage < 1:
+        raise SystemExit("--tage muss mindestens 1 sein.")
+    referenz = heute()
+    try:
+        von = parse_datum(args.seit, referenz) if args.seit else None
+        bis = parse_datum(args.bis, referenz) if args.bis else None
+    except ValueError as exc:
+        raise SystemExit(str(exc)) from exc
+    if args.tage is not None:
+        # Fenster einschließlich heute: --tage 7 meint heute und die 6 Tage davor.
+        von = referenz - timedelta(days=args.tage - 1)
+    if von and bis and bis < von:
+        raise SystemExit("--bis darf nicht vor --seit liegen.")
+    themen = [t.strip() for t in (args.thema or "").split(",") if t.strip()]
+    unbekannt = [t for t in themen if t not in {x.schluessel for x in stadt.themen}]
+    if unbekannt:
+        raise SystemExit(f"Unbekannte Themen: {', '.join(unbekannt)}. "
+                         f"Verfügbar: {', '.join(x.schluessel for x in stadt.themen)}")
+    with Speicher(_db_pfad(args)) as sp:
+        daten = hole_stream(sp, stadt, referenz, von=von, bis=bis, themen=themen,
+                            limit=args.limit, offset=args.offset, zeitpunkt=jetzt())
+    if args.json:
+        print(json.dumps(daten, ensure_ascii=False, indent=2))
+        return 0
+    zeitraum = f"ab {daten['seit_de']}" if daten["seit_de"] else "ohne Startdatum (alle Vorgänge)"
+    if daten["bis_de"]:
+        zeitraum += f" bis {daten['bis_de']}"
+    print(f"Stream {stadt.name}: {zeitraum} · {daten['sortierung_text']}")
+    print("Nur lokal gespeicherte Vorgänge; dieser Befehl löst keinen Behördenabruf aus.")
+    _drucke_treffer(daten)
+    if daten["hat_mehr"]:
+        print(f"\nWeitere Treffer: --offset {daten['naechster_offset']} angeben.")
     return 0
 
 
@@ -468,6 +517,15 @@ def baue_parser() -> argparse.ArgumentParser:
     pf.add_argument("text", nargs="+", help="z. B. 'Welche Bauvorhaben sind in Köln Ehrenfeld geplant?'")
     pf.add_argument("--limit", type=int, default=10)
 
+    pstream = sub.add_parser("stream", help="Neueste Vorgänge chronologisch als Stream anzeigen (nur lokale Daten)")
+    pstream.add_argument("--seit", help="Startdatum einschließlich: 2026-10-09, 9.10., 9.10.2026 oder '9. Oktober 2026'")
+    pstream.add_argument("--bis", help="Enddatum einschließlich (gleiche Formen wie --seit)")
+    pstream.add_argument("--tage", type=int, help="Alternativ zu --seit: letzte N Tage einschließlich heute")
+    pstream.add_argument("--thema", help="Themen, kommagetrennt (z. B. bauen,verkehr)")
+    pstream.add_argument("--limit", type=int, default=20)
+    pstream.add_argument("--offset", type=int, default=0)
+    pstream.add_argument("--json", action="store_true", help="Maschinenlesbare Ausgabe (dieselbe Struktur wie /api/stream)")
+
     pp = sub.add_parser("plz", help="Alle Vorgänge zu einer PLZ anzeigen")
     pp.add_argument("plz")
     pp.add_argument("--thema", help="Themen, kommagetrennt (z. B. bauen)")
@@ -498,6 +556,7 @@ def main(argv: list[str] | None = None) -> int:
                         format="%(asctime)s %(levelname)s %(name)s: %(message)s")
     befehle = {
         "status": cmd_status, "probe": cmd_probe, "crawl": cmd_crawl, "frage": cmd_frage,
+        "stream": cmd_stream,
         "plz": cmd_plz, "demo": cmd_demo, "backup": cmd_backup, "serve": cmd_serve,
         "ortsbezug": cmd_ortsbezug,
         "ladebericht": cmd_ladebericht,

@@ -48,6 +48,9 @@ class Suchauftrag:
     von: str | None = None
     bis: str | None = None
     offen: bool = False
+    # Stream: rein chronologisch nach Vorgangsdatum (neueste zuerst) statt nach
+    # Trefferpunkten. Filter (Ort/Thema/Zeitraum/Stichworte) gelten unverändert.
+    neueste: bool = False
     limit: int = 20
     offset: int = 0
 
@@ -481,8 +484,14 @@ def _suche(speicher: Speicher, auftrag: Suchauftrag, heute: date, freitext_modus
         _bewerte(k, orte_map.get(k["id"], []), auftrag, status_map[k["id"]], heute, begriffe, gebiet),
         k,
     ) for k in kandidaten]
-    bewertet.sort(key=lambda t: t[1]["datum"] or "", reverse=True)
-    bewertet.sort(key=lambda t: t[0], reverse=True)  # stabil: bei Gleichstand bleibt Datum absteigend
+    if auftrag.neueste:
+        # Stream: ausschließlich das Vorgangsdatum entscheidet (neueste zuerst,
+        # Vorgänge ohne Datum zuletzt). Die SQL-Vorauswahl ist bereits so sortiert;
+        # die stabile Sortierung erhält bei gleichem Datum diese Reihenfolge.
+        bewertet.sort(key=lambda t: t[1]["datum"] or "", reverse=True)
+    else:
+        bewertet.sort(key=lambda t: t[1]["datum"] or "", reverse=True)
+        bewertet.sort(key=lambda t: t[0], reverse=True)  # stabil: bei Gleichstand bleibt Datum absteigend
 
     seite = bewertet[auftrag.offset: auftrag.offset + auftrag.limit]
     quellen = _quellen_cfg(stadt)

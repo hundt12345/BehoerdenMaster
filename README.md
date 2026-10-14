@@ -5,10 +5,11 @@ Kommunale Vorgänge durchsuchen und nachvollziehbar zusammenfassen – zuerst f�
 ## Funktionen
 
 - **Fragen in natürlicher Sprache**, etwa „Welche Bauvorhaben sind in Köln Ehrenfeld geplant?“: regelbasiertes Erkennen von Stadtteilen, Bezirken, Themen, Zeiträumen und „geplant/offen“.
+- **Stream der neuesten Vorgänge**: „Gib mir die neuesten Vorgänge für Bonn“ oder „Alle Vorgänge seit dem 9.10.“ liefert die Vorgänge der Stadt chronologisch (neueste zuerst), geblättert statt nach Trefferpunkten sortiert – als eigener Tab „Neueste (Stream)“ in der Oberfläche, per Frage, über `GET /api/stream` und als CLI-Befehl `stream`. Erkannt werden Datumsangaben wie `9.10.`, `9.10.2026`, `9. Oktober` sowie „seit gestern“ und „in den letzten 7 Tagen“ (Details unten).
 - **PLZ-Suche**, optional mit Themenfilter.
 - **Sechs Städte mit demselben System:** Köln (dauerhaft aktuell) sowie Aachen, Bonn, Düsseldorf, Münster und Wuppertal **auf Abruf** – geladen erst, wenn jemand die Stadt auswählt. Stadtauswahl in der Oberfläche, Übersicht in [docs/staedte.md](docs/staedte.md) und unter `GET /api/staedte`.
 - **Fünf durchsuchbare Kölner Quellen in einer Suche:** Ratsinformation **OParl**, **Bauleitplanung Online NRW**, die **öffentlichen Bekanntmachungen** der Stadt (amtliche Verfahrensschritte nach BauGB), die **Bürgerbeteiligung „Meinung für Köln“** und ausgewählte **Tabellendatensätze des Offene-Daten-Portals** (DKAN 2, je Datensatz DL-DE-Zero-2.0 oder DL-DE-BY-2.0 mit Namensnennung).
-- **Zwei RSS-Hinweisquellen (ohne Suche):** Sitzungstermine der Ratsinformation (SessionNet-RSS) und Pressemeldungen der Stadt. Sie landen als Hinweise mit Titel, Datum, Link und Kurztext in eigener Tabelle, nicht als Vorgänge.
+- **Drei RSS-Hinweisquellen (ohne Suche):** Sitzungstermine der Ratsinformation (SessionNet-RSS), Pressemeldungen der Stadt und der Verkehrskalender der Stadt (Baustellen und Großveranstaltungen mit Verkehrsbehinderungen). Sie landen als Hinweise mit Titel, Datum, Link und Kurztext in eigener Tabelle, nicht als Vorgänge.
 - **Datenquellen und Ladestand:** eingeklappter Bereich unten auf der Startseite mit einer Grafik (Dokumentverweise je Quelle und Rolle) und einer Zeile je Quelle (Zustand, letzter Erfolg, Bestand). Die Daten kommen rein aus der lokalen Datenbank, ohne Behördenabruf; der ausführliche Ladepfad bleibt im JSON-Endpunkt `/api/ladebericht`.
 - **Pro Vorgang:** Zusammenfassung, Status, Original-Link, Dokumentlinks und ein quellenabhängiges **Verlaufsprotokoll**:
   - OParl: Beratungsfolge mit Gremium, Sitzung, TOP und überliefertem Ergebnis.
@@ -37,6 +38,7 @@ pip install -e ".[dev]"
 pytest -q                        # Tests mit simulierten Quellen, keine Live-Abfragen
 python -m behoerdenmaster demo
 python -m behoerdenmaster frage "Welche Bauvorhaben sind in Köln Ehrenfeld geplant?"
+python -m behoerdenmaster --stadt bonn stream --seit 9.10.   # die neuesten Bonner Vorgänge ab dem 9.10.
 python -m behoerdenmaster plz 50827 --thema bauen
 python -m behoerdenmaster ladebericht   # was aus welcher Quelle geladen wurde
 python -m behoerdenmaster serve   # http://127.0.0.1:8000
@@ -57,6 +59,18 @@ python -m behoerdenmaster demo --loeschen  # entfernt beide Demo-Quellen, nicht 
 ```
 
 Die Datenbank liegt standardmäßig unter `data/behoerdenmaster.sqlite`; `--db` oder `BEHOERDEN_DB` ändern den Pfad. **Globale Optionen stehen vor dem Unterbefehl**, z. B. `python -m behoerdenmaster --db data/test.sqlite demo`. Außerhalb dieses Repositorys muss `BEHOERDEN_CONFIG_DIR` auf die Stadtkonfigurationen zeigen; die Demo-Fixtures sind Bestandteil des Repositorys, nicht des installierten Wheels.
+
+## Stream: die neuesten Vorgänge einer Stadt
+
+Der Stream beantwortet „Was ist neu?“ statt „Was passt am besten?“: Er listet die Vorgänge einer Stadt **rein chronologisch nach dem Datum des Vorgangs** (Ratsvorlagen: Vorlagendatum; Bauleitverfahren: Beginn der Beteiligung; Meldungen: ihr Listendatum), neueste zuerst, und blättert mit „Weitere Treffer laden“ bzw. `offset` weiter zurück. Trefferpunkte für Ort/Thema spielen für die Reihenfolge keine Rolle; Filter (Stadt, Zeitraum, Thema) gelten unverändert.
+
+Drei gleichwertige Zugänge, alle **ohne Behördenabruf** (nur lokaler Bestand; eine Auf-Abruf-Stadt wie Bonn wird dabei wie bei jeder Suche nur zur Aktualisierung vermerkt):
+
+- **Oberfläche:** Tab „Neueste (Stream)“ – Zeitraum „Alle“, „Heute“, 7/30/90 Tage oder „Seit einem Datum …“, optional ein Thema. Beim Öffnen lädt der Stream sofort die neuesten Vorgänge der gewählten Stadt.
+- **Frage:** „Gib mir die neuesten Vorgänge für Bonn“, „Alle Vorgänge seit dem 9.10.“, „Neueste Bauvorhaben in Ehrenfeld in den letzten 7 Tagen“. Erkannt werden `seit dem 9.10.`, `seit 9.10.2026`, `seit dem 9. Oktober [2026]`, „seit gestern/heute“, „in den letzten N Tagen/Wochen“ und „seit N Wochen“. Ohne Jahr gilt das **jüngste** Vorkommen des Datums (im Januar ist mit „9.10.“ der vergangene Oktober gemeint, nie ein Zukunftsdatum); die verstandene Auslegung steht als Hinweis über den Treffern. „Am 9.10.“ meint dagegen genau diesen einen Tag.
+- **CLI/API:** `python -m behoerdenmaster --stadt bonn stream [--seit 9.10. | --tage 7] [--thema bauen] [--json]` bzw. `GET /api/stream?stadt=bonn&seit=2026-10-09&limit=20&offset=0` (alternativ `tage=N` statt `seit`, `bis=` als einschließliches Enddatum). Ungültige Daten und unbekannte Themen beantwortet die API mit 422 und deutschem Fehlertext.
+
+Bewusst **kein** Push-Kanal (WebSocket/SSE) und keine Sortierung nach Abruf- oder Änderungszeitpunkt: Der Bestand ändert sich nur durch die gedrosselten Abrufe, und ein Abrufdatum ist kein amtliches Datum – die Quellen liefern kein einheitliches „neu eingestellt am“. Wer den Stream offen lässt, sieht deshalb denselben Stand wie die Suche; neu geladen wird über den Tab bzw. „Stream laden“.
 
 ## Echte Daten abrufen
 
@@ -240,7 +254,8 @@ config/cities/*.toml
 | Modul | Aufgabe |
 |---|---|
 | `config.py`, `geo.py`, `normalize.py` | Stadtkonfiguration, Orts-Heuristiken, Normalisierung |
-| `nlq.py` | Regelbasiertes Fragenverständnis |
+| `nlq.py` | Regelbasiertes Fragenverständnis, Datums- und Stream-Absicht („neuesten“, „seit dem 9.10.“) |
+| `stream.py` | Chronologischer Stream: neueste Vorgänge je Stadt, Datumsfilter und Blätterlogik auf der Suche |
 | `abruf.py` | Höflicher JSON-/HTML-Abruf und manuell geprüfte Weiterleitungen |
 | `oparl.py`, `crawler.py` | OParl-Abbildung, Crawler-Registry, gemeinsamer Cooldown |
 | `bauleitplanung.py` | Öffentliche Suche, Scope-Prüfung, Dokumentlinks, zweistufiger Crawl |
@@ -289,6 +304,7 @@ Bestehende SQLite-Dateien werden beim Öffnen additiv erweitert; vorhandene Rats
 | POST | `/api/staedte/{stadt}/anfordern` | Auf-Abruf-Stadt anfordern: vermerkt nur den Bedarf und weckt den Hintergrunddienst; kein direkter Behördenabruf. |
 | GET | `/impressum`, `/datenschutz` | Rechtstexte; Betreiberangaben aus `BEHOERDEN_BETREIBER_*` (siehe unten) |
 | GET | `/api/ladebericht?stadt=koeln&laeufe=8` | Ladeübersicht: Bestand, Dokumentverweise je Quelle und Rolle, Ladepfad, Listenstand, nächster Abruf, Abrufprotokoll. Nur lokale Daten, kein Behördenabruf. Dieselben Zahlen liefert `python -m behoerdenmaster ladebericht [--json]`. |
+| GET | `/api/stream?stadt=bonn&seit=2026-10-09&limit=20&offset=0` | Stream: neueste Vorgänge der Stadt, chronologisch nach Vorgangsdatum. `seit` auch als `9.10.`/`9. Oktober 2026`, alternativ `tage=N`, `bis=` (einschließlich) und `thema=`; Antwort mit `stream`-Metadaten und `naechster_offset`. Nur lokale Daten. |
 | GET | `/api/plz/{plz}?thema=bauen,verkehr&stadt=koeln` | PLZ-Suche |
 | GET | `/api/vorgang?id=<URL-kodierte-Quell-ID>&stadt=koeln` | Detail mit Verlauf/Dokumenten; auf die gewählte Stadt beschränkt |
 

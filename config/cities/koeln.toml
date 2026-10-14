@@ -80,6 +80,23 @@ min_intervall_sekunden = 3.0
 lizenz = "Datenlizenz Deutschland – Namensnennung – Version 2.0 (laut Datensatz \"Pressemeldungen\" auf offenedaten-koeln.de; der Feed selbst nennt keine Lizenz)"
 pruefstand = "Endpunkt und robots.txt am 12.10.2026 geprüft"
 
+# Verkehrskalender der Stadt Köln als RSS (Presseservice-Seite der Stadt, geprüft am
+# 14.10.2026): Baustellen und Großveranstaltungen mit Verkehrsbehinderungen. Wie die
+# anderen Feeds nur Titel, Datum, Link und Kurztext als Hinweise – keine Vorgänge.
+# Nutzung nach den RSS-Nutzungsbedingungen der Stadt Köln (artikel/00121): kostenlos nur
+# für nicht-kommerzielle Angebote, jederzeit widerrufbar, Quellenangabe erforderlich.
+# Nicht angebunden bleiben die übrigen Feeds derselben Seite: Veranstaltungen (Termine
+# ohne Verwaltungsbezug) und Feuerwehr-Warnhinweise (Einsatz-/Warnlage, kein Bestand für
+# die Vorgangssuche).
+[[quellen]]
+schluessel = "verkehrskalender"
+typ = "verkehr-rss"
+name = "Verkehrskalender Stadt Köln (RSS)"
+system_url = "https://www.stadt-koeln.de/externe-dienste/rss/verkehrskalender.xml"
+min_intervall_sekunden = 3.0
+lizenz = "RSS-Nutzungsbedingungen der Stadt Köln: kostenlos für nicht-kommerzielle Angebote, jederzeit widerrufbar, Quellenangabe erforderlich (stadt-koeln.de/artikel/00121)"
+pruefstand = "Endpunkt, Feed-Inhalt und robots.txt am 14.10.2026 geprüft"
+
 # Öffentliche Bekanntmachungen der Stadt (Amtsblatt-Struktur, keine offene Lizenz nötig/keine
 # zugesichert). Übernommen werden Titel, Datum, Hinweisveröffentlichung und der Link auf die
 # Bekanntmachung; die PDF-Datei wird NICHT geladen. Der Jahrgang der Liste wird je Lauf neu

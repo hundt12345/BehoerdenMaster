@@ -15,9 +15,9 @@ Den aktuellen Ladezustand zeigen die Oberfläche (Bereich „Angebundene Städte
 
 | Stadt | Abruf | Quellen | Ortsgliederung | Prüfstand |
 |---|---|---|---|---|
-| **Köln** (Standard) | dauerhaft | Ratsinformation (OParl), Bauleitplanung Online NRW, Sitzungstermine (RSS), Pressemeldungen (RSS), Öffentliche Bekanntmachungen, Bürgerbeteiligung, Offene Daten (DKAN 2) | 9 Bezirke, 86 Stadtteile, 46 PLZ, 4981 Straßen | Originalantworten am 11.10.2026 geprüft und als Testdaten aufgezeichnet; Abruf aus dem Render-Netz noch nicht bestätigt |
+| **Köln** (Standard) | dauerhaft | Ratsinformation (OParl), Bauleitplanung Online NRW, Sitzungstermine (RSS), Pressemeldungen (RSS), Verkehrskalender (RSS), Öffentliche Bekanntmachungen, Bürgerbeteiligung, Offene Daten (DKAN 2) | 9 Bezirke, 86 Stadtteile, 46 PLZ, 4981 Straßen | Originalantworten am 11.10.2026 geprüft und als Testdaten aufgezeichnet; Abruf aus dem Render-Netz noch nicht bestätigt |
 | **Aachen** | auf Abruf | Ratsinformation (OParl) | 7 Bezirke, 10 PLZ (keine Stadtteile) | Endpunkt aus der OParl-Endpunktliste (Stand 14.10.2026); noch kein Abruf – vor dem ersten Lauf probe ausführen |
-| **Bonn** | auf Abruf | Ratsinformation (OParl) | 4 Bezirke, 51 Stadtteile, 17 PLZ, 2244 Straßen | Endpunkt aus der OParl-Endpunktliste (Stand 14.10.2026); noch kein Abruf – vor dem ersten Lauf probe ausführen |
+| **Bonn** | auf Abruf | Ratsinformation (OParl) | 4 Bezirke, 51 Stadtteile, 17 PLZ, 2244 Straßen | Auf die neue, seit dem 02.10.2026 wieder offene /oparl/-Adresse umgestellt (alte /public/-Adresse seit dem 24.02.2026 hinter einer Zugangsprüfung, HTTP 403; mandariOSS/mandari, Issue #88). Host aus der Entwicklungsumgebung nicht erreichbar – vor dem ersten Lauf probe ausführen; kein Umgehen einer Zugangsprüfung. |
 | **Düsseldorf** | auf Abruf | Ratsinformation (OParl) | 10 Bezirke, 50 Stadtteile, 37 PLZ, 2785 Straßen | Endpunkt aus der OParl-Endpunktliste (Stand 14.10.2026); noch kein Abruf – vor dem ersten Lauf probe ausführen |
 | **Münster** | auf Abruf | Ratsinformation (OParl) | 6 Bezirke, 22 Stadtteile, 13 PLZ, 1999 Straßen | Endpunkt aus der OParl-Endpunktliste (Stand 14.10.2026); noch kein Abruf – vor dem ersten Lauf probe ausführen |
 | **Wuppertal** | auf Abruf | Ratsinformation (OParl) | 10 Bezirke, 23 PLZ (keine Stadtteile) | Endpunkt aus der OParl-Endpunktliste (Stand 14.10.2026); noch kein Abruf – vor dem ersten Lauf probe ausführen |
@@ -41,6 +41,9 @@ Den aktuellen Ladezustand zeigen die Oberfläche (Bereich „Angebundene Städte
 - Quelle `koeln:presse-rss` – Pressemeldungen Stadt Köln (RSS): `https://www.stadt-koeln.de/externe-dienste/rss/pressemeldungen.xml`
   - Prüfstand: Endpunkt und robots.txt am 12.10.2026 geprüft
   - Lizenz: Datenlizenz Deutschland – Namensnennung – Version 2.0 (laut Datensatz "Pressemeldungen" auf offenedaten-koeln.de; der Feed selbst nennt keine Lizenz)
+- Quelle `koeln:verkehrskalender` – Verkehrskalender Stadt Köln (RSS): `https://www.stadt-koeln.de/externe-dienste/rss/verkehrskalender.xml`
+  - Prüfstand: Endpunkt, Feed-Inhalt und robots.txt am 14.10.2026 geprüft
+  - Lizenz: RSS-Nutzungsbedingungen der Stadt Köln: kostenlos für nicht-kommerzielle Angebote, jederzeit widerrufbar, Quellenangabe erforderlich (stadt-koeln.de/artikel/00121)
 - Quelle `koeln:bekanntmachungen` – Öffentliche Bekanntmachungen Stadt Köln: `https://www.stadt-koeln.de/politik-und-verwaltung/bekanntmachungen/oeffentliche-bekanntmachungen-2026`
   - Prüfstand: Live-Probelauf aus einem Rechenzentrums-Netz am 12.10.2026 bestätigt (135 Bekanntmachungen)
   - Lizenz: Amtliche Bekanntmachung; keine offene Lizenz zugesichert – nur Titel, Datum und Link werden übernommen
@@ -65,8 +68,8 @@ Den aktuellen Ladezustand zeigen die Oberfläche (Bereich „Angebundene Städte
 - Bundesland: Nordrhein-Westfalen · Amtlicher Gemeindeschlüssel: 05314000
 - Abruf: auf Abruf – wird erst nach Anforderung geladen
 - Ortsgliederung: Bezirke, Stadtteile, PLZ und Straßen – Stadtbezirke und Stadtteile aus dem OSM-Auszug der OpenPLZ API (ODbL 1.0), erzeugt mit tools/stadt_aus_osm.py
-- Quelle `bonn:ris` – Ratsinformation Bonn (OParl): `https://www.bonn.sitzung-online.de/public/oparl/system`
-  - Prüfstand: Endpunkt aus der OParl-Endpunktliste (Stand 14.10.2026); noch kein Abruf – vor dem ersten Lauf probe ausführen
+- Quelle `bonn:ris` – Ratsinformation Bonn (OParl): `https://www.bonn.sitzung-online.de/oparl/system`
+  - Prüfstand: Auf die neue, seit dem 02.10.2026 wieder offene /oparl/-Adresse umgestellt (alte /public/-Adresse seit dem 24.02.2026 hinter einer Zugangsprüfung, HTTP 403; mandariOSS/mandari, Issue #88). Host aus der Entwicklungsumgebung nicht erreichbar – vor dem ersten Lauf probe ausführen; kein Umgehen einer Zugangsprüfung.
   - Lizenz: Nicht geprüft – vor einer Veröffentlichung die Lizenzangabe des OParl-Systems bzw. der Stadt prüfen
 
 ### Düsseldorf (`duesseldorf`)

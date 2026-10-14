@@ -1,4 +1,4 @@
-"""RSS-Hinweise der Stadt Köln: Sitzungstermine (SessionNet) und Pressemeldungen.
+"""RSS-Hinweise der Stadt Köln: Sitzungstermine (SessionNet), Pressemeldungen und Verkehrskalender.
 
 Jede Quelle ist genau ein Feed-Dokument pro Lauf. Gespeichert werden nur Titel,
 Datum, Uhrzeit, Ort, Link und ein gekürzter Kurztext. Ein Feed-Eintrag ist bewusst
@@ -25,7 +25,7 @@ from .config import Quelle, Stadt
 from .crawler import LaufBericht, LaufOptionen, merke_server_pause, pruefe_abkuehlung
 from .speicher import Speicher, jetzt_iso
 
-ART_JE_TYP = {"ris-rss": "sitzungen", "presse-rss": "presse"}
+ART_JE_TYP = {"ris-rss": "sitzungen", "presse-rss": "presse", "verkehr-rss": "verkehr"}
 MAX_BYTES = 2_000_000
 MAX_KURZTEXT = 600
 
@@ -142,6 +142,8 @@ def parse_feed(text: str, art: str, basis: str) -> tuple[list[Hinweis], int]:
             continue
         if art == "sitzungen":
             hinweis = _sitzung(titel, roh, link)
+        elif art == "verkehr":
+            hinweis = _presse(item, titel, roh, link, bezeichnung="Verkehrshinweis")
         else:
             hinweis = _presse(item, titel, roh, link)
         if hinweis is None:
@@ -176,14 +178,15 @@ def _sitzung(titel: str, roh: str, link: str) -> Hinweis | None:
     )
 
 
-def _presse(item: ET.Element, titel: str, roh: str, link: str) -> Hinweis | None:
+def _presse(item: ET.Element, titel: str, roh: str, link: str,
+            bezeichnung: str = "Pressemitteilung") -> Hinweis | None:
     try:
         datum = parsedate_to_datetime(_kind_text(item, "pubDate")).date().isoformat()
     except (TypeError, ValueError):
         return None  # ohne gültiges Datum kein sinnvoller Hinweis; der Eintrag wird verworfen
     ident = _kind_text(item, "guid") or link
     return Hinweis(
-        id=ident[:300], art="Pressemitteilung", titel=" ".join(titel.split())[:300], datum=datum,
+        id=ident[:300], art=bezeichnung, titel=" ".join(titel.split())[:300], datum=datum,
         zeit="", ort="", gremium="", web=link, kurztext=_kurz(klartext(roh)), bezug="",
     )
 

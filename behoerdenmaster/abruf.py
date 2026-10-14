@@ -159,8 +159,11 @@ class Abrufer:
             except httpx.TransportError as exc:
                 raise QuelleNichtErreichbar(f"robots.txt nicht abrufbar: {exc}") from exc
             if resp.status_code in (401, 403, 429):
-                raise QuelleGesperrt(f"robots.txt liefert HTTP {resp.status_code}: Lauf beendet",
-                                    retry_after=_retry_after(resp))
+                raise QuelleGesperrt(
+                    f"robots.txt liefert HTTP {resp.status_code}: Lauf beendet. Möglich ist "
+                    "eine Zugangsprüfung (Bot-Schutz) des Servers; eine Umgehung findet "
+                    "nicht statt.",
+                    retry_after=_retry_after(resp))
             if resp.status_code == 200:
                 text = resp.text
             elif 400 <= resp.status_code < 500:
@@ -228,8 +231,12 @@ class Abrufer:
             if code in (404, 410):
                 raise ObjektNichtVorhanden(f"HTTP {code} für {url}")
             if code in (401, 403):
-                raise QuelleGesperrt(f"HTTP {code} für {url}: Abruf wird nicht fortgesetzt",
-                                    retry_after=_retry_after(resp))
+                raise QuelleGesperrt(
+                    f"HTTP {code} für {url}: Abruf wird nicht fortgesetzt. Das kann eine "
+                    "Zugangsprüfung (Bot-Schutz oder Anmeldung) der Quelle sein; eine "
+                    "Umgehung findet nicht statt – die Quelle müsste Maschinen-Abrufe "
+                    "freigeben.",
+                    retry_after=_retry_after(resp))
             if code in (429, 500, 502, 503, 504):
                 if versuch < self.wiederholungen:
                     warte = max(_retry_after(resp) or 0.0, self.wartezeiten[min(versuch, len(self.wartezeiten) - 1)])

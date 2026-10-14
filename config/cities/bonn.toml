@@ -4,10 +4,19 @@
 # gleiche Drossel, robots.txt, Budgets und Abkühlzeiten). Der Stadtbezirk „Bonn“ heißt hier „Stadtbezirk Bonn“, damit nicht jede Nennung der Stadt als Bezirk zählt.
 #
 # Quellen:
-#   * OParl-Endpunkt: offizielle OParl-Endpunktliste (github.com/OParl/resources, endpoints.yml,
-#     abgerufen am 14.10.2026). Der Endpunkt ist von hier aus NICHT live geprüft (die
-#     Entwicklungsumgebung erreicht keine Behörden-Hosts) – vor dem ersten Lauf:
+#   * OParl-Endpunkt: Die früher übliche Adresse /public/oparl/system steht seit dem
+#     24.02.2026 hinter einer Zugangsprüfung (ALTCHA-Proof-of-Work, HTTP 403 für
+#     Maschinen-Clients; öffentlich dokumentiert in mandariOSS/mandari, Issue #88).
+#     Seit dem 02.10.2026 bietet Bonn OParl (ALLRIS, OParl 1.1) unter der neuen Adresse
+#     /oparl/system wieder ohne Zugangsprüfung an (ebenda). Die Dokument-Links unter
+#     /public/doc… liegen weiterhin hinter der Prüfseite – wir übernehmen wie überall
+#     nur Links, keine Dateien. Der Endpunkt ist aus der Entwicklungsumgebung nicht
+#     live prüfbar (Behörden-Hosts sind von dort nicht erreichbar) – vor dem ersten Lauf:
 #       python -m behoerdenmaster --stadt bonn probe --quelle ris
+#     Liefert auch die neue Adresse HTTP 403 (zuerst wird robots.txt gelesen), ist der
+#     Bot-Schutz für den abrufenden Host noch aktiv; dann bleibt nur die Bitte an die
+#     Stadt Bonn, /oparl/ und /robots.txt für Maschinen-Clients freizugeben – eine
+#     Umgehung der Zugangsprüfung findet nicht statt.
 #   * Ortsgliederung, PLZ und Straßen: OpenStreetMap-Auszug der OpenPLZ API (ODbL 1.0,
 #     © OpenStreetMap-Mitwirkende), erzeugt mit tools/stadt_aus_osm.py. Eine NÄHERUNG.
 #
@@ -28,7 +37,7 @@ hinweis = "Ortsbezug aus Betreff und Gremium abgeleitet; Ortsgliederung und PLZ 
 schluessel = "ris"
 typ = "oparl"
 name = "Ratsinformation Bonn (OParl)"
-system_url = "https://www.bonn.sitzung-online.de/public/oparl/system"
+system_url = "https://www.bonn.sitzung-online.de/oparl/system"
 # Körperschaft über den Namen wählen; passen mehrere, bricht der Lauf ab statt zu raten.
 koerperschaft = "Bonn"
 # Rollierendes Fenster für den Erstabruf (90 Tage), damit eine neu angeforderte Stadt
@@ -36,7 +45,7 @@ koerperschaft = "Bonn"
 seit = "90d"
 min_intervall_sekunden = 3.0
 lizenz = "Nicht geprüft – vor einer Veröffentlichung die Lizenzangabe des OParl-Systems bzw. der Stadt prüfen"
-pruefstand = "Endpunkt aus der OParl-Endpunktliste (Stand 14.10.2026); noch kein Abruf – vor dem ersten Lauf probe ausführen"
+pruefstand = "Auf die neue, seit dem 02.10.2026 wieder offene /oparl/-Adresse umgestellt (alte /public/-Adresse seit dem 24.02.2026 hinter einer Zugangsprüfung, HTTP 403; mandariOSS/mandari, Issue #88). Host aus der Entwicklungsumgebung nicht erreichbar – vor dem ersten Lauf probe ausführen; kein Umgehen einer Zugangsprüfung."
 
 [[themen]]
 schluessel = "bauen"

@@ -27,6 +27,7 @@ TYP_TEXT = {
     "bauleitplanung": "Bauleitplanung Online NRW",
     "ris-rss": "Sitzungstermine (RSS)",
     "presse-rss": "Pressemeldungen (RSS)",
+    "verkehr-rss": "Verkehrskalender (RSS)",
     "bekanntmachungen": "Öffentliche Bekanntmachungen",
     "beteiligung": "Bürgerbeteiligung",
     "opendata": "Offene Daten (DKAN 2)",

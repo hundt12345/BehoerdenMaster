@@ -33,6 +33,14 @@ def quelle_presse():
     return next(q for q in lade_stadt("koeln").quellen if q.typ == "presse-rss")
 
 
+@pytest.fixture
+def quelle_verkehr():
+    return next(q for q in lade_stadt("koeln").quellen if q.typ == "verkehr-rss")
+
+
+VERKEHR_URL = "https://www.stadt-koeln.de/externe-dienste/rss/verkehrskalender.xml"
+
+
 class FakeRss:
     def __init__(self, feeds: dict[str, str], robots: str = "User-agent: *\n") -> None:
         self.feeds = feeds
@@ -124,7 +132,26 @@ def test_presse_crawl_und_registry(db, stadt, quelle_presse, uhr):
     bericht = CRAWLER[quelle_presse.typ](db, stadt, quelle_presse, _abrufer(fake, uhr), LaufOptionen())
     assert bericht.status == "ok"
     assert db.zaehle_quelle(stadt.quell_id(quelle_presse))["hinweise"] == 2
-    assert {"ris-rss", "presse-rss"} <= set(CRAWLER)
+    assert {"ris-rss", "presse-rss", "verkehr-rss"} <= set(CRAWLER)
+
+
+def test_verkehrskalender_wird_als_verkehrshinweis_übernommen():
+    treffer, verworfen = parse_feed(_lese("verkehrskalender.xml"), "verkehr", VERKEHR_URL)
+    assert verworfen == 0 and len(treffer) == 2
+    erster = treffer[0]
+    assert erster.art == "Verkehrshinweis"  # nicht „Pressemitteilung“
+    assert erster.titel == "Subbelrather Straße (Ehrenfeld)"
+    assert erster.datum == "2026-10-22"
+    assert erster.web.endswith("subbelrather-strasse-ehrenfeld-22")
+    assert erster.bezug == ""  # Verkehrshinweise werden nicht an Vorgänge gehängt
+
+
+def test_verkehrskalender_crawl_speichert_nur_hinweise(db, stadt, quelle_verkehr, uhr):
+    fake = FakeRss({VERKEHR_URL: _lese("verkehrskalender.xml")})
+    bericht = CRAWLER[quelle_verkehr.typ](db, stadt, quelle_verkehr, _abrufer(fake, uhr), LaufOptionen())
+    assert bericht.status == "ok"
+    zahlen = db.zaehle_quelle(stadt.quell_id(quelle_verkehr))
+    assert zahlen["hinweise"] == 2 and zahlen["vorgaenge"] == 0
 
 
 def test_ladebericht_zeigt_rss_quelle_als_aktuell(db, stadt, quelle_ris, uhr):

@@ -32,7 +32,7 @@ services:
         value: "false"
       # Automatischer Abruf. Die Reihenfolge legt die Start- und Rückgabereihenfolge der
       # Etappe fest: erst die kleinen, schnell vollständigen Quellen (Bekanntmachungen,
-      # Beteiligung, die beiden RSS-Feeds – je Quelle wenige Anfragen), zuletzt die
+      # Beteiligung, die drei RSS-Feeds – je Quelle wenige Anfragen), zuletzt die
       # Ratsinformation (OParl) mit ihrem großen Erstabruf. Die fälligen Quellen laufen
       # parallel (siehe BEHOERDEN_SYNC_PARALLEL); pro Host bleibt der Mindestabstand
       # zwischen Anfragen erhalten, sodass die Last je Behörden-Server unverändert ist.
@@ -41,7 +41,7 @@ services:
       - key: BEHOERDEN_SYNC_ENABLED
         value: "true"
       - key: BEHOERDEN_SYNC_QUELLEN
-        value: koeln:bekanntmachungen,koeln:beteiligung,koeln:opendata,koeln:ris-rss,koeln:presse-rss,koeln:ris
+        value: koeln:bekanntmachungen,koeln:beteiligung,koeln:opendata,koeln:ris-rss,koeln:presse-rss,koeln:verkehrskalender,koeln:ris
       # Rollierendes Fenster für den Erstabruf: 90 Tage statt des in koeln.toml hinterlegten
       # Wahlperiodenbeginns. Hält den Abruf nach jedem Neustart klein und höflich.
       - key: BEHOERDEN_SYNC_SEIT

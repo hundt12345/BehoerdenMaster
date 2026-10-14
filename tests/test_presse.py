@@ -11,7 +11,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from behoerdenmaster.api import create_app
-from behoerdenmaster.config import lade_staedte, lade_stadt
+from behoerdenmaster.config import lade_staedte
 from behoerdenmaster.demo import lade_demo
 from behoerdenmaster.normalize import norm
 from behoerdenmaster.presse import PresseVerweis, finde_presse
